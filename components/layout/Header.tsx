@@ -85,15 +85,25 @@ const kompaniaItems: { title: string; href: string; description: string; icon: R
   { title: "Blog", href: "/blog", description: "Lexoni artikujt dhe këshillat më të fundit.", icon: Newspaper },
 ];
 
+// Define prop types for the Header
+interface HeaderProps {
+  variant?: 'transparent' | 'solid';
+}
+
 // --- Header Component ---
-const Header = () => {
+const Header = ({ variant = 'transparent' }: HeaderProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [kompaniaOpen, setKompaniaOpen] = useState(false);
   // State for the active category in the Produkte dropdown
   const [activeCategory, setActiveCategory] = useState(produkteCategories[0].title);
 
   return (
-    <header className="absolute top-0 left-0 right-0 z-50 bg-transparent">
+    <header className={cn(
+      "left-0 right-0 z-50",
+      variant === 'transparent'
+        ? "absolute top-0 bg-transparent"
+        : "relative bg-background border-b border-border"
+    )}>
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Navigation on the left */}
         <nav className="hidden md:flex items-center gap-1"> {/* Reduced gap for menu list styling */}
@@ -101,7 +111,10 @@ const Header = () => {
             <NavigationMenuList className="gap-4"> {/* Added gap for spacing between items */}
               {/* Produkte Navigation Item */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-transparent text-white hover:text-white/80 hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent">
+                <NavigationMenuTrigger className={cn(
+                    "bg-transparent hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent",
+                    variant === 'transparent' ? "text-white hover:text-white/80" : "text-foreground hover:text-foreground/80"
+                  )}>
                   Produkte
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -140,7 +153,10 @@ const Header = () => {
 
               {/* Kompania Navigation Item */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-transparent text-white hover:text-white/80 hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent">
+                <NavigationMenuTrigger className={cn(
+                    "bg-transparent hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent",
+                    variant === 'transparent' ? "text-white hover:text-white/80" : "text-foreground hover:text-foreground/80"
+                  )}>
                   Kompania
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -157,7 +173,11 @@ const Header = () => {
               {/* Kontakti Navigation Item */}
           <NavigationMenuItem>
              <Link href="/kontakti" legacyBehavior passHref>
-               <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-transparent text-white hover:text-white/80 hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent")}>
+               <NavigationMenuLink className={cn(
+                    navigationMenuTriggerStyle(),
+                    "bg-transparent hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent",
+                    variant === 'transparent' ? "text-white hover:text-white/80" : "text-foreground hover:text-foreground/80"
+                  )}>
                   Kontakti
                </NavigationMenuLink>
              </Link>
@@ -170,7 +190,7 @@ const Header = () => {
         <div className="flex-none ml-auto pl-4"> {/* Use ml-auto to push logo right, pl-4 for padding */}
           <Link href="/">
             <Image
-              src="/logo-white.png" // Assuming logo.svg exists in public folder
+              src={variant === 'transparent' ? "/logo-white.png" : "/logo.png"} // Assuming logo.svg exists in public folder
               alt="ECOTEK Logo"
               width={120}
               height={40}
@@ -184,7 +204,7 @@ const Header = () => {
         <div className="md:hidden ml-4"> {/* Added ml-4 for spacing */}
           <Button
             variant="ghost"
-            className="text-white hover:text-white/80"
+            className={cn(variant === 'transparent' ? "text-white hover:text-white/80" : "text-foreground hover:text-foreground/80")}
             size="icon"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
