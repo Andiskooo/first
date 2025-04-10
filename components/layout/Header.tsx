@@ -14,35 +14,54 @@ import {
   navigationMenuTriggerStyle, // Re-add this import
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { ThermometerSun, Wind, Zap, Snowflake, Info, FileText, Newspaper } from 'lucide-react'; // Example Icons
+// No longer using Lucide icons directly
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- Navigation Menu Data ---
-const produkteCategories: { title: string; icon: React.ElementType; items: { title: string; href: string; description: string; icon: React.ElementType }[] }[] = [
+// Type definition updated: icon is now string (path to SVG)
+const produkteCategories: { title: string; icon: string; items: { title: string; href: string; description: string; icon: string }[] }[] = [
   {
     title: "Ngrohje Qendrore",
-    icon: ThermometerSun, // Category Icon
+    icon: 'icons/heat-pump.svg',
     items: [
-      { title: "Pompa Nxehtësie", href: "/produkte/pompa-nxehtesie", description: "Efikasitet i lartë për ngrohje dhe ftohje.", icon: ThermometerSun },
-      { title: "Kaldaja me Pelet", href: "/produkte/kaldaja-pelet", description: "Zgjidhje ekologjike për ngrohje.", icon: ThermometerSun }, // Placeholder icon
-      { title: "Radiatorë", href: "/produkte/radiatore", description: "Shpërndarje uniforme e nxehtësisë.", icon: ThermometerSun }, // Placeholder icon
+      { title: "Pompa Termike", href: "/kategori/pompa-termike", description: "Ngrohje dhe ftohje efikase.", icon: 'icons/heat-pump.svg' },
+      { title: "Kalldaja Elektrike", href: "/kategori/kalldaja-elektrike", description: "Ngrohje e pastër dhe e thjeshtë.", icon: 'icons/kalldaj.svg' },
+      { title: "Radiator", href: "/kategori/radiator", description: "Shpërndarje nxehtësie.", icon: 'icons/radiator.svg' },
+      { title: "Fancoiler", href: "/kategori/fancoiler", description: "Ngrohje dhe ftohje e shpejtë.", icon: 'icons/fancoiler.svg' },
     ]
   },
   {
     title: "Klimatizim & Ventilim",
-    icon: Snowflake, // Category Icon
+    icon: 'icons/hvac.svg',
     items: [
-      { title: "Kondicionerë Inverter", href: "/produkte/kondicioner", description: "Freski dhe kursim energjie.", icon: Snowflake },
-      { title: "Sisteme Ventilimi", href: "/produkte/ventilim", description: "Ajër i pastër dhe i shëndetshëm.", icon: Wind },
+      { title: "Kondicioner", href: "/kategori/kondicioner", description: "Freski optimale për ambientin tuaj.", icon: 'icons/air-conditioner.svg' },
+      { title: "Pompa Termike", href: "/kategori/pompa-termike", description: "Zgjidhje e integruar ftohje.", icon: 'icons/heat-pump.svg' },
+      { title: "Fancoiler", href: "/kategori/fancoiler", description: "Ftohje dhe ngrohje e shpejtë.", icon: 'icons/fancoiler.svg' }
     ]
   },
   {
-    title: "Energji Solare",
-    icon: Zap, // Category Icon
+    title: "Solar", // New category
+    icon: 'icons/solar-cell.svg',
     items: [
-      { title: "Panele Solare", href: "/produkte/panele-solare", description: "Gjeneroni energji të pastër.", icon: Zap },
-      { title: "Inverterë Solarë", href: "/produkte/invertere-solare", description: "Konvertoni energjinë diellore.", icon: Zap }, // Placeholder icon
+      { title: "Panela Solar", href: "/kategori/panele-solare", description: "Gjeneroni energji të pastër.", icon: 'icons/solar-cell.svg' },
+      { title: "Inverter", href: "/kategori/inverter-solar", description: "Konversoni energjinë diellore.", icon: 'icons/solar-inverter.svg' },
+    ]
+  },
+  {
+    title: "Sanitari", // New category
+    icon: 'icons/boiler.svg', // Using a generic icon
+    items: [
+       { title: "Bojler", href: "/kategori/bojler", description: "Ujë i ngrohtë sanitar.", icon: 'icons/boiler.svg' },
+       { title: "Akumules", href: "/kategori/akumules", description: "Rezervuar uji.", icon: 'icons/boiler.svg' },
+    ]
+  },
+  {
+    title: "Servisim & Instalim", // Renamed
+    icon: 'icons/service.svg', // Using a generic icon
+    items: [
+      // Example item - adjust as needed
+      { title: "Shërbime Profesionale", href: "/kategori/sherbime", description: "Instalim dhe mirëmbajtje.", icon: 'icons/service.svg' },
     ]
   }
 ];
@@ -50,25 +69,33 @@ const produkteCategories: { title: string; icon: React.ElementType; items: { tit
 // --- ListItem Helper Component (from shadcn/ui docs) ---
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a"> & { icon?: React.ElementType }
->(({ className, title, children, icon: Icon, ...props }, ref) => { // Re-added children prop
+  React.ComponentPropsWithoutRef<"a"> & { icon?: string } // Updated icon type to string
+>(({ className, title, children, icon, ...props }, ref) => { // Fixed syntax with proper parentheses
   return (
     <li> {/* Removed flex items-center from li */}
       <NavigationMenuLink asChild>
         <a
           ref={ref}
           className={cn(
-            "block w-full text-left p-2 rounded text-sm font-medium transition-colors hover:bg-accent/50", // Reverted to block, width, padding etc.
+            "block w-full text-left p-3 rounded-md text-sm transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50", // Adjusted padding and hover
             className
           )}
           {...props}
         >
-          {/* Inner div for flex layout */}
-          <div className="flex items-center gap-2">
-            {Icon && <Icon className="h-4 w-4 flex-shrink-0" aria-hidden="true" />}
+          <div className="flex items-start gap-3"> {/* Changed to items-start */} 
+            {icon && (
+              <Image 
+                src={`/${icon}`} 
+                alt="Icon" 
+                width={16} 
+                height={16} 
+                className="mt-0.5 flex-shrink-0"
+                unoptimized
+              />
+            )}
             <div className="flex flex-col">
-              <span className="font-medium">{title}</span>
-              <p className="text-xs text-muted-foreground line-clamp-1">{children}</p> {/* Added description */} 
+              <div className="font-medium text-foreground leading-tight">{title}</div>
+              <p className="text-xs text-muted-foreground leading-snug">{children}</p>
             </div>
           </div>
         </a>
@@ -79,10 +106,10 @@ const ListItem = React.forwardRef<
 ListItem.displayName = "ListItem";
 
 // --- Kompania Menu Data ---
-const kompaniaItems: { title: string; href: string; description: string; icon: React.ElementType }[] = [ // Added icon type
-  { title: "Rreth Nesh", href: "/rreth-nesh", description: "Mësoni më shumë për misionin dhe vlerat tona.", icon: Info },
-  { title: "Dokumente", href: "/dokumente", description: "Shkarkoni katalogët dhe certifikatat tona.", icon: FileText },
-  { title: "Blog", href: "/blog", description: "Lexoni artikujt dhe këshillat më të fundit.", icon: Newspaper },
+const kompaniaItems: { title: string; href: string; description: string; icon: string }[] = [ // Updated icon type to string
+  { title: "Rreth Nesh", href: "/rreth-nesh", description: "Mësoni më shumë për misionin dhe vlerat tona.", icon: 'icons/info.svg' },
+  { title: "Dokumente", href: "/dokumente", description: "Shkarkoni katalogët dhe certifikatat tona.", icon: 'icons/document.svg' },
+  { title: "Blog", href: "/blog", description: "Lexoni artikujt dhe këshillat më të fundit.", icon: 'icons/blogger.svg' },
 ];
 
 // Define prop types for the Header
@@ -132,7 +159,7 @@ const Header = ({ variant = 'transparent' }: HeaderProps) => {
                               : "hover:bg-accent/50"
                           )}
                         >
-                          <category.icon className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+                          <Image src={`/${category.icon}`} alt="Category Icon" width={16} height={16} className="flex-shrink-0" unoptimized />
                           <span>{category.title}</span>
                         </button>
                       ))}
@@ -140,7 +167,12 @@ const Header = ({ variant = 'transparent' }: HeaderProps) => {
 
                     {/* Right Column: Items for Active Category */}
                     <div className="w-[calc(100%-200px)] pl-4">
-                      <ul className="space-y-1">
+                      <ul className={cn(
+                        "gap-x-4", // Horizontal gap for grid
+                        (produkteCategories.find((cat) => cat.title === activeCategory)?.items.length ?? 0) > 3
+                          ? "grid grid-cols-2" // Apply 2-column grid if more than 3 items
+                          : "space-y-1" // Otherwise, use vertical spacing
+                      )}>
                         {produkteCategories
                           .find((cat) => cat.title === activeCategory)?.items.map((item) => (
                             <ListItem key={item.title} title={item.title} href={item.href} icon={item.icon}>{item.description}</ListItem> // Re-added children

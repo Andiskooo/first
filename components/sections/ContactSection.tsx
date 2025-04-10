@@ -39,7 +39,7 @@ const ContactSection = () => {
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Na Kontaktoni</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Jemi këtu për t'ju ndihmuar me çdo pyetje dhe kërkesë. Mos hezitoni të na kontaktoni.
+            Jemi këtu për t&apos;ju ndihmuar me çdo pyetje dhe kërkesë. Mos hezitoni të na kontaktoni.
           </p>
         </div>
 
@@ -130,7 +130,7 @@ const ContactSection = () => {
                   </svg>
                   <div>
                     <h4 className="font-medium">Adresa</h4>
-                    <p className="text-slate-600">Rruga Skenderbeu, Prishtinë 10000, Kosovë</p>
+                    <p className="text-slate-600">Dah Polloshka 14, Gjakovë 50000, Kosovë</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -139,7 +139,7 @@ const ContactSection = () => {
                   </svg>
                   <div>
                     <h4 className="font-medium">Telefoni</h4>
-                    <p className="text-slate-600">+383 44 123 456</p>
+                    <p className="text-slate-600">+383 44 914 480</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
