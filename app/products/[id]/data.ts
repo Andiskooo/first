@@ -14,7 +14,7 @@ export function getAllProducts(): Product[] {
   return [
     // Ngrohje Qendrore - Pompa Termike
     {
-      id: 'pompa-termike-eco-1',
+      id: 'pompa-nxehtesie-ecotherm',
       title: 'EcoTek Heat Pump Pro',
       description: 'Pompë termike me efikasitet të lartë energjetik, ideale për ngrohje dhe ftohje.',
       price: "1200",
