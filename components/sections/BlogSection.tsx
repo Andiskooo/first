@@ -1,147 +1,163 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { blogPosts as defaultBlogPosts } from '@/data/blogData';
+import { BlogPost } from '@/data/blogData';
+import { ArrowRight } from 'lucide-react';
 
-const blogPosts = [
-  {
-    id: 1,
-    title: 'Si të zgjidhni sistemin e duhur të ngrohjes për shtëpinë tuaj',
-    excerpt: 'Udhëzues i detajuar për zgjedhjen e sistemit të ngrohjes që i përshtatet më mirë nevojave dhe buxhetit tuaj.',
-    date: '5 Prill, 2025',
-    author: 'Arben Krasniqi',
-    image: '/images/blog-1.jpg',
-    link: '/blog/si-te-zgjidhni-sistemin-e-duhur-te-ngrohjes',
+// Color mapping for Tailwind classes
+const colorMap: Record<string, { bg: string, hover: string, text: string }> = {
+  'red': {
+    bg: 'bg-red-600',
+    hover: 'hover:bg-red-700',
+    text: 'text-red-600',
   },
-  {
-    id: 2,
-    title: 'Përfitimet e sistemeve solare për shtëpitë rezidenciale',
-    excerpt: 'Zbuloni si sistemet solare mund të ulin kostot e energjisë dhe të kontribuojnë në mbrojtjen e mjedisit.',
-    date: '28 Mars, 2025',
-    author: 'Lindita Berisha',
-    image: '/images/blog-2.jpg',
-    link: '/blog/perfitimet-e-sistemeve-solare',
+  'orange': {
+    bg: 'bg-orange-600',
+    hover: 'hover:bg-orange-700',
+    text: 'text-orange-600',
   },
-  {
-    id: 3,
-    title: 'Mirëmbajtja e sistemeve të klimatizimit për performancë optimale',
-    excerpt: 'Këshilla praktike për mirëmbajtjen e rregullt të sistemeve të klimatizimit për të siguruar jetëgjatësi dhe efikasitet.',
-    date: '15 Mars, 2025',
-    author: 'Driton Hoxha',
-    image: '/images/blog-3.jpg',
-    link: '/blog/mirembajtja-e-sistemeve-te-klimatizimit',
+  'blue': {
+    bg: 'bg-blue-600',
+    hover: 'hover:bg-blue-700',
+    text: 'text-blue-600',
   },
-];
+  'green': {
+    bg: 'bg-green-600',
+    hover: 'hover:bg-green-700',
+    text: 'text-green-600',
+  },
+  'purple': {
+    bg: 'bg-purple-600',
+    hover: 'hover:bg-purple-700',
+    text: 'text-purple-600',
+  },
+};
 
-const BlogSection = () => {
-  const containerVariants = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: 0.2,
-      },
+interface BlogSectionProps {
+  posts?: BlogPost[];
+  title?: string;
+  className?: string;
+}
+
+const BlogSection = ({ 
+  posts = defaultBlogPosts,
+  title = 'Blog and news',
+  className = ''
+}: BlogSectionProps) => {
+  const [activePost, setActivePost] = useState<BlogPost>(posts[0]);
+
+  // Animation variants
+  const contentVariants = {
+    hidden: { opacity: 0, x: 50 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: { duration: 0.4 } 
     },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-      },
-    },
+    exit: { 
+      opacity: 0, 
+      x: -50,
+      transition: { duration: 0.3 } 
+    }
   };
 
   return (
-    <section className="py-12 bg-slate-50"> {/* Reduced padding */}
-
+    <section className={`py-16 ${className}`}>
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-end mb-8">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-2">Blog & Këshilla</h2>
-            <p className="text-lg text-slate-600">
-              Informacione dhe këshilla të dobishme nga ekspertët tanë
-            </p>
-          </div>
-          <Link href="/blog" className="text-blue-600 font-medium flex items-center gap-1 group">
-            Shiko të gjitha
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="16" 
-              height="16" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-              className="transition-transform group-hover:translate-x-1"
-            >
-              <path d="M5 12h14"/>
-              <path d="m12 5 7 7-7 7"/>
-            </svg>
-          </Link>
-        </div>
-
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-        >
-          {blogPosts.map((post) => (
-            <motion.div key={post.id} variants={itemVariants}>
-              <Link href={post.link} className="block h-full">
-                <Card className="h-full overflow-hidden hover:shadow-md transition-shadow">
-                  <CardContent className="p-0">
-                    <div className="relative h-48 w-full">
-                      <Image
-                        src={post.image}
-                        alt={post.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="p-6">
-                      <div className="flex items-center gap-2 text-sm text-slate-500 mb-3">
-                        <span>{post.date}</span>
-                        <span>•</span>
-                        <span>{post.author}</span>
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Left side - Blog post list */}
+          <div className="w-full lg:w-1/3 bg-gray-700 p-8 rounded-lg">
+            <h2 className="text-3xl font-bold text-white mb-8">{title}</h2>
+            
+            <div className="space-y-6">
+              {posts.map((post) => {
+                const isActive = activePost.id === post.id;
+                const colorKey = post.accentColor?.split('-')[0] || 'red';
+                const color = colorMap[colorKey] || colorMap.red;
+                
+                return (
+                  <button
+                    key={post.id}
+                    onClick={() => setActivePost(post)}
+                    className={`w-full text-left group transition-all duration-300 ${isActive ? 'scale-105' : 'opacity-70 hover:opacity-100'}`}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className={`flex items-center justify-center ${color.bg} w-10 h-10 rounded-lg text-white font-bold shrink-0`}>
+                        {post.id}
                       </div>
-                      <h3 className="font-semibold text-xl mb-2">{post.title}</h3>
-                      <p className="text-slate-600">{post.excerpt}</p>
+                      <div>
+                        <h3 className="text-white font-medium text-lg group-hover:underline">
+                          {post.title}
+                        </h3>
+                      </div>
                     </div>
-                  </CardContent>
-                  <CardFooter className="p-6 pt-0">
-                    <div className="text-blue-600 font-medium flex items-center gap-1 group">
-                      Lexo më shumë
-                      <svg 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        width="16" 
-                        height="16" 
-                        viewBox="0 0 24 24" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        strokeWidth="2" 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round"
-                        className="transition-transform group-hover:translate-x-1"
-                      >
-                        <path d="M5 12h14"/>
-                        <path d="m12 5 7 7-7 7"/>
-                      </svg>
-                    </div>
-                  </CardFooter>
-                </Card>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
+                  </button>
+                );
+              })}
+            </div>
+            
+            <Link
+              href="/blog"
+              className="flex items-center justify-center gap-2 text-white mt-8 px-4 py-2 border border-white rounded mx-auto transition-colors duration-200 bg-transparent hover:bg-white/20"
+            >
+              Blog and news
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          
+          {/* Right side - Active blog post content */}
+          <div className="w-full lg:w-2/3 relative overflow-hidden rounded-lg">
+            <AnimatePresence mode="wait">
+              <motion.div 
+                key={activePost.id}
+                className="flex flex-col md:flex-row h-full"
+                variants={contentVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                {/* Image spans full height, clipped on right */}
+                <div className="w-full md:w-1/2 relative">
+                  <div className="absolute inset-0 w-full h-full overflow-hidden">
+                    <Image
+                      src={activePost.imageUrl}
+                      alt={activePost.title}
+                      fill
+                      className="object-cover object-left"
+                      priority
+                    />
+                  </div>
+                </div>
+                
+                {/* Content */}
+                <div className="w-full md:w-1/2 p-8 flex flex-col justify-center bg-white">
+                  {activePost.subtitle && (
+                    <p className={`text-sm font-medium uppercase tracking-wider mb-2 ${activePost.accentColor ? 'text-' + activePost.accentColor.split('-')[0] + '-600' : 'text-red-600'}`}>
+                      {activePost.subtitle}
+                    </p>
+                  )}
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                    {activePost.title}
+                  </h2>
+                  <p className="text-gray-700 mb-6">
+                    {activePost.content}
+                  </p>
+                  <Link 
+                    href={activePost.link}
+                    className={`inline-flex items-center gap-2 font-medium ${activePost.accentColor ? 'text-' + activePost.accentColor.split('-')[0] + '-600' : 'text-red-600'} hover:underline`}
+                  >
+                    Read more
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
       </div>
     </section>
   );

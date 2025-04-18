@@ -120,3 +120,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .fill-orange-500 { fill: #F97316; }
+  .fill-blue-500 { fill: #3B82F6; }
+}

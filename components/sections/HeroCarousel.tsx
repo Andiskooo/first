@@ -7,40 +7,20 @@ import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react'; // Icons for buttons
 
-const carouselItems = [
-  {
-    id: 1,
-    image: '/hero/hero-1.webp',
-    title: 'Zgjidhje Inovative për Ngrohje Qendrore',
-    description: 'Sisteme efikase dhe të qëndrueshme për shtëpinë dhe biznesin tuaj',
-    buttonText: 'Eksploro Zgjidhjet',
-    buttonLink: '/kategorit/ngrohje-qendrore',
-  },
-  {
-    id: 2,
-    image: '/hero/hero-2.jpg',
-    title: 'Klimatizim dhe Ventilim i Avancuar',
-    description: 'Komfort optimal gjatë gjithë vitit me sistemet tona të klimatizimit',
-    buttonText: 'Shiko Produktet',
-    buttonLink: '/kategorit/klimatizim',
-  },
-  {
-    id: 3,
-    image: '/hero/hero-3.jpg',
-    title: 'Energji e Pastër Solare',
-    description: 'Kurseni energji dhe mbroni mjedisin me sistemet tona solare',
-    buttonText: 'Mëso më Shumë',
-    buttonLink: '/kategorit/solar',
-  },
-  {
-    id: 4,
-    image: '/hero/hero-4.jpg',
-    title: 'Shërbime Profesionale të Instalimit',
-    description: 'Ekipi ynë i kualifikuar siguron instalim dhe mirëmbajtje të përsosur',
-    buttonText: 'Kontakto Tani',
-    buttonLink: '/kontakti',
-  },
-];
+// Define the type for a single slide item
+interface SlideItem {
+  id: number;
+  image: string;
+  title: string;
+  description: string;
+  buttonText: string;
+  buttonLink: string;
+}
+
+// Define the props for the HeroCarousel component
+interface HeroCarouselProps {
+  slides: SlideItem[];
+}
 
 // Framer Motion variants for slide transitions (simple fade)
 const variants = {
@@ -70,10 +50,9 @@ const swipePower = (offset: number, velocity: number) => {
   return Math.abs(offset) * velocity;
 };
 
-
-const HeroCarousel = () => {
+const HeroCarousel = ({ slides }: HeroCarouselProps) => {
   const [[page, direction], setPage] = useState([0, 0]);
-  const imageIndex = ((page % carouselItems.length) + carouselItems.length) % carouselItems.length; // Wrap index
+  const imageIndex = ((page % slides.length) + slides.length) % slides.length; // Wrap index
 
   const paginate = (newDirection: number) => {
     setPage([page + newDirection, newDirection]);
@@ -89,7 +68,7 @@ const HeroCarousel = () => {
   }, [page]); // Re-run effect if page changes manually. Paginate dependency is omitted intentionally.
 
   return (
-    <section className="relative w-full h-screen overflow-hidden -mt-[76px]">
+    <section className="relative w-full overflow-hidden" style={{ height: '100vh' }}>
       <AnimatePresence initial={false} custom={direction}>
         <motion.div
           key={page}
@@ -118,13 +97,12 @@ const HeroCarousel = () => {
           {/* Background Image & Overlay */}
           <div className="absolute inset-0 z-[-1]">
             <Image
-              src={carouselItems[imageIndex].image}
-              alt={carouselItems[imageIndex].title}
+              src={slides[imageIndex].image}
+              alt={slides[imageIndex].title}
               fill
               priority={imageIndex === 0}
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-black/40" />
           </div>
 
           {/* Content */}
@@ -136,23 +114,23 @@ const HeroCarousel = () => {
                 transition={{ delay: 0.2, duration: 0.5 }}
                 className="text-3xl md:text-5xl font-bold text-white mb-4"
               >
-                {carouselItems[imageIndex].title}
+                {slides[imageIndex].title}
               </motion.h1>
               <motion.p
-                 initial={{ opacity: 0, y: 20 }}
-                 animate={{ opacity: 1, y: 0 }}
-                 transition={{ delay: 0.4, duration: 0.5 }}
-                 className="text-lg md:text-xl text-white/90 mb-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="text-lg md:text-xl text-white/90 mb-6"
               >
-                {carouselItems[imageIndex].description}
+                {slides[imageIndex].description}
               </motion.p>
               <motion.div
-                 initial={{ opacity: 0, y: 20 }}
-                 animate={{ opacity: 1, y: 0 }}
-                 transition={{ delay: 0.6, duration: 0.5 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.5 }}
               >
                 <Button asChild size="lg" className="bg-transparent hover:bg-white/10 text-white border border-white">
-                  <Link href={carouselItems[imageIndex].buttonLink}>{carouselItems[imageIndex].buttonText}</Link>
+                  <Link href={slides[imageIndex].buttonLink}>{slides[imageIndex].buttonText}</Link>
                 </Button>
               </motion.div>
             </div>
@@ -178,7 +156,7 @@ const HeroCarousel = () => {
 
       {/* Dot Navigation */}
       <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-2 z-10">
-        {carouselItems.map((_, i) => (
+        {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => setPage([i, i > imageIndex ? 1 : -1])} // Set page and direction
@@ -194,4 +172,3 @@ const HeroCarousel = () => {
 };
 
 export default HeroCarousel;
-

@@ -2,6 +2,7 @@
 
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 const categories = [
@@ -10,42 +11,48 @@ const categories = [
     title: 'Ngrohje Qëndrore',
     description: 'Kompetencë dhe Efikasitet në Menaxhimin e Energjisë.',
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-orange-500 group-hover:text-orange-600 transition-colors">
-        <path d="M8 14a5 5 0 0 0 10 0M8 14a5 5 0 0 1 10 0"/>
-        <path d="M17 18.5a9 9 0 1 0-10 0"/>
-        <path d="M12 12v4"/>
-        <path d="M12 3v3"/>
-      </svg>
+      <Image src="/icons/heat-pump.svg" alt="Ngrohje Qëndrore" width={64} height={64} className="text-orange-500 group-hover:text-orange-600 transition-colors" />
     ),
     link: '/kategorit/ngrohje-qendrore',
     color: 'text-orange-500 group-hover:text-orange-600',
+    bgColor: 'bg-orange-50 group-hover:bg-orange-100',
+    borderColor: 'border-orange-500/50 group-hover:border-orange-600/50',
   },
   {
     id: 2,
     title: 'Klimatizim/Ventilim',
     description: 'Ekspertët për Freski dhe Rehati në Shtëpinë Tuaj.',
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 group-hover:text-blue-600 transition-colors">
-        <path d="M20 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1Z"/>
-        <path d="M12 7v10"/>
-        <path d="m8 9 8 6"/>
-        <path d="m16 9-8 6"/>
-      </svg>
+      <Image src="/icons/hvac.svg" alt="Klimatizim/Ventilim" width={64} height={64} className="text-blue-500 group-hover:text-blue-600 transition-colors" />
     ),
     link: '/kategorit/klimatizim',
     color: 'text-blue-500 group-hover:text-blue-600',
+    bgColor: 'bg-blue-50 group-hover:bg-blue-100',
+    borderColor: 'border-blue-500/50 group-hover:border-blue-600/50',
   },
   {
     id: 3,
-    title: 'Instalim dhe Servisim',
+    title: 'Sanitari',
+    description: 'Zgjidhje sanitare dhe higjienike për shtëpinë tuaj.',
+    icon: (
+      <Image src="/icons/boiler.svg" alt="Sanitari" width={64} height={64} className="text-green-500 group-hover:text-green-600 transition-colors" />
+    ),
+    link: '/kategorit/sanitari',
+    color: 'text-green-500 group-hover:text-green-600',
+    bgColor: 'bg-green-50 group-hover:bg-green-100',
+    borderColor: 'border-green-500/50 group-hover:border-green-600/50',
+  },
+  {
+    id: 4,
+    title: 'Instalim/Servisim',
     description: 'Profesionalizëm dhe siguri për ambientin tuaj.',
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 group-hover:text-blue-600 transition-colors">
-        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-      </svg>
+      <Image src="/icons/service.svg" alt="Instalim/Servisim" width={64} height={64} className="text-gray-500 group-hover:text-gray-600 transition-colors" />
     ),
     link: '/kategorit/instalim-servisim',
-    color: 'text-blue-500 group-hover:text-blue-600',
+    color: 'text-gray-500 group-hover:text-gray-600',
+    bgColor: 'bg-gray-100 group-hover:bg-gray-200',
+    borderColor: 'border-gray-500/50 group-hover:border-gray-600/50',
   },
 ];
 
@@ -82,7 +89,7 @@ const Categories = () => {
         </div>
 
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -91,9 +98,9 @@ const Categories = () => {
           {categories.map((category) => (
             <motion.div key={category.id} variants={itemVariants}>
               <Link href={category.link} className="block h-full group">
-                <div className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-2 flex flex-col rounded-lg p-6 bg-white">
+                <div className={`h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-2 flex flex-col border-2 border-transparent hover:${category.borderColor} rounded-xl p-6 bg-white`}>
                   <CardHeader className="flex flex-col items-center text-center">
-                    <div className="p-4 rounded-full bg-slate-50 mb-4 transition-colors">
+                    <div className={`p-4 rounded-full ${category.bgColor} mb-4 transition-colors`}>
                       {category.icon}
                     </div>
                     <CardTitle className={`text-xl font-bold ${category.color}`}>{category.title}</CardTitle>
@@ -118,7 +125,7 @@ const Categories = () => {
                       {/* Hover State: Text + Arrow */}
                       <div className="absolute inset-0 flex justify-center items-center gap-2 transition-all duration-300 ease-in-out opacity-0 invisible group-hover:opacity-100 group-hover:visible">
                           <span className="text-current font-medium whitespace-nowrap transition-transform duration-300 ease-in-out transform -translate-x-2 group-hover:translate-x-0">
-                              More Information
+                              Mësoni Më Shumë
                           </span>
                           <div className="transition-transform duration-300 ease-in-out transform translate-x-2 group-hover:translate-x-0"> {/* Wrapper for SVG */}
                               <svg 

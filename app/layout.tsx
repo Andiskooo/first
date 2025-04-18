@@ -20,11 +20,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="sq" suppressHydrationWarning> 
-      <MainLayout bodyClassName={inter.className}>
-        {children}
-      </MainLayout>
+    <html lang="sq" suppressHydrationWarning>
+      <body className={inter.className}>
+        <MainLayout>
+          {children}
+        </MainLayout>
+      </body>
     </html>
   );
 }
-

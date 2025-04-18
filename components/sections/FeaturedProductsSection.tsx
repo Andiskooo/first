@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { useState } from 'react';
 
 // Define the type for a featured product
 export type FeaturedProduct = {
@@ -13,10 +14,8 @@ export type FeaturedProduct = {
   imageUrl: string;       // Ensure this is always a string
   link: string;
   imagePosition: 'left' | 'right';
-  bgColor?: string;       // Made optional with default in component
-  textColor?: string;     // Made optional with default in component
-  buttonColor?: string;   // Made optional with default in component
-  subtitle?: string;      // Added optional subtitle
+  accentColor?: string;   // Single color for accent bar, button, and subtitle
+  subtitle?: string;      // Optional subtitle
 };
 
 // Define props interface for the component
@@ -34,19 +33,31 @@ export const defaultFeaturedProducts: FeaturedProduct[] = [
     id: 'heatpump',
     title: 'Pompa Nxehtësie Inverter ECOTHERM Monoblock',
     description: 'Efikasitet superior dhe performancë e lartë për ngrohje dhe ftohje. Teknologji Inverter për kursim maksimal të energjisë dhe komoditet optimal gjatë gjithë vitit.',
-    imageUrl: '/featured/pompa-termike.jpg',
+    imageUrl: '/featured/pompa-termike.png',
     link: '/produkte/pompa-nxehtesie',
     imagePosition: 'right',
     subtitle: 'Zgjedhje moderne',
+    accentColor: 'orange-600',
   },
   {
     id: 'klima',
     title: 'Kondicioner Inverter ECOKLIMA',
     description: 'Freski dhe ajër i pastër në shtëpinë tuaj. Dizajn modern, operim i qetë dhe teknologji Inverter për të mbajtur temperaturën ideale me konsum minimal energjie.',
-    imageUrl: '/featured/klima.jpg',
+    imageUrl: '/featured/klima.png',
     link: '/produkte/kondicioner',
     imagePosition: 'left',
     subtitle: 'Zgjedhje moderne',
+    accentColor: 'blue-600',
+  },
+  {
+    id: 'boiler',
+    title: 'Boileri Sanitari ECOTHERM',
+    description: 'Freski dhe ajër i pastër në shtëpinë tuaj. Dizajn modern, operim i qetë dhe teknologji Inverter për të mbajtur temperaturën ideale me konsum minimal energjie.',
+    imageUrl: '/featured/bojleri.png',
+    link: '/produkte/kondicioner',
+    imagePosition: 'right',
+    subtitle: 'Zgjedhje moderne',
+    accentColor: 'green-600',
   },
 ];
 
@@ -57,12 +68,33 @@ const FeaturedProductsSection = ({
   showArrow = true,
   buttonText = 'Shiko Produktin'
 }: FeaturedProductsSectionProps) => {
-  // Default styles
-  const defaultTextColor = 'text-gray-800';
-  const defaultButtonColor = 'bg-blue-600 hover:bg-blue-700 text-white';
+  const [imgRatios, setImgRatios] = useState<Record<string, number>>({});
+  // Color mapping for Tailwind classes
+  const colorMap: Record<string, { bg: string, hover: string, text: string }> = {
+    'red': {
+      bg: 'bg-red-600',
+      hover: 'hover:bg-red-700',
+      text: 'text-red-600',
+    },
+    'orange': {
+      bg: 'bg-orange-600',
+      hover: 'hover:bg-orange-700',
+      text: 'text-orange-600',
+    },
+    'blue': {
+      bg: 'bg-blue-600',
+      hover: 'hover:bg-blue-700',
+      text: 'text-blue-600',
+    },
+    'green': {
+      bg: 'bg-green-600',
+      hover: 'hover:bg-green-700',
+      text: 'text-green-600',
+    },
+  }
   
   return (
-    <section className={`py-8 space-y-24 ${className}`}>
+    <section className={`py-16 space-y-24 ${className}`}>
       {title && (
         <div className="container mx-auto px-4 text-center mb-12">
           <h2 className="text-3xl font-bold">{title}</h2>
@@ -70,40 +102,63 @@ const FeaturedProductsSection = ({
       )}
 
       {products.map((product) => (
-        <div key={product.id} className={`container mx-auto px-4 overflow-hidden`}> {/* Removed card styling */}
+        <div key={product.id} className={`container mx-auto px-4 overflow-hidden group`}>
 
           <div
-            className={`flex flex-col ${product.imagePosition === 'left' ? 'md:flex-row' : 'md:flex-row-reverse'} items-center overflow-hidden rounded-xl p-2 md:p-4 ${product.bgColor || 'bg-gradient-to-br from-gray-50 to-gray-100'}`}
+            className={`flex flex-col ${product.imagePosition === 'left' ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-stretch overflow-hidden rounded-xl bg-white transition-all duration-300 hover:shadow-xl hover:-translate-y-1`}
           >
             {/* Image Column - 2/3 width on md+ */}
-            <div className="w-full md:w-2/3 relative overflow-hidden">
+            <div className="w-full lg:w-2/5 relative overflow-hidden">
               {/* Main image */}
-              <div className="relative w-full h-64 md:h-[400px]">
+              <div className="relative w-full" style={{ aspectRatio: imgRatios[product.id] ?? 16/9 }}>
                 <Image
                   src={product.imageUrl}
                   alt={product.title}
                   fill
-                  style={{ objectFit: 'contain' }}
-                  className="transition-transform hover:scale-105 duration-700"
+                  style={{ objectFit: 'cover' }}
                   priority
+                  onLoadingComplete={(img) => {
+                    const ratio = img.naturalWidth / img.naturalHeight;
+                    setImgRatios(prev => ({ ...prev, [product.id]: ratio }));
+                  }}
                 />
+                {/* Subtle hover overlay */}
+                <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
               </div>
             </div>
 
             {/* Text Column - 1/3 width on md+ */}
-            <div className={`w-full md:w-1/3 p-8 md:p-12 ${product.textColor || defaultTextColor}`}> {/* Text container takes 1/3 width on md+ */}
+            <div className="w-full lg:w-3/5 p-8 lg:p-12 flex flex-col justify-center text-gray-800 relative">
+              {/* Red accent bar - only visible on large screens */}
+              {
+                /* Get color from map based on first part of accentColor (e.g., 'orange' from 'orange-600') */
+                (() => {
+                  const colorKey = product.accentColor?.split('-')[0] || 'red';
+                  const color = colorMap[colorKey] || colorMap.red;
+                  return (
+                    <div className={`hidden lg:block absolute top-0 bottom-0 ${product.imagePosition === 'left' ? 'right-0' : 'left-0'} w-2 ${color.bg}`}></div>
+                  );
+                })()
+              }
               {product.subtitle && (
-                <p className="text-sm font-medium text-blue-600 uppercase tracking-wider mb-2">
+                <p className={`text-sm font-medium uppercase tracking-wider mb-2 ${(() => {
+                  const colorKey = product.accentColor?.split('-')[0] || 'red';
+                  return colorMap[colorKey]?.text || colorMap.red.text;
+                })()}`}>
                   {product.subtitle}
                 </p>
               )}
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">
                 {product.title}
               </h2>
-              <p className="text-lg mb-8 opacity-90">
+              <p className="text-base md:text-lg mb-8 opacity-90">
                 {product.description}
               </p>
-              <Button asChild size="lg" className={`${product.buttonColor || defaultButtonColor} group transition-all`}>
+              <Button asChild size="lg" className={`${(() => {
+                const colorKey = product.accentColor?.split('-')[0] || 'red';
+                const color = colorMap[colorKey] || colorMap.red;
+                return `${color.bg} ${color.hover}`;
+              })()} text-white group transition-all`}>
                 <Link href={product.link}>
                   {buttonText}
                   {showArrow && (
