@@ -78,7 +78,7 @@ const Categories = () => {
   };
 
   return (
-    <section className="py-12 bg-white"> {/* Reduced padding */}
+    <section className="py-12 bg-gray-100"> {/* Slight grey background */}
 
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">

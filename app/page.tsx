@@ -12,7 +12,7 @@ export default function Home() {
       <Categories />
       <FeaturedProductsSection 
         products={defaultFeaturedProducts} 
-        title="Produktet Tona të Veçanta"
+        title="Produktet Tona"
         showArrow={true}
       />
       <BlogSection />

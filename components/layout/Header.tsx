@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import { categories } from '@/app/categories/[id]/data';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -19,45 +20,19 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- Navigation Menu Data ---
-// Type definition updated: icon is now string (path to SVG)
-const produkteCategories: { title: string; icon: string; items: { title: string; href: string; description: string; icon: string }[] }[] = [
-  {
-    title: "Ngrohje Qendrore",
-    icon: 'icons/heat-pump.svg',
-    items: [
-      { title: "Pompa Termike", href: "/kategori/pompa-termike", description: "Ngrohje dhe ftohje efikase.", icon: 'icons/heat-pump.svg' },
-      { title: "Kalldaja Elektrike", href: "/kategori/kalldaja-elektrike", description: "Ngrohje e pastër dhe e thjeshtë.", icon: 'icons/kalldaj.svg' },
-      { title: "Radiator", href: "/kategori/radiator", description: "Shpërndarje nxehtësie.", icon: 'icons/radiator.svg' },
-      { title: "Fancoiler", href: "/kategori/fancoiler", description: "Ngrohje dhe ftohje e shpejtë.", icon: 'icons/fancoiler.svg' },
-    ]
-  },
-  {
-    title: "Klimatizim & Ventilim",
-    icon: 'icons/hvac.svg',
-    items: [
-      { title: "Kondicioner", href: "/kategori/kondicioner", description: "Freski optimale për ambientin tuaj.", icon: 'icons/air-conditioner.svg' },
-      { title: "Pompa Termike", href: "/kategori/pompa-termike", description: "Zgjidhje e integruar ftohje.", icon: 'icons/heat-pump.svg' },
-      { title: "Fancoiler", href: "/kategori/fancoiler", description: "Ftohje dhe ngrohje e shpejtë.", icon: 'icons/fancoiler.svg' }
-    ]
-  },
-
-  {
-    title: "Sanitari", // New category
-    icon: 'icons/boiler.svg', // Using a generic icon
-    items: [
-       { title: "Bojler", href: "/kategori/bojler", description: "Ujë i ngrohtë sanitar.", icon: 'icons/boiler.svg' },
-       { title: "Akumules", href: "/kategori/akumules", description: "Rezervuar uji.", icon: 'icons/boiler.svg' },
-    ]
-  },
-  {
-    title: "Servisim & Instalim", // Renamed
-    icon: 'icons/service.svg', // Using a generic icon
-    items: [
-      // Example item - adjust as needed
-      { title: "Shërbime Profesionale", href: "/kategori/sherbime", description: "Instalim dhe mirëmbajtje.", icon: 'icons/service.svg' },
-    ]
-  }
-];
+// Convert the categories data to the format needed for the navigation menu
+const produkteCategories = categories.map(category => {
+  return {
+    title: category.title,
+    icon: category.icon,
+    items: category.subcategories.map(subcategory => ({
+      title: subcategory.title,
+      href: subcategory.href,
+      description: subcategory.description,
+      icon: subcategory.icon
+    }))
+  };
+});
 
 // --- ListItem Helper Component (from shadcn/ui docs) ---
 const ListItem = React.forwardRef<
@@ -280,7 +255,7 @@ const Header = ({ variant = 'transparent' }: HeaderProps) => {
             >
               <div className="container mx-auto px-4 py-4 flex flex-col gap-6"> {/* Increased gap */}
                 <Link
-                  href="/products"
+                  href="/categories"
                   className="py-3 text-base text-white hover:text-white/80" /* Increased padding and font size */
                   onClick={() => setIsOpen(false)}
                 >

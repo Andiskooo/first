@@ -66,7 +66,7 @@ const BlogSection = ({
   };
 
   return (
-    <section className={`py-16 ${className}`}>
+    <section className={`py-16 bg-gray-100 ${className}`}>
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left side - Blog post list */}

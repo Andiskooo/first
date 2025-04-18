@@ -10,8 +10,8 @@ interface MainLayoutProps {
 
 export default function MainLayout({ children }: MainLayoutProps) {
   const pathname = usePathname();
-  const isRootPage = ["/"].includes(pathname);
-  const headerVariant = isRootPage ? 'transparent' : 'solid';
+  const isTransparentHeader = pathname === "/" || pathname.startsWith("/categories");
+  const headerVariant = isTransparentHeader ? 'transparent' : 'solid';
 
   return (
     <>
