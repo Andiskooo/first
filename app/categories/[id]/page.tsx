@@ -119,9 +119,11 @@ const CategoryPage = ({ params }: CategoryPageProps) => {
               onClick={() => selectSubcategory(null)}
               className={`flex items-center justify-center space-x-0 sm:space-x-2 transition p-2 ${activeSubcategory === null ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'} w-10 h-10 sm:w-auto sm:h-auto sm:px-4 sm:py-2 lg:px-6 lg:py-3 rounded-full`}
             >
-              <img
+              <Image
                 src="/icons/info.svg"
                 alt="Të gjitha"
+                width={32}
+                height={32}
                 className={`w-8 h-8 sm:w-6 sm:h-6 filter ${activeSubcategory === null ? 'brightness-90' : 'brightness-110'}`}
               />
               <span className="hidden sm:inline font-medium">Të gjitha</span>
@@ -132,9 +134,11 @@ const CategoryPage = ({ params }: CategoryPageProps) => {
                 onClick={() => selectSubcategory(sub.id)}
                 className={`flex items-center justify-center space-x-0 sm:space-x-2 transition p-2 ${activeSubcategory === sub.id ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'} w-10 h-10 sm:w-auto sm:h-auto sm:px-4 sm:py-2 lg:px-6 lg:py-3 rounded-full`}
               >
-                <img
+                <Image
                   src={`/${sub.icon}`}
                   alt={sub.title}
+                  width={32}
+                  height={32}
                   className={`w-8 h-8 sm:w-6 sm:h-6 filter ${activeSubcategory === sub.id ? 'brightness-90' : 'brightness-110'}`}
                 />
                 <span className="hidden sm:inline font-medium">{sub.title}</span>
@@ -144,7 +148,7 @@ const CategoryPage = ({ params }: CategoryPageProps) => {
         </div>
 
         {/* Product grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.map(product => (
             <Link 
               href={`/products/${product.id}`} 
@@ -158,7 +162,7 @@ const CategoryPage = ({ params }: CategoryPageProps) => {
                     src={product.image}
                     alt={product.title}
                     fill
-                    className="object-contain p-4"
+                    className="object-cover"
                   />
                 </div>
                 

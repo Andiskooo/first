@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { getProductById } from '@/app/products/[id]/data';
 import { Product } from '@/app/categories/[id]/data';
-import { ArrowLeft, Check, ShoppingCart, Heart } from 'lucide-react';
+import { ArrowLeft, Check } from 'lucide-react';
 
 interface ProductPageProps {
   params: Promise<{
@@ -20,7 +20,6 @@ const ProductPage = ({ params }: ProductPageProps) => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'details' | 'specifications'>('details');
-  const [quantity, setQuantity] = useState(1);
 
   // Load product data
   useEffect(() => {
@@ -30,17 +29,6 @@ const ProductPage = ({ params }: ProductPageProps) => {
     }
     setLoading(false);
   }, [id]);
-
-  // Handle quantity changes
-  const decreaseQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-
-  const increaseQuantity = () => {
-    setQuantity(quantity + 1);
-  };
 
   if (loading) {
     return (
@@ -120,37 +108,13 @@ const ProductPage = ({ params }: ProductPageProps) => {
               </ul>
             </div>
             
-            {/* Quantity selector */}
-            <div className="mb-8">
-              <h3 className="text-lg font-medium mb-3">Sasia</h3>
-              <div className="flex items-center">
-                <button 
-                  onClick={decreaseQuantity}
-                  className="w-10 h-10 border border-gray-300 flex items-center justify-center rounded-l-md"
-                >
-                  -
-                </button>
-                <div className="w-16 h-10 border-t border-b border-gray-300 flex items-center justify-center">
-                  {quantity}
-                </div>
-                <button 
-                  onClick={increaseQuantity}
-                  className="w-10 h-10 border border-gray-300 flex items-center justify-center rounded-r-md"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-            
             {/* Action buttons */}
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-6">
-                <ShoppingCart className="mr-2 h-5 w-5" />
-                Shto në shportë
+                Na Kontaktoni
               </Button>
               <Button variant="outline" className="flex-1 py-6">
-                <Heart className="mr-2 h-5 w-5" />
-                Shto në të preferuarat
+                Manuali i Perdorimit
               </Button>
             </div>
           </div>
