@@ -1,57 +1,3 @@
-// Define the type for a single slide item
-export interface SlideItem {
-  id: number;
-  image: string;
-  title: string;
-  description: string;
-  buttonText: string;
-  buttonLink: string;
-}
-
-// Data for the main hero carousel
-export const heroSlidesData: SlideItem[] = [
-  {
-    id: 1,
-    image: '/hero/bojleri.png',
-    title: 'Zgjidhje Inovative për Ngrohje Qendrore',
-    description: 'Sisteme efikase dhe të qëndrueshme për shtëpinë dhe biznesin tuaj',
-    buttonText: 'Eksploro Zgjidhjet',
-    buttonLink: '/categories/ngrohje-qendrore',
-  },
-  {
-    id: 2,
-    image: '/hero/klima.png',
-    title: 'Klimatizim dhe Ventilim i Avancuar',
-    description: 'Komfort optimal gjatë gjithë vitit me sistemet tona të klimatizimit',
-    buttonText: 'Shiko Produktet',
-    buttonLink: '/categories/klimatizim-ventilim',
-  },
-  {
-    id: 3,
-    image: '/hero/kalldaja.png',
-    title: 'Energji e Pastër Solare',
-    description: 'Kurseni energji dhe mbroni mjedisin me sistemet tona solare',
-    buttonText: 'Mëso më Shumë',
-    buttonLink: '/products/kalldaja-ecotek',
-  },
-  {
-    id: 4,
-    image: '/hero/pompa-termike.png',
-    title: 'Energji e Pastër Solare',
-    description: 'Kurseni energji dhe mbroni mjedisin me sistemet tona solare',
-    buttonText: 'Mëso më Shumë',
-    buttonLink: '/products/pompa-nxehtesie-ecotherm',
-  },
-  {
-    id: 5,
-    image: '/hero/servisim.jpg',
-    title: 'Shërbime Profesionale të Instalimit',
-    description: 'Ekipi ynë i kualifikuar siguron instalim dhe mirëmbajtje të përsosur',
-    buttonText: 'Kontakto Tani',
-    buttonLink: '/categories/servisim-instalim',
-  },
-];
-
 // Category data structure
 export interface Category {
   id: string;
@@ -76,15 +22,11 @@ export interface Subcategory {
 export interface Product {
   id: string;
   title: string;
-  description: string;
   image: string;
   category: string;
   subcategory: string;
   price?: string;
   features: string[];
-  details: {
-    [key: string]: string;
-  };
   specifications?: {
     [key: string]: string;
   };
@@ -98,37 +40,86 @@ export const categories: Category[] = [
     title: "Ngrohje Qendrore",
     description: "Sisteme efikase dhe të qëndrueshme për ngrohje qëndrore në shtëpinë dhe biznesin tuaj",
     icon: "icons/heat-pump.svg",
-    heroImage: "/hero/bojleri.png",
+    heroImage: "/hero/Radiatori.jpg",
     subcategories: [
       {
         id: "pompa-termike",
         title: "Pompa Termike",
-        description: "Ngrohje dhe ftohje efikase.",
+        description: "Pompe termike për ngrohje dhe ftohje në shtëpinë tuaj",
         icon: "icons/heat-pump.svg",
         href: "/categories/ngrohje-qendrore?subcategory=pompa-termike",
         products: [
           {
             id: "pompa-nxehtesie-ecotherm",
-            title: "Pompa Nxehtësie Inverter ECOTHERM Monoblock",
-            description: "Efikasitet superior dhe performancë e lartë për ngrohje dhe ftohje. Teknologji Inverter për kursim maksimal të energjisë.",
-            image: "/featured/pompa-termike.png",
+            title: "Pompa Termike Vanguard Comfort",
+            image: "/produktet/Vanguard.png",
             category: "ngrohje-qendrore",
             subcategory: "pompa-termike",
             features: [
-              "Teknologji Inverter",
-              "Efikasitet i lartë energjitik",
-              "Operim i qetë",
-              "Instalim i thjeshtë"
+              "Energy Efficiency Class A++",
+              "R32 Refrigerant, Inverter Technology",
+              "Higher water temperature 55 C",
+              "Capacities 12kW - 32 kW"
             ],
-            details: {
-              "Fuqia": "9kW",
-              "COP": "4.5",
-              "Tensioni": "230V",
-              "Niveli i Zhurmës": "42dB",
-              "Dimensionet": "1100 x 400 x 650 mm"
-            }
-          }
+          },
+          {
+            id: "pompa-nxehtesie-ecotherm",
+            title: "Pompa Termike Serene Climate",
+            image: "/produktet/Serene.png",
+            category: "ngrohje-qendrore",
+            subcategory: "pompa-termike",
+            features: [
+              "Energy Efficiency Class A+++",
+              "R32 Refrigerant, Inverter Technology",
+              "Higher water temperature 55 C",
+              "Integrated Circulation Pump, Expansion Tank, Valves",
+              "Capacities 15kW - 24 kW"
+            ],
+          },
+          {
+            id: "pompa-nxehtesie-ecotherm",
+            title: "Pompa Termike Apex Heating",
+            image: "/produktet/Apex.png",
+            category: "ngrohje-qendrore",
+            subcategory: "pompa-termike",
+            features: [
+              "Energy Efficiency Class A+++",
+              "R290 Refrigerant, Inverter Technology",
+              "Higher water temperature 75 C",
+              "Integrated Circulation Pump, Expansion Tank, Valves",
+              "Capacities 15kW - 32 kW"
+            ],
+          },
+          {
+            id: "pompa-nxehtesie-ecotherm",
+            title: "Pompa Termike Maxi Afariste",
+            image: "/produktet/Maxi.png",
+            category: "ngrohje-qendrore",
+            subcategory: "pompa-termike",
+            features: [
+              "Energy Efficiency Class A++",
+              "R410A Refrigerant",
+              "Inverter Technology",
+              "Higher water temperature 55 C",
+              "Capacities 45kW - 350 kW"
+            ],
+          },
+          {
+            id: "pompa-nxehtesie-ecotherm",
+            title: "Pompa Termike Gjeotermike Sinceko",
+            image: "/produktet/Sinceko.png",
+            category: "ngrohje-qendrore",
+            subcategory: "pompa-termike",
+            features: [
+              "Energy Efficiency Class A+++",
+              "R410A Refrigerant",
+              "Inverter Technology",
+              "Higher water temperature 60 C",
+              "Capacities 12kW - 55 kW"
+            ],
+          },
         ]
+        
       },
       {
         id: "kalldaja-elektrike",
@@ -139,34 +130,84 @@ export const categories: Category[] = [
         products: [
           {
             id: "kalldaja-ecotek",
-            title: "Kalldaja me Pelet ECOTEK",
-            description: "Ngrohje efikase dhe ekologjike për shtëpinë tuaj. Teknologji e avancuar për djegie të plotë dhe kursim lëndë djegëse.",
-            image: "/featured/kalldaja.png",
+            title: "Kalldaja Elektrike ECOTEK OG",
+            image: "/produktet/OG.png",
             category: "ngrohje-qendrore",
             subcategory: "kalldaja-elektrike",
             features: [
-              "Ndezje automatike",
-              "Pastrimi automatik",
-              "Efikasitet i lartë",
-              "Kontroll dixhital"
-            ],
-            details: {
-              "Fuqia": "25kW",
-              "Efikasiteti": "93%",
-              "Kapaciteti i Rezervuarit": "60kg",
-              "Konsumi i Peletit": "1.5-5.5 kg/h",
-              "Dimensionet": "1200 x 600 x 1300 mm"
-            }
+              "Efficient Electric Heating",
+              "Water Pressure Protection",
+              "Digital Display, Wi-Fi connection",
+              "Higher Water Temp 90 C",
+              "Capacities 6kW - 27kW"
+            ]
+          },
+          {
+            id: "kalldaja-ecotek",
+            title: "Kalldaja Elektrike ECOTEK MP",
+            image: "/produktet/MP.png",
+            category: "ngrohje-qendrore",
+            subcategory: "kalldaja-elektrike",
+            features: [
+              "Efficient Electric Heating",
+              "Water Pressure Protection",
+              "Digital Display, Wi-Fi connection",
+              "Higher Water Temp 90 C",
+              "Capacities 6kW - 27kW"
+            ]
+          },
+          {
+            id: "kalldaja-ecotek",
+            title: "Kalldaja Elektrike ECOTEK JP",
+            image: "/produktet/JP.png",
+            category: "ngrohje-qendrore",
+            subcategory: "kalldaja-elektrike",
+            features: [
+              "Efficient Electric Heating",
+              "Water Pressure Protection",
+              "Digital Display, Wi-Fi connection",
+              "Higher Water Temp 90 C",
+              "Capacities 6kW - 27kW"
+            ]
           }
         ]
       },
       {
         id: "radiator",
         title: "Radiator",
-        description: "Shpëndarje nxehtësie.",
+        description: "Ngrohje e vazhdueshme.",
         icon: "icons/radiator.svg",
         href: "/categories/ngrohje-qendrore?subcategory=radiator",
-        products: []
+        products: [
+          {
+            id: "radiator-ecotek",
+            title: "Radiator Panel",
+            image: "/produktet/Radiatori.png",
+            category: "ngrohje-qendrore",
+            subcategory: "radiator",
+            features: [
+              "Ngrohje e Shpejtë dhe e Barabartë",
+              "Materiale të Cilësisë së Lartë",
+              "Efiçiencë e Lartë Energjitike",
+              "Dizajn Modern dhe Elegant",
+
+            ]
+          },
+          {
+            id: "radiator-ecotek",
+            title: "Radiator Gypor",
+            image: "/produktet/RadiatorGyp.png",
+            category: "ngrohje-qendrore",
+            subcategory: "radiator",
+            features: [
+              "Ngrohje e Shpejtë dhe e Barabartë",
+              "Materiale të Cilësisë së Lartë",
+              "Efiçiencë e Lartë Energjitike",
+              "Dizajn Modern dhe Elegant",
+
+            ]
+          }
+        ]
       },
       {
         id: "fancoiler",
@@ -174,7 +215,78 @@ export const categories: Category[] = [
         description: "Ngrohje dhe ftohje e shpejtë.",
         icon: "icons/fancoiler.svg",
         href: "/categories/ngrohje-qendrore?subcategory=fancoiler",
-        products: []
+        products: [
+          {
+            id: "fancoiler-ecotek",
+            title: "Fancoiler ECOTEK",
+            image: "/produktet/fancoilera.png",
+            category: "ngrohje-qendrore",
+            subcategory: "fancoiler",
+            features: [
+             "Efiçiencë Energjitike",
+              "Materiale të Cilësisë së Lartë",
+              "Funksionim i Heshtur",
+              "Kontroll i Saktë i Temperaturës",
+              "Capacities 3kW - 6 kW"
+            ]
+          },
+          {
+            id: "fancoiler-ecotek",
+            title: "Fancoiler Kasetor",
+            image: "/produktet/kasetor.png",
+            category: "ngrohje-qendrore",
+            subcategory: "fancoiler",
+            features: [
+              "Efiçiencë Energjitike",
+              "Materiale të Cilësisë së Lartë",
+              "Funksionim i Heshtur",
+              "Kontroll i Saktë i Temperaturës",
+              "Capacities 3kW - 12 kW"
+            ]
+          }
+        ]
+      },
+      {
+        id: "akumulues",
+        title: "Akumulues",
+        description: "Rezervuar uji.",
+        icon: "icons/boiler.svg",
+        href: "/categories/ngrohje-qendrore?subcategory=akumulues",
+        products: [
+          {
+            id: "akumulues-ecotek",
+            title: "Akumulues ECOTEK",
+            image: "/produktet/buffer60.png",
+            category: "ngrohje-qendrore",
+            subcategory: "akumulues",
+            features: [
+              "60 L",
+              "3000 Watt/hr Shpenzime",            
+            ]
+          },
+          {
+            id: "akumulues-ecotek",
+            title: "Akumulues ECOTEK",
+            image: "/produktet/buffer100.png",
+            category: "ngrohje-qendrore",
+            subcategory: "akumulues",
+            features: [
+              "100 L",
+              "3000 Watt/hr Shpenzime",            
+            ]
+          },
+          {
+            id: "akumulues-ecotek",
+            title: "Akumulues ECOTEK",
+            image: "/produktet/bufferi200.png",
+            category: "ngrohje-qendrore",
+            subcategory: "akumulues",
+            features: [
+              "200 L",
+              "3000 Watt/hr Shpenzime",            
+            ]
+          }
+        ]
       }
     ]
   },
@@ -183,7 +295,7 @@ export const categories: Category[] = [
     title: "Klimatizim & Ventilim",
     description: "Komfort optimal gjatë gjithë vitit me sistemet tona të klimatizimit dhe ventilimit",
     icon: "icons/hvac.svg",
-    heroImage: "/hero/klima.png",
+    heroImage: "/produktet/HVAC.png",
     subcategories: [
       {
         id: "kondicioner",
@@ -194,34 +306,32 @@ export const categories: Category[] = [
         products: [
           {
             id: "kondicioner-ecoklima",
-            title: "Kondicioner Inverter ECOKLIMA",
-            description: "Freski dhe ajër i pastër në shtëpinë tuaj. Dizajn modern, operim i qetë dhe teknologji Inverter për temperaturë ideale.",
-            image: "/featured/klima.png",
+            title: "Candy - Aria Series",
+            image: "/produktet/aria.png",
             category: "klimatizim-ventilim",
             subcategory: "kondicioner",
             features: [
-              "Teknologji Inverter",
-              "Filtër antibakterial",
-              "Wi-Fi i integruar",
-              "Funksion i ngrohjes dhe ftohjes"
-            ],
-            details: {
-              "Fuqia Ftohëse": "12000 BTU",
-              "SEER": "7.1",
-              "Tensioni": "230V",
-              "Niveli i Zhurmës": "22dB",
-              "Dimensionet": "900 x 300 x 200 mm"
-            }
+              "Efficiency A+++/A+++",
+              "Wi-Fi, HoN app",
+              "Capacities",
+              "12,000 BTU, 18,000 BTU,"
+            ]
+          },
+          {
+            id: "kondicioner-ecoklima",
+            title: "Candy - Pura Series",
+            image: "/produktet/pura.png",
+            category: "klimatizim-ventilim",
+            subcategory: "kondicioner",
+            features: [
+              "Efficiency A+++/A++",
+              "Wi-Fi, HoN app",
+              "Capacities",
+              "9,000 BTU, 12,000 BTU, 18,000 BTU, 24,000 BTU"
+            ]
           }
+
         ]
-      },
-      {
-        id: "pompa-termike",
-        title: "Pompa Termike",
-        description: "Zgjidhje e integruar ftohje.",
-        icon: "icons/heat-pump.svg",
-        href: "/categories/klimatizim-ventilim?subcategory=pompa-termike",
-        products: []
       },
       {
         id: "fancoiler",
@@ -229,38 +339,116 @@ export const categories: Category[] = [
         description: "Ftohje dhe ngrohje e shpejtë.",
         icon: "icons/fancoiler.svg",
         href: "/categories/klimatizim-ventilim?subcategory=fancoiler",
-        products: []
-      },
-      {
-        id: "ventilim",
-        title: "Sisteme Ventilimi",
-        description: "Ajër i pastër dhe i freskët.",
-        icon: "icons/hvac.svg",
-        href: "/categories/klimatizim-ventilim?subcategory=ventilim",
         products: [
           {
-            id: "ventilim-ecotek",
-            title: "Sistem Ventilimi me Rikuperim Nxehtësie",
-            description: "Ajër i pastër dhe i freskët me humbje minimale të nxehtësisë. Ideal për shtëpi dhe zyra me izolim të mirë.",
-            image: "/images/products/ventilation/ventilation_main.jpg",
-            category: "klimatizim-ventilim",
-            subcategory: "ventilim",
+            id: "fancoiler-ecotek",
+            title: "Fancoiler ECOTEK",
+            image: "/produktet/fancoilera.png",
+            category: "ngrohje-qendrore",
+            subcategory: "fancoiler",
             features: [
-              "Rikuperim nxehtësie deri 90%",
-              "Filtër HEPA",
-              "Operim i qetë",
-              "Kontroll i lagështisë"
-            ],
-            details: {
-              "Kapaciteti": "350 m³/h",
-              "Efikasiteti i Rikuperimit": "90%",
-              "Konsumi": "45W",
-              "Niveli i Zhurmës": "25dB",
-              "Dimensionet": "600 x 300 x 200 mm"
-            }
+             "Efiçiencë Energjitike",
+              "Materiale të Cilësisë së Lartë",
+              "Funksionim i Heshtur",
+              "Kontroll i Saktë i Temperaturës",
+              "Capacities 3kW - 6 kW"
+            ]
+          },
+          {
+            id: "fancoiler-ecotek",
+            title: "Fancoiler Kasetor",
+            image: "/produktet/kasetor.png",
+            category: "ngrohje-qendrore",
+            subcategory: "fancoiler",
+            features: [
+              "Efiçiencë Energjitike",
+              "Materiale të Cilësisë së Lartë",
+              "Funksionim i Heshtur",
+              "Kontroll i Saktë i Temperaturës",
+              "Capacities 3kW - 12 kW"
+            ]
           }
         ]
-      }
+        
+      },
+      {
+        id: "pompa-termike",
+        title: "Pompa Termike",
+        description: "Zgjidhje e integruar ftohje.",
+        icon: "icons/heat-pump.svg",
+        href: "/categories/klimatizim-ventilim?subcategory=pompa-termike",
+        products: [
+          {
+            id: "pompa-nxehtesie-ecotherm",
+            title: "Pompa Termike Vanguard Comfort",
+            image: "/produktet/Vanguard.png",
+            category: "ngrohje-qendrore",
+            subcategory: "pompa-termike",
+            features: [
+              "Energy Efficiency Class A++",
+              "R32 Refrigerant, Inverter Technology",
+              "Higher water temperature 55 C",
+              "Capacities 12kW - 32 kW"
+            ],
+          },
+          {
+            id: "pompa-nxehtesie-ecotherm",
+            title: "Pompa Termike Serene Climate",
+            image: "/produktet/Serene.png",
+            category: "ngrohje-qendrore",
+            subcategory: "pompa-termike",
+            features: [
+              "Energy Efficiency Class A+++",
+              "R32 Refrigerant, Inverter Technology",
+              "Higher water temperature 55 C",
+              "Integrated Circulation Pump, Expansion Tank, Valves",
+              "Capacities 15kW - 24 kW"
+            ],
+          },
+          {
+            id: "pompa-nxehtesie-ecotherm",
+            title: "Pompa Termike Apex Heating",
+            image: "/produktet/Apex.png",
+            category: "ngrohje-qendrore",
+            subcategory: "pompa-termike",
+            features: [
+              "Energy Efficiency Class A+++",
+              "R290 Refrigerant, Inverter Technology",
+              "Higher water temperature 75 C",
+              "Integrated Circulation Pump, Expansion Tank, Valves",
+              "Capacities 15kW - 32 kW"
+            ],
+          },
+          {
+            id: "pompa-nxehtesie-ecotherm",
+            title: "Pompa Termike Maxi Afariste",
+            image: "/produktet/Maxi.png",
+            category: "ngrohje-qendrore",
+            subcategory: "pompa-termike",
+            features: [
+              "Energy Efficiency Class A++",
+              "R410A Refrigerant",
+              "Inverter Technology",
+              "Higher water temperature 55 C",
+              "Capacities 45kW - 350 kW"
+            ],
+          },
+          {
+            id: "pompa-nxehtesie-ecotherm",
+            title: "Pompa Termike Gjeotermike Sinceko",
+            image: "/produktet/Sinceko.png",
+            category: "ngrohje-qendrore",
+            subcategory: "pompa-termike",
+            features: [
+              "Energy Efficiency Class A+++",
+              "R410A Refrigerant",
+              "Inverter Technology",
+              "Higher water temperature 60 C",
+              "Capacities 12kW - 55 kW"
+            ],
+          },
+        ]
+      },
     ]
   },
   {
@@ -268,46 +456,99 @@ export const categories: Category[] = [
     title: "Sanitari",
     description: "Zgjidhje sanitare dhe higjienike për shtëpinë tuaj",
     icon: "icons/boiler.svg",
-    heroImage: "/hero/bojleri.png",
+    heroImage: "/hero/Tushi.png",
     subcategories: [
       {
         id: "bojler",
-        title: "Bojler",
+        title: "Boilera",
         description: "Ujë i ngrohtë sanitar.",
         icon: "icons/boiler.svg",
         href: "/categories/sanitari?subcategory=bojler",
         products: [
           {
             id: "boiler-ecotherm",
-            title: "Boileri Sanitari ECOTHERM",
-            description: "Ujë i ngrohtë me efikasitet të lartë. Dizajn modern dhe teknologji e avancuar për kursim energjie dhe komfort.",
-            image: "/featured/bojleri.png",
+            title: "Boileri ECOPUMP",
+            image: "/produktet/boilerieco.png",
             category: "sanitari",
             subcategory: "bojler",
             features: [
-              "Izolim i përmirësuar",
-              "Rezistencë ndaj korrozionit",
+              "Pompë Termike e Integruar",
+              "600 Watt/hr Shpenzime",
               "Termostat dixhital",
-              "Mbrojtje nga mbishkarkimi"
-            ],
-            details: {
-              "Kapaciteti": "80L",
-              "Fuqia": "2000W",
-              "Tensioni": "230V",
-              "Temperatura Maksimale": "75°C",
-              "Dimensionet": "450 x 450 x 850 mm"
-            }
-          }
+              "R134a / R290 Refrigerant",
+              "Temperatura e ujit 75 C",
+              "Kapacitetet 200 L",
+            ]
+          },
+          {
+            id: "boiler-ecotherm",
+            title: "Boileri ECOPUMP",
+            image: "/produktet/boilerieco.png",
+            category: "sanitari",
+            subcategory: "bojler",
+            features: [
+              "Pompë Termike e Integruar",
+              "600 Watt/hr Shpenzime",
+              "Termostat dixhital",
+              "R134a / R290 Refrigerant",
+              "Temperatura e ujit 75 C",
+              "Kapacitetet 300 L",
+            ]
+          },
+          {
+            id: "boiler-ecotherm",
+            title: "Boiler Electric",
+            image: "/produktet/Boileri300.png",
+            category: "sanitari",
+            subcategory: "bojler",
+            features: [
+              "3000 Watt/hr Shpenzime",
+              "Integrim Nxemjes Qendrore",
+              "Temperatura e ujit 75 C",
+              "Kapacitetet 300 L",
+            ]
+          },
+          {
+            id: "boiler-ecotherm",
+            title: "Boiler Electric",
+            image: "/produktet/Boileri200.png",
+            category: "sanitari",
+            subcategory: "bojler",
+            features: [
+              "3000 Watt/hr Shpenzime",
+              "Integrim Nxemjes Qendrore",
+              "Temperatura e ujit 75 C",
+              "Kapacitetet 200 L",
+            ]
+          },
+          {
+            id: "boiler-ecotherm",
+            title: "Boiler Electric",
+            image: "/produktet/Boileri150L.png",
+            category: "sanitari",
+            subcategory: "bojler",
+            features: [
+              "3000 Watt/hr Shpenzime",
+              "Integrim Nxemjes Qendrore",
+              "Temperatura e ujit 75 C",
+              "Kapacitetet 150 L",
+            ]
+          },
+          {
+            id: "boiler-ecotherm",
+            title: "Boiler Electric Tesy",
+            image: "/produktet/Boileri80.png",
+            category: "sanitari",
+            subcategory: "bojler",
+            features: [
+              "3000 Watt/hr Shpenzime",
+              "Integrim Nxemjes Qendrore",
+              "Temperatura e ujit 75 C",
+              "Kapacitetet 80 L",
+            ]
+          },
         ]
       },
-      {
-        id: "akumules",
-        title: "Akumules",
-        description: "Rezervuar uji.",
-        icon: "icons/boiler.svg",
-        href: "/categories/sanitari?subcategory=akumules",
-        products: []
-      }
     ]
   },
   {
