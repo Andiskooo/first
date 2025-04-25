@@ -20,7 +20,7 @@ const ProductPage = ({ params }: ProductPageProps) => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedModel, setSelectedModel] = useState<ProductModel | null>(null);
-  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
+  const [isDescriptionOpen, setIsDescriptionOpen] = useState(true);
 
   // Load product data
   useEffect(() => {

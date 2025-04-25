@@ -49,7 +49,7 @@ const categories = [
     icon: (
       <Image src="/icons/service.svg" alt="Instalim/Servisim" width={64} height={64} className="text-gray-500 group-hover:text-gray-600 transition-colors" />
     ),
-    link: '/categories/instalim-servisim',
+    link: '/contact-us',
     color: 'text-gray-500 group-hover:text-gray-600',
     bgColor: 'bg-gray-100 group-hover:bg-gray-200',
     borderColor: 'border-gray-500/50 group-hover:border-gray-600/50',

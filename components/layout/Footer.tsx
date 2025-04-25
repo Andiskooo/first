@@ -53,17 +53,12 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Lidhje të Shpejta</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/produktet" className="text-slate-300 hover:text-white transition-colors">
-                  Produktet
-                </Link>
-              </li>
-              <li>
-                <Link href="/rreth-nesh" className="text-slate-300 hover:text-white transition-colors">
+                <Link href="/about-us" className="text-slate-300 hover:text-white transition-colors">
                   Rreth Nesh
                 </Link>
               </li>
               <li>
-                <Link href="/kontakti" className="text-slate-300 hover:text-white transition-colors">
+                <Link href="/contact-us" className="text-slate-300 hover:text-white transition-colors">
                   Kontakti
                 </Link>
               </li>
@@ -102,7 +97,7 @@ const Footer = () => {
                   <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
                 </svg>
                 <span className="text-slate-300">
-                  info@ecotek.com
+                  info@ecotek-ks.com
                 </span>
               </li>
             </ul>

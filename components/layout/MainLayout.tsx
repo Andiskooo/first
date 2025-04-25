@@ -10,7 +10,7 @@ interface MainLayoutProps {
 
 export default function MainLayout({ children }: MainLayoutProps) {
   const pathname = usePathname();
-  const isTransparentHeader = pathname === "/" || pathname.startsWith("/categories");
+  const isTransparentHeader = pathname === "/" || pathname.startsWith("/categories") || pathname.startsWith("/blog") || pathname.startsWith("/contact-us"); // Added "/blog" to the list
   const headerVariant = isTransparentHeader ? 'transparent' : 'solid';
 
   return (

@@ -19,17 +19,47 @@ const ContactSection = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission (would connect to backend in production)
-    console.log('Form submitted:', formData);
-    alert('Mesazhi juaj u dërgua me sukses! Do t&apos;ju kontaktojmë së shpejti.');
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      message: '',
-    });
+    setSubmitting(true);
+    
+    try {
+      // Send email using Resend API
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          location: 'ECOTEK Gjakovë' // Default location for this form
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to send email');
+      }
+      
+      console.log('Email sent successfully');
+      setSubmitting(false);
+      setSubmitted(true);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        message: '',
+      });
+      
+      // Reset submitted state after 5 seconds
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (error) {
+      console.error('Error sending email:', error);
+      setSubmitting(false);
+      alert('Ndodhi një gabim. Ju lutemi provoni përsëri.');
+    }
   };
 
   return (
@@ -53,7 +83,19 @@ const ContactSection = () => {
             className="bg-white p-8 rounded-lg shadow-md"
           >
             <h3 className="text-2xl font-semibold mb-6">Dërgoni një Mesazh</h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            {submitted ? (
+              <div className="bg-green-50 border border-green-200 text-green-700 rounded-lg p-6 text-center">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h4 className="text-xl font-semibold mb-2">Faleminderit për mesazhin!</h4>
+                <p className="mb-4">Mesazhi juaj u dërgua me sukses. Do t&apos;ju kontaktojmë së shpejti.</p>
+                <Button onClick={() => setSubmitted(false)}>Dërgo një mesazh tjetër</Button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-1">
                   Emri i plotë
@@ -107,10 +149,25 @@ const ContactSection = () => {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full">
-                Dërgo Mesazhin
+              <Button 
+                type="submit" 
+                className="w-full"
+                disabled={submitting}
+              >
+                {submitting ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Duke dërguar...
+                  </>
+                ) : (
+                  'Dërgo Mesazhin'
+                )}
               </Button>
             </form>
+            )}
           </motion.div>
 
           {/* Map and Contact Info */}
@@ -149,7 +206,7 @@ const ContactSection = () => {
                   </svg>
                   <div>
                     <h4 className="font-medium">Email</h4>
-                    <p className="text-slate-600">info@ecotek.com</p>
+                    <p className="text-slate-600">info@ecotek-ks.com</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -169,7 +226,7 @@ const ContactSection = () => {
             {/* Map */}
             <div className="bg-white p-2 rounded-lg shadow-md h-[300px] overflow-hidden">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2934.2995686635356!2d21.159150675949244!3d42.66400271620296!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13549ee605110927%3A0x9365bfb2c5079811!2sSkenderbeu%2C%20Pristina!5e0!3m2!1sen!2s!4v1712687456789!5m2!1sen!2s" 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1920.6320617416666!2d20.466225867526365!3d42.365867617706165!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1353b1a29466cfd1%3A0x6c7d20302c8e123c!2sECOTEK!5e0!3m2!1sen!2s!4v1745607963392!5m2!1sen!2s"
                 width="100%" 
                 height="100%" 
                 style={{ border: 0 }} 

@@ -9,6 +9,7 @@ export type BlogPost = {
   link: string;
   date?: string;
   accentColor?: string; // Optional color for accents
+  tags?: string[]; // Added tags for categorization
 };
 
 // Mock blog data
@@ -16,8 +17,9 @@ export const blogPosts: BlogPost[] = [
   {
     id: '01',
     title: 'Si të aktivizoni funksionin e lidhjes Wi-Fi të Kondicionerëve CANDY',
-    subtitle: 'Funksioni Wi-Fi përmes Aplikacionit hOn',
-    content: "Easily connect your Candy Smart air conditioner to Wi-Fi using the hOn app. Follow this guide for seamless control and smart features.",
+    subtitle: 'Përdorimi i Aplikacionit hOn',
+    content: "Lidhni kondicionerin me Wi-Fi përmes aplikacionit hOn dhe kontrolloni pajisjen tuaj nga kudo.",
+    tags: ['Këshilla', 'Teknologji', 'Klimatizim'],
     fullContent: `
       ## Si të aktivizoni funksionin e lidhjes Wi-Fi
 Për të filluar procesin e lidhjes:
@@ -54,8 +56,9 @@ Pasi të lidheni me sukses:
   {
     id: '02',
     title: '5 Arsye Pse Kondicioneri Juaj Mban Erë?',
-    subtitle: 'A keni vënë re erën që del nga njësia juaj e kondicionerit kohët e fundit apo që prej disa muajsh?',
+    subtitle: 'Arsyet dhe zgjidhjet e problemit',
     content: "Në këtë artikull do të mësoni disa arsye pse kondicioneri juaj mban këtë erë dhe si mund të zgjidhet kjo çështje.",
+    tags: ['Problemet e Zakonshme', 'Mirëmbajtje', 'Klimatizim'],
     fullContent: `
       ## 5 Arsye Pse Kondicioneri Juaj Mban Erë si Çorap e Palarë
 A keni vënë re erën që del nga njësia juaj e kondicionerit kohët e fundit apo që prej disa muajsh? Ajo erë e keqe që ngjan me një çorap të palarë? Duhet ta dini se kjo aromë që ndjeni nga kondicioneri nuk është normale. Dhe vetëm teknikët e specializuar mund ta zgjidhin këtë problem.
@@ -79,8 +82,9 @@ Një arsye tjetër e mundshme që kondicioneri juaj mban erë si çorap e palar�
   {
     id: '03',
     title: 'Si janë Pompat e Nxehtësisë Më shumë se 100% Efikase?',
-    subtitle: 'Si Funksionon një Pompë Termike?',
-    content: "Si Matet Efikasiteti i Pompave të Nxehtësisë",
+    subtitle: 'Teknologjia e pompës termike',
+    content: "Zbuloni pse pompat termike janë zgjidhje efikase për ngrohje dhe si funksionojnë ato.",
+    tags: ['Teknologji', 'Efikasitet', 'Ngrohje'],
     fullContent: `
       ## Si janë Pompat e Nxehtësisë Më shumë se 100% Efikase?
 Si Funksionon një Pompë Termike

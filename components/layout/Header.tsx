@@ -12,7 +12,6 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle, // Re-add this import
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 // No longer using Lucide icons directly
@@ -76,8 +75,8 @@ ListItem.displayName = "ListItem";
 
 // --- Kompania Menu Data ---
 const kompaniaItems: { title: string; href: string; description: string; icon: string }[] = [ // Updated icon type to string
-  { title: "Rreth Nesh", href: "/rreth-nesh", description: "Mësoni më shumë për misionin dhe vlerat tona.", icon: 'icons/info.svg' },
   { title: "Blog", href: "/blog", description: "Lexoni artikujt dhe këshillat më të fundit.", icon: 'icons/blogger.svg' },
+  { title: "Kontakto", href: "/contact-us", description: "Na kontaktoni për çdo pyetje ose kërkesë.", icon: 'icons/phone.svg' },
 ];
 
 // Define prop types for the Header
@@ -226,18 +225,7 @@ const Header = ({ variant = 'transparent' }: HeaderProps) => {
                   </NavigationMenuContent> 
                 </NavigationMenuItem>
 
-                {/* Kontakti Navigation Item */}
-                <NavigationMenuItem>
-                  <Link href="/kontakti" legacyBehavior passHref>
-                    <NavigationMenuLink className={cn(
-                        navigationMenuTriggerStyle(),
-                        "bg-transparent hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent",
-                        variant === 'transparent' ? "text-white hover:text-white/80" : "text-foreground hover:text-foreground/80"
-                      )}>
-                      Kontakto
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
+                {/* Removed standalone Kontakto item as it's now in the Kompania dropdown */}
               </NavigationMenuList>
             </NavigationMenu>
           </nav>
@@ -320,10 +308,7 @@ const Header = ({ variant = 'transparent' }: HeaderProps) => {
                  {/* <Link href="/" className="block p-4 text-sm font-medium text-foreground hover:bg-accent border-b border-border" onClick={() => setIsOpen(false)}>
                    Ballina
                  </Link> */}
-                 {/* Add Kontakti Link */}
-                 <Link href="/kontakti" className="block p-4 text-sm font-medium text-foreground hover:bg-accent border-b border-border" onClick={() => setIsOpen(false)}>
-                   Kontakto
-                 </Link>
+                 {/* Kontakto is now part of Kompania in mobile view too */}
 
                </motion.div>
             </>

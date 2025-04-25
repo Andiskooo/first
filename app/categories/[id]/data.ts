@@ -471,19 +471,6 @@ export const categories: Category[] = [
               "Kapacitetet 150L, 200L, 300L",
             ]
           },
-          {
-            id: "boiler-tesy",
-            title: "Boiler Sanitar Tesy",
-            image: "/produktet/Boileri80.png",
-            category: "sanitari",
-            subcategory: "bojler",
-            features: [
-              "3000 Watt/hr Shpenzime",
-              "Integrim Nxemjes Qendrore",
-              "Temperatura e ujit 75 C",
-              "Kapacitetet 80 L",
-            ]
-          },
         ]
       },
     ]
