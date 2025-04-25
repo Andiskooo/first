@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import MainLayout from '@/components/layout/MainLayout'; // Import the new client layout wrapper
 import './globals.css';
+import ClarityAnalytics from '@/components/clarity';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="sq" suppressHydrationWarning>
+      <ClarityAnalytics />
       <body className={inter.className}>
         <MainLayout>
           {children}
