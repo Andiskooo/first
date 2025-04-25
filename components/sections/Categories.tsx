@@ -13,7 +13,7 @@ const categories = [
     icon: (
       <Image src="/icons/heat-pump.svg" alt="Ngrohje Qëndrore" width={64} height={64} className="text-orange-500 group-hover:text-orange-600 transition-colors" />
     ),
-    link: '/kategorit/ngrohje-qendrore',
+    link: '/categories/ngrohje-qendrore',
     color: 'text-orange-500 group-hover:text-orange-600',
     bgColor: 'bg-orange-50 group-hover:bg-orange-100',
     borderColor: 'border-orange-500/50 group-hover:border-orange-600/50',
@@ -25,7 +25,7 @@ const categories = [
     icon: (
       <Image src="/icons/hvac.svg" alt="Klimatizim/Ventilim" width={64} height={64} className="text-blue-500 group-hover:text-blue-600 transition-colors" />
     ),
-    link: '/kategorit/klimatizim',
+    link: '/categories/klimatizim',
     color: 'text-blue-500 group-hover:text-blue-600',
     bgColor: 'bg-blue-50 group-hover:bg-blue-100',
     borderColor: 'border-blue-500/50 group-hover:border-blue-600/50',
@@ -37,7 +37,7 @@ const categories = [
     icon: (
       <Image src="/icons/boiler.svg" alt="Sanitari" width={64} height={64} className="text-green-500 group-hover:text-green-600 transition-colors" />
     ),
-    link: '/kategorit/sanitari',
+    link: '/categories/sanitari',
     color: 'text-green-500 group-hover:text-green-600',
     bgColor: 'bg-green-50 group-hover:bg-green-100',
     borderColor: 'border-green-500/50 group-hover:border-green-600/50',
@@ -49,7 +49,7 @@ const categories = [
     icon: (
       <Image src="/icons/service.svg" alt="Instalim/Servisim" width={64} height={64} className="text-gray-500 group-hover:text-gray-600 transition-colors" />
     ),
-    link: '/kategorit/instalim-servisim',
+    link: '/categories/instalim-servisim',
     color: 'text-gray-500 group-hover:text-gray-600',
     bgColor: 'bg-gray-100 group-hover:bg-gray-200',
     borderColor: 'border-gray-500/50 group-hover:border-gray-600/50',

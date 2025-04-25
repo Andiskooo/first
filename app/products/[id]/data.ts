@@ -55,7 +55,7 @@ export function getAllProducts(): Product[] {
   // In a real app, this would fetch from a database
   // For now, we'll return a static list of products
   return [
-    // Placeholders added from categories/[id]/data.ts
+    // Pompat Termike
     {
       id: 'pompa-nxehtesie-vanguard',
       title: 'Pompa Termike Vanguard Comfort',
@@ -715,6 +715,7 @@ export function getAllProducts(): Product[] {
       ],
       relatedProducts: ['pompa-nxehtesie-maxi', 'pompa-nxehtesie-apex', 'kalldaja-elektrike']
     },
+    // Kalldajat
     {
       id: 'kalldaja-og',
       title: 'Kalldaja me Gaz Kondensuese OG Comfort',
@@ -1027,6 +1028,7 @@ export function getAllProducts(): Product[] {
       ],
       relatedProducts: ['kalldaja-og', 'kalldaja-mp', 'radiator']
     },
+    // Radiatorat
     {
       id: 'radiator',
       title: 'Radiator Panel',
@@ -1198,6 +1200,7 @@ export function getAllProducts(): Product[] {
       ],
       relatedProducts: ['radiator', 'kalldaja-mp', 'pompa-nxehtesie-serene']
     },
+    // Fancoilerat
     {
       id: 'fancoiler',
       title: 'Fancoiler ECOTEK',
@@ -1296,7 +1299,7 @@ export function getAllProducts(): Product[] {
       title: 'Fancoiler Kasetor',
       description: 'Fancoiler kasetor për montim në tavan, ideal për shpërndarje uniforme të ajrit në 4 drejtime.',
       price: 'Kontakto',
-      image: '/produktet/kasetor.png',
+      image: '/produktet/Kasetore.png',
       category: 'ngrohje-qendrore',
       subcategory: 'fancoiler',
       badges: [
@@ -1385,12 +1388,13 @@ export function getAllProducts(): Product[] {
       ],
       relatedProducts: ['fancoiler', 'pompa-nxehtesie-maxi', 'kalldaja-mp']
     },
+    // Akumuluesit
     {
-      id: 'akumulues-60l',
-      title: 'Akumulues ECOTEK 60L',
-      description: 'Akumulues uji inoksi 60 litra për sisteme solare dhe ngrohje qendrore.',
+      id: 'akumulues',
+      title: 'Akumulues ECOTEK',
+      description: 'Akumulues uji inoksi për sisteme solare dhe ngrohje qendrore.',
       price: 'Kontakto',
-      image: '/produktet/Akumulues1.png',
+      image: '/icons/boiler.svg',
       category: 'ngrohje-solare',
       subcategory: 'akumulues',
       badges: [
@@ -1434,14 +1438,19 @@ export function getAllProducts(): Product[] {
       ],
       models: [
         {
-          id: 'akumulues-60l-1s',
-          name: 'Akumulues 60L (1 Serpentinë)',
-          price: 'Kontakto'
+          id: 'akumulues-60l',
+          name: 'Akumulues 60L',
+          price: '150'
         },
         {
-          id: 'akumulues-60l-2s',
-          name: 'Akumulues 60L (2 Serpentina)',
-          price: 'Kontakto'
+          id: 'akumulues-100l',
+          name: 'Akumulues 100L',
+          price: '200'
+        },        
+        {
+          id: 'akumulues-200l',
+          name: 'Akumulues 200L',
+          price: '350'
         }
       ],
       features: [
@@ -1478,385 +1487,14 @@ export function getAllProducts(): Product[] {
       ],
       relatedProducts: ['akumulues-80l', 'akumulues-120l', 'kolektor-solar']
     },
+    // Boilerat
     {
-      id: 'akumulues-80l',
-      title: 'Akumulues ECOTEK 80L',
-      description: 'Akumulues uji inoksi 80 litra, efikas dhe i qëndrueshëm për ujë të ngrohtë sanitar.',
+      id: 'boiler-spiral',
+      title: 'Boiler Me Spirale',
+      description: 'Boiler me spirale për ujë të ngrohtë sanitar me cilësi të lartë dhe efikasitet maksimal.',
       price: 'Kontakto',
-      image: '/produktet/Akumulues1.png',
-      category: 'ngrohje-solare',
-      subcategory: 'akumulues',
-      badges: [
-        {
-          text: 'Inoksi AISI 316L',
-          bgColor: '#e0f2fe',
-          textColor: '#0ea5e9'
-        },
-        {
-          text: 'Solar & Ngrohje',
-          bgColor: '#fef3c7',
-          textColor: '#b45309'
-        },
-        {
-          text: 'Garanci 5 Vite',
-          bgColor: '#f0fdf4',
-          textColor: '#22c55e'
-        }
-      ],
-      keyCharacteristics: [
-        {
-          name: 'Kapaciteti',
-          value: '80 Litra',
-          icon: '/icons/capacity.svg'
-        },
-        {
-          name: 'Materiali',
-          value: 'Inoksi 316L',
-          icon: '/icons/material.svg'
-        },
-        {
-          name: 'Garancia',
-          value: '5 vite (Shembull)',
-          icon: '/icons/warranty.svg'
-        },
-        {
-          name: 'Serpentina',
-          value: '1 ose 2',
-          icon: '/icons/coil.svg'
-        }
-      ],
-      models: [
-        {
-          id: 'akumulues-80l-1s',
-          name: 'Akumulues 80L (1 Serpentinë)',
-          price: 'Kontakto'
-        },
-        {
-          id: 'akumulues-80l-2s',
-          name: 'Akumulues 80L (2 Serpentina)',
-          price: 'Kontakto'
-        }
-      ],
-      features: [
-        'Kapaciteti 80 Litra - Përshtatshëm për familje të vogla/mesme',
-        'Materiali Inoksi AISI 316L',
-        'Izolim me Poliuretan me Densitet të Lartë',
-        'Mundësi me 1 ose 2 Serpentina',
-        'Rezistencë Elektrike Opsionale',
-        'Mbrojtje Anodike Magnezi',
-        'Garanci 5 vite (Shembull)'
-      ],
-      longDescription: `
-        <p>Modeli 80-litërsh i akumuluesve ECOTEK ofron një zgjidhje të balancuar midis kapacitetit dhe madhësisë, duke e bërë ideal për shumicën e aplikimeve rezidenciale.</p>
-        
-        <p>Ashtu si modelet e tjera, është i ndërtuar me inoks të cilësisë së lartë AISI 316L dhe izolim superior për efikasitet maksimal dhe jetëgjatësi. Zgjedhja me një ose dy serpentina lejon integrim të lehtë me sistemin tuaj solar dhe/ose ngrohjes qendrore.</p>
-      `,
-      details: {
-        'Prodhuesi': 'ECOTEK (Shembull)',
-        'Tipi': 'Akumulues Uji Sanitar',
-        'Materiali i Brendshëm': 'Inoksi AISI 316L',
-        'Izolimi': 'Poliuretan (50mm - Shembull)',
-        'Garancia': '5 vite (Shembull)'
-      },
-      specifications: {
-
-      },
-      downloads: [
-        {
-          title: 'Katalogu Akumulues Inoksi (Shembull)',
-          description: 'Të dhëna teknike për serinë e akumuluesve (PDF, Shembull)',
-          url: '/downloads/akumulues-inox-catalog-placeholder.pdf',
-          fileSize: '2.2 MB (Shembull)'
-        }
-      ],
-      relatedProducts: ['akumulues-60l', 'akumulues-120l', 'kolektor-solar-premium']
-    },
-    {
-      id: 'akumulues-120l',
-      title: 'Akumulues ECOTEK 120L',
-      description: 'Akumulues uji inoksi 120 litra me kapacitet të shtuar për familje mesatare.',
-      price: 'Kontakto',
-      image: '/produktet/Akumulues1.png',
-      category: 'ngrohje-solare',
-      subcategory: 'akumulues',
-      badges: [
-        {
-          text: 'Inoksi AISI 316L',
-          bgColor: '#e0f2fe',
-          textColor: '#0ea5e9'
-        },
-        {
-          text: 'Kapacitet i Shtuar',
-          bgColor: '#eef2ff',
-          textColor: '#4f46e5'
-        },
-        {
-          text: 'Garanci 5 Vite',
-          bgColor: '#f0fdf4',
-          textColor: '#22c55e'
-        }
-      ],
-      keyCharacteristics: [
-        {
-          name: 'Kapaciteti',
-          value: '120 Litra',
-          icon: '/icons/capacity.svg'
-        },
-        {
-          name: 'Materiali',
-          value: 'Inoksi 316L',
-          icon: '/icons/material.svg'
-        },
-        {
-          name: 'Garancia',
-          value: '5 vite (Shembull)',
-          icon: '/icons/warranty.svg'
-        },
-        {
-          name: 'Serpentina',
-          value: '1 ose 2',
-          icon: '/icons/coil.svg'
-        }
-      ],
-      models: [
-        {
-          id: 'akumulues-120l-1s',
-          name: 'Akumulues 120L (1 Serpentinë)',
-          price: 'Kontakto'
-        },
-        {
-          id: 'akumulues-120l-2s',
-          name: 'Akumulues 120L (2 Serpentina)',
-          price: 'Kontakto'
-        }
-      ],
-      features: [
-        'Kapaciteti 120 Litra - Ideale për familje me 3-4 persona',
-        'Materiali Inoksi AISI 316L',
-        'Izolim me Poliuretan me Densitet të Lartë',
-        'Mundësi me 1 ose 2 Serpentina',
-        'Rezistencë Elektrike Opsionale',
-        'Mbrojtje Anodike Magnezi',
-        'Garanci 5 vite (Shembull)'
-      ],
-      longDescription: `
-        <p>Me një kapacitet prej 120 litrash, ky akumulues ECOTEK është perfekt për familjet mesatare, duke siguruar sasi të mjaftueshme uji të ngrohtë sanitar.</p>
-        
-        <p>Si të gjithë akumuluesit tanë inoks, ai ofron cilësi të lartë ndërtimi, izolim efikas dhe fleksibilitet në instalim falë opsioneve me një ose dy serpentina.</p>
-      `,
-      details: {
-        'Prodhuesi': 'ECOTEK (Shembull)',
-        'Tipi': 'Akumulues Uji Sanitar',
-        'Materiali i Brendshëm': 'Inoksi AISI 316L',
-        'Izolimi': 'Poliuretan (50mm - Shembull)',
-        'Garancia': '5 vite (Shembull)'
-      },
-      specifications: {
-
-      },
-      downloads: [
-        {
-          title: 'Katalogu Akumulues Inoksi (Shembull)',
-          description: 'Të dhëna teknike për serinë e akumuluesve (PDF, Shembull)',
-          url: '/downloads/akumulues-inox-catalog-placeholder.pdf',
-          fileSize: '2.2 MB (Shembull)'
-        }
-      ],
-      relatedProducts: ['akumulues-80l', 'akumulues-150l', 'kolektor-solar']
-    },
-    {
-      id: 'akumulues-150l',
-      title: 'Akumulues ECOTEK 150L',
-      description: 'Akumulues uji inoksi 150 litra me kapacitet të lartë për familje të mëdha ose kërkesa të larta.',
-      price: 'Kontakto',
-      image: '/produktet/Akumulues1.png',
-      category: 'ngrohje-solare',
-      subcategory: 'akumulues',
-      badges: [
-        {
-          text: 'Inoksi AISI 316L',
-          bgColor: '#e0f2fe',
-          textColor: '#0ea5e9'
-        },
-        {
-          text: 'Kapacitet i Lartë',
-          bgColor: '#fef3c7',
-          textColor: '#d97706'
-        },
-        {
-          text: 'Garanci 5 Vite',
-          bgColor: '#f0fdf4',
-          textColor: '#22c55e'
-        }
-      ],
-      keyCharacteristics: [
-        {
-          name: 'Kapaciteti',
-          value: '150 Litra',
-          icon: '/icons/capacity.svg'
-        },
-        {
-          name: 'Materiali',
-          value: 'Inoksi 316L',
-          icon: '/icons/material.svg'
-        },
-        {
-          name: 'Garancia',
-          value: '5 vite (Shembull)',
-          icon: '/icons/warranty.svg'
-        },
-        {
-          name: 'Serpentina',
-          value: '1 ose 2',
-          icon: '/icons/coil.svg'
-        }
-      ],
-      models: [
-        {
-          id: 'akumulues-150l-1s',
-          name: 'Akumulues 150L (1 Serpentinë)',
-          price: 'Kontakto'
-        },
-        {
-          id: 'akumulues-150l-2s',
-          name: 'Akumulues 150L (2 Serpentina)',
-          price: 'Kontakto'
-        }
-      ],
-      features: [
-        'Kapaciteti 150 Litra - Për familje të mëdha ose përdorim intensiv',
-        'Materiali Premium Inoksi AISI 316L',
-        'Izolim efikas me Poliuretan me Densitet të Lartë',
-        'Mundësi me 1 ose 2 Serpentina për fleksibilitet instalimi',
-        'Rezistencë Elektrike Opsionale me fuqi të lartë',
-        'Mbrojtje Anodike Magnezi kundër korrozionit',
-        'Garanci 5 vite (Shembull)'
-      ],
-      longDescription: `
-        <p>Akumuluesi ECOTEK 150-litërsh është zgjidhja ideale për familjet e mëdha ose për situata ku kërkohet një volum i madh uji të ngrohtë sanitar.</p>
-        
-        <p>Ndërtuar me standardet më të larta, duke përdorur inoks AISI 316L dhe izolim me densitet të lartë, ky model garanton performancë të qëndrueshme dhe kursim energjie. Disponueshmëria me një ose dy serpentina e bën të përshtatshëm për integrim me sisteme të ndryshme ngrohjeje.</p>
-      `,
-      details: {
-        'Prodhuesi': 'ECOTEK (Shembull)',
-        'Tipi': 'Akumulues Uji Sanitar',
-        'Materiali i Brendshëm': 'Inoksi AISI 316L',
-        'Izolimi': 'Poliuretan (50mm - Shembull)',
-        'Garancia': '5 vite (Shembull)'
-      },
-      specifications: {
-
-      },
-      downloads: [
-        {
-          title: 'Katalogu Akumulues Inoksi (Shembull)',
-          description: 'Të dhëna teknike për serinë e akumuluesve (PDF, Shembull)',
-          url: '/downloads/akumulues-inox-catalog-placeholder.pdf',
-          fileSize: '2.2 MB (Shembull)'
-        }
-      ],
-      relatedProducts: ['akumulues-120l', 'akumulues-200l', 'kolektor-solar-premium']
-    },
-    {
-      id: 'akumulues-200l',
-      title: 'Akumulues ECOTEK 200L',
-      description: 'Akumulues uji inoksi 200 litra me kapacitet maksimal për nevojat më të mëdha.',
-      price: 'Kontakto',
-      image: '/produktet/Akumulues1.png',
-      category: 'ngrohje-solare',
-      subcategory: 'akumulues',
-      badges: [
-        {
-          text: 'Inoksi AISI 316L',
-          bgColor: '#e0f2fe',
-          textColor: '#0ea5e9'
-        },
-        {
-          text: 'Kapacitet Maksimal',
-          bgColor: '#fef3c7',
-          textColor: '#d97706'
-        },
-        {
-          text: 'Garanci 5 Vite',
-          bgColor: '#f0fdf4',
-          textColor: '#22c55e'
-        }
-      ],
-      keyCharacteristics: [
-        {
-          name: 'Kapaciteti',
-          value: '200 Litra',
-          icon: '/icons/capacity.svg'
-        },
-        {
-          name: 'Materiali',
-          value: 'Inoksi 316L',
-          icon: '/icons/material.svg'
-        },
-        {
-          name: 'Garancia',
-          value: '5 vite (Shembull)',
-          icon: '/icons/warranty.svg'
-        },
-        {
-          name: 'Serpentina',
-          value: '1 ose 2',
-          icon: '/icons/coil.svg'
-        }
-      ],
-      models: [
-        {
-          id: 'akumulues-200l-1s',
-          name: 'Akumulues 200L (1 Serpentinë)',
-          price: 'Kontakto'
-        },
-        {
-          id: 'akumulues-200l-2s',
-          name: 'Akumulues 200L (2 Serpentina)',
-          price: 'Kontakto'
-        }
-      ],
-      features: [
-        'Kapaciteti 200 Litra - Për nevojat më të mëdha dhe aplikime komerciale të vogla',
-        'Materiali Premium Inoksi AISI 316L',
-        'Izolim superior me Poliuretan me Densitet të Lartë',
-        'Mundësi me 1 ose 2 Serpentina për çdo sistem',
-        'Rezistencë Elektrike Opsionale me fuqi të lartë',
-        'Mbrojtje Anodike Magnezi e dyfishtë (Shembull)',
-        'Garanci 5 vite (Shembull)'
-      ],
-      longDescription: `
-        <p>Modeli 200-litërsh i akumuluesve ECOTEK përfaqëson kapacitetin maksimal në serinë tonë standarde, i projektuar për të përmbushur kërkesat më të larta për ujë të ngrohtë sanitar, si në rezidenca të mëdha ashtu edhe në aplikime komerciale të vogla.</p>
-        
-        <p>Cilësia e ndërtimit me inoks AISI 316L, izolimi i avancuar dhe fleksibiliteti i konfigurimit me serpentina e bëjnë atë një investim afatgjatë dhe të besueshëm për sistemin tuaj të ngrohjes.</p>
-      `,
-      details: {
-        'Prodhuesi': 'ECOTEK (Shembull)',
-        'Tipi': 'Akumulues Uji Sanitar',
-        'Materiali i Brendshëm': 'Inoksi AISI 316L',
-        'Izolimi': 'Poliuretan (60mm - Shembull)', 
-        'Garancia': '5 vite (Shembull)'
-      },
-      specifications: {
-
-      },
-      downloads: [
-        {
-          title: 'Katalogu Akumulues Inoksi (Shembull)',
-          description: 'Të dhëna teknike për serinë e akumuluesve (PDF, Shembull)',
-          url: '/downloads/akumulues-inox-catalog-placeholder.pdf',
-          fileSize: '2.2 MB (Shembull)'
-        }
-      ],
-      relatedProducts: ['akumulues-150l', 'kolektor-solar', 'pompa-nxehtesie-vanguard']
-    },
-    {
-      id: 'bojler-inox',
-      title: 'Bojler Inoksi ECOTEK',
-      description: 'Bojler inoksi për ujë të ngrohtë sanitar me cilësi të lartë dhe efikasitet maksimal.',
-      price: 'Kontakto',
-      image: '/produktet/Bojler-Inoksi.png',
-      category: 'ngrohje-solare',
+      image: '/produktet/Boileri300.png',
+      category: 'sanitari',
       subcategory: 'bojler',
       badges: [
         {
@@ -1878,7 +1516,7 @@ export function getAllProducts(): Product[] {
       keyCharacteristics: [
         {
           name: 'Kapaciteti',
-          value: '50 Litra - 200 Litra',
+          value: '150L-300L',
           icon: '/icons/capacity.svg'
         },
         {
@@ -1899,18 +1537,18 @@ export function getAllProducts(): Product[] {
       ],
       models: [
         {
-          id: 'bojler-inox-50l',
-          name: 'Bojler Inoksi 50L',
+          id: 'bojler-spiral-150l',
+          name: 'Bojler Me Spirale 150L',
           price: 'Kontakto'
         },
         {
-          id: 'bojler-inox-100l',
-          name: 'Bojler Inoksi 100L',
+          id: 'bojler-spiral-200l',
+          name: 'Bojler Me Spirale 200L',
           price: 'Kontakto'
         },
         {
-          id: 'bojler-inox-200l',
-          name: 'Bojler Inoksi 200L',
+          id: 'bojler-spiral-300l',
+          name: 'Bojler Me Spirale 300L',
           price: 'Kontakto'
         }
       ],
@@ -1935,7 +1573,6 @@ export function getAllProducts(): Product[] {
         'Garancia': '5 vite (Shembull)'
       },
       specifications: {
-
       },
       downloads: [
         {
@@ -1946,14 +1583,14 @@ export function getAllProducts(): Product[] {
         }
       ],
       relatedProducts: ['akumulues-150l', 'kolektor-solar', 'pompa-nxehtesie-vanguard']
-    },
+    },    
     {
-      id: 'bojler-akumulues',
-      title: 'Bojler Akumulues ECOTEK',
-      description: 'Bojler elektrik akumulues me izolim të lartë dhe kapacitete të ndryshme, ideal për kombinim me sisteme ngrohje.',
+      id: 'boiler-ecopump',
+      title: 'Boileri ECOPUMP',
+      description: 'Boileri ECOPUMP për ngrohje të ngrohtë.',
       price: 'Kontakto',
-      image: '/produktet/Bojler-Akumulues.png', // Placeholder - use relevant image
-      category: 'ngrohje-solare', // Or adjust category if needed
+      image: '/produktet/boilerieco.png', // Placeholder - use relevant image
+      category: 'sanitari', // Or adjust category if needed
       subcategory: 'bojler',
       badges: [
         {
@@ -1975,7 +1612,7 @@ export function getAllProducts(): Product[] {
       keyCharacteristics: [
         {
           name: 'Kapaciteti',
-          value: '80 Litra - 200 Litra', // Example range
+          value: '200L-300L', // Example range
           icon: '/icons/capacity.svg'
         },
         {
@@ -1996,26 +1633,21 @@ export function getAllProducts(): Product[] {
       ],
       models: [
         {
-          id: 'bojler-akumulues-80l',
-          name: 'Bojler Akumulues 80L',
-          price: 'Kontakto'
+          id: 'bojler-ecopump-200l',
+          name: '200L',
+          price: '1400'
         },
         {
-          id: 'bojler-akumulues-120l',
-          name: 'Bojler Akumulues 120L',
-          price: 'Kontakto'
-        },
-        {
-          id: 'bojler-akumulues-200l',
-          name: 'Bojler Akumulues 200L',
-          price: 'Kontakto'
+          id: 'bojler-ecopump-300l',
+          name: '300L',
+          price: '1600'
         }
       ],
       features: [
         'Kombinon funksionin e bojlerit dhe akumuluesit',
         'Kapacitete të ndryshme (80L, 120L, 200L - Shembull)',
         'Material i brendshëm rezistent (Çelik i emaluar ose Inoks - Specify)',
-        'Izolim me Poliuretan me Densitet të Lartë për efiçencë energjetike',
+        'Izolim me Poliuretan me Densitet të Lartë për efiçencë energjitike',
         'Mundësi me 1 ose 2 Serpentina për lidhje me kaldaja ose panele solare',
         'Rezistencë Elektrike e integruar',
         'Mbrojtje Anodike Magnezi',
@@ -2047,6 +1679,232 @@ export function getAllProducts(): Product[] {
         }
       ],
       relatedProducts: ['bojler-inox', 'akumulues-200l', 'kalldaja-mp', 'pompa-nxehtesie-vanguard']
+    },
+    {
+      id: 'boiler-tesy',
+      title: 'Boileri Sanitar Tesy',
+      description: 'Bojler elektrik akumulues me izolim të lartë dhe kapacitete të ndryshme, ideal për kombinim me sisteme ngrohje.',
+      price: 'Kontakto',
+      image: '/produktet/Boileri80.png', // Placeholder - use relevant image
+      category: 'sanitari', // Or adjust category if needed
+      subcategory: 'bojler',
+      badges: [
+        {
+          text: 'Akumulim & Ngrohje',
+          bgColor: '#e0f2fe', // Example color
+          textColor: '#0ea5e9'
+        },
+        {
+          text: 'Izolim Superior',
+          bgColor: '#dcfce7', // Example color
+          textColor: '#16a34a'
+        },
+        {
+          text: 'Garanci 5 Vite',
+          bgColor: '#fef3c7',
+          textColor: '#d97706'
+        }
+      ],
+      keyCharacteristics: [
+        {
+          name: 'Kapaciteti',
+          value: '80L', // Example range
+          icon: '/icons/capacity.svg'
+        },
+        {
+          name: 'Materiali',
+          value: 'Inox', // Needs clarification
+          icon: '/icons/material.svg'
+        },
+        {
+          name: 'Garancia',
+          value: '5 vite',
+          icon: '/icons/warranty.svg' 
+        },
+        {
+          name: 'Serpentina',
+          value: 'Opsionale (0, 1, ose 2)', // Often optional or included
+          icon: '/icons/coil.svg'
+        }
+      ],
+      models: [
+        {
+          id: 'boiler-tesy-80l',
+          name: '80L',
+          price: '130'
+        }
+      ],
+      features: [
+        'Kombinon funksionin e bojlerit dhe akumuluesit',
+        'Kapacitete të ndryshme (80L, 120L, 200L - Shembull)',
+        'Material i brendshëm rezistent (Çelik i emaluar ose Inoks - Specify)',
+        'Izolim me Poliuretan me Densitet të Lartë për efiçencë energjitike',
+        'Mundësi me 1 ose 2 Serpentina për lidhje me kaldaja ose panele solare',
+        'Rezistencë Elektrike e integruar',
+        'Mbrojtje Anodike Magnezi',
+        'Termostat i rregullueshëm',
+        'Garanci 5 vite (Shembull)'
+      ],
+      longDescription: `
+        <p>Bojlerët akumulues ECOTEK ofrojnë një zgjidhje dy-në-një, duke kombinuar funksionin e ngrohjes së ujit me atë të akumulimit për ruajtjen e energjisë. Janë idealë për t\'u integruar me sisteme të ngrohjes qendrore ose solare.</p>
+        
+        <p>Me izolim superior dhe materiale cilësore, këta bojlerë sigurojnë ujë të ngrohtë sanitar në mënyrë efikase dhe ekonomike. Opsionet me serpentina shtesë lejojnë shfrytëzimin e burimeve alternative të energjisë.</p>
+        <p><i>Shënim: Ju lutemi specifikoni materialin e brendshëm (Çelik i emaluar ose Inoks) dhe praninë/numrin e serpentinave për modelet specifike.</i></p>
+      `,
+      details: {
+        'Prodhuesi': 'ECOTEK (Shembull)',
+        'Tipi': 'Bojler Akumulues Uji',
+        'Materiali i Brendshëm': 'Çelik i Emaluar / Inoks (Specify)',
+        'Izolimi': 'Poliuretan (50-60mm - Shembull)',
+        'Garancia': '5 vite (Shembull)'
+      },
+      specifications: {
+
+      },
+      downloads: [
+        {
+          title: 'Katalogu Bojler Akumulues (Shembull)',
+          description: 'Të dhëna teknike për serinë e bojlerëve akumulues (PDF, Shembull)',
+          url: '/downloads/bojler-akumulues-catalog-placeholder.pdf',
+          fileSize: '2.5 MB (Shembull)'
+        }
+      ],
+      relatedProducts: ['bojler-inox', 'akumulues-200l', 'kalldaja-mp', 'pompa-nxehtesie-vanguard']
+    },
+    // Kondicionerat
+    {
+      id: "kondicioner-aria",
+      title: "Candy - Aria Series",
+      description: "Kondicioner mural me efikasitet të lartë dhe lidhje WiFi.",
+      price: "Kontakto",
+      image: "/produktet/aria.png",
+      category: "klimatizim-ventilim",
+      subcategory: "kondicioner",
+      badges: [
+        {
+          text: 'A+++/A+++ Efikasitet',
+          bgColor: '#e7f9ed',
+          textColor: '#18a757'
+        },
+        {
+          text: 'WiFi & HoN App',
+          bgColor: '#e0f2fe',
+          textColor: '#0ea5e9'
+        }
+      ],
+      keyCharacteristics: [
+        {
+          name: 'Efikasiteti',
+          value: 'A+++/A+++',
+          icon: '/icons/efficiency.svg'
+        },
+        {
+          name: 'Kapaciteti',
+          value: '12K-18K BTU',
+          icon: '/icons/power.svg'
+        },
+        {
+          name: 'Kontrolli',
+          value: 'WiFi',
+          icon: '/icons/wifi.svg'
+        }
+      ],
+      models: [
+        {
+          id: 'aria-12k',
+          name: 'Aria 12,000 BTU',
+          price: 'Kontakto'
+        },
+        {
+          id: 'aria-18k',
+          name: 'Aria 18,000 BTU',
+          price: 'Kontakto'
+        }
+      ],
+      features: [
+        "Klasa e Efikasitetit A+++ (Ftohje) / A+++ (Ngrohje)",
+        "Kontroll i integruar Wi-Fi përmes aplikacionit HoN",
+        "Dizajn modern dhe elegant",
+        "Operim i qetë",
+        "Kapacitete: 12,000 BTU, 18,000 BTU"
+      ],
+      longDescription: "<p>Seria Candy Aria ofron efikasitet të lartë energjetik dhe kontroll inteligjent përmes WiFi për komfort maksimal.</p>",
+      details: { 'Prodhuesi': 'Candy', 'Tipi': 'Mural Split', 'Garancia': '2 vite (Shembull)' },
+      specifications: {},
+      downloads: [],
+      relatedProducts: ['kondicioner-pura']
+    },
+    {
+      id: "kondicioner-pura",
+      title: "Candy - Pura Series",
+      description: "Kondicioner mural me gamë të gjerë kapacitetesh dhe lidhje WiFi.",
+      price: "Kontakto",
+      image: "/produktet/pura.png",
+      category: "klimatizim-ventilim",
+      subcategory: "kondicioner",
+      badges: [
+        {
+          text: 'A+++/A++ Efikasitet',
+          bgColor: '#e7f9ed',
+          textColor: '#18a757'
+        },
+        {
+          text: 'WiFi & HoN App',
+          bgColor: '#e0f2fe',
+          textColor: '#0ea5e9'
+        }
+      ],
+      keyCharacteristics: [
+        {
+          name: 'Efikasiteti',
+          value: 'A+++/A++',
+          icon: '/icons/efficiency.svg'
+        },
+        {
+          name: 'Kapaciteti',
+          value: '9K-24K BTU',
+          icon: '/icons/power.svg'
+        },
+        {
+          name: 'Kontrolli',
+          value: 'WiFi',
+          icon: '/icons/wifi.svg'
+        }
+      ],
+      models: [
+        {
+          id: 'pura-9k',
+          name: 'Pura 9,000 BTU',
+          price: 'Kontakto'
+        },
+        {
+          id: 'pura-12k',
+          name: 'Pura 12,000 BTU',
+          price: 'Kontakto'
+        },
+        {
+          id: 'pura-18k',
+          name: 'Pura 18,000 BTU',
+          price: 'Kontakto'
+        },
+        {
+          id: 'pura-24k',
+          name: 'Pura 24,000 BTU',
+          price: 'Kontakto'
+        }
+      ],
+      features: [
+        "Klasa e Efikasitetit A+++ (Ftohje) / A++ (Ngrohje)",
+        "Kontroll i integruar Wi-Fi përmes aplikacionit HoN",
+        "Filtrim efikas i ajrit",
+        "Funksion vetë-pastrimi",
+        "Kapacitete: 9,000 BTU, 12,000 BTU, 18,000 BTU, 24,000 BTU"
+      ],
+      longDescription: "<p>Seria Candy Pura ofron një zgjidhje të gjithanshme klimatizimi me efikasitet të lartë dhe funksione inteligjente si kontrolli WiFi.</p>",
+      details: { 'Prodhuesi': 'Candy', 'Tipi': 'Mural Split', 'Garancia': '2 vite (Shembull)' },
+      specifications: {},
+      downloads: [],
+      relatedProducts: ['kondicioner-aria']
     }
   ];
 }

@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 // No longer using Lucide icons directly
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, ChevronUp } from 'lucide-react'; // Import icons for accordion
 
 // --- Navigation Menu Data ---
 // Convert the categories data to the format needed for the navigation menu
@@ -76,7 +77,6 @@ ListItem.displayName = "ListItem";
 // --- Kompania Menu Data ---
 const kompaniaItems: { title: string; href: string; description: string; icon: string }[] = [ // Updated icon type to string
   { title: "Rreth Nesh", href: "/rreth-nesh", description: "Mësoni më shumë për misionin dhe vlerat tona.", icon: 'icons/info.svg' },
-  { title: "Dokumente", href: "/dokumente", description: "Shkarkoni katalogët dhe certifikatat tona.", icon: 'icons/document.svg' },
   { title: "Blog", href: "/blog", description: "Lexoni artikujt dhe këshillat më të fundit.", icon: 'icons/blogger.svg' },
 ];
 
@@ -88,8 +88,8 @@ interface HeaderProps {
 // --- Header Component ---
 const Header = ({ variant = 'transparent' }: HeaderProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [kompaniaOpen, setKompaniaOpen] = useState(false);
   // State for the active category in the Produkte dropdown
+  const [openAccordionCategory, setOpenAccordionCategory] = useState<string | null>(null); // State for mobile accordion
   const [activeCategory, setActiveCategory] = useState(produkteCategories[0].title);
 
   return (
@@ -223,7 +223,7 @@ const Header = ({ variant = 'transparent' }: HeaderProps) => {
                         </ListItem>
                       ))}
                     </ul>
-                  </NavigationMenuContent>
+                  </NavigationMenuContent> 
                 </NavigationMenuItem>
 
                 {/* Kontakti Navigation Item */}
@@ -234,7 +234,7 @@ const Header = ({ variant = 'transparent' }: HeaderProps) => {
                         "bg-transparent hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent",
                         variant === 'transparent' ? "text-white hover:text-white/80" : "text-foreground hover:text-foreground/80"
                       )}>
-                      Kontakti
+                      Kontakto
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
@@ -246,87 +246,87 @@ const Header = ({ variant = 'transparent' }: HeaderProps) => {
         {/* Mobile Navigation */}
         <AnimatePresence>
           {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="md:hidden bg-background border-t"
-            >
-              <div className="container mx-auto px-4 py-4 flex flex-col gap-6"> {/* Increased gap */}
-                <Link
-                  href="/categories"
-                  className="py-3 text-base text-white hover:text-white/80" /* Increased padding and font size */
-                  onClick={() => setIsOpen(false)}
-                >
-                  Produkte
-                </Link>
-                <div className="py-3"> {/* Increased padding */}
-                  <button
-                    onClick={() => setKompaniaOpen(!kompaniaOpen)}
-                    className="flex items-center gap-2 text-base text-white hover:text-white/80 w-full justify-between" /* Increased gap and font size */
-                  >
-                    <span>Kompania</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24" // Increased icon size to 24px
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className={`transition-transform ${kompaniaOpen ? 'rotate-180' : ''}`}
-                    >
-                      <path d="m6 9 6 6 6-6"/>
-                    </svg>
-                  </button>
-
-                  <AnimatePresence>
-                    {kompaniaOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="mt-4 pl-8 py-3 border-l border-white/20 space-y-2" /* Increased margin, padding, spacing */
+            <>
+              {/* Overlay */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                onClick={() => setIsOpen(false)} // Close menu when overlay is clicked
+              />
+              {/* Menu Content */}
+              <motion.div
+                key="mobile-menu"
+                initial={{ y: "-100%", opacity: 0 }}
+                animate={{ y: "0%", opacity: 1 }}
+                exit={{ y: "-100%", opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="absolute inset-x-0 top-full mt-0 flex flex-col bg-background shadow-lg md:hidden max-h-[calc(100vh-80px)] overflow-y-auto z-50" // Added max-height, scroll, and higher z-index
+              >
+                {/* Accordion for Produkte Categories */}
+                <div className="border-b border-border">
+                  <div className="p-4 font-semibold text-lg text-foreground">Produkte</div> {/* Section Title */}
+                  {produkteCategories.map((category) => (
+                    <div key={category.title} className="border-t border-border">
+                      <button
+                        className="flex w-full items-center justify-between p-4 text-left font-medium text-foreground hover:bg-accent"
+                        onClick={() => setOpenAccordionCategory(openAccordionCategory === category.title ? null : category.title)}
                       >
-                        <Link
-                          href="/rreth-nesh"
-                          className="block py-3 px-3 text-base text-white/70 hover:text-white transition-colors rounded-r-md hover:bg-white/5" /* Increased padding and font size */
-                          onClick={() => setIsOpen(false)}
-                        >
-                          Rreth Nesh
-                        </Link>
-                        <Link
-                          href="/dokumente"
-                          className="block py-3 px-3 text-base text-white/70 hover:text-white transition-colors rounded-r-md hover:bg-white/5" /* Increased padding and font size */
-                          onClick={() => setIsOpen(false)}
-                        >
-                          Dokumente
-                        </Link>
-                        <Link
-                          href="/blog"
-                          className="block py-3 px-3 text-base text-white/70 hover:text-white transition-colors rounded-r-md hover:bg-white/5" /* Increased padding and font size */
-                          onClick={() => setIsOpen(false)}
-                        >
-                          Blog
-                        </Link>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                        <span className="flex items-center gap-2">
+                           <Image src={`/${category.icon}`} alt="" width={20} height={20} unoptimized className="flex-shrink-0" />
+                           {category.title}
+                        </span>
+                        {openAccordionCategory === category.title ? <ChevronUp className="h-5 w-5 flex-shrink-0" /> : <ChevronDown className="h-5 w-5 flex-shrink-0" />}
+                      </button>
+                      <AnimatePresence>
+                        {openAccordionCategory === category.title && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2, ease: 'easeInOut' }}
+                            className="overflow-hidden bg-muted/50"
+                          >
+                             <ul className="py-2 pl-8">
+                              {category.items.map((item) => (
+                                <li key={item.href}>
+                                  <Link
+                                    href={item.href}
+                                    className="block py-1.5 pl-3 text-sm text-muted-foreground hover:text-foreground"
+                                    onClick={() => setIsOpen(false)} // Close menu on link click
+                                  >
+                                    {item.title}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ))}
                 </div>
-                {/* Mobile Kontakti Link */}
-                <Link
-                  href="/kontakti"
-                  className="py-3 text-base text-white hover:text-white/80" /* Increased padding and font size */
-                  onClick={() => setIsOpen(false)}
-                >
-                  Kontakti
-                </Link>
-              </div>
-            </motion.div>
+
+                {/* Links for Kompania */}
+                <div className="border-b border-border p-4">
+                   <div className="mb-2 font-semibold text-lg text-foreground">Kompania</div>
+                   {kompaniaItems.map((item) => (
+                     <Link key={item.href} href={item.href} className="block py-1.5 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsOpen(false)}> {item.title} </Link>
+                   ))}
+                </div>
+
+                 {/* Other potential top-level links if needed, e.g., Home */}
+                 {/* <Link href="/" className="block p-4 text-sm font-medium text-foreground hover:bg-accent border-b border-border" onClick={() => setIsOpen(false)}>
+                   Ballina
+                 </Link> */}
+                 {/* Add Kontakti Link */}
+                 <Link href="/kontakti" className="block p-4 text-sm font-medium text-foreground hover:bg-accent border-b border-border" onClick={() => setIsOpen(false)}>
+                   Kontakto
+                 </Link>
+
+               </motion.div>
+            </>
           )}
         </AnimatePresence>
       </div>

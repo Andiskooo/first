@@ -233,7 +233,7 @@ export const categories: Category[] = [
           {
             id: "fancoiler-kasetor",
             title: "Fancoiler Kasetor",
-            image: "/produktet/Kasetor.png",
+            image: "/produktet/Kasetore.png",
             category: "ngrohje-qendrore",
             subcategory: "fancoiler",
             features: [
@@ -248,41 +248,19 @@ export const categories: Category[] = [
       },
       {
         id: "akumulues",
-        title: "Akumulues",
+        title: "Akumulues ECOTEK",
         description: "Rezervuar uji.",
         icon: "icons/boiler.svg",
         href: "/categories/ngrohje-qendrore?subcategory=akumulues",
         products: [
           {
-            id: "akumulues-60l",
+            id: "akumulues",
             title: "Akumulues ECOTEK",
             image: "/produktet/buffer60.png",
             category: "ngrohje-qendrore",
             subcategory: "akumulues",
             features: [
-              "60 L",
-              "3000 Watt/hr Shpenzime",            
-            ]
-          },
-          {
-            id: "akumulues-100l",
-            title: "Akumulues ECOTEK",
-            image: "/produktet/buffer100.png",
-            category: "ngrohje-qendrore",
-            subcategory: "akumulues",
-            features: [
-              "100 L",
-              "3000 Watt/hr Shpenzime",            
-            ]
-          },
-          {
-            id: "akumulues-200l",
-            title: "Akumulues ECOTEK",
-            image: "/produktet/bufferi200.png",
-            category: "ngrohje-qendrore",
-            subcategory: "akumulues",
-            features: [
-              "200 L",
+              "60 L, 100 L, 200 L",
               "3000 Watt/hr Shpenzime",            
             ]
           }
@@ -357,7 +335,7 @@ export const categories: Category[] = [
           {
             id: "fancoiler-kasetor",
             title: "Fancoiler Kasetor",
-            image: "/produktet/Kasetor.png",
+            image: "/produktet/Kasetore.png",
             category: "ngrohje-qendrore",
             subcategory: "fancoiler",
             features: [
@@ -466,7 +444,7 @@ export const categories: Category[] = [
         href: "/categories/sanitari?subcategory=bojler",
         products: [
           {
-            id: "boiler-ecopump-200l",
+            id: "boiler-ecopump",
             title: "Boileri ECOPUMP",
             image: "/produktet/boilerieco.png",
             category: "sanitari",
@@ -477,27 +455,12 @@ export const categories: Category[] = [
               "Termostat dixhital",
               "R134a / R290 Refrigerant",
               "Temperatura e ujit 75 C",
-              "Kapacitetet 200 L",
+              "Kapacitetet 200 L, 300 L",
             ]
           },
           {
-            id: "boiler-ecopump-300l",
-            title: "Boileri ECOPUMP",
-            image: "/produktet/boilerieco.png",
-            category: "sanitari",
-            subcategory: "bojler",
-            features: [
-              "Pompë Termike e Integruar",
-              "600 Watt/hr Shpenzime",
-              "Termostat dixhital",
-              "R134a / R290 Refrigerant",
-              "Temperatura e ujit 75 C",
-              "Kapacitetet 300 L",
-            ]
-          },
-          {
-            id: "boiler-electric",
-            title: "Boiler Electric",
+            id: "boiler-spiral",
+            title: "Boiler Me Spirale",
             image: "/produktet/Boileri300.png",
             category: "sanitari",
             subcategory: "bojler",
@@ -505,38 +468,12 @@ export const categories: Category[] = [
               "3000 Watt/hr Shpenzime",
               "Integrim Nxemjes Qendrore",
               "Temperatura e ujit 75 C",
-              "Kapacitetet 300 L",
+              "Kapacitetet 150L, 200L, 300L",
             ]
           },
           {
-            id: "boiler-electric-200l",
-            title: "Boiler Electric",
-            image: "/produktet/Boileri200.png",
-            category: "sanitari",
-            subcategory: "bojler",
-            features: [
-              "3000 Watt/hr Shpenzime",
-              "Integrim Nxemjes Qendrore",
-              "Temperatura e ujit 75 C",
-              "Kapacitetet 200 L",
-            ]
-          },
-          {
-            id: "boiler-electric-150l",
-            title: "Boiler Electric",
-            image: "/produktet/Boileri150L.png",
-            category: "sanitari",
-            subcategory: "bojler",
-            features: [
-              "3000 Watt/hr Shpenzime",
-              "Integrim Nxemjes Qendrore",
-              "Temperatura e ujit 75 C",
-              "Kapacitetet 150 L",
-            ]
-          },
-          {
-            id: "boiler-electric-80l",
-            title: "Boiler Electric Tesy",
+            id: "boiler-tesy",
+            title: "Boiler Sanitar Tesy",
             image: "/produktet/Boileri80.png",
             category: "sanitari",
             subcategory: "bojler",
@@ -549,23 +486,6 @@ export const categories: Category[] = [
           },
         ]
       },
-    ]
-  },
-  {
-    id: "servisim-instalim",
-    title: "Servisim & Instalim",
-    description: "Shërbime profesionale për instalimin dhe mirëmbajtjen e sistemeve",
-    icon: "icons/service.svg",
-    heroImage: "/hero/servisim.jpg",
-    subcategories: [
-      {
-        id: "sherbime",
-        title: "Shërbime Profesionale",
-        description: "Instalim dhe mirëmbajtje.",
-        icon: "icons/service.svg",
-        href: "/categories/servisim-instalim?subcategory=sherbime",
-        products: []
-      }
     ]
   }
 ];
