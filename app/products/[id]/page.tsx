@@ -244,14 +244,69 @@ const ProductPage = ({ params }: ProductPageProps) => {
             </TabsList>
             
             <TabsContent value="specifications" className="mt-0">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {product.specifications && Object.entries(product.specifications).map(([key, value]: [string, string]) => (
-                  <div key={key} className="flex justify-between border-b border-gray-200 py-3">
-                    <span className="font-medium">{key}</span>
-                    <span className="text-gray-600">{value}</span>
-                  </div>
-                ))}
-              </div>
+              {(() => {
+                if (!product?.specifications || Object.keys(product.specifications).length === 0) {
+                  return <p className="text-gray-500">Specifikimet nuk janë të disponueshme.</p>;
+                }
+
+                const characteristics = Object.keys(product.specifications);
+                const firstCharacteristicValues = product.specifications[characteristics[0]];
+
+                // Check if we have multiple models defined for the product
+                if (product.models && product.models.length > 0) {
+                  const models = product.models;
+                  return (
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200 border border-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Karakteristika
+                            </th>
+                            {models.map(model => (
+                              <th key={model.id} scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {model.name}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {characteristics.map(charKey => (
+                            <tr key={charKey}>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{charKey}</td>
+                              {models.map(model => (
+                                <td key={model.id} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                  {product.specifications?.[charKey]?.[model.id] ?? '-'}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  );
+                } 
+                // Check if it's the nested structure but without multiple models (e.g., using a single 'default' key)
+                else if (typeof firstCharacteristicValues === 'object' && firstCharacteristicValues !== null) {
+                  const innerKeys = Object.keys(firstCharacteristicValues);
+                  if (innerKeys.length === 1) {
+                    const singleModelKey = innerKeys[0];
+                    return (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                        {characteristics.map(charKey => (
+                          <div key={charKey} className="flex justify-between border-b border-gray-200 pb-2">
+                            <span className="font-medium text-sm text-gray-700">{charKey}</span>
+                            <span className="text-sm text-gray-600 text-right">{product.specifications?.[charKey]?.[singleModelKey] ?? '-'}</span>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  }
+                }
+                
+                // Fallback if structure is unexpected or empty after checks
+                return <p className="text-gray-500">Formati i specifikimeve nuk njihet ose është bosh.</p>;
+              })()}
             </TabsContent>
             
             <TabsContent value="downloads" className="mt-0">

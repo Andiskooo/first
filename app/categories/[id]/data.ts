@@ -233,7 +233,7 @@ export const categories: Category[] = [
           {
             id: "fancoiler-kasetor",
             title: "Fancoiler Kasetor",
-            image: "/produktet/kasetor.png",
+            image: "/produktet/Kasetor.png",
             category: "ngrohje-qendrore",
             subcategory: "fancoiler",
             features: [
@@ -357,7 +357,7 @@ export const categories: Category[] = [
           {
             id: "fancoiler-kasetor",
             title: "Fancoiler Kasetor",
-            image: "/produktet/kasetor.png",
+            image: "/produktet/Kasetor.png",
             category: "ngrohje-qendrore",
             subcategory: "fancoiler",
             features: [
