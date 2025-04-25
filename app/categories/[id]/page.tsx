@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { getCategoryById, getProductsByCategory, Category, Product } from '@/app/categories/[id]/data';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, CircleCheck } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
 interface CategoryPageProps {
@@ -153,39 +153,38 @@ const CategoryPage = ({ params }: CategoryPageProps) => {
             <Link 
               href={`/products/${product.id}`} 
               key={product.id}
-              className="group"
+              className="group h-full"
             >
-              <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+              <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
                 {/* Product image */}
                 <div className="relative h-48 bg-gray-100">
                   <Image
                     src={product.image}
                     alt={product.title}
                     fill
-                    className="object-cover"
+                    className="object-contain p-2"
                   />
                 </div>
                 
                 {/* Product info */}
-                <div className="p-4">
-                  <h3 className="text-lg font-medium mb-2 group-hover:text-blue-600 transition-colors">
+                <div className="p-4 flex flex-col flex-grow">
+                  <h3 className="text-lg font-semibold mb-2 group-hover:text-blue-600 transition-colors">
                     {product.title}
                   </h3>
-                  <p className="text-gray-600 text-sm line-clamp-2 mb-4">
-                    {product.description}
-                  </p>
+                  <hr className="my-4 border-gray-300" />
                   
+
                   {/* Key features */}
                   <div className="space-y-1 mb-4">
-                    {product.features.slice(0, 2).map((feature, index) => (
+                    {product.features.map((feature, index) => (
                       <div key={index} className="flex items-start">
-                        <span className="text-green-500 mr-2">✓</span>
+                        <CircleCheck className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                         <span className="text-sm text-gray-700">{feature}</span>
                       </div>
                     ))}
                   </div>
                   
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white mt-auto">
                     Shiko detajet
                   </Button>
                 </div>

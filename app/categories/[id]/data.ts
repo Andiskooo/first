@@ -50,7 +50,7 @@ export const categories: Category[] = [
         href: "/categories/ngrohje-qendrore?subcategory=pompa-termike",
         products: [
           {
-            id: "pompa-nxehtesie-ecotherm",
+            id: "pompa-nxehtesie-vanguard",
             title: "Pompa Termike Vanguard Comfort",
             image: "/produktet/Vanguard.png",
             category: "ngrohje-qendrore",
@@ -63,7 +63,7 @@ export const categories: Category[] = [
             ],
           },
           {
-            id: "pompa-nxehtesie-ecotherm",
+            id: "pompa-nxehtesie-serene",
             title: "Pompa Termike Serene Climate",
             image: "/produktet/Serene.png",
             category: "ngrohje-qendrore",
@@ -77,7 +77,7 @@ export const categories: Category[] = [
             ],
           },
           {
-            id: "pompa-nxehtesie-ecotherm",
+            id: "pompa-nxehtesie-apex",
             title: "Pompa Termike Apex Heating",
             image: "/produktet/Apex.png",
             category: "ngrohje-qendrore",
@@ -91,7 +91,7 @@ export const categories: Category[] = [
             ],
           },
           {
-            id: "pompa-nxehtesie-ecotherm",
+            id: "pompa-nxehtesie-maxi",
             title: "Pompa Termike Maxi Afariste",
             image: "/produktet/Maxi.png",
             category: "ngrohje-qendrore",
@@ -105,7 +105,7 @@ export const categories: Category[] = [
             ],
           },
           {
-            id: "pompa-nxehtesie-ecotherm",
+            id: "pompa-nxehtesie-sinceko",
             title: "Pompa Termike Gjeotermike Sinceko",
             image: "/produktet/Sinceko.png",
             category: "ngrohje-qendrore",
@@ -129,7 +129,7 @@ export const categories: Category[] = [
         href: "/categories/ngrohje-qendrore?subcategory=kalldaja-elektrike",
         products: [
           {
-            id: "kalldaja-ecotek",
+            id: "kalldaja-og",
             title: "Kalldaja Elektrike ECOTEK OG",
             image: "/produktet/OG.png",
             category: "ngrohje-qendrore",
@@ -143,7 +143,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            id: "kalldaja-ecotek",
+            id: "kalldaja-mp",
             title: "Kalldaja Elektrike ECOTEK MP",
             image: "/produktet/MP.png",
             category: "ngrohje-qendrore",
@@ -157,7 +157,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            id: "kalldaja-ecotek",
+            id: "kalldaja-jp",
             title: "Kalldaja Elektrike ECOTEK JP",
             image: "/produktet/JP.png",
             category: "ngrohje-qendrore",
@@ -180,7 +180,7 @@ export const categories: Category[] = [
         href: "/categories/ngrohje-qendrore?subcategory=radiator",
         products: [
           {
-            id: "radiator-ecotek",
+            id: "radiator",
             title: "Radiator Panel",
             image: "/produktet/Radiatori.png",
             category: "ngrohje-qendrore",
@@ -194,7 +194,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            id: "radiator-ecotek",
+            id: "radiator-gypor",
             title: "Radiator Gypor",
             image: "/produktet/RadiatorGyp.png",
             category: "ngrohje-qendrore",
@@ -217,7 +217,7 @@ export const categories: Category[] = [
         href: "/categories/ngrohje-qendrore?subcategory=fancoiler",
         products: [
           {
-            id: "fancoiler-ecotek",
+            id: "fancoiler",
             title: "Fancoiler ECOTEK",
             image: "/produktet/fancoilera.png",
             category: "ngrohje-qendrore",
@@ -231,7 +231,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            id: "fancoiler-ecotek",
+            id: "fancoiler-kasetor",
             title: "Fancoiler Kasetor",
             image: "/produktet/kasetor.png",
             category: "ngrohje-qendrore",
@@ -254,7 +254,7 @@ export const categories: Category[] = [
         href: "/categories/ngrohje-qendrore?subcategory=akumulues",
         products: [
           {
-            id: "akumulues-ecotek",
+            id: "akumulues-60l",
             title: "Akumulues ECOTEK",
             image: "/produktet/buffer60.png",
             category: "ngrohje-qendrore",
@@ -265,7 +265,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            id: "akumulues-ecotek",
+            id: "akumulues-100l",
             title: "Akumulues ECOTEK",
             image: "/produktet/buffer100.png",
             category: "ngrohje-qendrore",
@@ -276,7 +276,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            id: "akumulues-ecotek",
+            id: "akumulues-200l",
             title: "Akumulues ECOTEK",
             image: "/produktet/bufferi200.png",
             category: "ngrohje-qendrore",
@@ -305,7 +305,7 @@ export const categories: Category[] = [
         href: "/categories/klimatizim-ventilim?subcategory=kondicioner",
         products: [
           {
-            id: "kondicioner-ecoklima",
+            id: "kondicioner-aria",
             title: "Candy - Aria Series",
             image: "/produktet/aria.png",
             category: "klimatizim-ventilim",
@@ -318,7 +318,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            id: "kondicioner-ecoklima",
+            id: "kondicioner-pura",
             title: "Candy - Pura Series",
             image: "/produktet/pura.png",
             category: "klimatizim-ventilim",
@@ -341,7 +341,7 @@ export const categories: Category[] = [
         href: "/categories/klimatizim-ventilim?subcategory=fancoiler",
         products: [
           {
-            id: "fancoiler-ecotek",
+            id: "fancoiler",
             title: "Fancoiler ECOTEK",
             image: "/produktet/fancoilera.png",
             category: "ngrohje-qendrore",
@@ -355,7 +355,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            id: "fancoiler-ecotek",
+            id: "fancoiler-kasetor",
             title: "Fancoiler Kasetor",
             image: "/produktet/kasetor.png",
             category: "ngrohje-qendrore",
@@ -379,7 +379,7 @@ export const categories: Category[] = [
         href: "/categories/klimatizim-ventilim?subcategory=pompa-termike",
         products: [
           {
-            id: "pompa-nxehtesie-ecotherm",
+            id: "pompa-nxehtesie-vanguard",
             title: "Pompa Termike Vanguard Comfort",
             image: "/produktet/Vanguard.png",
             category: "ngrohje-qendrore",
@@ -392,7 +392,7 @@ export const categories: Category[] = [
             ],
           },
           {
-            id: "pompa-nxehtesie-ecotherm",
+            id: "pompa-nxehtesie-serene",
             title: "Pompa Termike Serene Climate",
             image: "/produktet/Serene.png",
             category: "ngrohje-qendrore",
@@ -406,7 +406,7 @@ export const categories: Category[] = [
             ],
           },
           {
-            id: "pompa-nxehtesie-ecotherm",
+            id: "pompa-nxehtesie-apex",
             title: "Pompa Termike Apex Heating",
             image: "/produktet/Apex.png",
             category: "ngrohje-qendrore",
@@ -420,7 +420,7 @@ export const categories: Category[] = [
             ],
           },
           {
-            id: "pompa-nxehtesie-ecotherm",
+            id: "pompa-nxehtesie-maxi",
             title: "Pompa Termike Maxi Afariste",
             image: "/produktet/Maxi.png",
             category: "ngrohje-qendrore",
@@ -434,7 +434,7 @@ export const categories: Category[] = [
             ],
           },
           {
-            id: "pompa-nxehtesie-ecotherm",
+            id: "pompa-nxehtesie-sinceko",
             title: "Pompa Termike Gjeotermike Sinceko",
             image: "/produktet/Sinceko.png",
             category: "ngrohje-qendrore",
@@ -466,7 +466,7 @@ export const categories: Category[] = [
         href: "/categories/sanitari?subcategory=bojler",
         products: [
           {
-            id: "boiler-ecotherm",
+            id: "boiler-ecopump-200l",
             title: "Boileri ECOPUMP",
             image: "/produktet/boilerieco.png",
             category: "sanitari",
@@ -481,7 +481,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            id: "boiler-ecotherm",
+            id: "boiler-ecopump-300l",
             title: "Boileri ECOPUMP",
             image: "/produktet/boilerieco.png",
             category: "sanitari",
@@ -496,7 +496,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            id: "boiler-ecotherm",
+            id: "boiler-electric",
             title: "Boiler Electric",
             image: "/produktet/Boileri300.png",
             category: "sanitari",
@@ -509,7 +509,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            id: "boiler-ecotherm",
+            id: "boiler-electric-200l",
             title: "Boiler Electric",
             image: "/produktet/Boileri200.png",
             category: "sanitari",
@@ -522,7 +522,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            id: "boiler-ecotherm",
+            id: "boiler-electric-150l",
             title: "Boiler Electric",
             image: "/produktet/Boileri150L.png",
             category: "sanitari",
@@ -535,7 +535,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            id: "boiler-ecotherm",
+            id: "boiler-electric-80l",
             title: "Boiler Electric Tesy",
             image: "/produktet/Boileri80.png",
             category: "sanitari",

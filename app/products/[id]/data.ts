@@ -1,4 +1,49 @@
-import { Product } from '@/app/categories/[id]/data';
+// Define the extended product interface with all the properties needed for the enhanced product page
+export interface Badge {
+  text: string;
+  bgColor?: string;
+  textColor?: string;
+}
+
+export interface KeyCharacteristic {
+  name: string;
+  value: string;
+  icon?: string;
+}
+
+export interface ProductModel {
+  id: string;
+  name: string;
+  price?: string;
+}
+
+
+
+export interface Download {
+  title: string;
+  description: string;
+  url: string;
+  fileSize?: string;
+}
+
+export interface Product {
+  id: string;
+  title: string;
+  description?: string;
+  price: string;
+  image: string;
+  category: string;
+  subcategory?: string;
+  badges?: Badge[];
+  keyCharacteristics?: KeyCharacteristic[];
+  models?: ProductModel[];
+  features: string[];
+  longDescription?: string;
+  details?: Record<string, string>;
+  specifications?: Record<string, string>;
+  downloads?: Download[];
+  relatedProducts?: string[];
+}
 
 // Get product by ID
 export function getProductById(id: string): Product | null {
@@ -12,6 +57,141 @@ export function getAllProducts(): Product[] {
   // In a real app, this would fetch from a database
   // For now, we'll return a static list of products
   return [
+    // Complete mock product with all enhanced features
+    {
+      id: 'bruno-dc-inverter',
+      title: 'BRUNO DC INVERTER PANASONIC PREMIUM',
+      description: 'Pompë termike me efikasitet të lartë energjetik dhe teknologji inverter.',
+      price: "4,390",
+      image: '/images/products/bruno-dc-inverter.png',
+      category: 'ngrohje-qendrore',
+      subcategory: 'pompa-termike',
+      badges: [
+        {
+          text: 'A+++ Eficencë',
+          bgColor: '#e7f9ed',
+          textColor: '#18a757'
+        },
+        {
+          text: 'DC Inverter',
+          bgColor: '#e5f6fd',
+          textColor: '#0284c7'
+        },
+        {
+          text: 'Teknologji Japoneze',
+          bgColor: '#fef3c7',
+          textColor: '#b45309'
+        }
+      ],
+      keyCharacteristics: [
+        {
+          name: 'Fuqia',
+          value: '9kW',
+          icon: '/icons/power.svg'
+        },
+        {
+          name: 'Efikasiteti',
+          value: 'A+++',
+          icon: '/icons/efficiency.svg'
+        },
+        {
+          name: 'Garancia',
+          value: '5 vite',
+          icon: '/icons/warranty.svg'
+        },
+        {
+          name: 'Niveli i zhurmës',
+          value: '32 dB',
+          icon: '/icons/noise.svg'
+        }
+      ],
+      models: [
+        {
+          id: 'dc-9',
+          name: 'DC-9 (9kW)',
+          price: "4,390"
+        },
+        {
+          id: 'dc-12',
+          name: 'DC-12 (12kW)',
+          price: "5,790"
+        },
+        {
+          id: 'dc-16',
+          name: 'DC-16 (16kW)',
+          price: "7,190"
+        }
+      ],
+      features: [
+        'Frohësi R32 - Miqësor ndaj mjedisit dhe efikas',
+        'Stabilitet edhe në temperaturat ekstreme: Operon deri në -35°C',
+        'Niveli i energjisë A+++, me efikasitet të lartë',
+        'Operon në qetësi me vetëm 32 dB',
+        'Kontroll inteligjent me WiFi',
+        'Dizajn modern dhe kompakt',
+        'Instalim i thjeshtë dhe mirëmbajtje e lehtë',
+        'Garanci e zgjatur 5-vjeçare'
+      ],
+      longDescription: `
+        <p>Bruno DC Inverter është një pompë termike revolucionare me teknologjinë më të fundit japoneze Panasonic, e dizajnuar për të ofruar performancë të jashtëzakonshme edhe në kushtet më ekstreme të dimrit.</p>
+        
+        <p>Me efikasitetin e lartë të energjisë A+++ dhe aftësinë për të operuar në temperatura deri në -35°C, kjo pompë siguron ngrohje të vazhdueshme dhe ekonomike për shtëpinë tuaj, pavarësisht kushteve të jashtme.</p>
+        
+        <p>Teknologjia DC Inverter rregullon automatikisht fuqinë e kompresorit sipas nevojës, duke kursyer energji dhe duke reduktuar konsumin e energjisë elektrike deri në 30% krahasuar me sistemet tradicionale.</p>
+      `,
+      details: {
+        'Prodhuesi': 'Bruno',
+        'Origjina': 'Japoni',
+        'Teknologjia': 'DC Inverter',
+        'Frohësi': 'R32 Ekologjik',
+        'Garancia': '5 vite',
+        'Instalimi': 'I përfshirë'
+      },
+      specifications: {
+        'Fuqia maksimale': '9kW / 12kW / 16kW (sipas modelit)',
+        'Koeficienti i performancës (COP)': '5.2',
+        'Efikasiteti energjetik': 'A+++',
+        'Temperatura e operimit': '-35°C deri +43°C',
+        'Niveli i zhurmës (min/max)': '32dB / 45dB',
+        'Dimensionet e njësisë së jashtme': '1050 x 1000 x 380 mm',
+        'Pesha e njësisë së jashtme': '92 kg',
+        'Tensioni i punës': '220-240V / 50Hz',
+        'Lloji i kompresorit': 'Panasonic Twin Rotary',
+        'Kontrolli': 'Digital me ekran LED dhe WiFi',
+        'Mbrojtja anti-ngrirje': 'Po',
+        'Shkalla e mbrojtjes IP': 'IP24',
+        'Pajisur me sensorë të temperaturës': 'Po',
+        'Funksioni i shkrirjes automatike': 'Po',
+        'Rezervuar integruar': 'Po, 2 litra'
+      },
+      downloads: [
+        {
+          title: 'Manuali i përdorimit',
+          description: 'Udhëzues i plotë për përdorimin e pompës termike Bruno DC Inverter (PDF, 5.2MB)',
+          url: '/downloads/bruno-user-manual.pdf',
+          fileSize: '5.2 MB'
+        },
+        {
+          title: 'Broshura teknike',
+          description: 'Specifikimet e detajuara teknike dhe diagramet e instalimit (PDF, 3.8MB)',
+          url: '/downloads/bruno-technical-brochure.pdf',
+          fileSize: '3.8 MB'
+        },
+        {
+          title: 'Certifikata e garancisë',
+          description: 'Dokumenti i garancisë 5-vjeçare dhe kushtet e plotë (PDF, 1.2MB)',
+          url: '/downloads/bruno-warranty.pdf',
+          fileSize: '1.2 MB'
+        },
+        {
+          title: 'Aplikacioni i kontrollit WiFi',
+          description: 'Shkarkoni aplikacionin për kontrollin e pompës termike nga telefoni juaj inteligjent (APK, 15MB)',
+          url: '/downloads/bruno-smart-control.apk',
+          fileSize: '15 MB'
+        }
+      ],
+      relatedProducts: ['pompa-nxehtesie-ecotherm', 'pompa-termike-eco-2', 'kalldaja-elektrike-1']
+    },
     // Ngrohje Qendrore - Pompa Termike
     {
       id: 'pompa-nxehtesie-ecotherm',
