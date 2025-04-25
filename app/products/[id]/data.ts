@@ -61,7 +61,7 @@ export function getAllProducts(): Product[] {
       title: 'Pompa Termike Vanguard Comfort',
       description: 'Pompë termike ajër-ujë me efikasitet të lartë për ngrohje dhe ujë të ngrohtë sanitar.',
       price: 'Kontakto',
-      image: '/produktet/Vanguard.png',
+      image: '/produktet/pompa-termike-vanguard.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
       badges: [
@@ -279,7 +279,7 @@ export function getAllProducts(): Product[] {
       title: 'Pompa Termike Serene Climate',
       description: 'Pompë termike ajër-ujë A+++ me teknologji Inverter dhe ftohës R32.',
       price: 'Kontakto',
-      image: '/produktet/Serene.png',
+      image: '/produktet/pompa-termike-serene.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
       badges: [
@@ -381,7 +381,7 @@ export function getAllProducts(): Product[] {
       title: 'Pompa Termike Apex Heating',
       description: 'Pompë termike ajër-ujë A+++ me ftohës natyral R290 dhe temperaturë të lartë uji (75°C).',
       price: 'Kontakto',
-      image: '/produktet/Apex.png',
+      image: '/produktet/pompa-termike-apex.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
       badges: [
@@ -490,7 +490,7 @@ export function getAllProducts(): Product[] {
       title: 'Pompa Termike Split Maxi Comfort',
       description: 'Pompë termike ajër-ujë tip Split A+++ me ftohës R32, ideale për hapësira rezidenciale.',
       price: 'Kontakto',
-      image: '/produktet/Maxi.png',
+      image: '/produktet/pompa-termike-maxi.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
       badges: [
@@ -605,7 +605,7 @@ export function getAllProducts(): Product[] {
       title: 'Pompa Termike Sinceko Split',
       description: 'Pompë termike ajër-ujë tip Split A++ me ftohës R32, zgjidhje ekonomike për ngrohje.',
       price: 'Kontakto',
-      image: '/produktet/Sinceko.png',
+      image: '/produktet/pompa-termike-sinceko.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
       badges: [
@@ -721,7 +721,7 @@ export function getAllProducts(): Product[] {
       title: 'Kalldaja me Gaz Kondensuese OG Comfort',
       description: 'Kalldajë murale me gaz kondensuese me efikasitet të lartë për ngrohje dhe ujë të ngrohtë sanitar.',
       price: 'Kontakto',
-      image: '/produktet/OG.png',
+      image: '/produktet/kalldaja-og.png',
       category: 'ngrohje-qendrore',
       subcategory: 'kalldaja',
       badges: [
@@ -839,7 +839,7 @@ export function getAllProducts(): Product[] {
       title: 'Kalldaja Elektrike ECOTEK MP',
       description: 'Kalldajë elektrike e fuqishme me kontroll dixhital dhe WiFi, e përshtatshme për sisteme ngrohjeje.',
       price: 'Kontakto',
-      image: '/produktet/MP.png',
+      image: '/produktet/kalldaja-mp.png',
       category: 'ngrohje-qendrore',
       subcategory: 'kalldaja-elektrike',
       badges: [
@@ -936,7 +936,7 @@ export function getAllProducts(): Product[] {
       title: 'Kalldaja Elektrike ECOTEK JP',
       description: 'Kalldajë elektrike kompakte dhe ekonomike me kontroll dixhital dhe WiFi.',
       price: 'Kontakto',
-      image: '/produktet/JP.png',
+      image: '/produktet/kalldaja-jp.png',
       category: 'ngrohje-qendrore',
       subcategory: 'kalldaja-elektrike',
       badges: [
@@ -1034,7 +1034,7 @@ export function getAllProducts(): Product[] {
       title: 'Radiator Panel',
       description: 'Radiator panel çeliku me efikasitet të lartë për shpërndarje të shpejtë dhe uniforme të ngrohjes.',
       price: 'Kontakto',
-      image: '/produktet/Radiatori.png',
+      image: '/produktet/radiator.png',
       category: 'ngrohje-qendrore',
       subcategory: 'radiator',
       badges: [
@@ -1117,7 +1117,7 @@ export function getAllProducts(): Product[] {
       title: 'Radiator Gypor',
       description: 'Radiator alumini gypor me dizajn elegant dhe transferim të shkëlqyer të nxehtësisë.',
       price: 'Kontakto',
-      image: '/produktet/RadiatorGyp.png',
+      image: '/produktet/radiator-gypor.png',
       category: 'ngrohje-qendrore',
       subcategory: 'radiator',
       badges: [
@@ -1206,7 +1206,7 @@ export function getAllProducts(): Product[] {
       title: 'Fancoiler ECOTEK',
       description: 'Fancoiler mural me dizajn modern për ngrohje dhe ftohje efikase dhe të qetë.',
       price: 'Kontakto',
-      image: '/produktet/fancoilera.png',
+      image: '/produktet/fancoiler.png',
       category: 'ngrohje-qendrore',
       subcategory: 'fancoiler',
       badges: [
@@ -1299,7 +1299,7 @@ export function getAllProducts(): Product[] {
       title: 'Fancoiler Kasetor',
       description: 'Fancoiler kasetor për montim në tavan, ideal për shpërndarje uniforme të ajrit në 4 drejtime.',
       price: 'Kontakto',
-      image: '/produktet/Kasetore.png',
+      image: '/produktet/fancoiler-kasetor.png',
       category: 'ngrohje-qendrore',
       subcategory: 'fancoiler',
       badges: [
@@ -1394,7 +1394,7 @@ export function getAllProducts(): Product[] {
       title: 'Akumulues ECOTEK',
       description: 'Akumulues uji inoksi për sisteme solare dhe ngrohje qendrore.',
       price: 'Kontakto',
-      image: '/icons/boiler.svg',
+      image: '/produktet/akumulues.png',
       category: 'ngrohje-solare',
       subcategory: 'akumulues',
       badges: [
@@ -1493,7 +1493,7 @@ export function getAllProducts(): Product[] {
       title: 'Boiler Me Spirale',
       description: 'Boiler me spirale për ujë të ngrohtë sanitar me cilësi të lartë dhe efikasitet maksimal.',
       price: 'Kontakto',
-      image: '/produktet/Boileri300.png',
+      image: '/produktet/boiler-spiral.png',
       category: 'sanitari',
       subcategory: 'bojler',
       badges: [
@@ -1589,7 +1589,7 @@ export function getAllProducts(): Product[] {
       title: 'Boileri ECOPUMP',
       description: 'Boileri ECOPUMP për ngrohje të ngrohtë.',
       price: 'Kontakto',
-      image: '/produktet/boilerieco.png', // Placeholder - use relevant image
+      image: '/produktet/boiler-ecopump.png', // Placeholder - use relevant image
       category: 'sanitari', // Or adjust category if needed
       subcategory: 'bojler',
       badges: [

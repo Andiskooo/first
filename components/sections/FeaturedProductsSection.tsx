@@ -117,7 +117,8 @@ const FeaturedProductsSection = ({
                   fill
                   style={{ objectFit: 'cover' }}
                   priority
-                  onLoadingComplete={(img) => {
+                  onLoad={(event) => {
+                    const img = event.currentTarget;
                     const ratio = img.naturalWidth / img.naturalHeight;
                     setImgRatios(prev => ({ ...prev, [product.id]: ratio }));
                   }}
