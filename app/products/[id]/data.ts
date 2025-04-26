@@ -1505,18 +1505,6 @@ export function getAllProducts(): Product[] {
 
       },
       downloads: [
-        {
-          title: 'Broshura Teknike OG Comfort (Shembull)',
-          description: 'Specifikimet, dimensionet dhe udhëzimet (PDF, Shembull)',
-          url: '/downloads/og-comfort-brochure-placeholder.pdf',
-          fileSize: '1.9 MB (Shembull)'
-        },
-        {
-          title: 'Manuali Përdorimit OG Comfort (Shembull)',
-          description: 'Udhëzime për përdorim dhe mirëmbajtje (PDF, Shembull)',
-          url: '/downloads/og-comfort-manual-placeholder.pdf',
-          fileSize: '2.5 MB (Shembull)'
-        }
       ],
       relatedProducts: ['kalldaja-elektrike', 'pompa-nxehtesie-apex', 'radiator']
     },
@@ -1603,18 +1591,6 @@ export function getAllProducts(): Product[] {
 
       },
       downloads: [
-        {
-          title: 'Manuali i Përdorimit MP (Shembull)',
-          description: 'Udhëzime për kaldajën MP (PDF, Shembull)',
-          url: '/downloads/mp-manual-placeholder.pdf',
-          fileSize: '1.9 MB (Shembull)'
-        },
-        {
-          title: 'Broshura Teknike MP (Shembull)',
-          description: 'Specifikimet teknike për serinë MP (PDF, Shembull)',
-          url: '/downloads/mp-brochure-placeholder.pdf',
-          fileSize: '1.3 MB (Shembull)'
-        }
       ],
       relatedProducts: ['kalldaja-og', 'kalldaja-jp', 'radiator-gypor']
     },
@@ -1701,18 +1677,6 @@ export function getAllProducts(): Product[] {
 
       },
       downloads: [
-        {
-          title: 'Manuali i Përdorimit JP (Shembull)',
-          description: 'Udhëzime për kaldajën JP (PDF, Shembull)',
-          url: '/downloads/jp-manual-placeholder.pdf',
-          fileSize: '1.7 MB (Shembull)'
-        },
-        {
-          title: 'Broshura Teknike JP (Shembull)',
-          description: 'Specifikimet teknike për serinë JP (PDF, Shembull)',
-          url: '/downloads/jp-brochure-placeholder.pdf',
-          fileSize: '1.1 MB (Shembull)'
-        }
       ],
       relatedProducts: ['kalldaja-og', 'kalldaja-mp', 'radiator']
     },
@@ -1791,12 +1755,7 @@ export function getAllProducts(): Product[] {
 
       },
       downloads: [
-        {
-          title: 'Katalogu i Radiatorëve Panel (Shembull)',
-          description: 'Dimensionet dhe fuqitë termike (PDF, Shembull)',
-          url: '/downloads/radiator-panel-catalog-placeholder.pdf',
-          fileSize: '3.0 MB (Shembull)'
-        }
+
       ],
       relatedProducts: ['radiator-gypor', 'kalldaja-og', 'pompa-nxehtesie-vanguard']
     },
@@ -1879,12 +1838,7 @@ export function getAllProducts(): Product[] {
 
       },
       downloads: [
-        {
-          title: 'Katalogu i Radiatorëve Gypor (Shembull)',
-          description: 'Të dhëna teknike dhe fuqitë (PDF, Shembull)',
-          url: '/downloads/radiator-gypor-catalog-placeholder.pdf',
-          fileSize: '2.5 MB (Shembull)'
-        }
+
       ],
       relatedProducts: ['radiator', 'kalldaja-mp', 'pompa-nxehtesie-serene']
     },
@@ -1938,13 +1892,18 @@ export function getAllProducts(): Product[] {
       ],
       models: [
         {
-          id: 'fancoil-mural-3kw',
-          name: 'Fancoil Mural (3kW)',
+          id: 'fancoil-900W',
+          name: 'Fancoil 900W',
           price: 'Kontakto'
         },
         {
-          id: 'fancoil-mural-6kw',
-          name: 'Fancoil Mural (6kW)',
+          id: 'fancoil-3000W',
+          name: 'Fancoil 3000W',
+          price: 'Kontakto'
+        },
+        {
+          id: 'fancoil-5650W',
+          name: 'Fancoil 5650W',
           price: 'Kontakto'
         }
       ],
@@ -1970,14 +1929,73 @@ export function getAllProducts(): Product[] {
         'Garancia': '2 vite (Shembull)'
       },
       specifications: {
-
+        'Model': {
+          'fancoil-900W': 'YG-10',
+          'fancoil-3000W': 'YG-20',
+          'fancoil-5650W': 'YG-30'
+        },
+        'Voltage range (V,50/60Hz)': {
+          'fancoil-900W': 'AC190-250V',
+          'fancoil-3000W': 'AC190-250V',
+          'fancoil-5650W': 'AC190-250V'
+        },
+        'Range of rotation (rpm)': {
+          'fancoil-900W': '200-2200',
+          'fancoil-3000W': '200-2200',
+          'fancoil-5650W': '200-2200'
+        },
+        'Air volume range (m³/h)': {
+          'fancoil-900W': '265',
+          'fancoil-3000W': '420',
+          'fancoil-5650W': '630'
+        },
+        'Noise range (dB)': {
+          'fancoil-900W': '34',
+          'fancoil-3000W': '37',
+          'fancoil-5650W': '39'
+        },
+        'Cooling Ca. (kW)(Water in 7°C)': {
+          'fancoil-900W': '900W',
+          'fancoil-3000W': '1680W',
+          'fancoil-5650W': '3360W'
+        },
+        'Heating Ca. (kW)(Water in 45°C)': {
+          'fancoil-900W': '990W',
+          'fancoil-3000W': '1830W',
+          'fancoil-5650W': '3450W'
+        },
+        'Heating Ca. (kW)(Water in 60°C)': {
+          'fancoil-900W': '1560W',
+          'fancoil-3000W': '3000W',
+          'fancoil-5650W': '5650W'
+        },
+        'Net weight (Kg)': {
+          'fancoil-900W': '15.3',
+          'fancoil-3000W': '17.9',
+          'fancoil-5650W': '23.3'
+        },
+        'Gross weight (Kg)': {
+          'fancoil-900W': '18',
+          'fancoil-3000W': '20.7',
+          'fancoil-5650W': '26.8'
+        },
+        'Product Size (L*W*H) (mm)': {
+          'fancoil-900W': '760*130*575',
+          'fancoil-3000W': '950*130*575',
+          'fancoil-5650W': '1220*130*575'
+        },
+        'Package Size (L*W*H) (mm)': {
+          'fancoil-900W': '820*185*670',
+          'fancoil-3000W': '1010*185*670',
+          'fancoil-5650W': '1290*185*670'
+        }
       },
       downloads: [
         {
-          title: 'Katalogu Fancoiler Mural (Shembull)',
-          description: 'Të dhëna teknike dhe performanca (PDF, Shembull)',
-          url: '/downloads/fancoil-mural-catalog-placeholder.pdf',
-          fileSize: '2.8 MB (Shembull)'
+          title: 'Manuali i Përdorimit Fancoiler ',
+          description: 'Të dhëna teknike dhe performanca (PDF)',
+          url: '/downloads/fancoiler-manual.pdf',
+          fileSize: '2.8 MB'
         }
       ],
       relatedProducts: ['fancoiler-kasetor', 'pompa-nxehtesie-serene', 'kalldaja-og']
@@ -2031,13 +2049,8 @@ export function getAllProducts(): Product[] {
       ],
       models: [
         {
-          id: 'kasetor-600x600-5kw',
-          name: 'Kasetor 600x600 (5kW)',
-          price: 'Kontakto'
-        },
-        {
-          id: 'kasetor-840x840-12kw',
-          name: 'Kasetor 840x840 (12kW)',
+          id: 'kasetor-600x600x3000mm',
+          name: 'Kasetor 600x600x3000mm',
           price: 'Kontakto'
         }
       ],
@@ -2064,15 +2077,65 @@ export function getAllProducts(): Product[] {
         'Garancia': '2 vite (Shembull)'
       },
       specifications: {
-
+        'Key Selling Points': {
+          'kasetor-600x600x3000mm': 'Competitive price/Non-Freon refrigerant'
+        },
+        'Weight (KG)': {
+          'kasetor-600x600x3000mm': '18.45 KG'
+        },
+        'Brand Name': {
+          'kasetor-600x600x3000mm': 'YESNCER or OEM'
+        },
+        'Model Number': {
+          'kasetor-600x600x3000mm': 'FP-34, FP-51, FP-68, FP-85, FP-102, FP-136, FP-170, FP-204, FP-238'
+        },
+        'Dimension (L*W*H) (mm)': {
+          'kasetor-600x600x3000mm': '650x650x300mm'
+        },
+        'Machinery Test Report': {
+          'kasetor-600x600x3000mm': 'Provided'
+        },
+        'Video outgoing-inspection': {
+          'kasetor-600x600x3000mm': 'Provided'
+        },
+        'Warranty of core components': {
+          'kasetor-600x600x3000mm': '3 years'
+        },
+        'Core Components': {
+          'kasetor-600x600x3000mm': 'Motor'
+        },
+        'Product name': {
+          'kasetor-600x600x3000mm': 'Cassette Fan Coil Unit'
+        },
+        'Air Volume (m³/h)': {
+          'kasetor-600x600x3000mm': '340~2380'
+        },
+        'Power (W)': {
+          'kasetor-600x600x3000mm': '34~198'
+        },
+        'Cooling capacity (kw)': {
+          'kasetor-600x600x3000mm': '1.98 ~12.6'
+        },
+        'Heating capacity (kw)': {
+          'kasetor-600x600x3000mm': '2.98 ~18.9'
+        },
+        'Noise (dB)': {
+          'kasetor-600x600x3000mm': '37~52'
+        },
+        'voltage': {
+          'kasetor-600x600x3000mm': '220V/ 50 Hz'
+        },
+        'Water flow (m³/h)': {
+          'kasetor-600x600x3000mm': '0.169~0.94'
+        },
+        'Water resistance (kPa)': {
+          'kasetor-600x600x3000mm': '14~46'
+        },
+        'Control method': {
+          'kasetor-600x600x3000mm': 'Remote control or wired control'
+        }
       },
       downloads: [
-        {
-          title: 'Katalogu Fancoiler Kasetor (Shembull)',
-          description: 'Të dhëna teknike dhe dimensionet (PDF, Shembull)',
-          url: '/downloads/fancoil-kasetor-catalog-placeholder.pdf',
-          fileSize: '3.2 MB (Shembull)'
-        }
       ],
       relatedProducts: ['fancoiler', 'pompa-nxehtesie-maxi', 'kalldaja-mp']
     },
@@ -2163,15 +2226,68 @@ export function getAllProducts(): Product[] {
         'Garancia': '5 vite (Shembull)'
       },
       specifications: {
-
+        'MODEL': {
+          'akumulues-60l': 'HWT60L',
+          'akumulues-100l': 'HWT100L',
+          'akumulues-200l': 'HWT200L'
+        },
+        'NOMINAL CAPACITY (L)': {
+          'akumulues-60l': '60',
+          'akumulues-100l': '100L',
+          'akumulues-200l': '200L'
+        },
+        'OUTLET TANK DIAMETER (MM)': {
+          'akumulues-60l': 'Φ450',
+          'akumulues-100l': 'Φ470',
+          'akumulues-200l': 'Φ520'
+        },
+        'INNER TANK DIAMETER (MM)': {
+          'akumulues-60l': 'Φ350',
+          'akumulues-100l': 'Φ370',
+          'akumulues-200l': 'Φ420'
+        },
+        'TANK HEIGHT (MM)': {
+          'akumulues-60l': '950',
+          'akumulues-100l': '1115',
+          'akumulues-200l': '1545'
+        },
+        'INNER TANK MATERIAL': {
+          'akumulues-60l': 'STAINLESS STEEL SUS304,SUS316L OR DUPLEX STAINLESS STEEL',
+          'akumulues-100l': 'STAINLESS STEEL SUS304,SUS316L OR DUPLEX STAINLESS STEEL',
+          'akumulues-200l': 'STAINLESS STEEL SUS304,SUS316L OR DUPLEX STAINLESS STEEL'
+        },
+        'INNER TANK THICKNESS (MM)': {
+          'akumulues-60l': '1.2',
+          'akumulues-100l': '1.2MM',
+          'akumulues-200l': '1.2MM'
+        },
+        'OUTER SHELL MATERIAL': {
+          'akumulues-60l': 'GLAVALIZED STEEL WITH WHITE/SILVER-GREY COLOR PAINTING, THICKNESS 0.5MM',
+          'akumulues-100l': 'GLAVALIZED STEEL WITH WHITE/SILVER-GREY COLOR PAINTING, THICKNESS 0.5MM',
+          'akumulues-200l': 'GLAVALIZED STEEL WITH WHITE/SILVER-GREY COLOR PAINTING, THICKNESS 0.5MM'
+        },
+        'WORKING PRESSURE (MPA)': {
+          'akumulues-60l': '0.6',
+          'akumulues-100l': '0.6MPA',
+          'akumulues-200l': '0.6MPA'
+        },
+        'MAX. PRESSURE (MPA)': {
+          'akumulues-60l': '1.0',
+          'akumulues-100l': '1.0MPA',
+          'akumulues-200l': '1.0MPA'
+        },
+        'FOAMING INSULATION': {
+          'akumulues-60l': 'PU COMBINATION POLYETHER FOAMING, THICKNESS 50MM',
+          'akumulues-100l': 'PU COMBINATION POLYETHER FOAMING, THICKNESS 50MM',
+          'akumulues-200l': 'PU COMBINATION POLYETHER FOAMING, THICKNESS 50MM'
+        },
+        'PACKAGE SIZE (mm)': {
+          'akumulues-60l': '500/500/1000',
+          'akumulues-100l': '535/535/1170',
+          'akumulues-200l': '535/535/1600'
+        }
       },
       downloads: [
-        {
-          title: 'Katalogu Akumulues Inoksi (Shembull)',
-          description: 'Të dhëna teknike për serinë e akumuluesve (PDF, Shembull)',
-          url: '/downloads/akumulues-inox-catalog-placeholder.pdf',
-          fileSize: '2.2 MB (Shembull)'
-        }
       ],
       relatedProducts: ['akumulues-80l', 'akumulues-120l', 'kolektor-solar']
     },
@@ -2263,12 +2379,6 @@ export function getAllProducts(): Product[] {
       specifications: {
       },
       downloads: [
-        {
-          title: 'Katalogu Bojler Inoksi (Shembull)',
-          description: 'Të dhëna teknike për serinë e bojlerëve (PDF, Shembull)',
-          url: '/downloads/bojler-inox-catalog-placeholder.pdf',
-          fileSize: '2.2 MB (Shembull)'
-        }
       ],
       relatedProducts: ['akumulues-150l', 'kolektor-solar', 'pompa-nxehtesie-vanguard']
     },    
@@ -2356,17 +2466,531 @@ export function getAllProducts(): Product[] {
         'Garancia': '5 vite (Shembull)'
       },
       specifications: {
-
+        'Model': {
+          'bojler-ecopump-200l': 'YT-200TA2',
+          'bojler-ecopump-300l': 'YT-300TA2'
+        },
+        'Power Supply': {
+          'bojler-ecopump-200l': '220-240V/1/50Hz',
+          'bojler-ecopump-300l': '220-240V/1/50Hz'
+        },
+        'Rated Heating Capacity (kW)': {
+          'bojler-ecopump-200l': '2.8',
+          'bojler-ecopump-300l': '2.8'
+        },
+        'Refrigerant': {
+          'bojler-ecopump-200l': 'R290',
+          'bojler-ecopump-300l': 'R290'
+        },
+        'Tapping Cycle': {
+          'bojler-ecopump-200l': 'L',
+          'bojler-ecopump-300l': 'XL'
+        },
+        'Energy Efficient Class': {
+          'bojler-ecopump-200l': 'A+',
+          'bojler-ecopump-300l': 'A+'
+        },
+        'Energy Efficient ηwh (%)': {
+          'bojler-ecopump-200l': '145.7',
+          'bojler-ecopump-300l': '147.6'
+        },
+        '**COP (EN16147)': {
+          'bojler-ecopump-200l': '3.677',
+          'bojler-ecopump-300l': '3.691'
+        },
+        'Tank Capacity (L)': {
+          'bojler-ecopump-200l': '200',
+          'bojler-ecopump-300l': '300'
+        },
+        'Air Flow (m³/h)': {
+          'bojler-ecopump-200l': '450',
+          'bojler-ecopump-300l': '450'
+        },
+        'Air Discharge': {
+          'bojler-ecopump-200l': 'Vertical',
+          'bojler-ecopump-300l': 'Vertical'
+        },
+        'Air Duct Diameter (mm)': {
+          'bojler-ecopump-200l': 'Φ150',
+          'bojler-ecopump-300l': 'Φ150'
+        },
+        'Auxiliary electric heater(kW)': {
+          'bojler-ecopump-200l': '2',
+          'bojler-ecopump-300l': '2'
+        },
+        'Default Water Temperature(°C)': {
+          'bojler-ecopump-200l': '60',
+          'bojler-ecopump-300l': '60'
+        },
+        'Working Temperature Range(°C)': {
+          'bojler-ecopump-200l': '-7°C~43',
+          'bojler-ecopump-300l': '-7°C~43'
+        },
+        'Unpacked Dimension (mm)': {
+          'bojler-ecopump-200l': 'Φ620*1650',
+          'bojler-ecopump-300l': 'Φ620*2050'
+        },
+        'Packed Dimension (L*W*H)(mm)': {
+          'bojler-ecopump-200l': '700*700*1755',
+          'bojler-ecopump-300l': '700*700*2155'
+        },
+        'Net Weight(kg)': {
+          'bojler-ecopump-200l': '95',
+          'bojler-ecopump-300l': '115'
+        },
+        'Gross Weight(kg)': {
+          'bojler-ecopump-200l': '113',
+          'bojler-ecopump-300l': '135'
+        },
+        'Noise (dB(A))': {
+          'bojler-ecopump-200l': '48',
+          'bojler-ecopump-300l': '48'
+        }
       },
       downloads: [
-        {
-          title: 'Katalogu Bojler Akumulues (Shembull)',
-          description: 'Të dhëna teknike për serinë e bojlerëve akumulues (PDF, Shembull)',
-          url: '/downloads/bojler-akumulues-catalog-placeholder.pdf',
-          fileSize: '2.5 MB (Shembull)'
-        }
       ],
       relatedProducts: ['bojler-inox', 'akumulues-200l', 'kalldaja-mp', 'pompa-nxehtesie-vanguard']
+    },    // Kondicionerat
+    {
+      id: "kondicioner-aria",
+      title: "Candy - Aria Series",
+      description: "Kondicioner mural me efikasitet të lartë dhe lidhje WiFi.",
+      price: "Kontakto",
+      image: "/produktet/aria.png",
+      category: "klimatizim-ventilim",
+      subcategory: "kondicioner",
+      badges: [
+        {
+          text: 'A+++/A+++ Efikasitet',
+          bgColor: '#e7f9ed',
+          textColor: '#18a757'
+        },
+        {
+          text: 'WiFi & HoN App',
+          bgColor: '#e0f2fe',
+          textColor: '#0ea5e9'
+        }
+      ],
+      keyCharacteristics: [
+        {
+          name: 'Efikasiteti',
+          value: 'A+++/A+++',
+          icon: '/icons/efficiency.svg'
+        },
+        {
+          name: 'Kapaciteti',
+          value: '12K-18K BTU',
+          icon: '/icons/power.svg'
+        },
+        {
+          name: 'Kontrolli',
+          value: 'WiFi',
+          icon: '/icons/wifi.svg'
+        }
+      ],
+      models: [
+        {
+          id: 'aria-12k',
+          name: 'Aria 12,000 BTU',
+          price: 'Kontakto'
+        },
+        {
+          id: 'aria-18k',
+          name: 'Aria 18,000 BTU',
+          price: 'Kontakto'
+        }
+      ],
+      features: [
+        "Klasa e Efikasitetit A+++ (Ftohje) / A+++ (Ngrohje)",
+        "Kontroll i integruar Wi-Fi përmes aplikacionit HoN",
+        "Dizajn modern dhe elegant",
+        "Operim i qetë",
+        "Kapacitete: 12,000 BTU, 18,000 BTU"
+      ],
+      longDescription: "<p>Seria Candy Aria ofron efikasitet të lartë energjetik dhe kontroll inteligjent përmes WiFi për komfort maksimal.</p>",
+      details: { 'Prodhuesi': 'Candy', 'Tipi': 'Mural Split', 'Garancia': '2 vite (Shembull)' },
+      specifications: {},
+      downloads: [],
+      relatedProducts: ['kondicioner-pura']
     },
+    {
+      id: "kondicioner-pura",
+      title: "Candy - Pura Series",
+      description: "Kondicioner mural me gamë të gjerë kapacitetesh dhe lidhje WiFi.",
+      price: "Kontakto",
+      image: "/produktet/pura.png",
+      category: "klimatizim-ventilim",
+      subcategory: "kondicioner",
+      badges: [
+        {
+          text: 'A+++/A++ Efikasitet',
+          bgColor: '#e7f9ed',
+          textColor: '#18a757'
+        },
+        {
+          text: 'WiFi & HoN App',
+          bgColor: '#e0f2fe',
+          textColor: '#0ea5e9'
+        }
+      ],
+      keyCharacteristics: [
+        {
+          name: 'Efikasiteti',
+          value: 'A+++/A++',
+          icon: '/icons/efficiency.svg'
+        },
+        {
+          name: 'Kapaciteti',
+          value: '9K-24K BTU',
+          icon: '/icons/power.svg'
+        },
+        {
+          name: 'Kontrolli',
+          value: 'WiFi',
+          icon: '/icons/wifi.svg'
+        }
+      ],
+      models: [
+        {
+          id: 'pura-9k',
+          name: 'Pura 9,000 BTU',
+          price: 'Kontakto'
+        },
+        {
+          id: 'pura-12k',
+          name: 'Pura 12,000 BTU',
+          price: 'Kontakto'
+        },
+        {
+          id: 'pura-18k',
+          name: 'Pura 18,000 BTU',
+          price: 'Kontakto'
+        },
+        {
+          id: 'pura-24k',
+          name: 'Pura 24,000 BTU',
+          price: 'Kontakto'
+        }
+      ],
+      features: [
+        "Klasa e Efikasitetit A+++ (Ftohje) / A++ (Ngrohje)",
+        "Kontroll i integruar Wi-Fi përmes aplikacionit HoN",
+        "Filtrim efikas i ajrit",
+        "Funksion vetë-pastrimi",
+        "Kapacitete: 9,000 BTU, 12,000 BTU, 18,000 BTU, 24,000 BTU"
+      ],
+      longDescription: "<p>Seria Candy Pura ofron një zgjidhje të gjithanshme klimatizimi me efikasitet të lartë dhe funksione inteligjente si kontrolli WiFi.</p>",
+      details: { 'Prodhuesi': 'Candy', 'Tipi': 'Mural Split', 'Garancia': '2 vite (Shembull)' },
+      specifications: {
+        'Model': {
+          'pura-9k': 'CY-09RAIN / CY-09RAOUT',
+          'pura-12k': 'CY-12RAIN / CY-12RAOUT',
+          'pura-18k': 'CY-18RAIN / CY-18RAOUT',
+          'pura-24k': 'CY-24RAIN / CY-24RAOUT'
+        },
+        'Cooling Capacity Nominal (Min-Max) (Btu/h)': {
+          'pura-9k': '9215(2390-11600)',
+          'pura-12k': '10920(2730-12965)',
+          'pura-18k': '15015(4430-18420)',
+          'pura-24k': '20475(4430-25250)'
+        },
+        'Cooling Capacity Nominal (kW)': {
+          'pura-9k': '2.7',
+          'pura-12k': '3.2',
+          'pura-18k': '4.4',
+          'pura-24k': '6.0'
+        },
+        'Cooling Capacity Range (MIN-MAX) (kW)': {
+          'pura-9k': '2.7(0.7-3.4)',
+          'pura-12k': '3.2(0.8-3.8)',
+          'pura-18k': '(1.30-5.40)',
+          'pura-24k': '(1.30-7.40)'
+        },
+        'Energy Efficiency SEER': {
+          'pura-9k': '6.5',
+          'pura-12k': '6.1',
+          'pura-18k': '6.30',
+          'pura-24k': '6.70'
+        },
+        'Energy Efficiency EER': {
+          'pura-9k': '3.23',
+          'pura-12k': '3.23',
+          'pura-18k': '3.23',
+          'pura-24k': '3.23'
+        },
+        'Energy Class Cooling': {
+          'pura-9k': 'A++',
+          'pura-12k': 'A++',
+          'pura-18k': 'A++',
+          'pura-24k': 'A++'
+        },
+        'Pdesign Capacity Cooling (kW)': {
+          'pura-9k': '2.7',
+          'pura-12k': '3.2',
+          'pura-18k': '4.80',
+          'pura-24k': '6.20'
+        },
+        'Power Input Cooling Nominal (kW)': {
+          'pura-9k': '0.835',
+          'pura-12k': '0.99',
+          'pura-18k': '1.36',
+          'pura-24k': '1.855'
+        },
+        'Power Input Cooling Range (Min-Max) (kW)': {
+          'pura-9k': '(0.3-1.2)',
+          'pura-12k': '(0.3-1.3)',
+          'pura-18k': '(0.40-1.90)',
+          'pura-24k': '(0.40-2.20)'
+        },
+        'Annual Energy Consumption Cooling (KWH/A)': {
+          'pura-9k': '145',
+          'pura-12k': '184',
+          'pura-18k': '267',
+          'pura-24k': '324'
+        },
+        'Operating Limits Cooling Min-Max (°C)': {
+          'pura-9k': '-20~43 °C(out)',
+          'pura-12k': '-20~43 °C(out)',
+          'pura-18k': '-20~43 °C(out)',
+          'pura-24k': '-20~43 °C(out)'
+        },
+        'Heating Capacity Nominal (Min-Max) (Btu/h)': {
+          'pura-9k': '9895(2390-12285)',
+          'pura-12k': '11945(2390-13650)',
+          'pura-18k': '15695(4430-18420)',
+          'pura-24k': '21500(4770-25590)'
+        },
+        'Heating Capacity Nominal (kW)': {
+          'pura-9k': '2.9',
+          'pura-12k': '3.5',
+          'pura-18k': '4.6',
+          'pura-24k': '6.30'
+        },
+        'Heating Capacity Range (MIN-MAX) (kW)': {
+          'pura-9k': '(0.7-3.6)',
+          'pura-12k': '(0.7-4.0)',
+          'pura-18k': '(1.30-5.40)',
+          'pura-24k': '(1.40-7.50)'
+        },
+        'Energy Efficiency SCOP': {
+          'pura-9k': '4.0',
+          'pura-12k': '4',
+          'pura-18k': '4.00',
+          'pura-24k': '4.00'
+        },
+        'Energy Efficiency COP (MILD)': {
+          'pura-9k': '3.71',
+          'pura-12k': '3.71',
+          'pura-18k': '3.71',
+          'pura-24k': '3.71'
+        },
+        'Energy Efficiency SCOP (WARM/COLD)': {
+          'pura-9k': '5.10/-',
+          'pura-12k': '5.10/-',
+          'pura-18k': '5.10/-',
+          'pura-24k': '5.10/-'
+        },
+        'Energy Class Heating (MILD/WARM/COLD)': {
+          'pura-9k': 'A+/A+++/-',
+          'pura-12k': 'A+/A+++/-',
+          'pura-18k': 'A+/A+++/-',
+          'pura-24k': 'A+/A+++/-'
+        },
+        'Pdesign Capacity Heating (-10°C) (kW)': {
+          'pura-9k': '2.6',
+          'pura-12k': '3.0',
+          'pura-18k': '3.60',
+          'pura-24k': '4.60'
+        },
+        'Power Input Heating Nominal (kW)': {
+          'pura-9k': '0.78',
+          'pura-12k': '0.943',
+          'pura-18k': '1.24',
+          'pura-24k': '1.698'
+        },
+        'Power Input Heating Range (MIN-MAX) (kW)': {
+          'pura-9k': '(0.3-1.4)',
+          'pura-12k': '(0.4-1.6)',
+          'pura-18k': '(0.40-1.90)',
+          'pura-24k': '(0.60-2.30)'
+        },
+        'Annual Energy Consumption Heating (KWH/A)': {
+          'pura-9k': '910',
+          'pura-12k': '1050',
+          'pura-18k': '1260',
+          'pura-24k': '1610'
+        },
+        'Operating Limits Heating Min-Max (°C)': {
+          'pura-9k': '-20~24 °C(OUT)',
+          'pura-12k': '-20~24 °C(OUT)',
+          'pura-18k': '-20~24 °C(OUT)',
+          'pura-24k': '-20~24 °C(OUT)'
+        },
+        'Power Supply (Ph/V/Hz)': {
+          'pura-9k': '1/220~240/50',
+          'pura-12k': '1/220~240/50',
+          'pura-18k': '1/220~240/50',
+          'pura-24k': '1/220~240/50'
+        },
+        'Power Supply Position': {
+          'pura-9k': 'outdoor',
+          'pura-12k': 'outdoor',
+          'pura-18k': 'outdoor',
+          'pura-24k': 'outdoor'
+        },
+        'Indoor Net Dimension (W/D/H) (mm)': {
+          'pura-9k': '805*292*199',
+          'pura-12k': '805*292*200',
+          'pura-18k': '875/212/304',
+          'pura-24k': '975/222/318'
+        },
+        'Indoor Package Dimension (W/D/H) (mm)': {
+          'pura-9k': '876*365*272',
+          'pura-12k': '876*365*272',
+          'pura-18k': '945/390/296',
+          'pura-24k': '1050/397/301'
+        },
+        'Indoor Net/Shipping Weight (kg)': {
+          'pura-9k': '8.8/10.9',
+          'pura-12k': '8.8/10.9',
+          'pura-18k': '10.0/12.0',
+          'pura-24k': '11.6/14.4'
+        },
+        'Indoor Air Flow (Cooling/Heating) Max (m³/h)': {
+          'pura-9k': '550/550',
+          'pura-12k': '650/550',
+          'pura-18k': '770/810',
+          'pura-24k': '1100/1000'
+        },
+        'Indoor Sound Power Level Cooling (Hi) dB(A)': {
+          'pura-9k': '57',
+          'pura-12k': '59',
+          'pura-18k': '60',
+          'pura-24k': '64'
+        },
+        'Indoor Sound Power Level Heating (Hi) dB(A)': {
+          'pura-9k': '57',
+          'pura-12k': '59',
+          'pura-18k': '60',
+          'pura-24k': '64'
+        },
+        'Indoor Sound Pressure Level Cooling (Hi/Mid/Lo/So) dB(A)': {
+          'pura-9k': '38/34/29/19',
+          'pura-12k': '38/34/29/20',
+          'pura-18k': '44/40/35/28',
+          'pura-24k': '47/45/37/29'
+        },
+        'Indoor Sound Pressure Level Heating (Hi/Mid/Lo/So) dB(A)': {
+          'pura-9k': '37/33/29/19',
+          'pura-12k': '38/34/29/20',
+          'pura-18k': '44/40/35/28',
+          'pura-24k': '47/45/37/29'
+        },
+        'Indoor Moisture Removal (L/h)': {
+          'pura-9k': '1.2',
+          'pura-12k': '1.4',
+          'pura-18k': '2',
+          'pura-24k': '2.8'
+        },
+        'Outdoor Compressor': {
+          'pura-9k': 'RECHI',
+          'pura-12k': 'HIGHLY',
+          'pura-18k': 'SANYO',
+          'pura-24k': 'HIGHLY'
+        },
+        'Outdoor Net Dimension (W/D/H) (mm)': {
+          'pura-9k': '700*245*544',
+          'pura-12k': '700*245*544',
+          'pura-18k': '800/280/553',
+          'pura-24k': '800/280/553'
+        },
+        'Outdoor Package Dimension (W/D/H) (mm)': {
+          'pura-9k': '819*320*592',
+          'pura-12k': '819*320*592',
+          'pura-18k': '902/375/614',
+          'pura-24k': '902/375/614'
+        },
+        'Outdoor Net/Shipping Weight (kg)': {
+          'pura-9k': '21.5/23.9',
+          'pura-12k': '22.0/24.6',
+          'pura-18k': '29.2/32.1',
+          'pura-24k': '32.7/36.5'
+        },
+        'Outdoor Air Flow (Cooling/Heating) Max (m³/h)': {
+          'pura-9k': '2100',
+          'pura-12k': '2100',
+          'pura-18k': '2200/2200',
+          'pura-24k': '2500/2500'
+        },
+        'Outdoor Sound Power Level Hi dB(A)': {
+          'pura-9k': '62',
+          'pura-12k': '64',
+          'pura-18k': '65',
+          'pura-24k': '68'
+        },
+        'Outdoor Sound Pressure Level Hi dB(A)': {
+          'pura-9k': '49/50',
+          'pura-12k': '50/51',
+          'pura-18k': '54',
+          'pura-24k': '57'
+        },
+        'Outdoor Running Current Max (A)': {
+          'pura-9k': '6.40',
+          'pura-12k': '7.30',
+          'pura-18k': '8.6',
+          'pura-24k': '10.5'
+        },
+        'Refrigerant Type': {
+          'pura-9k': 'R32',
+          'pura-12k': 'R32',
+          'pura-18k': 'R32',
+          'pura-24k': 'R32'
+        },
+        'Refrigerant Charge (g)': {
+          'pura-9k': '510',
+          'pura-12k': '510',
+          'pura-18k': '780',
+          'pura-24k': '900'
+        },
+        'tCO2': {
+          'pura-9k': '0.34',
+          'pura-12k': '0.34',
+          'pura-18k': '0.53',
+          'pura-24k': '0.61'
+        },
+        'Refrigerant Pipe Liquid Side Diameter (mm)': {
+          'pura-9k': '6.35',
+          'pura-12k': '6.35',
+          'pura-18k': '6.35',
+          'pura-24k': '6.35'
+        },
+        'Refrigerant Pipe Gas Side Diameter (mm)': {
+          'pura-9k': '9.52',
+          'pura-12k': '9.52',
+          'pura-18k': '12.7',
+          'pura-24k': '12.7'
+        },
+        'Refrigerant Pipe Max Pipe Length/Height (m)': {
+          'pura-9k': '20/10',
+          'pura-12k': '20/10',
+          'pura-18k': '20/15',
+          'pura-24k': '25/15'
+        },
+        'Refrigerant Pipe Max Pipe Length without Additional Charge (m)': {
+          'pura-9k': '5',
+          'pura-12k': '5',
+          'pura-18k': '7',
+          'pura-24k': '7'
+        },
+        'Refrigerant Pipe Additional Charge (g/m)': {
+          'pura-9k': '20',
+          'pura-12k': '20',
+          'pura-18k': '20',
+          'pura-24k': '20'
+        }
+      },
+      downloads: [],
+      relatedProducts: ['kondicioner-aria']
+    }
   ]
 }
