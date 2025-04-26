@@ -260,16 +260,10 @@ export function getAllProducts(): Product[] {
       },
       downloads: [
         {
-          title: 'Manuali i përdorimit (Shembull)',
-          description: 'Udhëzues për përdorimin e Vanguard Comfort (PDF, Shembull)',
-          url: '/downloads/vanguard-manual-placeholder.pdf',
-          fileSize: '2 MB (Shembull)'
-        },
-        {
-          title: 'Broshura teknike (Shembull)',
-          description: 'Specifikimet teknike të detajuara (PDF, Shembull)',
-          url: '/downloads/vanguard-brochure-placeholder.pdf',
-          fileSize: '1.5 MB (Shembull)'
+          title: 'Manuali i përdorimit',
+          description: 'Udhëzues për përdorimin e Vanguard Comfort (PDF)',
+          url: '/downloads/vanguard-manual.pdf',
+          fileSize: '7 MB'
         }
       ],
       relatedProducts: ['pompa-nxehtesie-serene', 'pompa-nxehtesie-apex', 'kalldaja-og']
@@ -323,6 +317,11 @@ export function getAllProducts(): Product[] {
       ],
       models: [
         {
+          id: 'serene-10kw',
+          name: 'Serene Climate 10kW',
+          price: 'Kontakto'
+        },
+        {
           id: 'serene-15kw',
           name: 'Serene Climate 15kW',
           price: 'Kontakto'
@@ -341,7 +340,7 @@ export function getAllProducts(): Product[] {
       features: [
         'Klasa e Efikasitetit Energjetik A+++',
         'Ftohës ekologjik R32',
-        'Teknologji Inverter për kursim energjie',
+        'Teknologji Inverter për modulim të vazhdueshëm',
         'Temperaturë maksimale e ujit 55°C',
         'Pompë qarkullimi e integruar',
         'Enë ekspansioni e integruar',
@@ -364,14 +363,223 @@ export function getAllProducts(): Product[] {
         'Garancia': '2-5 vite (Shembull - Specify)'
       },
       specifications: {
-
+        'Model No.': {
+          'serene-10kw': 'BLN-010TB1',
+          'serene-15kw': 'BLN-014TB1',
+          'serene-18kw': 'BLN-018TB1',
+          'serene-24kw': 'BLN-024TB3'
+        },
+        'Power supply (V/Ph/Hz)': {
+          'serene-10kw': '220~240/1/50',
+          'serene-15kw': '220~240/1/50',
+          'serene-18kw': '380~415/3/50',
+          'serene-24kw': '380~415/3/50'
+        },
+        'Heating Capacity (A7/6°C,W30/35°C) (kW)': {
+          'serene-10kw': '4.20 - 12.20',
+          'serene-15kw': '5.30 - 16.50',
+          'serene-18kw': '6.20 - 20.50',
+          'serene-24kw': '6.50 - 26.10'
+        },
+        'Heating Power Input (A7/6°C,W30/35°C) (kW)': {
+          'serene-10kw': '0.86 - 2.88',
+          'serene-15kw': '1.15 - 4.15',
+          'serene-18kw': '1.36 - 5.28',
+          'serene-24kw': '1.78 - 6.45'
+        },
+        'Heating Current Input (A7/6°C,W30/35°C) (A)': {
+          'serene-10kw': '3.82 - 12.77',
+          'serene-15kw': '5.10 - 18.41',
+          'serene-18kw': '2.31 - 8.96',
+          'serene-24kw': '2.87 - 10.35'
+        },
+        'Heating COP (A7/6°C,W30/35°C) (W/W)': {
+          'serene-10kw': '4.23 - 5.39',
+          'serene-15kw': '3.97 - 5.43',
+          'serene-18kw': '3.88 - 5.21',
+          'serene-24kw': '4.04 - 5.43'
+        },
+        'Heating Capacity (A7/6°C,W47/55°C) (kW)': {
+          'serene-10kw': '3.85 - 11.20',
+          'serene-15kw': '4.90 - 15.10',
+          'serene-18kw': '6.30 - 19.90',
+          'serene-24kw': '6.90 - 26.10'
+        },
+        'Heating Power Input (A7/6°C,W47/55°C) (kW)': {
+          'serene-10kw': '1.13 - 3.75',
+          'serene-15kw': '1.65 - 5.25',
+          'serene-18kw': '1.65 - 6.82',
+          'serene-24kw': '1.95 - 8.55'
+        },
+        'Heating Current Input (A7/6°C,W47/55°C) (A)': {
+          'serene-10kw': '5.01 - 16.6',
+          'serene-15kw': '7.32 - 23.30',
+          'serene-18kw': '2.80 - 11.58',
+          'serene-24kw': '3.15 - 13.80'
+        },
+        'Heating COP (A7/6°C,W47/55°C) (W/W)': {
+          'serene-10kw': '2.99 - 3.46',
+          'serene-15kw': '2.87 - 3.38',
+          'serene-18kw': '2.91 - 3.34',
+          'serene-24kw': '3.05 - 3.42'
+        },
+        'Cooling Capacity (A35/24°C,W12/7°C) (kW)': {
+          'serene-10kw': '2.60 - 10.30',
+          'serene-15kw': '4.50 - 13.50',
+          'serene-18kw': '5.50 - 17.50',
+          'serene-24kw': '5.20 - 21.30'
+        },
+        'Cooling Power Input (A35/24°C,W12/7°C) (kW)': {
+          'serene-10kw': '0.91 - 3.65',
+          'serene-15kw': '1.45 - 4.85',
+          'serene-18kw': '1.65 - 6.25',
+          'serene-24kw': '1.95 - 8.20'
+        },
+        'Cooling Current Input (A35/24°C,W12/7°C) (A)': {
+          'serene-10kw': '4.03 - 16.19',
+          'serene-15kw': '6.43 - 21.52',
+          'serene-18kw': '2.80 - 10.61',
+          'serene-24kw': '3.15 - 13.23'
+        },
+        'Cooling EER (A35/24°C,W12/7°C) (W/W)': {
+          'serene-10kw': '3.00',
+          'serene-15kw': '2.87',
+          'serene-18kw': '2.96',
+          'serene-24kw': '2.92'
+        },
+        'ERP Level (Outlet water temp. at 35°C)': {
+          'serene-10kw': 'A+++',
+          'serene-15kw': 'A+++',
+          'serene-18kw': 'A+++',
+          'serene-24kw': 'A+++'
+        },
+        'ERP Level (Outlet water temp. at 55°C)': {
+          'serene-10kw': 'A++',
+          'serene-15kw': 'A++',
+          'serene-18kw': 'A++',
+          'serene-24kw': 'A++'
+        },
+        'Rated input power (kW)': {
+          'serene-10kw': '3.83',
+          'serene-15kw': '6.20',
+          'serene-18kw': '7.50',
+          'serene-24kw': '10.00'
+        },
+        'Rated input current (A)': {
+          'serene-10kw': '17',
+          'serene-15kw': '27.50',
+          'serene-18kw': '35.00',
+          'serene-24kw': '17.00'
+        },
+        'Refrigerant Type / Charge / GWP (... / kg)': {
+          'serene-10kw': 'R32/1.8/675',
+          'serene-15kw': 'R32/2.8/675',
+          'serene-18kw': 'R32/3.5/675',
+          'serene-24kw': 'R32/3.5/675'
+        },
+        'Rated water flow (m3/h)': {
+          'serene-10kw': '1.75',
+          'serene-15kw': '2.52',
+          'serene-18kw': '3.20',
+          'serene-24kw': '4.12'
+        },
+        'Fan quantity': {
+          'serene-10kw': '1',
+          'serene-15kw': '1',
+          'serene-18kw': '2',
+          'serene-24kw': '2'
+        },
+        'Fan motor type': {
+          'serene-10kw': 'DC inverter',
+          'serene-15kw': 'DC inverter',
+          'serene-18kw': 'DC inverter',
+          'serene-24kw': 'DC inverter'
+        },
+        'Compressor': {
+          'serene-10kw': 'Panasonic / DC inverter / Rotary / EVI',
+          'serene-15kw': 'Panasonic / DC inverter / Rotary / EVI',
+          'serene-18kw': 'Panasonic / DC inverter / Rotary / EVI',
+          'serene-24kw': 'Panasonic / DC inverter / Rotary / EVI'
+        },
+        'Circulating pump': {
+          'serene-10kw': 'Inverter type / Built-in',
+          'serene-15kw': 'Inverter type / Built-in',
+          'serene-18kw': 'Inverter type / Built-in',
+          'serene-24kw': 'Inverter type / Built-in'
+        },
+        'IP Class': {
+          'serene-10kw': 'IPX4',
+          'serene-15kw': 'IPX4',
+          'serene-18kw': 'IPX4',
+          'serene-24kw': 'IPX4'
+        },
+        'Sound pressure at 1m distance (dB(A))': {
+          'serene-10kw': '52',
+          'serene-15kw': '53',
+          'serene-18kw': '56',
+          'serene-24kw': '58'
+        },
+        'Max outlet water temperature (°C)': {
+          'serene-10kw': '60',
+          'serene-15kw': '60',
+          'serene-18kw': '60',
+          'serene-24kw': '60'
+        },
+        'Water piping connections (inch)': {
+          'serene-10kw': 'G1',
+          'serene-15kw': 'G1-1/4',
+          'serene-18kw': 'G1-1/2',
+          'serene-24kw': 'G1-1/2'
+        },
+        'Pressure drop at rating water flow (kPa)': {
+          'serene-10kw': '27',
+          'serene-15kw': '30',
+          'serene-18kw': '32',
+          'serene-24kw': '35'
+        },
+        'Operating temperature range(Heating mode) (°C)': {
+          'serene-10kw': '-25~45',
+          'serene-15kw': '-25~45',
+          'serene-18kw': '-25~45',
+          'serene-24kw': '-25~45'
+        },
+        'Operating temperature range(Cooling mode) (°C)': {
+          'serene-10kw': '16~45',
+          'serene-15kw': '16~45',
+          'serene-18kw': '16~45',
+          'serene-24kw': '16~45'
+        },
+        'Unpacked Dimensions (L*D*H) (mm)': {
+          'serene-10kw': '1100*445*850',
+          'serene-15kw': '1110*480*850',
+          'serene-18kw': '1110*445*1450',
+          'serene-24kw': '1170*445*1450'
+        },
+        'Packed Dimensions (L*D*H) (mm)': {
+          'serene-10kw': '1160*530*1010',
+          'serene-15kw': '1160*565*1010',
+          'serene-18kw': '1170*530*1610',
+          'serene-24kw': '1170*530*1610'
+        },
+        'UnPacked Weight (kg)': {
+          'serene-10kw': '107',
+          'serene-15kw': '124',
+          'serene-18kw': '151',
+          'serene-24kw': '160'
+        },
+        'Packed Weight (kg)': {
+          'serene-10kw': '119',
+          'serene-15kw': '136',
+          'serene-18kw': '168',
+          'serene-24kw': '177'
+        }
       },
       downloads: [
         {
-          title: 'Broshura Serene Climate (Shembull)',
-          description: 'Specifikimet teknike dhe veçoritë (PDF, Shembull)',
-          url: '/downloads/serene-brochure-placeholder.pdf',
-          fileSize: '1.8 MB (Shembull)'
+          title: 'Manuali i Perdorimit Serene',
+          description: 'Udhëzues për përdorimin e Serene Climate (PDF)',
+          url: '/downloads/serene-manual.pdf',
+          fileSize: '3.7 MB'
         }
       ],
       relatedProducts: ['pompa-nxehtesie-vanguard', 'pompa-nxehtesie-apex', 'kalldaja-og']
@@ -430,18 +638,28 @@ export function getAllProducts(): Product[] {
       ],
       models: [
         {
-          id: 'apex-15kw',
-          name: 'Apex Heating 15kW',
+          id: 'apex-6kw',
+          name: 'Apex Heating 6kW',
           price: 'Kontakto'
         },
         {
-          id: 'apex-22kw',
-          name: 'Apex Heating 22kW',
+          id: 'apex-12kw-monophase',
+          name: 'Apex Heating 12kW Monofazë',
+          price: 'Kontakto'
+        },        
+        {
+          id: 'apex-12kw-triphase',
+          name: 'Apex Heating 12kW Trifazë',
           price: 'Kontakto'
         },
         {
-          id: 'apex-32kw',
-          name: 'Apex Heating 32kW',
+          id: 'apex-18kw-monophase',
+          name: 'Apex Heating 18kW Monofazë',
+          price: 'Kontakto'
+        },
+        {
+          id: 'apex-18kw-triphase',
+          name: 'Apex Heating 18kW Trifazë',
           price: 'Kontakto'
         }
         // Add other capacities if applicable
@@ -474,13 +692,244 @@ export function getAllProducts(): Product[] {
         'Garancia': '2-5 vite (Shembull - Specify)'
       },
       specifications: {
+        'Model No.': {
+          'apex-6kw': 'BLN-006TC1',
+          'apex-12kw-monophase': 'BLN-012TC1',
+          'apex-12kw-triphase': 'BLN-012TC3',
+          'apex-18kw-monophase': 'BLN-018TC1',
+          'apex-18kw-triphase': 'BLN-018TC3'
+        },
+        'Power supply (V/Ph/Hz)': {
+          'apex-6kw': '220~240/1/50',
+          'apex-12kw-monophase': '220~240/1/50',
+          'apex-12kw-triphase': '380~415/3/50',
+          'apex-18kw-monophase': '220~240/1/50',
+          'apex-18kw-triphase': '380~415/3/50'
+        },
+        'Heating Capacity (A7/6°C,W30/35°C) (kW)': {
+          'apex-6kw': '2.92 ~ 9.10',
+          'apex-12kw-monophase': '4.30 ~ 15.20',
+          'apex-12kw-triphase': '4.30 ~ 15.20',
+          'apex-18kw-monophase': '7.24 ~ 21.90',
+          'apex-18kw-triphase': '7.24 ~ 21.90'
+        },
+        'Heating Power Input (A7/6°C,W30/35°C) (kW)': {
+          'apex-6kw': '0.61 ~ 2.11',
+          'apex-12kw-monophase': '0.87 ~ 3.73',
+          'apex-12kw-triphase': '0.87 ~ 3.73',
+          'apex-18kw-monophase': '1.50 ~ 5.88',
+          'apex-18kw-triphase': '1.50 ~ 5.88'
+        },
+        'Heating Current Input (A7/6°C,W30/35°C) (A)': {
+          'apex-6kw': '2.80 ~ 9.25',
+          'apex-12kw-monophase': '4.02 ~ 16.38',
+          'apex-12kw-triphase': '1.78 ~ 6.04',
+          'apex-18kw-monophase': '6.86 ~ 30.25',
+          'apex-18kw-triphase': '2.82 ~ 9.16'
+        },
+        'Heating COP (A7/6°C,W30/35°C) (W/W)': {
+          'apex-6kw': '4.31 ~ 5.66',
+          'apex-12kw-monophase': '4.07 ~ 5.57',
+          'apex-12kw-triphase': '4.07 ~ 5.57',
+          'apex-18kw-monophase': '3.82 ~ 5.59',
+          'apex-18kw-triphase': '3.82 ~ 5.59'
+        },
+        'Heating Capacity (A7/6°C,W47/55°C) (kW)': {
+          'apex-6kw': '2.99 ~ 8.16',
+          'apex-12kw-monophase': '4.25 ~ 14.55',
+          'apex-12kw-triphase': '4.25 ~ 14.55',
+          'apex-18kw-monophase': '6.36 ~ 19.45',
+          'apex-18kw-triphase': '6.36 ~ 19.45'
+        },
+        'Heating Power Input (A7/6°C,W47/55°C) (kW)': {
+          'apex-6kw': '1.03 ~ 2.92',
+          'apex-12kw-monophase': '1.45 ~ 4.28',
+          'apex-12kw-triphase': '1.45 ~ 4.28',
+          'apex-18kw-monophase': '2.15 ~ 6.85',
+          'apex-18kw-triphase': '2.15 ~ 6.85'
+        },
+        'Heating Current Input (A7/6°C,W47/55°C) (A)': {
+          'apex-6kw': '4.57 ~ 12.79',
+          'apex-12kw-monophase': '6.71 ~ 18.80',
+          'apex-12kw-triphase': '2.84 ~ 6.78',
+          'apex-18kw-monophase': '9.84 ~ 30.12',
+          'apex-18kw-triphase': '3.71 ~ 10.60'
+        },
+        'Heating COP (A7/6°C,W47/55°C) (W/W)': {
+          'apex-6kw': '2.79 ~ 3.46',
+          'apex-12kw-monophase': '2.83 ~ 3.45',
+          'apex-12kw-triphase': '2.83 ~ 3.45',
+          'apex-18kw-monophase': '2.84 ~ 3.57',
+          'apex-18kw-triphase': '2.84 ~ 3.57'
+        },
+        'Cooling Capacity (A35/24°C,W12/7°C) (kW)': {
+          'apex-6kw': '1.38 ~ 5.70',
+          'apex-12kw-monophase': '3.65 ~ 11.04',
+          'apex-12kw-triphase': '3.65 ~ 11.04',
+          'apex-18kw-monophase': '4.55 ~ 17.20',
+          'apex-18kw-triphase': '4.55 ~ 17.20'
+        },
+        'Cooling Power Input (A35/24°C,W12/7°C) (kW)': {
+          'apex-6kw': '0.67 ~ 2.44',
+          'apex-12kw-monophase': '1.12 ~ 3.97',
+          'apex-12kw-triphase': '1.12 ~ 3.97',
+          'apex-18kw-monophase': '1.85 ~ 7.31',
+          'apex-18kw-triphase': '1.85 ~ 7.31'
+        },
+        'Cooling Current Input (A35/24°C,W12/7°C) (A)': {
+          'apex-6kw': '3.06 ~ 10.27',
+          'apex-12kw-monophase': '5.18 ~ 17.44',
+          'apex-12kw-triphase': '1.97 ~ 6.30',
+          'apex-18kw-monophase': '8.47 ~ 32.1',
+          'apex-18kw-triphase': '2.99 ~ 11.26'
+        },
+        'ERP Level (Outlet water temp. at 35°C)': {
+          'apex-6kw': 'A+++',
+          'apex-12kw-monophase': 'A+++',
+          'apex-12kw-triphase': 'A+++',
+          'apex-18kw-monophase': 'A+++',
+          'apex-18kw-triphase': 'A+++'
+        },
+        'Max. input power (kW)': {
+          'apex-6kw': '3.5',
+          'apex-12kw-monophase': '5.40',
+          'apex-12kw-triphase': '5.85',
+          'apex-18kw-monophase': '7.5',
+          'apex-18kw-triphase': '10.5'
+        },
+        'Max. input current (A)': {
+          'apex-6kw': '15.0',
+          'apex-12kw-monophase': '25.0',
+          'apex-12kw-triphase': '10.0',
+          'apex-18kw-monophase': '35.0',
+          'apex-18kw-triphase': '17.0'
+        },
+        'Refrigerant Type / Charge / GWP (... / kg)': {
+          'apex-6kw': 'R290 / 0.55 / 3',
+          'apex-12kw-monophase': 'R290 / 1.05 / 3',
+          'apex-12kw-triphase': 'R290 / 1.05 / 3',
+          'apex-18kw-monophase': 'R290 / 1.4 / 3',
+          'apex-18kw-triphase': 'R290 / 1.4 / 3'
+        },
+        'Rated water flow (m3/h)': {
+          'apex-6kw': '1.00',
+          'apex-12kw-monophase': '2.06',
+          'apex-12kw-triphase': '2.06',
+          'apex-18kw-monophase': '3.1',
+          'apex-18kw-triphase': '3.1'
+        },
+        'Fan quantity': {
+          'apex-6kw': '1',
+          'apex-12kw-monophase': '1',
+          'apex-12kw-triphase': '1',
+          'apex-18kw-monophase': '2',
+          'apex-18kw-triphase': '2'
+        },
+        'Fan motor type': {
+          'apex-6kw': 'DC inverter',
+          'apex-12kw-monophase': 'DC inverter',
+          'apex-12kw-triphase': 'DC inverter',
+          'apex-18kw-monophase': 'DC inverter',
+          'apex-18kw-triphase': 'DC inverter'
+        },
+        'Compressor': {
+          'apex-6kw': 'DC inverter',
+          'apex-12kw-monophase': 'DC inverter',
+          'apex-12kw-triphase': 'DC inverter',
+          'apex-18kw-monophase': 'DC inverter',
+          'apex-18kw-triphase': 'DC inverter'
+        },
+        'Circulating pump': {
+          'apex-6kw': 'Inverter type / Built-in',
+          'apex-12kw-monophase': 'Inverter type / Built-in',
+          'apex-12kw-triphase': 'Inverter type / Built-in',
+          'apex-18kw-monophase': 'Inverter type / Built-in',
+          'apex-18kw-triphase': 'Inverter type / Built-in'
+        },
+        'IP Class': {
+          'apex-6kw': 'IPX4',
+          'apex-12kw-monophase': 'IPX4',
+          'apex-12kw-triphase': 'IPX4',
+          'apex-18kw-monophase': 'IPX4',
+          'apex-18kw-triphase': 'IPX4'
+        },
+        'Sound pressure at 1m distance (dB(A))': {
+          'apex-6kw': '46',
+          'apex-12kw-monophase': '53',
+          'apex-12kw-triphase': '54',
+          'apex-18kw-monophase': '56',
+          'apex-18kw-triphase': '56'
+        },
+        'Max outlet water temperature (°C)': {
+          'apex-6kw': '75',
+          'apex-12kw-monophase': '75',
+          'apex-12kw-triphase': '75',
+          'apex-18kw-monophase': '75',
+          'apex-18kw-triphase': '75'
+        },
+        'Water piping connections (inch)': {
+          'apex-6kw': 'G1',
+          'apex-12kw-monophase': 'G1',
+          'apex-12kw-triphase': 'G1',
+          'apex-18kw-monophase': 'G1 - 1/4',
+          'apex-18kw-triphase': 'G1 - 1/4'
+        },
+        'Water Pressure drop (kPa)': {
+          'apex-6kw': '20',
+          'apex-12kw-monophase': '20',
+          'apex-12kw-triphase': '20',
+          'apex-18kw-monophase': '55',
+          'apex-18kw-triphase': '55'
+        },
+        'Operating temperature range (heating mode) (°C)': {
+          'apex-6kw': '-25~45',
+          'apex-12kw-monophase': '-25~45',
+          'apex-12kw-triphase': '-25~45',
+          'apex-18kw-monophase': '-25~45',
+          'apex-18kw-triphase': '-25~45'
+        },
+        'Operating temperature range (cooling mode) (°C)': {
+          'apex-6kw': '16~45',
+          'apex-12kw-monophase': '16~45',
+          'apex-12kw-triphase': '16~45',
+          'apex-18kw-monophase': '16~45',
+          'apex-18kw-triphase': '16~45'
+        },
+        'Unpacked dimensions (L*D*H) (mm)': {
+          'apex-6kw': '1187*418*805',
+          'apex-12kw-monophase': '1287*448*904',
+          'apex-12kw-triphase': '1287*448*904',
+          'apex-18kw-monophase': '1187*488*1456',
+          'apex-18kw-triphase': '1187*488*1456'
+        },
+        'Packed dimensions (L*D*H) (mm)': {
+          'apex-6kw': '1217*463*920',
+          'apex-12kw-monophase': '1317*493*1020',
+          'apex-12kw-triphase': '1317*493*1020',
+          'apex-18kw-monophase': '1217*538*1570',
+          'apex-18kw-triphase': '1217*538*1570'
+        },
+        'UnPacked weight (kg)': {
+          'apex-6kw': '110',
+          'apex-12kw-monophase': '134',
+          'apex-12kw-triphase': '134',
+          'apex-18kw-monophase': '195',
+          'apex-18kw-triphase': '195'
+        },
+        'Packed weight (kg)': {
+          'apex-6kw': '122',
+          'apex-12kw-monophase': '146',
+          'apex-12kw-triphase': '146',
+          'apex-18kw-monophase': '208',
+          'apex-18kw-triphase': '208'
+        }
       },
       downloads: [
         {
-          title: 'Broshura Apex Heating R290 (Shembull)',
-          description: 'Specifikimet teknike dhe avantazhet e R290 (PDF, Shembull)',
-          url: '/downloads/apex-r290-brochure-placeholder.pdf',
-          fileSize: '2.1 MB (Shembull)'
+          title: 'Manuali i Perdorimit Apex',
+          description: 'Udhëzues për përdorimin e Apex Heating (PDF)',
+          url: '/downloads/apex-manual.pdf',
+          fileSize: '2.1 MB'
         }
       ],
       relatedProducts: ['pompa-nxehtesie-serene', 'pompa-nxehtesie-maxi', 'kalldaja-og']
@@ -539,28 +988,23 @@ export function getAllProducts(): Product[] {
       ],
       models: [
         {
-          id: 'maxi-6kw',
-          name: 'Maxi Comfort Split 6kW',
+          id: 'maxi-50kw',
+          name: 'Maxi Comfort Monoblock 50kW',
           price: 'Kontakto'
         },
         {
-          id: 'maxi-8kw',
-          name: 'Maxi Comfort Split 8kW',
+          id: 'maxi-100kw',
+          name: 'Maxi Comfort Monoblock 100kW',
           price: 'Kontakto'
         },
         {
-          id: 'maxi-10kw',
-          name: 'Maxi Comfort Split 10kW',
+          id: 'maxi-200kw',
+          name: 'Maxi Comfort Monoblock 200kW',
           price: 'Kontakto'
         },
         {
-          id: 'maxi-12kw',
-          name: 'Maxi Comfort Split 12kW',
-          price: 'Kontakto'
-        },
-        {
-          id: 'maxi-16kw',
-          name: 'Maxi Comfort Split 16kW',
+          id: 'maxi-400kw',
+          name: 'Maxi Comfort Monoblock 400kW',
           price: 'Kontakto'
         }
       ],
@@ -589,13 +1033,175 @@ export function getAllProducts(): Product[] {
         'Garancia': '2-5 vite (Shembull - Specify)'
       },
       specifications: {
+        'Model No.': {
+          'maxi-50kw': 'DLN-050TA1',
+          'maxi-100kw': 'DLN-100TA1',
+          'maxi-200kw': 'DLN-200TA1',
+          'maxi-400kw': 'DLN-400TA1'
+        },
+        'Power supply (V/Ph/Hz)': {
+          'maxi-50kw': '380~415/3/50',
+          'maxi-100kw': '380~415/3/50',
+          'maxi-200kw': '380~415/3/50',
+          'maxi-400kw': '380~415/3/50'
+        },
+        'Heating Capacity at Air 7°C/6°C, Water 30°C in, 35°C out - Heating Capacity (kW)': {
+          'maxi-50kw': '45',
+          'maxi-100kw': '90',
+          'maxi-200kw': '180',
+          'maxi-400kw': '350'
+        },
+        'Heating Capacity at Air 7°C/6°C, Water 30°C in, 35°C out - Power Input (kW)': {
+          'maxi-50kw': '10.3',
+          'maxi-100kw': '20.8',
+          'maxi-200kw': '42',
+          'maxi-400kw': '81.4'
+        },
+        'Heating Capacity at Air 7°C/6°C, Water 30°C in, 35°C out - COP': {
+          'maxi-50kw': '4.36',
+          'maxi-100kw': '4.32',
+          'maxi-200kw': '4.25',
+          'maxi-400kw': '4.30'
+        },
+        'Heating Capacity at Air 7°C/6°C, Water 50°C in, 55°C out - Heating Capacity (kW)': {
+          'maxi-50kw': '36',
+          'maxi-100kw': '67',
+          'maxi-200kw': '167',
+          'maxi-400kw': '328'
+        },
+        'Heating Capacity at Air 7°C/6°C, Water 50°C in, 55°C out - Power Input (kW)': {
+          'maxi-50kw': '15.5',
+          'maxi-100kw': '25.48',
+          'maxi-200kw': '56.7',
+          'maxi-400kw': '113.9'
+        },
+        'Heating Capacity at Air 7°C/6°C, Water 50°C in, 55°C out - COP': {
+          'maxi-50kw': '2.32',
+          'maxi-100kw': '2.63',
+          'maxi-200kw': '2.95',
+          'maxi-400kw': '2.88'
+        },
+        'Heating Capacity at Air -12°C/-14°C, Water 50°C in, 55°C out - Heating Capacity (kW)': {
+          'maxi-50kw': '24',
+          'maxi-100kw': '40',
+          'maxi-200kw': '107',
+          'maxi-400kw': '205'
+        },
+        'Heating Capacity at Air -12°C/-14°C, Water 50°C in, 55°C out - Power Input (kW)': {
+          'maxi-50kw': '15.4',
+          'maxi-100kw': '25',
+          'maxi-200kw': '54',
+          'maxi-400kw': '104.6'
+        },
+        'Heating Capacity at Air -12°C/-14°C, Water 50°C in, 55°C out - COP': {
+          'maxi-50kw': '1.55',
+          'maxi-100kw': '1.60',
+          'maxi-200kw': '1.98',
+          'maxi-400kw': '1.96'
+        },
+        'Cooling Capacity at Air 35°C/24°C, Water 12°C in, 7°C out - Cooling Capacity (kW)': {
+          'maxi-50kw': '30',
+          'maxi-100kw': '60',
+          'maxi-200kw': '140',
+          'maxi-400kw': '268'
+        },
+        'Cooling Capacity at Air 35°C/24°C, Water 12°C in, 7°C out - Power Input (kW)': {
+          'maxi-50kw': '11.9',
+          'maxi-100kw': '22.9',
+          'maxi-200kw': '43.8',
+          'maxi-400kw': '87.9'
+        },
+        'Cooling Capacity at Air 35°C/24°C, Water 12°C in, 7°C out - EER': {
+          'maxi-50kw': '2.53',
+          'maxi-100kw': '2.62',
+          'maxi-200kw': '3.19',
+          'maxi-400kw': '3.05'
+        },
+        'Max Power Input (kW)': {
+          'maxi-50kw': '16.8',
+          'maxi-100kw': '36.5',
+          'maxi-200kw': '70.1',
+          'maxi-400kw': '145.0'
+        },
+        'Max Current (A)': {
+          'maxi-50kw': '31.5',
+          'maxi-100kw': '63.3',
+          'maxi-200kw': '132.5',
+          'maxi-400kw': '260.0'
+        },
+        'Compressor quantity': {
+          'maxi-50kw': '1',
+          'maxi-100kw': '2',
+          'maxi-200kw': '2',
+          'maxi-400kw': '4'
+        },
+        'Expansion Valve (mm)': {
+          'maxi-50kw': 'Saginomiya/EEV',
+          'maxi-100kw': 'Saginomiya/EEV',
+          'maxi-200kw': 'Danfoss/EEV',
+          'maxi-400kw': 'Danfoss/EEV'
+        },
+        'Air Flow Direction': {
+          'maxi-50kw': 'Vertical',
+          'maxi-100kw': 'Vertical',
+          'maxi-200kw': 'Vertical',
+          'maxi-400kw': 'Vertical'
+        },
+        'Water Flow Volume (m³/h)': {
+          'maxi-50kw': '8',
+          'maxi-100kw': '16',
+          'maxi-200kw': '32',
+          'maxi-400kw': '60'
+        },
+        'Water Pressure Drop (kPa)': {
+          'maxi-50kw': '50',
+          'maxi-100kw': '50',
+          'maxi-200kw': '48',
+          'maxi-400kw': '50'
+        },
+        'Dimensions(L*W*H) (mm)': {
+          'maxi-50kw': '1252*1076*1870',
+          'maxi-100kw': '2198*1096*2176',
+          'maxi-200kw': '2300*1150*2400',
+          'maxi-400kw': '2800*2200*2450'
+        },
+        'Working temperature range (°C)': {
+          'maxi-50kw': '-25 ~ 48',
+          'maxi-100kw': '-25 ~ 48',
+          'maxi-200kw': '-25 ~ 48',
+          'maxi-400kw': '-25 ~ 48'
+        },
+        'Noise (dB(A))': {
+          'maxi-50kw': '≤62',
+          'maxi-100kw': '≤67',
+          'maxi-200kw': '≤70',
+          'maxi-400kw': '≤76'
+        },
+        'IP class': {
+          'maxi-50kw': 'IPX4',
+          'maxi-100kw': 'IPX4',
+          'maxi-200kw': 'IPX4',
+          'maxi-400kw': 'IPX4'
+        },
+        'Net Weight (kg)': {
+          'maxi-50kw': '450',
+          'maxi-100kw': '800',
+          'maxi-200kw': '1330',
+          'maxi-400kw': '2186'
+        },
+        'Water connection (mm)': {
+          'maxi-50kw': 'DN 40',
+          'maxi-100kw': 'DN 50',
+          'maxi-200kw': 'Flange DN 80',
+          'maxi-400kw': 'Flange DN 100'
+        }
       },
       downloads: [
         {
-          title: 'Broshura Maxi Comfort Split (Shembull)',
-          description: 'Detajet teknike dhe udhëzimet e instalimit (PDF, Shembull)',
-          url: '/downloads/maxi-split-brochure-placeholder.pdf',
-          fileSize: '2.0 MB (Shembull)'
+          title: 'Manuali i Perdorimit Maxi Monoblock',
+          description: 'Detajet teknike dhe udhëzimet e instalimit (PDF)',
+          url: '/downloads/maxi-manual.pdf',
+          fileSize: '2.0 MB'
         }
       ],
       relatedProducts: ['pompa-nxehtesie-serene', 'pompa-nxehtesie-apex', 'pompa-nxehtesie-sinceko']
@@ -605,7 +1211,7 @@ export function getAllProducts(): Product[] {
       title: 'Pompa Termike Sinceko Split',
       description: 'Pompë termike ajër-ujë tip Split A++ me ftohës R32, zgjidhje ekonomike për ngrohje.',
       price: 'Kontakto',
-      image: '/produktet/pompa-termike-sinceko.png',
+      image: '/produktet/pompa-gjeotermike-sinceko.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
       badges: [
@@ -654,30 +1260,10 @@ export function getAllProducts(): Product[] {
       ],
       models: [
         {
-          id: 'sinceko-6kw',
-          name: 'Sinceko Split 6kW',
+          id: 'sinceko-30kw',
+          name: 'Sinceko 30kW',
           price: 'Kontakto'
         },
-        {
-          id: 'sinceko-8kw',
-          name: 'Sinceko Split 8kW',
-          price: 'Kontakto'
-        },
-        {
-          id: 'sinceko-10kw',
-          name: 'Sinceko Split 10kW',
-          price: 'Kontakto'
-        },
-        {
-          id: 'sinceko-12kw',
-          name: 'Sinceko Split 12kW',
-          price: 'Kontakto'
-        },
-        {
-          id: 'sinceko-16kw',
-          name: 'Sinceko Split 16kW',
-          price: 'Kontakto'
-        }
       ],
       features: [
         'Klasa e Efikasitetit Energjetik A++',
@@ -704,13 +1290,112 @@ export function getAllProducts(): Product[] {
         'Garancia': '2 vite (Shembull - Specify)'
       },
       specifications: {
+        'Model': {
+          'sinceko-30kw': 'BWH-30F1M3'
+        },
+        'Power supply (V/Ph/Hz)': {
+          'sinceko-30kw': '380/3/50'
+        },
+        'Heating capacity W10/W35 (1) (kW)': {
+          'sinceko-30kw': '30.20'
+        },
+        'COP W10/W35': {
+          'sinceko-30kw': '4.67'
+        },
+        'Heating capacity W10/W55 (2) (kW)': {
+          'sinceko-30kw': '26.88'
+        },
+        'COP W10/W55': {
+          'sinceko-30kw': '3.15'
+        },
+        'Heating capacity B0/W35 (3) (kW)': {
+          'sinceko-30kw': '28.09'
+        },
+        'COP B0/W35': {
+          'sinceko-30kw': '4.30'
+        },
+        'Heating capacity B0/W55 (4) (kW)': {
+          'sinceko-30kw': '23.56'
+        },
+        'COP B0/W55': {
+          'sinceko-30kw': '2.51'
+        },
+        'Heating capacity B-5/W45 (5) (kW)': {
+          'sinceko-30kw': '21.29'
+        },
+        'COP B-5/W45': {
+          'sinceko-30kw': '2.50'
+        },
+        'Heating capacity W15/W35 (6) (kW)': {
+          'sinceko-30kw': '33.22'
+        },
+        'COP W15/W35': {
+          'sinceko-30kw': '5.19'
+        },
+        'Cooling capacity W30/W7 (7) (kW)': {
+          'sinceko-30kw': '26.46'
+        },
+        'EER W30/W7': {
+          'sinceko-30kw': '4.14'
+        },
+        'Rated current (A)': {
+          'sinceko-30kw': '13.0'
+        },
+        'Max. water temperature (°C)': {
+          'sinceko-30kw': '60'
+        },
+        'Rated water temperature (°C)': {
+          'sinceko-30kw': '55'
+        },
+        'Water flow (user side) (m3/h)': {
+          'sinceko-30kw': '5.20'
+        },
+        'Water flow (ground source side) (m3/h)': {
+          'sinceko-30kw': '4.70'
+        },
+        'Noise (dB(A))': {
+          'sinceko-30kw': '43'
+        },
+        'Compressor Brand': {
+          'sinceko-30kw': 'Panasonic'
+        },
+        'Compressor Type': {
+          'sinceko-30kw': 'Scroll'
+        },
+        'Compressor Quantity': {
+          'sinceko-30kw': '2'
+        },
+        'Refrigerant': {
+          'sinceko-30kw': 'R410A'
+        },
+        'Condenser': {
+          'sinceko-30kw': 'Plate type'
+        },
+        'Evaporator': {
+          'sinceko-30kw': 'Plate type'
+        },
+        'Throttling device': {
+          'sinceko-30kw': 'EEV'
+        },
+        'Net weight (kg)': {
+          'sinceko-30kw': '160'
+        },
+        'Gross weight (kg)': {
+          'sinceko-30kw': '175'
+        },
+        'Net dimensions (mm)': {
+          'sinceko-30kw': '708*1048*750'
+        },
+        'Packing dimensions (mm)': {
+          'sinceko-30kw': '755*1155*900'
+        }
       },
       downloads: [
         {
-          title: 'Broshura Sinceko Split (Shembull)',
-          description: 'Specifikimet teknike bazë (PDF, Shembull)',
-          url: '/downloads/sinceko-split-brochure-placeholder.pdf',
-          fileSize: '1.5 MB (Shembull)'
+          title: 'Manuali i Perdorimit Sinceko',
+          description: 'Specifikimet teknike bazë (PDF)',
+          url: '/downloads/sinceko-manual.pdf',
+          fileSize: '1.5 MB'
         }
       ],
       relatedProducts: ['pompa-nxehtesie-maxi', 'pompa-nxehtesie-apex', 'kalldaja-elektrike']
@@ -809,7 +1494,7 @@ export function getAllProducts(): Product[] {
         <p>Me një shkëmbyes nxehtësie prej inoksi dhe një pompë qarkullimi moderne, OG Comfort siguron performancë të besueshme dhe jetëgjatësi. Kontrolli i saj i thjeshtë dhe ekrani LCD e bëjnë të lehtë për përdoruesin menaxhimin e temperaturës dhe funksioneve të kalldajës.</p>
       `,
       details: {
-        'Prodhuesi': 'ECOTEK / Partner (Shembull)',
+        'Prodhuesi': 'ECOTEK/Partner (Shembull)',
         'Tipi': 'Kalldajë Murale me Gaz Kondensuese',
         'Karburanti': 'Gaz Natyral (G20), LPG (G31)',
         'Klasa e Energjisë (Ngrohje)': 'A',
@@ -817,6 +1502,7 @@ export function getAllProducts(): Product[] {
         'Garancia': '2-3 vite (Shembull - Specify)'
       },
       specifications: {
+
       },
       downloads: [
         {
@@ -914,6 +1600,7 @@ export function getAllProducts(): Product[] {
         'Instalimi': 'Standard'
       },
       specifications: {
+
       },
       downloads: [
         {
@@ -1001,7 +1688,7 @@ export function getAllProducts(): Product[] {
       longDescription: `
         <p>ECOTEK JP është zgjidhja perfekte kur hapësira është e kufizuar. Kjo kalldajë elektrike super-kompakte ofron ngrohje efikase dhe vjen me kontroll dixhital dhe WiFi për lehtësi përdorimi.</p>
         
-        <p>Pavarësisht madhësisë së saj të vogël, JP ofron fuqi të mjaftueshme për të ngrohur apartamente dhe shtëpi të vogla në mënyrë ekonomike.</p>
+        <p>Duke përdorur teknologjinë e fundit, JP ofron fuqi të mjaftueshme për të ngrohur apartamente dhe shtëpi të vogla në mënyrë ekonomike.</p>
       `,
       details: {
         'Prodhuesi': 'ECOTEK (Shembull)',
@@ -1011,6 +1698,7 @@ export function getAllProducts(): Product[] {
         'Instalimi': 'Mural, shumë i thjeshtë'
       },
       specifications: {
+
       },
       downloads: [
         {
@@ -1456,7 +2144,7 @@ export function getAllProducts(): Product[] {
       features: [
         'Kapaciteti 60 Litra',
         'Materiali Inoksi AISI 316L - Jetëgjatësi maksimale dhe higjienë',
-        'Izolim me Poliuretan me Densitet të Lartë - Humbje minimale nxehtësie',
+        'Izolim me Poliuretan me Densitet të Lartë për efiçencë energjitike',
         'Mundësi me 1 ose 2 Serpentina (solar + kaldajë)',
         'Rezistencë Elektrike Opsionale',
         'Mbrojtje Anodike Magnezi',
@@ -1465,7 +2153,7 @@ export function getAllProducts(): Product[] {
       longDescription: `
         <p>Akumuluesit e ujit ECOTEK janë projektuar për të ruajtur ujin e ngrohtë sanitar të prodhuar nga sistemet solare ose burime të tjera ngrohjeje (p.sh., kaldaja, pompa termike). Ky model 60-litërsh është ideal për apartamente ose familje të vogla.</p>
         
-        <p>Ndërtuar nga inoksi AISI 316L dhe i izoluar me poliuretan të dendur, ai siguron efikasitet të lartë dhe ujë të pastër për përdorim sanitar. Disponohet me një ose dy serpentina për fleksibilitet maksimal në integrimin me sisteme të ndryshme.</p>
+        <p>Ndërtuar nga inoksi AISI 316L dhe i izoluar me poliuretan të dendur, ai siguron efikasitet të lartë dhe ujë të pastër për përdorim sanitar. Disponohet me një ose dy serpentina shtesë për fleksibilitet maksimal në integrimin me sisteme të ndryshme.</p>
       `,
       details: {
         'Prodhuesi': 'ECOTEK (Shembull)',
@@ -1648,7 +2336,7 @@ export function getAllProducts(): Product[] {
         'Kapacitete të ndryshme (80L, 120L, 200L - Shembull)',
         'Material i brendshëm rezistent (Çelik i emaluar ose Inoks - Specify)',
         'Izolim me Poliuretan me Densitet të Lartë për efiçencë energjitike',
-        'Mundësi me 1 ose 2 Serpentina për lidhje me kaldaja ose panele solare',
+        'Mundësi me 1 ose 2 Serpentina (solar + kaldajë)',
         'Rezistencë Elektrike e integruar',
         'Mbrojtje Anodike Magnezi',
         'Termostat i rregullueshëm',
