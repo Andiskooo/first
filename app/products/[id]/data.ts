@@ -60,7 +60,7 @@ export function getAllProducts(): Product[] {
       id: 'pompa-nxehtesie-vanguard',
       title: 'Pompa Termike Vanguard Comfort',
       description: 'Pompë termike ajër-ujë me efikasitet të lartë për ngrohje dhe ujë të ngrohtë sanitar.',
-      price: 'Kontakto',
+      price: '2450 - 5500',
       image: '/produktet/pompa-termike-vanguard.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
@@ -71,7 +71,7 @@ export function getAllProducts(): Product[] {
           textColor: '#18a757'
         },
         {
-          text: 'R32 Ftohës',
+          text: 'R32 Gaz',
           bgColor: '#e5f6fd',
           textColor: '#0284c7'
         },
@@ -94,7 +94,7 @@ export function getAllProducts(): Product[] {
         },
         {
           name: 'Garancia',
-          value: '3 vite',
+          value: '4 vite',
           icon: '/icons/warranty.svg'
         },
         {
@@ -112,41 +112,36 @@ export function getAllProducts(): Product[] {
         {
           id: 'vanguard-18',
           name: 'Vanguard-18kW',
-          price: 'Kontakto'
+          price: '3500'
         },
         {
           id: 'vanguard-24',
           name: 'Vanguard-24kW',
-          price: 'Kontakto'
+          price: '4500'
         },
         {
           id: 'vanguard-32',
           name: 'Vanguard-32kW',
-          price: 'Kontakto'
+          price: '5500'
         }
       ],
       features: [
-        'Energy Efficiency Class A++',
-        'R32 Refrigerant - Më ekologjik dhe efikas',
+        'Energy Efficiency Class A++, Ngrohje dhe Ftohje',
+        'R32 Gaz - Më ekologjik dhe efikas',
         'Inverter Technology - Për kursim energjie dhe operim të qetë',
         'Temperaturë e lartë uji deri në 55°C',
         'Disponueshme në kapacitete 12kW, 18kW, 24kW, 32kW',
         'Kontroll i avancuar dixhital',
-        'Dizajn kompakt dhe i lehtë për instalim'
+        'Certifikimet: ISO9001, CE, Etiketa e Energjisë erP, ROHS'
       ],
       longDescription: `
-        <p>Pompa termike Vanguard Comfort është zgjidhja ideale për ngrohjen efikase dhe prodhimin e ujit të ngrohtë sanitar në shtëpinë tuaj. Me teknologjinë Inverter dhe ftohësin ekologjik R32, ajo ofron performancë të lartë me konsum të ulët energjie.</p>
-        
-        <p>Klasifikimi i lartë i efikasitetit A++ siguron kursime të ndjeshme në faturat tuaja të energjisë. Vanguard Comfort është projektuar për të ofruar komfort maksimal termik edhe në ditët më të ftohta.</p>
-        
-        <p>Me një gamë të gjerë kapacitetesh nga 12kW deri në 32kW, mund të zgjidhni modelin e duhur për nevojat specifike të hapësirës tuaj.</p>
-      `,
-      specifications: {
+        <p>Pompa Termike EcoTek “Vanguard Comfort”</p><p>Pompat Termike EcoTek Vanguard Comfort me kompresor të gazit R32 janë projektuar për të sjellë komoditet në jetën e njerëzve me ujë të nxehtë, ngrohje dhe ftohje. Karakteristikat e punës së pompës termike dhe funksionet e krahasueshme përfshijnë vlerësimin e energjisë ERP A++, operacionin me zhurmë të ulët 55 Db, gazin R32, kontrollin inteligjent dhe shkrirjen “defrost” inteligjente. Përveç kësaj, këto pompa të ngrohjes me inverter të teknologjis së fundit për të reduktuar kostot efektive përdoren me anë të ekranit touch screen 5-inch. Pompa termike funksionon deri në temperaturën e ulët -25°C EVI dhe funksionimin e softuerit në distancë me një klikim të programit telefonik.</p>
+      `,      specifications: {
         // Data structured as: Characteristic -> Model -> Value
         'Model No.': {
           'vanguard-12': 'BLN-012TA1',
           'vanguard-18': 'BLN-018TA1',
-          'vanguard-24': 'BLN-024TA1',
+          'vanguard-24': 'BLN-026TA1',
           'vanguard-32': 'BLN-031TA1'
         },
         'Power supply': {
@@ -222,10 +217,10 @@ export function getAllProducts(): Product[] {
           'vanguard-32': '26'
         },
         'Refrigerant': {
-          'vanguard-12': 'R410a', // NOTE: Differs from description (R32)
-          'vanguard-18': 'R410a',
-          'vanguard-24': 'R410a',
-          'vanguard-32': 'R410a'
+          'vanguard-12': 'R32',
+          'vanguard-18': 'R32',
+          'vanguard-24': 'R32',
+          'vanguard-32': 'R32'
         },
         'Net Weight (kg)': {
           'vanguard-12': '75',
@@ -272,24 +267,24 @@ export function getAllProducts(): Product[] {
       id: 'pompa-nxehtesie-serene',
       title: 'Pompa Termike Serene Climate',
       description: 'Pompë termike ajër-ujë A+++ me teknologji Inverter dhe ftohës R32.',
-      price: 'Kontakto',
+      price: '3100 - 4950',
       image: '/produktet/pompa-termike-serene.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
       badges: [
         {
           text: 'A+++ Efiçencë',
-          bgColor: '#e7f9ed',
+          bgColor: '#e7f9ed', // Green
           textColor: '#18a757'
         },
         {
-          text: 'R32 Ftohës',
-          bgColor: '#e5f6fd',
+          text: 'R32 Gaz',
+          bgColor: '#e5f6fd', // Blue
           textColor: '#0284c7'
         },
         {
           text: 'Inverter',
-          bgColor: '#fef3c7',
+          bgColor: '#fef3c7', // Yellow
           textColor: '#b45309'
         }
       ],
@@ -301,7 +296,7 @@ export function getAllProducts(): Product[] {
         },
         {
           name: 'Kapaciteti',
-          value: '15kW - 24kW',
+          value: '10kW - 24kW',
           icon: '/icons/power.svg'
         },
         {
@@ -310,7 +305,7 @@ export function getAllProducts(): Product[] {
           icon: '/icons/temperature.svg'
         },
         {
-          name: 'Ftohësi',
+          name: 'Gaz',
           value: 'R32',
           icon: '/icons/refrigerant.svg'
         }
@@ -319,40 +314,38 @@ export function getAllProducts(): Product[] {
         {
           id: 'serene-10kw',
           name: 'Serene Climate 10kW',
-          price: 'Kontakto'
+          price: '3100'
         },
         {
           id: 'serene-15kw',
           name: 'Serene Climate 15kW',
-          price: 'Kontakto'
+          price: '3600'
         },
         {
           id: 'serene-18kw',
           name: 'Serene Climate 18kW',
-          price: 'Kontakto'
+          price: '3950'
         },
         {
           id: 'serene-24kw',
           name: 'Serene Climate 24kW',
-          price: 'Kontakto'
+          price: '4950'
         }
       ],
       features: [
-        'Klasa e Efikasitetit Energjetik A+++',
-        'Ftohës ekologjik R32',
-        'Teknologji Inverter për modulim të vazhdueshëm',
+        'Klasa e Efikasitetit Energjetik A+++, Ngrohje dhe Ftohje',
+        'Gaz ekologjik R32',
+        'Teknologji Inverter për kursim energjie',
         'Temperaturë maksimale e ujit 55°C',
         'Pompë qarkullimi e integruar',
         'Enë ekspansioni e integruar',
         'Valvula sigurie të integruara',
         'Operim i qetë',
-        'Kontroll inteligjent',
-        'Kapacitete: 15kW, 18kW, 24kW'
+        'Kontroll inteligjent'
       ],
       longDescription: `
-        <p>Pompa termike Serene Climate kombinon efikasitetin e lartë A+++ me teknologjinë moderne Inverter dhe ftohësin ekologjik R32. Kjo pompë ajër-ujë është projektuar për të ofruar ngrohje të besueshme dhe ekonomike.</p>
-        
-        <p>Me komponentë të integruar si pompa e qarkullimit, ena e ekspansionit dhe valvulat, instalimi thjeshtohet ndjeshëm. Ajo mund të arrijë një temperaturë uji deri në 55°C, duke e bërë të përshtatshme për sisteme ngrohjeje me radiatorë ose dysheme.</p>
+<p>Pompa e Ngrohjes Serene Climate R32 ka një dizajn modern dhe vlerësim A+++. Ajo përdor gazin miqësor për mjedisin R32 dhe teknologjinë inverter, duke siguruar ujë deri në 55°C me konsum të ulët energjie dhe performancë të lartë. Pajisja vjen e kompletuar me:</p>
+<p>Pompë qarkulluese të integruar për shpërndarje të barabartë të ngrohjes dhe ftohjes,</p>
       `,
       details: {
         'Prodhuesi': 'ECOTEK (Shembull)',
@@ -360,7 +353,7 @@ export function getAllProducts(): Product[] {
         'Teknologjia': 'Inverter',
         'Ftohësi': 'R32',
         'Klasa e Energjisë': 'A+++',
-        'Garancia': '2-5 vite (Shembull - Specify)'
+        'Garancia': '4 vite'
       },
       specifications: {
         'Model No.': {
@@ -587,8 +580,8 @@ export function getAllProducts(): Product[] {
     {
       id: 'pompa-nxehtesie-apex',
       title: 'Pompa Termike Apex Heating',
-      description: 'Pompë termike ajër-ujë A+++ me ftohës natyral R290 dhe temperaturë të lartë uji (75°C).',
-      price: 'Kontakto',
+      description: 'Pompë termike ajër-ujë A+++ me Gaz natyral R290 dhe temperaturë të lartë ujit dalës (75°C).',
+      price: '3000 - 5050',
       image: '/produktet/pompa-termike-apex.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
@@ -604,7 +597,7 @@ export function getAllProducts(): Product[] {
           textColor: '#16a34a'
         },
         {
-          text: 'Temp. e Lartë 75°C',
+          text: 'Temperatura Ujit 75°C',
           bgColor: '#fee2e2', // Red
           textColor: '#dc2626'
         },
@@ -622,7 +615,7 @@ export function getAllProducts(): Product[] {
         },
         {
           name: 'Kapaciteti',
-          value: '15kW - 32kW',
+          value: '6kW - 18kW',
           icon: '/icons/power.svg'
         },
         {
@@ -640,46 +633,45 @@ export function getAllProducts(): Product[] {
         {
           id: 'apex-6kw',
           name: 'Apex Heating 6kW',
-          price: 'Kontakto'
+          price: '2950'
         },
         {
           id: 'apex-12kw-monophase',
           name: 'Apex Heating 12kW Monofazë',
-          price: 'Kontakto'
+          price: '4000'
         },        
         {
           id: 'apex-12kw-triphase',
           name: 'Apex Heating 12kW Trifazë',
-          price: 'Kontakto'
+          price: '4100'
         },
         {
           id: 'apex-18kw-monophase',
           name: 'Apex Heating 18kW Monofazë',
-          price: 'Kontakto'
+          price: '4950'
         },
         {
           id: 'apex-18kw-triphase',
           name: 'Apex Heating 18kW Trifazë',
-          price: 'Kontakto'
-        }
-        // Add other capacities if applicable
+          price: '5050'
+        }   // Add other capacities if applicable
       ],
       features: [
         'Klasa më e lartë e Efikasitetit Energjetik A+++',
-        'Ftohës natyral R290 me GWP (Potencial Ngrohje Globale) shumë të ulët',
+        'Gaz natyral R290 me GWP (Potencial Ngrohje Globale) shumë të ulët',
         'Teknologji Inverter për përshtatje të fuqisë dhe kursim maksimal',
         'Temperaturë e lartë e daljes së ujit deri në 75°C, ideale për radiatorë ekzistues',
         'Pompë qarkullimi e integruar me efikasitet të lartë',
         'Enë ekspansioni e integruar',
         'Valvula sigurie dhe komponentë hidraulikë të integruar',
         'Operim shumë i qetë',
-        'Kontroll inteligjent me mundësi WiFi (Opsionale)',
-        'Kapacitete: 15kW deri 32kW'
+        'Kontroll inteligjent me mundësi WiFi',
+        'Kapacitete: 6kW deri 18kW'
       ],
       longDescription: `
-        <p>Apex Heating përfaqëson majën e teknologjisë së pompave termike, duke përdorur ftohësin natyral R290 (Propan) për një ndikim minimal mjedisor dhe efikasitet të jashtëzakonshëm A+++.</p>
+        <p>Apex Heating përfaqëson majën e teknologjisë së pompave termike, duke përdorur gazin natyral R290 (Propan) për një ndikim minimal mjedisor dhe efikasitet të jashtëzakonshëm A+++.</p>
         
-        <p>Karakteristika kryesore e kësaj pompe është aftësia për të prodhuar ujë me temperaturë deri në 75°C, duke e bërë të përshtatshme për zëvendësimin e kaldajave të vjetra në sisteme me radiatorë tradicionalë, pa pasur nevojë për ndryshime në sistemin ekzistues.</p>
+        <p>Karakteristika kryesore e kësaj pompe është aftësia për të prodhuar ujë me temperaturë deri në 75°C, duke e bërë të përshtatshme për zëvendësimin e kaldajave të vjetra në sisteme me radiatorë tradicionalë, pa pasur nevojë për ndryshime në sistemin egzistues.</p>
 
         <p>Përfshin komponentë hidraulikë të integruar për instalim të lehtë dhe ofron operim të besueshëm edhe në temperatura të ulëta të ambientit.</p>
       `,
@@ -689,7 +681,7 @@ export function getAllProducts(): Product[] {
         'Teknologjia': 'Inverter',
         'Ftohësi': 'R290 (Propan)',
         'Klasa e Energjisë': 'A+++',
-        'Garancia': '2-5 vite (Shembull - Specify)'
+        'Garancia': '4 vite'
       },
       specifications: {
         'Model No.': {
@@ -936,27 +928,22 @@ export function getAllProducts(): Product[] {
     },
     {
       id: 'pompa-nxehtesie-maxi',
-      title: 'Pompa Termike Split Maxi Comfort',
-      description: 'Pompë termike ajër-ujë tip Split A+++ me ftohës R32, ideale për hapësira rezidenciale.',
-      price: 'Kontakto',
+      title: 'Pompa Termike Maxi Afariste',
+      description: 'Pompë termike ajër-ujë A++ me Gaz R410a, ideale për hapësira komerciale ose afariste.',
+      price: '12,000 - 25,000',
       image: '/produktet/pompa-termike-maxi.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
       badges: [
         {
-          text: 'A+++ Efiçencë',
+          text: 'A++ Efiçencë',
           bgColor: '#e7f9ed', // Green
           textColor: '#18a757'
         },
         {
-          text: 'R32 Ftohës',
+          text: 'R410a Gaz',
           bgColor: '#e5f6fd', // Blue
           textColor: '#0284c7'
-        },
-        {
-          text: 'Tip Split',
-          bgColor: '#ede9fe', // Purple
-          textColor: '#6d28d9'
         },
         {
           text: 'Inverter',
@@ -967,70 +954,67 @@ export function getAllProducts(): Product[] {
       keyCharacteristics: [
         {
           name: 'Efikasiteti',
-          value: 'A+++',
+          value: 'A++',
           icon: '/icons/efficiency.svg'
         },
         {
           name: 'Kapaciteti',
-          value: '6kW - 16kW',
+          value: '40kW - 350kW',
           icon: '/icons/power.svg'
         },
         {
           name: 'Temperatura Ujit',
-          value: 'Deri në 60°C',
+          value: 'Deri në 55°C',
           icon: '/icons/temperature.svg' // Adjust temp if needed
         },
         {
           name: 'Tipi',
-          value: 'Split',
+          value: 'Afariste',
           icon: '/icons/split-type.svg' // Assuming an icon exists
         }
       ],
       models: [
         {
           id: 'maxi-50kw',
-          name: 'Maxi Comfort Monoblock 50kW',
-          price: 'Kontakto'
+          name: 'Maxi Afariste 50kW',
+          price: 'Kontakto për'
         },
         {
           id: 'maxi-100kw',
-          name: 'Maxi Comfort Monoblock 100kW',
-          price: 'Kontakto'
+          name: 'Maxi Afariste 100kW',
+          price: 'Kontakto për'
         },
         {
           id: 'maxi-200kw',
-          name: 'Maxi Comfort Monoblock 200kW',
-          price: 'Kontakto'
+          name: 'Maxi Afariste 200kW',
+          price: 'Kontakto për'
         },
         {
           id: 'maxi-400kw',
-          name: 'Maxi Comfort Monoblock 400kW',
-          price: 'Kontakto'
+          name: 'Maxi Afariste 400kW',
+          price: 'Kontakto për'
         }
       ],
       features: [
-        'Klasa e Efikasitetit Energjetik A+++',
-        'Ftohës ekologjik R32',
+        'Klasa e Efikasitetit Energjetik A++',
+        'Gaz ekologjik R410a',
         'Teknologji Inverter DC për modulim të vazhdueshëm',
-        'Dizajn Split (njësi e jashtme dhe e brendshme) për fleksibilitet instalimi',
-        'Temperaturë maksimale e ujit 60°C (Shembull)',
-        'Operim i qetë si për njësinë e brendshme ashtu edhe atë të jashtme',
+        'Temperaturë maksimale e ujit 55°C',
+        'Operim i qetë si për njësinë e jashtme',
         'Kontroll inteligjent me ekran LCD dhe mundësi WiFi',
         'Mbrojtje nga ngrirja',
-        'Kapacitete të ndryshme: 6kW, 8kW, 10kW, 12kW, 16kW'
+        'Kapacitete të ndryshme: 50kW, 100kW, 200kW, 400kW'
       ],
       longDescription: `
-        <p>Pompa termike Maxi Comfort Split ofron një zgjidhje fleksibël dhe me efikasitet të lartë A+++ për ngrohjen dhe ftohjen (nëse ka funksion reversibël) e hapësirave rezidenciale. Dizajni Split ndan komponentët kryesorë në një njësi të jashtme dhe një njësi të brendshme hidraulike, duke lejuar instalim më të lehtë dhe më të përshtatshëm.</p>
-        
-        <p>Duke përdorur ftohësin R32 dhe teknologjinë Inverter, Maxi Comfort siguron performancë optimale dhe kursime të konsiderueshme energjie. Njësia e brendshme kompakte përmban elementet hidraulike kyçe dhe mund të instalohet lehtësisht në një hapësirë teknike ose lavanderi.</p>
+<p>Seria e Pumpave të Ngrohjes dhe Ftohjes Komerciale Maxi nga EcoTek duke përdorur gazin e ftohjes R410a, ofron avantazhe të shumta. R410a është miqësor për mjedisin, pa ndikim potencial në ozon, duke zvogëluar ndikimin e tij. Ai ofron vetitë termodinamike të përmirësuara, duke rezultuar në efikasitet të lartë të energjisë dhe zvogëlim të kostove operative. Mundësia e shkëlqyer e transferimit të nxehtësisë të gazit lejon performancë optimale në ngrohje dhe ftohje. Mundësia e tij për të operuar në presione më të larta lejon dizajne sistemi më kompakte.</p>
       `,
       details: {
-        'Prodhuesi': 'ECOTEK (Shembull)',
-        'Tipi': 'Pompë Termike Ajër-Ujë Split',
+        'Prodhuesi': 'ECOTEK',
+        'Tipi': 'Pompë Termike Ajër-Ujë',
         'Teknologjia': 'Inverter DC',
-        'Ftohësi': 'R32',
-        'Klasa e Energjisë': 'A+++',
-        'Garancia': '2-5 vite (Shembull - Specify)'
+        'Ftohësi': 'R410a',
+        'Klasa e Energjisë': 'A++',
+        'Garancia': '4 vite'
       },
       specifications: {
         'Model No.': {
@@ -1208,25 +1192,25 @@ export function getAllProducts(): Product[] {
     },
     {
       id: 'pompa-nxehtesie-sinceko',
-      title: 'Pompa Termike Sinceko Split',
-      description: 'Pompë termike ajër-ujë tip Split A++ me ftohës R32, zgjidhje ekonomike për ngrohje.',
-      price: 'Kontakto',
+      title: 'Pompa Gjeotermike Sinceko',
+      description: 'Pompë Gjeotermike ujë-ujë A+++ me Gaz R410a, zgjidhje ekonomike për ngrohje.',
+      price: '1950 - 5850',
       image: '/produktet/pompa-gjeotermike-sinceko.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
       badges: [
         {
-          text: 'A++ Efiçencë',
+          text: 'A+++ Efiçencë',
           bgColor: '#f0fdf4', // Lighter Green
           textColor: '#16a34a'
         },
         {
-          text: 'R32 Ftohës',
+          text: 'R410a Ftohës',
           bgColor: '#e5f6fd', // Blue
           textColor: '#0284c7'
         },
         {
-          text: 'Tip Split',
+          text: 'Tip Gjeotermal',
           bgColor: '#ede9fe', // Purple
           textColor: '#6d28d9'
         },
@@ -1239,12 +1223,12 @@ export function getAllProducts(): Product[] {
       keyCharacteristics: [
         {
           name: 'Efikasiteti',
-          value: 'A++',
+          value: 'A+++',
           icon: '/icons/efficiency.svg'
         },
         {
           name: 'Kapaciteti',
-          value: '6kW - 16kW',
+          value: '12kW - 55kW',
           icon: '/icons/power.svg'
         },
         {
@@ -1254,7 +1238,7 @@ export function getAllProducts(): Product[] {
         },
         {
           name: 'Tipi',
-          value: 'Split',
+          value: 'Gjeotermike',
           icon: '/icons/split-type.svg'
         }
       ],
@@ -1262,32 +1246,28 @@ export function getAllProducts(): Product[] {
         {
           id: 'sinceko-30kw',
           name: 'Sinceko 30kW',
-          price: 'Kontakto'
+          price: '4500'
         },
       ],
       features: [
-        'Klasa e Efikasitetit Energjetik A++',
-        'Ftohës ekologjik R32',
+        'Klasa e Efikasitetit Energjetik A+++',
+        'Gaz ekologjik R410a',
         'Teknologji Inverter për funksionim efikas',
-        'Dizajn Split me njësi të jashtme dhe të brendshme',
-        'Temperaturë maksimale e ujit 55°C (Shembull)',
+        'Temperaturë maksimale e ujit 55°C',
         'Operim i besueshëm dhe ekonomik',
-        'Kontrollues i thjeshtë dhe intuitiv',
-        'Instalim fleksibël',
-        'Kapacitete: 6kW, 8kW, 10kW, 12kW, 16kW'
+        'Kontrollues i thjeshtë dhe intuitiv'
       ],
       longDescription: `
-        <p>Pompa termike Sinceko Split ofron një balancë të mirë midis performancës dhe kostos, me një efikasitet A++. Është një zgjidhje e besueshme për ngrohjen e shtëpive duke përdorur teknologjinë ajër-ujë.</p>
-        
-        <p>Ashtu si modelet e tjera Split, ajo përbëhet nga një njësi e jashtme dhe një njësi e brendshme, duke lejuar fleksibilitet gjatë instalimit. Përdor ftohësin R32 dhe teknologjinë Inverter për të siguruar ngrohje efikase.</p>
+        <p>Sinceko Ground Source “Uj-Uj</p>
+<p>Pompa e Ngrohjes nga Burimet e Tokës SINCEKO ofron një zgjidhje të gjithëpërfshirëse, të miqësueshme ndaj mjedisit dhe të kursyer për energjinë për ngrohjen, ftohjen dhe ujin e nxehtë shtëpiake. Përveç dy avantazheve kryesore të energjisë së lartë dhe zhurmës së ulët, kontrolluesi inteligjent i pompa e ngrohjes nga burimet e tokës SINCEKO gjithashtu ofron funksionin e kurvës së ngrohjes për të bërë ngrohjen më të rehatshme dhe funksionin EKO që përfshin tre mënyra për të përshtatur zakonet e ndryshme të jetës familjare për të arritur qëllimin më të madh të kursyerjes së energjisë.</p>
       `,
       details: {
         'Prodhuesi': 'Sinceko (Shembull)',
-        'Tipi': 'Pompë Termike Ajër-Ujë Split',
+        'Tipi': 'Pompë Termike Ujë-Ujë Split',
         'Teknologjia': 'Inverter',
-        'Ftohësi': 'R32',
-        'Klasa e Energjisë': 'A++',
-        'Garancia': '2 vite (Shembull - Specify)'
+        'Ftohësi': 'R410a',
+        'Klasa e Energjisë': 'A+++',
+        'Garancia': '4 vite'
       },
       specifications: {
         'Model': {
@@ -1403,25 +1383,25 @@ export function getAllProducts(): Product[] {
     // Kalldajat
     {
       id: 'kalldaja-og',
-      title: 'Kalldaja me Gaz Kondensuese OG Comfort',
-      description: 'Kalldajë murale me gaz kondensuese me efikasitet të lartë për ngrohje dhe ujë të ngrohtë sanitar.',
-      price: 'Kontakto',
-      image: '/produktet/kalldaja-og.png',
+      title: 'Kalldaja Elektrike OG Comfort',
+      description: 'Kalldajë elektrike me efikasitet të lartë për ngrohje.',
+      price: '250-390',
+      image: '/produktet/kalldaja-og.jpg',
       category: 'ngrohje-qendrore',
       subcategory: 'kalldaja',
       badges: [
         {
-          text: 'Gaz Natyral/LPG',
+          text: 'Elektrike',
           bgColor: '#fef3c7', // Yellow
           textColor: '#b45309'
         },
         {
-          text: 'Kondensuese',
+          text: 'Efikase',
           bgColor: '#e0f2fe',
           textColor: '#0ea5e9'
         },
         {
-          text: 'A Efiçencë',
+          text: 'Sigurtë',
           bgColor: '#f0fdf4', // Lighter green
           textColor: '#16a34a'
         },
@@ -1433,73 +1413,84 @@ export function getAllProducts(): Product[] {
       ],
       keyCharacteristics: [
         {
-          name: 'Efikasiteti',
-          value: '>92% (ErP A)',
-          icon: '/icons/efficiency.svg'
-        },
-        {
           name: 'Kapaciteti',
-          value: '18kW - 35kW',
+          value: '6kW - 27kW',
           icon: '/icons/power.svg'
         },
         {
-          name: 'Karburanti',
-          value: 'Gaz Natyral / LPG',
+          name: 'Elektriciteti',
+          value: '380v / 50hz',
           icon: '/icons/gas.svg' // Assuming icon exists
         },
         {
           name: 'Tipi',
-          value: 'Murale, Kondensuese',
+          value: 'OG, Pumpë',
           icon: '/icons/wall-mounted.svg' // Assuming icon exists
         }
       ],
       models: [
         {
-          id: 'og-18kw',
-          name: 'OG Comfort 18kW',
-          price: 'Kontakto'
+          id: 'og-digitale-6kw-9kw',
+          name: 'OG Digitale 6kW - 9kW',
+          price: '300'
         },
         {
-          id: 'og-24kw',
-          name: 'OG Comfort 24kW',
-          price: 'Kontakto'
+          id: 'og-manuale-6kw-9kw',
+          name: 'OG Manuale 6kW - 9kW',
+          price: '260'
         },
         {
-          id: 'og-30kw',
-          name: 'OG Comfort 30kW',
-          price: 'Kontakto'
+          id: 'og-digitale-12kw-18kw',
+          name: 'OG Digitale 12kW - 18kW',
+          price: '370'
         },
         {
-          id: 'og-35kw',
-          name: 'OG Comfort 35kW',
-          price: 'Kontakto'
-        }
+          id: 'og-manuale-12kw-18kw',
+          name: 'OG Manuale 12kW - 18kW',
+          price: '330'
+        },
+        {
+          id: 'og-digitale-21kw-27kw',
+          name: 'OG Digitale 21kW - 27kW',
+          price: '390'
+        },
+        {
+          id: 'og-manuale-21kw-27kw',
+          name: 'OG Manuale 21kW - 27kW',
+          price: '350'
+        },      
       ],
       features: [
-        'Teknologji kondensimi për efikasitet të lartë dhe kursim karburanti',
-        'Klasa e Efikasitetit Energjetik A (Ngrohje & Ujë Sanitar)',
-        'E përshtatshme për Gaz Natyral dhe LPG (me kit konvertimi)',
-        'Shkëmbyes nxehtësie primar prej çeliku inoks',
-        'Pompë qarkullimi me efikasitet të lartë (Low Energy)',
-        'Prodhim i menjëhershëm i ujit të ngrohtë sanitar (modele combi)',
-        'Ekran LCD intuitiv dhe kontroll i lehtë',
-        'Operim i qetë',
-        'Dizajn kompakt mural',
-        'Mbrojtje nga ngrirja dhe diagnostikim i avancuar',
-        'Kapacitete: 18kW, 24kW, 30kW, 35kW'
+        '2 Modele, Digitale dhe Manuale',
+        'Pompe Qarkulluese Tisea',
+        'Ekran Touchscreen me Programim Javor apo Sistem Analog',
+        'Temperatura Maksimale deri në 90°C',
+        'Zhurme nen 55dB',
+        'Instalim i thjeshte',
+        'Kapacitet nga 6kW - 27kW'
       ],
       longDescription: `
-        <p>Kalldaja murale me gaz OG Comfort përdor teknologjinë e kondensimit për të maksimizuar efikasitetin dhe për të minimizuar konsumin e gazit dhe emetimet. Kjo e bën atë një zgjidhje ideale për ngrohje qendrore dhe prodhim të ujit të ngrohtë sanitar në banesa dhe apartamente.</p>
+        <p>Kalldaja Elektrike nga firma ECOTEK,</p>
+        <p>Me dizajn modern dhe siguri të dëshmuar, është produkti më i shitur dhe më i preferuar për të gjithë konsumatorët që kërkojnë sisteme ngrohjeje me çmim konkurrues dhe jetëgjatësi të lartë.</p>
         
-        <p>Me një shkëmbyes nxehtësie prej inoksi dhe një pompë qarkullimi moderne, OG Comfort siguron performancë të besueshme dhe jetëgjatësi. Kontrolli i saj i thjeshtë dhe ekrani LCD e bëjnë të lehtë për përdoruesin menaxhimin e temperaturës dhe funksioneve të kalldajës.</p>
+        <p>1. Mbrojtje nga Uji</p>
+        <p>Mbrojtje ndaj punës prej sasive të pakta ose të tepërta të ujit, me sensor presioni që ndryshon gjendjen e punës së kaldajës nëse presioni i ujit bie nën 1 bar ose ngjitet mbi 3 bar.</p>
+        
+        <p>2. Mbrojtje nga Mbirryma</p>
+        <p>Siguresa dhe mbrojtje ndaj mbivoltazhit të integruara në sistemin elektrik të kaldajës, për parandalimin e dëmtimeve nga parregullsitë e furnizimit elektrik.</p>
+        
+        <p>3. Kontaktor Silent</p>
+        <p>Modelet më të fundit kanë të integruar kontaktorë elektrikë që reduktojnë nivelin e zhurmës së lëshuar nga kaldaja, për një përdorim më të qetë dhe familjar.</p>
+        
+        <p>4. Lidhje me WiFi</p>
+        <p>Me opsion të integruar për lidhje WiFi, ndezja dhe fikja e kaldajës mund të bëhet në distancë përmes aplikacionit në telefon.</p>
       `,
       details: {
-        'Prodhuesi': 'ECOTEK/Partner (Shembull)',
-        'Tipi': 'Kalldajë Murale me Gaz Kondensuese',
-        'Karburanti': 'Gaz Natyral (G20), LPG (G31)',
+        'Prodhuesi': 'ECOTEK',
+        'Tipi': 'Kalldajë Originale',
+        'Karburanti': 'Elektrtike',
         'Klasa e Energjisë (Ngrohje)': 'A',
-        'Klasa e Energjisë (Ujë Sanitar)': 'A (Profilli XL - Shembull)',
-        'Garancia': '2-3 vite (Shembull - Specify)'
+        'Garancia': '2 vite'
       },
       specifications: {
 
@@ -1510,82 +1501,114 @@ export function getAllProducts(): Product[] {
     },
     {
       id: 'kalldaja-mp',
-      title: 'Kalldaja Elektrike ECOTEK MP',
-      description: 'Kalldajë elektrike e fuqishme me kontroll dixhital dhe WiFi, e përshtatshme për sisteme ngrohjeje.',
-      price: 'Kontakto',
+      title: 'Kalldaja Elektrike MP Comfort',
+      description: 'Kalldajë elektrike me efikasitet të lartë për ngrohje.',
+      price: '250-390',
       image: '/produktet/kalldaja-mp.png',
       category: 'ngrohje-qendrore',
-      subcategory: 'kalldaja-elektrike',
+      subcategory: 'kalldaja',
       badges: [
         {
-          text: 'Kontroll WiFi',
+          text: 'Elektrike',
+          bgColor: '#fef3c7', // Yellow
+          textColor: '#b45309'
+        },
+        {
+          text: 'Efikase',
           bgColor: '#e0f2fe',
           textColor: '#0ea5e9'
         },
         {
-          text: 'Ekran Dixhital',
-          bgColor: '#f3e8ff',
-          textColor: '#9333ea'
+          text: 'Sigurtë',
+          bgColor: '#f0fdf4', // Lighter green
+          textColor: '#16a34a'
         },
         {
-          text: 'Efikase',
-          bgColor: '#f0fdf4',
-          textColor: '#22c55e'
+          text: 'Ujë i Ngrohtë',
+          bgColor: '#ffe4e6', // Pinkish
+          textColor: '#e11d48'
         }
       ],
       keyCharacteristics: [
         {
-          name: 'Fuqia',
+          name: 'Kapaciteti',
           value: '6kW - 27kW',
           icon: '/icons/power.svg'
         },
         {
-          name: 'Kontrolli',
-          value: 'WiFi + Dixhital',
-          icon: '/icons/wifi.svg'
+          name: 'Elektriciteti',
+          value: '380v / 50hz',
+          icon: '/icons/gas.svg' // Assuming icon exists
         },
         {
-          name: 'Garancia',
-          value: '2 vite (Shembull)',
-          icon: '/icons/warranty.svg'
-        },
-        {
-          name: 'Temp. Ujit',
-          value: '90°C',
-          icon: '/icons/temperature.svg'
+          name: 'Tipi',
+          value: 'MP, Pumpë',
+          icon: '/icons/wall-mounted.svg' // Assuming icon exists
         }
       ],
       models: [
         {
-          id: 'mp-6',
-          name: 'MP-6 (6kW)',
-          price: 'Kontakto'
+          id: 'mp-digitale-6kw-9kw',
+          name: 'MP Digitale 6kW - 9kW',
+          price: '300'
         },
         {
-          id: 'mp-27',
-          name: 'MP-27 (27kW)',
-          price: 'Kontakto'
-        }
+          id: 'mp-manuale-6kw-9kw',
+          name: 'MP Manuale 6kW - 9kW',
+          price: '260'
+        },
+        {
+          id: 'mp-digitale-12kw-18kw',
+          name: 'MP Digitale 12kW - 18kW',
+          price: '370'
+        },
+        {
+          id: 'mp-manuale-12kw-18kw',
+          name: 'MP Manuale 12kW - 18kW',
+          price: '330'
+        },
+        {
+          id: 'mp-digitale-21kw-27kw',
+          name: 'MP Digitale 21kW - 27kW',
+          price: '390'
+        },
+        {
+          id: 'mp-manuale-21kw-27kw',
+          name: 'MP Manuale 21kW - 27kW',
+          price: '350'
+        },
       ],
       features: [
-        'Efficient Electric Heating',
-        'Water Pressure Protection',
-        'Digital Display, Wi-Fi connection',
-        'Higher Water Temp 90 C',
-        'Capacities 6kW - 27kW',
-        'Ndërtim robust dhe i qëndrueshëm'
+        '2 Modele, Digitale dhe Manuale',
+        'Pompe Qarkulluese Tisea',
+        'Ekran Touchscreen me Programim Javor apo Sistem Analog',
+        'Temperatura Maksimale deri në 90°C',
+        'Zhurme nen 55dB',
+        'Instalim i thjeshte',
+        'Kapacitet nga 6kW - 27kW'
       ],
       longDescription: `
-        <p>ECOTEK MP është një kalldajë elektrike e projektuar për të ofruar ngrohje të besueshme dhe efikase. E pajisur me kontroll dixhital dhe WiFi, ajo lejon menaxhim të lehtë të temperaturës dhe programeve të ngrohjes.</p>
+        <p>Kalldaja Elektrike nga firma ECOTEK,</p>
+        <p>Me dizajn modern dhe siguri të dëshmuar, është produkti më i shitur dhe më i preferuar për të gjithë konsumatorët që kërkojnë sisteme ngrohjeje me çmim konkurrues dhe jetëgjatësi të lartë.</p>
         
-        <p>Ndërtimi i saj robust e bën të përshtatshme për përdorim afatgjatë në sisteme të ndryshme ngrohjeje qendrore.</p>
+        <p>1. Mbrojtje nga Uji</p>
+        <p>Mbrojtje ndaj punës prej sasive të pakta ose të tepërta të ujit, me sensor presioni që ndryshon gjendjen e punës së kaldajës nëse presioni i ujit bie nën 1 bar ose ngjitet mbi 3 bar.</p>
+        
+        <p>2. Mbrojtje nga Mbirryma</p>
+        <p>Siguresa dhe mbrojtje ndaj mbivoltazhit të integruara në sistemin elektrik të kaldajës, për parandalimin e dëmtimeve nga parregullsitë e furnizimit elektrik.</p>
+        
+        <p>3. Kontaktor Silent</p>
+        <p>Modelet më të fundit kanë të integruar kontaktorë elektrikë që reduktojnë nivelin e zhurmës së lëshuar nga kaldaja, për një përdorim më të qetë dhe familjar.</p>
+        
+        <p>4. Lidhje me WiFi</p>
+        <p>Me opsion të integruar për lidhje WiFi, ndezja dhe fikja e kaldajës mund të bëhet në distancë përmes aplikacionit në telefon.</p>
       `,
       details: {
-        'Prodhuesi': 'ECOTEK (Shembull)',
-        'Tipi': 'Elektrike',
-        'Kontrolli': 'Dixhital, WiFi',
-        'Garancia': '2 vite (Shembull)',
-        'Instalimi': 'Standard'
+        'Prodhuesi': 'ECOTEK',
+        'Tipi': 'Kalldajë Originale',
+        'Karburanti': 'Elektrtike',
+        'Klasa e Energjisë (Ngrohje)': 'A',
+        'Garancia': '2 vite'
       },
       specifications: {
 
@@ -1597,81 +1620,113 @@ export function getAllProducts(): Product[] {
     {
       id: 'kalldaja-jp',
       title: 'Kalldaja Elektrike ECOTEK JP',
-      description: 'Kalldajë elektrike kompakte dhe ekonomike me kontroll dixhital dhe WiFi.',
-      price: 'Kontakto',
+      description: 'Kalldajë elektrike me efikasitet të lartë për ngrohje.',
+      price: '250-390',
       image: '/produktet/kalldaja-jp.png',
       category: 'ngrohje-qendrore',
-      subcategory: 'kalldaja-elektrike',
+      subcategory: 'kalldaja',
       badges: [
         {
-          text: 'Kontroll WiFi',
+          text: 'Elektrike',
+          bgColor: '#fef3c7', // Yellow
+          textColor: '#b45309'
+        },
+        {
+          text: 'Efikase',
           bgColor: '#e0f2fe',
           textColor: '#0ea5e9'
         },
         {
-          text: 'Ekonomike',
-          bgColor: '#fefce8',
-          textColor: '#ca8a04'
+          text: 'Sigurtë',
+          bgColor: '#f0fdf4', // Lighter green
+          textColor: '#16a34a'
         },
         {
-          text: 'Kompakte',
-          bgColor: '#f0fdf4',
-          textColor: '#22c55e'
+          text: 'Ujë i Ngrohtë',
+          bgColor: '#ffe4e6', // Pinkish
+          textColor: '#e11d48'
         }
       ],
       keyCharacteristics: [
         {
-          name: 'Fuqia',
+          name: 'Kapaciteti',
           value: '6kW - 27kW',
           icon: '/icons/power.svg'
         },
         {
-          name: 'Kontrolli',
-          value: 'WiFi + Dixhital',
-          icon: '/icons/wifi.svg'
+          name: 'Elektriciteti',
+          value: '380v / 50hz',
+          icon: '/icons/gas.svg' // Assuming icon exists
         },
         {
-          name: 'Garancia',
-          value: '2 vite (Shembull)',
-          icon: '/icons/warranty.svg'
-        },
-        {
-          name: 'Temp. Ujit',
-          value: '90°C',
-          icon: '/icons/temperature.svg'
+          name: 'Tipi',
+          value: 'JP, Pumpë',
+          icon: '/icons/wall-mounted.svg' // Assuming icon exists
         }
       ],
       models: [
         {
-          id: 'jp-6',
-          name: 'JP-6 (6kW)',
-          price: 'Kontakto'
+          id: 'jp-digitale-6kw-9kw',
+          name: 'JP Digitale 6kW - 9kW',
+          price: '300'
         },
         {
-          id: 'jp-27',
-          name: 'JP-27 (27kW)',
-          price: 'Kontakto'
-        }
+          id: 'jp-manuale-6kw-9kw',
+          name: 'JP Manuale 6kW - 9kW',
+          price: '260'
+        },
+        {
+          id: 'jp-digitale-12kw-18kw',
+          name: 'JP Digitale 12kW - 18kW',
+          price: '370'
+        },
+        {
+          id: 'jp-manuale-12kw-18kw',
+          name: 'JP Manuale 12kW - 18kW',
+          price: '330'
+        },
+        {
+          id: 'jp-digitale-21kw-27kw',
+          name: 'JP Digitale 21kW - 27kW',
+          price: '390'
+        },
+        {
+          id: 'jp-manuale-21kw-27kw',
+          name: 'JP Manuale 21kW - 27kW',
+          price: '350'
+        },
       ],
       features: [
-        'Efficient Electric Heating',
-        'Water Pressure Protection',
-        'Digital Display, Wi-Fi connection',
-        'Higher Water Temp 90 C',
-        'Capacities 6kW - 27kW',
-        'Dizajn shumë kompakt, ideal për hapësira të vogla'
+        '2 Modele, Digitale dhe Manuale',
+        'Pompe Qarkulluese Tisea',
+        'Ekran Touchscreen me Programim Javor apo Sistem Analog',
+        'Temperatura Maksimale deri në 90°C',
+        'Zhurme nen 55dB',
+        'Instalim i thjeshte',
+        'Kapacitet nga 6kW - 27kW'
       ],
       longDescription: `
-        <p>ECOTEK JP është zgjidhja perfekte kur hapësira është e kufizuar. Kjo kalldajë elektrike super-kompakte ofron ngrohje efikase dhe vjen me kontroll dixhital dhe WiFi për lehtësi përdorimi.</p>
+        <p>Kalldaja Elektrike nga firma ECOTEK,</p>
+        <p>Me dizajn modern dhe siguri të dëshmuar, është produkti më i shitur dhe më i preferuar për të gjithë konsumatorët që kërkojnë sisteme ngrohjeje me çmim konkurrues dhe jetëgjatësi të lartë.</p>
         
-        <p>Duke përdorur teknologjinë e fundit, JP ofron fuqi të mjaftueshme për të ngrohur apartamente dhe shtëpi të vogla në mënyrë ekonomike.</p>
+        <p>1. Mbrojtje nga Uji</p>
+        <p>Mbrojtje ndaj punës prej sasive të pakta ose të tepërta të ujit, me sensor presioni që ndryshon gjendjen e punës së kaldajës nëse presioni i ujit bie nën 1 bar ose ngjitet mbi 3 bar.</p>
+        
+        <p>2. Mbrojtje nga Mbirryma</p>
+        <p>Siguresa dhe mbrojtje ndaj mbivoltazhit të integruara në sistemin elektrik të kaldajës, për parandalimin e dëmtimeve nga parregullsitë e furnizimit elektrik.</p>
+        
+        <p>3. Kontaktor Silent</p>
+        <p>Modelet më të fundit kanë të integruar kontaktorë elektrikë që reduktojnë nivelin e zhurmës së lëshuar nga kaldaja, për një përdorim më të qetë dhe familjar.</p>
+        
+        <p>4. Lidhje me WiFi</p>
+        <p>Me opsion të integruar për lidhje WiFi, ndezja dhe fikja e kaldajës mund të bëhet në distancë përmes aplikacionit në telefon.</p>
       `,
       details: {
-        'Prodhuesi': 'ECOTEK (Shembull)',
-        'Tipi': 'Elektrike Super-Kompakte',
-        'Kontrolli': 'Dixhital, WiFi',
-        'Garancia': '2 vite (Shembull)',
-        'Instalimi': 'Mural, shumë i thjeshtë'
+        'Prodhuesi': 'ECOTEK',
+        'Tipi': 'Kalldajë Originale',
+        'Karburanti': 'Elektrtike',
+        'Klasa e Energjisë (Ngrohje)': 'A',
+        'Garancia': '2 vite'
       },
       specifications: {
 
@@ -1685,7 +1740,7 @@ export function getAllProducts(): Product[] {
       id: 'radiator',
       title: 'Radiator Panel',
       description: 'Radiator panel çeliku me efikasitet të lartë për shpërndarje të shpejtë dhe uniforme të ngrohjes.',
-      price: 'Kontakto',
+      price: '80 - 160',
       image: '/produktet/radiator.png',
       category: 'ngrohje-qendrore',
       subcategory: 'radiator',
@@ -1699,6 +1754,11 @@ export function getAllProducts(): Product[] {
           text: 'Çelik Cilësor',
           bgColor: '#f1f5f9',
           textColor: '#475569'
+        },
+        {
+          text: 'Panel',
+          bgColor: '#f1f5f9',
+          textColor: '#475569'
         }
       ],
       keyCharacteristics: [
@@ -1709,12 +1769,12 @@ export function getAllProducts(): Product[] {
         },
         {
           name: 'Tipi',
-          value: 'Panel',
+          value: 'Dy Fletzor',
           icon: '/icons/type.svg'
         },
         {
           name: 'Garancia',
-          value: '10 vite (Shembull)',
+          value: '4 vite',
           icon: '/icons/warranty.svg'
         },
         {
@@ -1727,7 +1787,7 @@ export function getAllProducts(): Product[] {
         {
           id: 'panel-22-600x1000',
           name: 'Panel Çeliku 22/600x1000',
-          price: 'Kontakto'
+          price: 'Kontakto për çdo model'
         }
       ],
       features: [
@@ -1740,8 +1800,6 @@ export function getAllProducts(): Product[] {
       ],
       longDescription: `
         <p>Radiatorët panel prej çeliku janë zgjidhja klasike dhe efikase për sistemet e ngrohjes qendrore. Ata ofrojnë shpërndarje të shpejtë dhe uniforme të nxehtësisë në të gjithë hapësirën.</p>
-        
-        <p>Të prodhuar nga çelik i cilësisë së lartë dhe të lyer me bojë rezistente, këta radiatorë janë të qëndrueshëm dhe kanë jetëgjatësi të lartë. Disponueshëm në një larmi të madhe madhësish dhe tipesh për t'iu përshtatur çdo nevoje.</p>
       `,
       details: {
         'Prodhuesi': 'ECOTEK/Partner (Shembull)',
@@ -1763,13 +1821,13 @@ export function getAllProducts(): Product[] {
       id: 'radiator-gypor',
       title: 'Radiator Gypor',
       description: 'Radiator alumini gypor me dizajn elegant dhe transferim të shkëlqyer të nxehtësisë.',
-      price: 'Kontakto',
+      price: '60 - 120',
       image: '/produktet/radiator-gypor.png',
       category: 'ngrohje-qendrore',
       subcategory: 'radiator',
       badges: [
         {
-          text: 'Alumini',
+          text: 'Qelik',
           bgColor: '#e2e8f0',
           textColor: '#334155'
         },
@@ -1787,17 +1845,17 @@ export function getAllProducts(): Product[] {
       keyCharacteristics: [
         {
           name: 'Materiali',
-          value: 'Alumini',
+          value: 'Qelik',
           icon: '/icons/material.svg'
         },
         {
           name: 'Tipi',
-          value: 'Gypor (Elementë)',
+          value: 'Gypor',
           icon: '/icons/type.svg'
         },
         {
           name: 'Garancia',
-          value: '10 vite (Shembull)',
+          value: '4 vite',
           icon: '/icons/warranty.svg'
         },
         {
@@ -1809,30 +1867,27 @@ export function getAllProducts(): Product[] {
       models: [
         {
           id: 'gypor-h600',
-          name: 'Gypor H600 (për element)',
-          price: 'Kontakto'
+          name: 'Gypor H600',
+          price: 'Kontakto për çdo model'
         }
       ],
       features: [
-        'Ngrohje e Shpejtë dhe e Barabartë falë aluminit',
-        'Materiale të Cilësisë së Lartë - Alumin rezistent',
+        'Ngrohje e Shpejtë dhe e Barabartë falë qelikut',
+        'Materiale të Cilësisë së Lartë - Çelik rezistent',
         'Efiçiencë e Lartë Energjitike - Transferim i shkëlqyer termik',
         'Dizajn Modern dhe Elegant - Përshtatet me interierët bashkëkohorë',
-        'Modular - Mundësi konfigurimi sipas nevojës (numri i elementëve)',
-        'Pesha e lehtë krahasuar me radiatorët e çelikut'
+        'Modular - Mundësi konfigurimi sipas nevojës'
       ],
       longDescription: `
-        <p>Radiatorët gypor prej alumini kombinojnë estetikën moderne me performancën e lartë të ngrohjes. Materiali i aluminit lejon ngrohje shumë të shpejtë dhe transferim efikas të nxehtësisë në ambient.</p>
-        
-        <p>Dizajni me elementë lejon krijimin e radiatorëve me madhësi të personalizuar për çdo hapësirë. Zgjedhja ideale për ata që kërkojnë një zgjidhje ngrohjeje elegante dhe efikase.</p>
+        <p>Radiatori gypor është modeli më i njohur për banjo, duke kombinuar dizajnin elegant me efikasitetin e lartë të shpërndarjes së nxehtësisë. Struktura me gypa lejon ngrohjen e ambientit dhe tharjen e peshqirëve njëkohësisht. I ndërtuar nga materiale rezistente ndaj lagështisë, ky radiator përshtatet lehtësisht në çdo hapësirë dhe mund të funksionojë me ngrohje qendrore ose si njësi elektrike.</p>
       `,
       details: {
-        'Prodhuesi': 'ECOTEK/Partner (Shembull)',
-        'Materiali': 'Alumini i Presuar',
-        'Lyerja': 'Bojë pluhur RAL 9016 (Shembull)',
-        'Presioni maksimal': '6 bar (Shembull)',
-        'Temperatura maksimale': '110°C (Shembull)',
-        'Garancia': '10 vite (Shembull)'
+        'Prodhuesi': 'ECOTEK',
+        'Materiali': 'Çelik',
+        'Lyerja': 'Bojë pluhur RAL 9016',
+        'Presioni maksimal': '6 bar',
+        'Temperatura maksimale': '110°C',
+        'Garancia': '4 vite'
       },
       specifications: {
 
@@ -1845,9 +1900,9 @@ export function getAllProducts(): Product[] {
     // Fancoilerat
     {
       id: 'fancoiler',
-      title: 'Fancoiler ECOTEK',
+      title: 'Fancoiler Slim ECOTEK',
       description: 'Fancoiler mural me dizajn modern për ngrohje dhe ftohje efikase dhe të qetë.',
-      price: 'Kontakto',
+      price: '250 - 300',
       image: '/produktet/fancoiler.png',
       category: 'ngrohje-qendrore',
       subcategory: 'fancoiler',
@@ -1886,25 +1941,25 @@ export function getAllProducts(): Product[] {
         },
         {
           name: 'Zhurma',
-          value: 'E ulët',
+          value: '30-50 dB',
           icon: '/icons/noise.svg'
         }
       ],
       models: [
         {
-          id: 'fancoil-900W',
-          name: 'Fancoil 900W',
-          price: 'Kontakto'
+          id: 'fancoil-1500W',
+          name: 'Fancoil 1500W',
+          price: '250'
         },
         {
-          id: 'fancoil-3000W',
-          name: 'Fancoil 3000W',
-          price: 'Kontakto'
+          id: 'fancoil-2500W',
+          name: 'Fancoil 2500W',
+          price: '300'
         },
         {
           id: 'fancoil-5650W',
           name: 'Fancoil 5650W',
-          price: 'Kontakto'
+          price: '350'
         }
       ],
       features: [
@@ -1912,7 +1967,7 @@ export function getAllProducts(): Product[] {
         'Materiale të Cilësisë së Lartë dhe dizajn modern',
         'Funksionim i Heshtur falë ventilatorit tangjencial',
         'Kontroll i Saktë i Temperaturës dhe shpejtësisë së ventilatorit',
-        'Kapacitete nga 3kW deri në 6kW',
+        'Kapacitete nga 1.5kW deri në 5.65kW',
         'Telekomandë infra të kuqe (opsionale)',
         'Instalim i lehtë në mur'
       ],
@@ -1930,63 +1985,63 @@ export function getAllProducts(): Product[] {
       },
       specifications: {
         'Model': {
-          'fancoil-900W': 'YG-10',
-          'fancoil-3000W': 'YG-20',
+          'fancoil-1500W': 'YG-10',
+          'fancoil-2500W': 'YG-20',
           'fancoil-5650W': 'YG-30'
         },
         'Voltage range (V,50/60Hz)': {
-          'fancoil-900W': 'AC190-250V',
-          'fancoil-3000W': 'AC190-250V',
+          'fancoil-1500W': 'AC190-250V',
+          'fancoil-2500W': 'AC190-250V',
           'fancoil-5650W': 'AC190-250V'
         },
         'Range of rotation (rpm)': {
-          'fancoil-900W': '200-2200',
-          'fancoil-3000W': '200-2200',
+          'fancoil-1500W': '200-2200',
+          'fancoil-2500W': '200-2200',
           'fancoil-5650W': '200-2200'
         },
         'Air volume range (m³/h)': {
-          'fancoil-900W': '265',
-          'fancoil-3000W': '420',
+          'fancoil-1500W': '265',
+          'fancoil-2500W': '420',
           'fancoil-5650W': '630'
         },
         'Noise range (dB)': {
-          'fancoil-900W': '34',
-          'fancoil-3000W': '37',
+          'fancoil-1500W': '34',
+          'fancoil-2500W': '37',
           'fancoil-5650W': '39'
         },
         'Cooling Ca. (kW)(Water in 7°C)': {
-          'fancoil-900W': '900W',
-          'fancoil-3000W': '1680W',
+          'fancoil-1500W': '900W',
+          'fancoil-2500W': '1680W',
           'fancoil-5650W': '3360W'
         },
         'Heating Ca. (kW)(Water in 45°C)': {
-          'fancoil-900W': '990W',
-          'fancoil-3000W': '1830W',
+          'fancoil-1500W': '990W',
+          'fancoil-2500W': '1830W',
           'fancoil-5650W': '3450W'
         },
         'Heating Ca. (kW)(Water in 60°C)': {
-          'fancoil-900W': '1560W',
-          'fancoil-3000W': '3000W',
+          'fancoil-1500W': '1560W',
+          'fancoil-2500W': '3000W',
           'fancoil-5650W': '5650W'
         },
         'Net weight (Kg)': {
-          'fancoil-900W': '15.3',
-          'fancoil-3000W': '17.9',
+          'fancoil-1500W': '15.3',
+          'fancoil-2500W': '17.9',
           'fancoil-5650W': '23.3'
         },
         'Gross weight (Kg)': {
-          'fancoil-900W': '18',
-          'fancoil-3000W': '20.7',
+          'fancoil-1500W': '18',
+          'fancoil-2500W': '20.7',
           'fancoil-5650W': '26.8'
         },
         'Product Size (L*W*H) (mm)': {
-          'fancoil-900W': '760*130*575',
-          'fancoil-3000W': '950*130*575',
+          'fancoil-1500W': '760*130*575',
+          'fancoil-2500W': '950*130*575',
           'fancoil-5650W': '1220*130*575'
         },
         'Package Size (L*W*H) (mm)': {
-          'fancoil-900W': '820*185*670',
-          'fancoil-3000W': '1010*185*670',
+          'fancoil-1500W': '820*185*670',
+          'fancoil-2500W': '1010*185*670',
           'fancoil-5650W': '1290*185*670'
         }
       },
@@ -2004,7 +2059,7 @@ export function getAllProducts(): Product[] {
       id: 'fancoiler-kasetor',
       title: 'Fancoiler Kasetor',
       description: 'Fancoiler kasetor për montim në tavan, ideal për shpërndarje uniforme të ajrit në 4 drejtime.',
-      price: 'Kontakto',
+      price: '500 - 1200',
       image: '/produktet/fancoiler-kasetor.png',
       category: 'ngrohje-qendrore',
       subcategory: 'fancoiler',
@@ -2038,7 +2093,7 @@ export function getAllProducts(): Product[] {
         },
         {
           name: 'Garancia',
-          value: '2 vite (Shembull)',
+          value: '2 vite',
           icon: '/icons/warranty.svg'
         },
         {
@@ -2051,7 +2106,7 @@ export function getAllProducts(): Product[] {
         {
           id: 'kasetor-600x600x3000mm',
           name: 'Kasetor 600x600x3000mm',
-          price: 'Kontakto'
+          price: 'Kontakto për çdo model'
         }
       ],
       features: [
@@ -2070,11 +2125,11 @@ export function getAllProducts(): Product[] {
         <p>Me kapacitete të ndryshme dhe operim të qetë, fancoiler-at kasetorë ECOTEK integrohen lehtësisht në çdo dizajn interieri duke ofruar performancë të lartë.</p>
       `,
       details: {
-        'Prodhuesi': 'ECOTEK (Shembull)',
+        'Prodhuesi': 'ECOTEK',
         'Tipi': 'Fancoiler Kasetor',
         'Funksioni': 'Ngrohje / Ftohje',
         'Montimi': 'Në tavan të varur',
-        'Garancia': '2 vite (Shembull)'
+        'Garancia': '2 vite'
       },
       specifications: {
         'Key Selling Points': {
@@ -2143,14 +2198,14 @@ export function getAllProducts(): Product[] {
     {
       id: 'akumulues',
       title: 'Akumulues ECOTEK',
-      description: 'Akumulues uji inoksi për sisteme solare dhe ngrohje qendrore.',
-      price: 'Kontakto',
+      description: 'Akumulues uji inoksi për ngrohje qendrore dhe sisteme solare.',
+      price: '150-400',
       image: '/produktet/akumulues.png',
       category: 'ngrohje-solare',
       subcategory: 'akumulues',
       badges: [
         {
-          text: 'Inoksi AISI 316L',
+          text: 'Inoksi',
           bgColor: '#e0f2fe',
           textColor: '#0ea5e9'
         },
@@ -2160,30 +2215,30 @@ export function getAllProducts(): Product[] {
           textColor: '#b45309'
         },
         {
-          text: 'Garanci 5 Vite',
+          text: 'Garanci 4 Vite',
           bgColor: '#f0fdf4',
           textColor: '#22c55e'
         }
       ],
       keyCharacteristics: [
         {
-          name: 'Kapaciteti',
-          value: '60 Litra',
+          name: 'Kapacitetet',
+          value: '60 L, 100 L, 200 L',
           icon: '/icons/capacity.svg'
         },
         {
           name: 'Materiali',
-          value: 'Inoksi 316L',
+          value: 'Inoksi',
           icon: '/icons/material.svg'
         },
         {
           name: 'Garancia',
-          value: '5 vite (Shembull)',
+          value: '4 vite',
           icon: '/icons/warranty.svg'
         },
         {
           name: 'Presioni',
-          value: '6 bar (Shembull)',
+          value: '6 bar',
           icon: '/icons/pressure.svg'
         }
       ],
@@ -2201,29 +2256,28 @@ export function getAllProducts(): Product[] {
         {
           id: 'akumulues-200l',
           name: 'Akumulues 200L',
-          price: '350'
+          price: '400'
         }
       ],
       features: [
-        'Kapaciteti 60 Litra',
-        'Materiali Inoksi AISI 316L - Jetëgjatësi maksimale dhe higjienë',
+        'Kapacitetet 60 L, 100 L, 200 L',
+        'Materiali Inoksi - Jetëgjatësi maksimale',
         'Izolim me Poliuretan me Densitet të Lartë për efiçencë energjitike',
-        'Mundësi me 1 ose 2 Serpentina (solar + kaldajë)',
-        'Rezistencë Elektrike Opsionale',
+        'Mundësi me 1 ose 2 Serpentina (solar + pompe termike)',
+        'Nxems Elektrik te integruar',
         'Mbrojtje Anodike Magnezi',
-        'Garanci 5 vite (Shembull)'
+        'Garanci 4 vite'
       ],
       longDescription: `
-        <p>Akumuluesit e ujit ECOTEK janë projektuar për të ruajtur ujin e ngrohtë sanitar të prodhuar nga sistemet solare ose burime të tjera ngrohjeje (p.sh., kaldaja, pompa termike). Ky model 60-litërsh është ideal për apartamente ose familje të vogla.</p>
-        
-        <p>Ndërtuar nga inoksi AISI 316L dhe i izoluar me poliuretan të dendur, ai siguron efikasitet të lartë dhe ujë të pastër për përdorim sanitar. Disponohet me një ose dy serpentina shtesë për fleksibilitet maksimal në integrimin me sisteme të ndryshme.</p>
+        <p>Akumulues Uji për Ngrohje Qendrore - Për një Temperaturë Konstante dhe Efiçiencë Maksimale
+Investoni në akumuluesin tonë të ujit për ngrohje qendrore dhe siguroni një ambient të ngrohtë dhe të rehatshëm gjatë gjithë vitit. Me kapacitete prej 60 L, 100 L, dhe 200 L, akumuluesit tanë janë zgjidhja ideale për të mbajtur temperaturën konstante në sistemin tuaj të ngrohjes qendrore, qoftë për radiatorë, ngrohje dyshemeje apo fan coilers.</p>
       `,
       details: {
-        'Prodhuesi': 'ECOTEK (Shembull)',
-        'Tipi': 'Akumulues Uji Sanitar',
-        'Materiali i Brendshëm': 'Inoksi AISI 316L',
-        'Izolimi': 'Poliuretan (50mm - Shembull)',
-        'Garancia': '5 vite (Shembull)'
+        'Prodhuesi': 'ECOTEK',
+        'Tipi': 'Akumulues Uji',
+        'Materiali i Brendshëm': 'Inoksi',
+        'Izolimi': 'Poliuretan (50mm)',
+        'Garancia': '4 vite'
       },
       specifications: {
         'MODEL': {
@@ -2296,7 +2350,7 @@ export function getAllProducts(): Product[] {
       id: 'boiler-spiral',
       title: 'Boiler Me Spirale',
       description: 'Boiler me spirale për ujë të ngrohtë sanitar me cilësi të lartë dhe efikasitet maksimal.',
-      price: 'Kontakto',
+      price: '500-700',
       image: '/produktet/boiler-spiral.png',
       category: 'sanitari',
       subcategory: 'bojler',
@@ -2312,7 +2366,7 @@ export function getAllProducts(): Product[] {
           textColor: '#22c55e'
         },
         {
-          text: 'Garanci 5 Vite',
+          text: 'Garanci 4 Vite',
           bgColor: '#fef3c7',
           textColor: '#d97706'
         }
@@ -2330,12 +2384,12 @@ export function getAllProducts(): Product[] {
         },
         {
           name: 'Garancia',
-          value: '5 vite (Shembull)',
+          value: '4 vite',
           icon: '/icons/warranty.svg'
         },
         {
           name: 'Presioni',
-          value: '6 bar (Shembull)',
+          value: '6 bar',
           icon: '/icons/pressure.svg'
         }
       ],
@@ -2343,38 +2397,37 @@ export function getAllProducts(): Product[] {
         {
           id: 'bojler-spiral-150l',
           name: 'Bojler Me Spirale 150L',
-          price: 'Kontakto'
+          price: 'Kontakto për çmimin'
         },
         {
           id: 'bojler-spiral-200l',
           name: 'Bojler Me Spirale 200L',
-          price: 'Kontakto'
+          price: 'Kontakto për çmimin'
         },
         {
           id: 'bojler-spiral-300l',
           name: 'Bojler Me Spirale 300L',
-          price: 'Kontakto'
+          price: 'Kontakto për çmimin'
         }
       ],
       features: [
-        'Kapaciteti nga 50 Litra deri në 200 Litra',
+        'Kapaciteti nga 150 Litra deri në 300 Litra',
         'Materiali Inoksi AISI 316L - Jetëgjatësi maksimale dhe higjienë',
         'Izolim me Poliuretan me Densitet të Lartë - Humbje minimale nxehtësie',
         'Mundësi me rezistencë elektrike për ngrohje të menjëhershme',
         'Mbrojtje Anodike Magnezi',
-        'Garanci 5 vite (Shembull)'
+        'Garanci 4 vite'
       ],
       longDescription: `
-        <p>Bojlerët inoks ECOTEK janë projektuar për të ofruar ujë të ngrohtë sanitar me cilësi të lartë dhe efikasitet maksimal. Me kapacitete nga 50 Litra deri në 200 Litra, ata janë të përshtatshëm për familje të vogla dhe të mëdha.</p>
-        
-        <p>Ndërtuar nga inoksi AISI 316L dhe i izoluar me poliuretan të dendur, këta bojlerë sigurojnë efikasitet të lartë dhe ujë të pastër për përdorim sanitar.</p>
+        <p>Boiler Spiral -  Efikasitet dhe Komoditet për Ujin e Ngrohtë në Shtëpinë Tuaj
+Siguroni ujë të ngrohtë të pastër dhe të vazhdueshëm me bojlerët tanë të ujit me kapacitete të ndryshme prej 60 L, 100 L, 200 L, dhe 300 L. Të dizajnuar për të plotësuar nevojat tuaja për ujë sanitar të ngrohtë, bojlerët tanë me ngrohës elektrik janë të përshtatshëm për përdorime të ndryshme në shtëpi, duke ofruar efikasitet dhe komoditet të lartë.</p>
       `,
       details: {
-        'Prodhuesi': 'ECOTEK (Shembull)',
-        'Tipi': 'Bojler Uji Sanitar',
+        'Prodhuesi': 'ECOTEK',
+        'Tipi': 'Bojler Me Spirale',
         'Materiali i Brendshëm': 'Inoksi AISI 316L',
-        'Izolimi': 'Poliuretan (50mm - Shembull)',
-        'Garancia': '5 vite (Shembull)'
+        'Izolimi': 'Poliuretan (50mm)',
+        'Garancia': '4 vite'
       },
       specifications: {
       },
@@ -2385,47 +2438,47 @@ export function getAllProducts(): Product[] {
     {
       id: 'boiler-ecopump',
       title: 'Boileri ECOPUMP',
-      description: 'Boileri ECOPUMP për ngrohje të ngrohtë.',
-      price: 'Kontakto',
-      image: '/produktet/boiler-ecopump.png', // Placeholder - use relevant image
-      category: 'sanitari', // Or adjust category if needed
+      description: 'Boileri ECOPUMP për ngrohje të ujit efficiente.',
+      price: '1400 - 1600',
+      image: '/produktet/boiler-ecopump.png',
+      category: 'sanitari',
       subcategory: 'bojler',
       badges: [
         {
-          text: 'Akumulim & Ngrohje',
+          text: 'Ngrohje me Pompe',
           bgColor: '#e0f2fe', // Example color
           textColor: '#0ea5e9'
         },
         {
-          text: 'Izolim Superior',
+          text: 'Efikas',
           bgColor: '#dcfce7', // Example color
           textColor: '#16a34a'
         },
         {
-          text: 'Garanci 5 Vite',
+          text: 'Garanci 4 Vite',
           bgColor: '#fef3c7',
           textColor: '#d97706'
         }
       ],
       keyCharacteristics: [
         {
-          name: 'Kapaciteti',
+          name: 'Kapacitetet',
           value: '200L-300L', // Example range
           icon: '/icons/capacity.svg'
         },
         {
-          name: 'Materiali',
-          value: 'Çelik i Emaluar / Inoks (Specify)', // Needs clarification
-          icon: '/icons/material.svg'
+          name: 'Gazi',
+          value: 'R290, R134a', // Needs clarification
+          icon: '/icons/gas.svg'
         },
         {
           name: 'Garancia',
-          value: '5 vite (Shembull)',
+          value: '4 vite',
           icon: '/icons/warranty.svg'
         },
         {
-          name: 'Serpentina',
-          value: 'Opsionale (0, 1, ose 2)', // Often optional or included
+          name: 'Shpenzimet',
+          value: '600 Watt/hr', // Often optional or included
           icon: '/icons/coil.svg'
         }
       ],
@@ -2442,28 +2495,24 @@ export function getAllProducts(): Product[] {
         }
       ],
       features: [
-        'Kombinon funksionin e bojlerit dhe akumuluesit',
-        'Kapacitete të ndryshme (80L, 120L, 200L - Shembull)',
-        'Material i brendshëm rezistent (Çelik i emaluar ose Inoks - Specify)',
+        'Ngrohje me Pumpe Termike, Gaz R290/R134a',
+        '600 Watt/hr shpenzime',
+        'Kapacitete të ndryshme 200L-300L',
+        'Display Digitale me Programim',
         'Izolim me Poliuretan me Densitet të Lartë për efiçencë energjitike',
-        'Mundësi me 1 ose 2 Serpentina (solar + kaldajë)',
-        'Rezistencë Elektrike e integruar',
-        'Mbrojtje Anodike Magnezi',
-        'Termostat i rregullueshëm',
-        'Garanci 5 vite (Shembull)'
+        'Nxehmës Elektrike të integruar',
+        'Garanci 4 vite'
       ],
       longDescription: `
-        <p>Bojlerët akumulues ECOTEK ofrojnë një zgjidhje dy-në-një, duke kombinuar funksionin e ngrohjes së ujit me atë të akumulimit për ruajtjen e energjisë. Janë idealë për t\'u integruar me sisteme të ngrohjes qendrore ose solare.</p>
-        
-        <p>Me izolim superior dhe materiale cilësore, këta bojlerë sigurojnë ujë të ngrohtë sanitar në mënyrë efikase dhe ekonomike. Opsionet me serpentina shtesë lejojnë shfrytëzimin e burimeve alternative të energjisë.</p>
-        <p><i>Shënim: Ju lutemi specifikoni materialin e brendshëm (Çelik i emaluar ose Inoks) dhe praninë/numrin e serpentinave për modelet specifike.</i></p>
+        <p>Boiler ECOPUMP - Zgjidhje e Avancuar për Ujë të Ngrohtë Sanitar</p>
+        <p>Zbuloni bojlerin tonë të avancuar të ujit me pompë termike të integruar, me kapacitete prej 200 L dhe 300 L. Boileri me pompë termike redukton shpenzimet e energjisë deri në 4 herë më shumë krahasuar me bojlerët klasikë me ngrohës elektrik, që ofron një efikasitet të jashtëzakonshëm dhe kursim të konsiderueshëm të energjisë. Ky bojler inovativ shfrytëzon vetitë e gazit për të rritur temperaturën e ujit, duke siguruar një ngrohje efikase dhe ekonomike, ndryshe nga bojlerët klasikë me ngrohës elektrik.</p>
       `,
       details: {
-        'Prodhuesi': 'ECOTEK (Shembull)',
+        'Prodhuesi': 'ECOTEK',
         'Tipi': 'Bojler Akumulues Uji',
-        'Materiali i Brendshëm': 'Çelik i Emaluar / Inoks (Specify)',
-        'Izolimi': 'Poliuretan (50-60mm - Shembull)',
-        'Garancia': '5 vite (Shembull)'
+        'Materiali i Brendshëm': 'Çelik i Emaluar / Inoks',
+        'Izolimi': 'Poliuretan (50-60mm)',
+        'Garancia': '4 vite'
       },
       specifications: {
         'Model': {
@@ -2554,9 +2603,9 @@ export function getAllProducts(): Product[] {
     {
       id: "kondicioner-aria",
       title: "Candy - Aria Series",
-      description: "Kondicioner mural me efikasitet të lartë dhe lidhje WiFi.",
-      price: "Kontakto",
-      image: "/produktet/aria.png",
+      description: "Kondicioner split me efikasitet të lartë dhe lidhje WiFi.",
+      price: "500 - 750",
+      image: "/produktet/kondicioner-aria.png",
       category: "klimatizim-ventilim",
       subcategory: "kondicioner",
       badges: [
@@ -2569,7 +2618,18 @@ export function getAllProducts(): Product[] {
           text: 'WiFi & HoN App',
           bgColor: '#e0f2fe',
           textColor: '#0ea5e9'
-        }
+        },
+        {
+          text: 'Garanci 4 vite',
+          bgColor: '#fef3c7',
+          textColor: '#d97706'
+        },
+        {
+          text: 'Operim i Qetë',
+          bgColor: '#fef3c7',
+          textColor: '#d97706'
+        },
+        
       ],
       keyCharacteristics: [
         {
@@ -2586,39 +2646,261 @@ export function getAllProducts(): Product[] {
           name: 'Kontrolli',
           value: 'WiFi',
           icon: '/icons/wifi.svg'
+        },
+        {
+          name: 'Origjina',
+          value: 'Italia',
+          icon: '/icons/wifi.svg'
+        },
+        {
+          name: 'Temperatura Operuese',
+          value: '-20°C ~ 43°C',
+          icon: '/icons/wifi.svg'
+        },
+        {
+          name: 'Gaz',
+          value: 'R32',
+          icon: '/icons/wifi.svg'
         }
       ],
       models: [
         {
           id: 'aria-12k',
           name: 'Aria 12,000 BTU',
-          price: 'Kontakto'
+          price: '510'
         },
         {
           id: 'aria-18k',
           name: 'Aria 18,000 BTU',
-          price: 'Kontakto'
+          price: '650'
         }
       ],
       features: [
+        "Prodhuesi: Candy",
         "Klasa e Efikasitetit A+++ (Ftohje) / A+++ (Ngrohje)",
         "Kontroll i integruar Wi-Fi përmes aplikacionit HoN",
         "Dizajn modern dhe elegant",
         "Operim i qetë",
-        "Kapacitete: 12,000 BTU, 18,000 BTU"
+        "Kapacitete: 12,000 BTU, 18,000 BTU",
+        "SteriClean Teknologjia 56°C"
       ],
-      longDescription: "<p>Seria Candy Aria ofron efikasitet të lartë energjetik dhe kontroll inteligjent përmes WiFi për komfort maksimal.</p>",
+      longDescription: "<p>Zbuloni kondicionerin e avancuar Candy modeli Aria, një produkt i jashtëzakonshëm nga brandi me famë italiane Candy. Ky kondicioner inteligjent me kompresor gazi është dizajnuar për të ofruar rehatinë maksimale si në verë ashtu edhe në dimër. Me teknologji të përparuar dhe një sërë funksionesh të zgjuara, Aria është zgjidhja ideale për çdo shtëpi apo zyrë.</p>",
       details: { 'Prodhuesi': 'Candy', 'Tipi': 'Mural Split', 'Garancia': '2 vite (Shembull)' },
-      specifications: {},
+      specifications: {
+        'Model': {
+          'aria-12k': 'CY-12QBIN / CY-12QBOUT',
+          'aria-18k': 'CY-18QBIN / CY-18QBOUT'
+        },
+        'Cooling Capacity Nominal (Min-Max) (Btu/h)': {
+          'aria-12k': '10920(2730-12965)',
+          'aria-18k': '15015(4430-18420)'
+        },
+        'Cooling Capacity Nominal (kW)': {
+          'aria-12k': '3.2',
+          'aria-18k': '4.4'
+        },
+        'Cooling Capacity Range (MIN-MAX) (kW)': {
+          'aria-12k': '3.2(0.8-3.8)',
+          'aria-18k': '(1.30-5.40)'
+        },
+        'Energy Efficiency SEER': {
+          'aria-12k': '6.1',
+          'aria-18k': '6.30'
+        },
+        'Energy Efficiency EER': {
+          'aria-12k': '3.23',
+          'aria-18k': '3.23'
+        },
+        'Energy Class Cooling': {
+          'aria-12k': 'A++',
+          'aria-18k': 'A++'
+        },
+        'Pdesign Capacity Cooling (kW)': {
+          'aria-12k': '3.2',
+          'aria-18k': '4.80'
+        },
+        'Power Input Cooling Nominal (kW)': {
+          'aria-12k': '0.99',
+          'aria-18k': '1.36'
+        },
+        'Power Input Cooling Range (Min-Max) (kW)': {
+          'aria-12k': '(0.3-1.3)',
+          'aria-18k': '(0.40-1.90)'
+        },
+        'Annual Energy Consumption Cooling (KWH/A)': {
+          'aria-12k': '184',
+          'aria-18k': '267'
+        },
+        'Operating Limits Cooling Min-Max (°C)': {
+          'aria-12k': '-20~43 °C(out)',
+          'aria-18k': '-20~43 °C(out)'
+        },
+        'Heating Capacity Nominal (Min-Max) (Btu/h)': {
+          'aria-12k': '11945(2390-13650)',
+          'aria-18k': '15695(4430-18420)'
+        },
+        'Heating Capacity Nominal (kW)': {
+          'aria-12k': '3.5',
+          'aria-18k': '4.6'
+        },
+        'Heating Capacity Range (MIN-MAX) (kW)': {
+          'aria-12k': '(0.7-4.0)',
+          'aria-18k': '(1.30-5.40)'
+        },
+        'Energy Efficiency SCOP': {
+          'aria-12k': '4',
+          'aria-18k': '4.00'
+        },
+        'Energy Efficiency COP (MILD)': {
+          'aria-12k': '3.71',
+          'aria-18k': '3.71'
+        },
+        'Energy Efficiency SCOP (WARM/COLD)': {
+          'aria-12k': '5.10/-',
+          'aria-18k': '5.10/-'
+        },
+        'Energy Class Heating (MILD/WARM/COLD)': {
+          'aria-12k': 'A+/A+++/-',
+          'aria-18k': 'A+/A+++/-'
+        },
+        'Pdesign Capacity Heating (-10°C) (kW)': {
+          'aria-12k': '3.0',
+          'aria-18k': '3.60'
+        },
+        'Power Input Heating Nominal (kW)': {
+          'aria-12k': '0.943',
+          'aria-18k': '1.24'
+        },
+        'Power Input Heating Range (MIN-MAX) (kW)': {
+          'aria-12k': '(0.4-1.6)',
+          'aria-18k': '(0.40-1.90)'
+        },
+        'Annual Energy Consumption Heating (KWH/A)': {
+          'aria-12k': '1050',
+          'aria-18k': '1260'
+        },
+        'Operating Limits Heating Min-Max (°C)': {
+          'aria-12k': '-20~24 °C(OUT)',
+          'aria-18k': '-20~24 °C(OUT)'
+        },
+        'Power Supply (Ph/V/Hz)': {
+          'aria-12k': '1/220~240/50',
+          'aria-18k': '1/220~240/50'
+        },
+        'Power Supply Position': {
+          'aria-12k': 'outdoor',
+          'aria-18k': 'outdoor'
+        },
+        'Indoor Net Dimension (W/D/H) (mm)': {
+          'aria-12k': '805*292*200',
+          'aria-18k': '875/212/304'
+        },
+        'Indoor Package Dimension (W/D/H) (mm)': {
+          'aria-12k': '876*365*272',
+          'aria-18k': '945/390/296'
+        },
+        'Indoor Net/Shipping Weight (kg)': {
+          'aria-12k': '8.8/10.9',
+          'aria-18k': '10.0/12.0'
+        },
+        'Indoor Air Flow (Cooling/Heating) Max (m³/h)': {
+          'aria-12k': '650/550',
+          'aria-18k': '770/810'
+        },
+        'Indoor Sound Power Level Cooling (Hi) dB(A)': {
+          'aria-12k': '59',
+          'aria-18k': '60'
+        },
+        'Indoor Sound Power Level Heating (Hi) dB(A)': {
+          'aria-12k': '59',
+          'aria-18k': '60'
+        },
+        'Indoor Sound Pressure Level Cooling (Hi/Mid/Lo/So) dB(A)': {
+          'aria-12k': '38/34/29/20',
+          'aria-18k': '44/40/35/28'
+        },
+        'Indoor Sound Pressure Level Heating (Hi/Mid/Lo/So) dB(A)': {
+          'aria-12k': '38/34/29/20',
+          'aria-18k': '44/40/35/28'
+        },
+        'Indoor Moisture Removal (L/h)': {
+          'aria-12k': '1.4',
+          'aria-18k': '2'
+        },
+        'Outdoor Compressor': {
+          'aria-12k': 'HIGHLY',
+          'aria-18k': 'SANYO'
+        },
+        'Outdoor Net Dimension (W/D/H) (mm)': {
+          'aria-12k': '700*245*544',
+          'aria-18k': '800/280/553'
+        },
+        'Outdoor Package Dimension (W/D/H) (mm)': {
+          'aria-12k': '819*320*592',
+          'aria-18k': '902/375/614'
+        },
+        'Outdoor Net/Shipping Weight (kg)': {
+          'aria-12k': '22.0/24.6',
+          'aria-18k': '29.2/32.1'
+        },
+        'Outdoor Air Flow (Cooling/Heating) Max (m³/h)': {
+          'aria-12k': '2100',
+          'aria-18k': '2200/2200'
+        },
+        'Outdoor Sound Power Level Hi dB(A)': {
+          'aria-12k': '64',
+          'aria-18k': '65'
+        },
+        'Outdoor Sound Pressure Level Hi dB(A)': {
+          'aria-12k': '50/51',
+          'aria-18k': '54'
+        },
+        'Outdoor Running Current Max (A)': {
+          'aria-12k': '7.30',
+          'aria-18k': '8.6'
+        },
+        'Refrigerant Type': {
+          'aria-12k': 'R32',
+          'aria-18k': 'R32'
+        },
+        'Refrigerant Charge (g)': {
+          'aria-12k': '510',
+          'aria-18k': '780'
+        },
+        'tCO2': {
+          'aria-12k': '0.34',
+          'aria-18k': '0.53'
+        },
+        'Refrigerant Pipe Liquid Side Diameter (mm)': {
+          'aria-12k': '6.35',
+          'aria-18k': '6.35'
+        },
+        'Refrigerant Pipe Gas Side Diameter (mm)': {
+          'aria-12k': '9.52',
+          'aria-18k': '12.7'
+        },
+        'Refrigerant Pipe Max Pipe Length/Height (m)': {
+          'aria-12k': '20/10',
+          'aria-18k': '20/15'
+        },
+        'Refrigerant Pipe Max Pipe Length without Additional Charge (m)': {
+          'aria-12k': '5',
+          'aria-18k': '7'
+        },
+        'Refrigerant Pipe Additional Charge (g/m)': {
+          'aria-12k': '20',
+          'aria-18k': '20'
+        }
+      },
       downloads: [],
       relatedProducts: ['kondicioner-pura']
     },
     {
       id: "kondicioner-pura",
       title: "Candy - Pura Series",
-      description: "Kondicioner mural me gamë të gjerë kapacitetesh dhe lidhje WiFi.",
-      price: "Kontakto",
-      image: "/produktet/pura.png",
+      description: "Kondicioner split me gamë të gjerë kapacitetesh dhe lidhje WiFi.",
+      price: "350 - 750",
+      image: "/produktet/kondicioner-pura.png",
       category: "klimatizim-ventilim",
       subcategory: "kondicioner",
       badges: [
@@ -2631,7 +2913,18 @@ export function getAllProducts(): Product[] {
           text: 'WiFi & HoN App',
           bgColor: '#e0f2fe',
           textColor: '#0ea5e9'
-        }
+        },
+        {
+          text: 'Garanci 4 vite',
+          bgColor: '#fef3c7',
+          textColor: '#d97706'
+        },
+        {
+          text: 'Operim i Qetë',
+          bgColor: '#fef3c7',
+          textColor: '#d97706'
+        },
+        
       ],
       keyCharacteristics: [
         {
@@ -2648,39 +2941,56 @@ export function getAllProducts(): Product[] {
           name: 'Kontrolli',
           value: 'WiFi',
           icon: '/icons/wifi.svg'
+        },
+        {
+          name: 'Origjina',
+          value: 'Italia',
+          icon: '/icons/wifi.svg'
+        },
+        {
+          name: 'Temperatura Operuese',
+          value: '-20°C ~ 43°C',
+          icon: '/icons/wifi.svg'
+        },
+        {
+          name: 'Gaz',
+          value: 'R32',
+          icon: '/icons/wifi.svg'
         }
       ],
       models: [
         {
           id: 'pura-9k',
           name: 'Pura 9,000 BTU',
-          price: 'Kontakto'
+          price: '280'
         },
         {
           id: 'pura-12k',
           name: 'Pura 12,000 BTU',
-          price: 'Kontakto'
+          price: '350'
         },
         {
           id: 'pura-18k',
           name: 'Pura 18,000 BTU',
-          price: 'Kontakto'
+          price: '465'
         },
         {
           id: 'pura-24k',
           name: 'Pura 24,000 BTU',
-          price: 'Kontakto'
+          price: '640'
         }
       ],
       features: [
-        "Klasa e Efikasitetit A+++ (Ftohje) / A++ (Ngrohje)",
+        "Prodhuesi: Candy",
+        "Klasa e Efikasitetit A+++ (Ftohje) / A+++ (Ngrohje)",
         "Kontroll i integruar Wi-Fi përmes aplikacionit HoN",
-        "Filtrim efikas i ajrit",
-        "Funksion vetë-pastrimi",
-        "Kapacitete: 9,000 BTU, 12,000 BTU, 18,000 BTU, 24,000 BTU"
+        "Dizajn modern dhe elegant",
+        "Operim i qetë",
+        "Kapacitete: 9,000 BTU, 12,000 BTU, 18,000 BTU, 24,000 BTU",
+        "SteriClean Teknologjia 56°C"
       ],
-      longDescription: "<p>Seria Candy Pura ofron një zgjidhje të gjithanshme klimatizimi me efikasitet të lartë dhe funksione inteligjente si kontrolli WiFi.</p>",
-      details: { 'Prodhuesi': 'Candy', 'Tipi': 'Mural Split', 'Garancia': '2 vite (Shembull)' },
+      longDescription: "<p>Zbuloni kondicionerin e ri Candy Modeli Pura, një produkt inovativ nga brandi me famë italiane Candy, krijuar për të sjellë një frymë ajri të pastër në shtëpinë tuaj. Me një dizajn modern dhe funksionalitete të avancuara, Pura ofron performancë të shkëlqyer dhe komoditet maksimal gjatë gjithë vitit.</p>",
+      details: { 'Prodhuesi': 'Candy', 'Tipi': 'Mural Split', 'Garancia': '4 vite' },
       specifications: {
         'Model': {
           'pura-9k': 'CY-09RAIN / CY-09RAOUT',

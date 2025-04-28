@@ -172,7 +172,7 @@ const ProductPage = ({ params }: ProductPageProps) => {
                   <div className="mt-4">
                     <h3 className="text-sm font-medium text-gray-700 mb-2">Karakteristikat kryesore</h3>
                     <ul className="space-y-1 text-sm">
-                      {product.features.slice(0, 4).map((feature: string, index: number) => (
+                      {product.features.map((feature: string, index: number) => (
                         <li key={index} className="flex items-start">
                           <CircleCheck className="text-green-500 mr-2 h-4 w-4 flex-shrink-0 mt-0.5" />
                           <span>{feature}</span>

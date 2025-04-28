@@ -73,7 +73,7 @@ export const categories: Category[] = [
               "R32 Refrigerant, Inverter Technology",
               "Higher water temperature 55 C",
               "Integrated Circulation Pump, Expansion Tank, Valves",
-              "Capacities 15kW - 24 kW"
+              "Capacities 10kW - 24 kW"
             ],
           },
           {
@@ -87,7 +87,7 @@ export const categories: Category[] = [
               "R290 Refrigerant, Inverter Technology",
               "Higher water temperature 75 C",
               "Integrated Circulation Pump, Expansion Tank, Valves",
-              "Capacities 15kW - 32 kW"
+              "Capacities 6kW - 18 kW"
             ],
           },
           {
@@ -101,7 +101,7 @@ export const categories: Category[] = [
               "R410A Refrigerant",
               "Inverter Technology",
               "Higher water temperature 55 C",
-              "Capacities 45kW - 350 kW"
+              "Capacities 50kW - 400 kW"
             ],
           },
           {
@@ -131,7 +131,7 @@ export const categories: Category[] = [
           {
             id: "kalldaja-og",
             title: "Kalldaja Elektrike ECOTEK OG",
-            image: "/produktet/kalldaja-og.png",
+            image: "/produktet/kalldaja-og.jpg",
             category: "ngrohje-qendrore",
             subcategory: "kalldaja-elektrike",
             features: [
@@ -414,7 +414,7 @@ export const categories: Category[] = [
           {
             id: "pompa-nxehtesie-sinceko",
             title: "Pompa Gjeotermike Sinceko",
-            image: "/produktet/pompa-termike-sinceko.png",
+            image: "/produktet/pompa-gjeotermike-sinceko.png",
             category: "klimatizim-ventilim",
             subcategory: "pompa-termike",
             features: [
