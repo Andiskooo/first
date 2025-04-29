@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { getProductById, Product, ProductModel } from '@/app/products/[id]/data';
 import { ArrowLeft, Battery, ChevronDown, ChevronUp, CircleCheck, Download, Gauge, HelpCircle, Settings, ThermometerSnowflake, Timer } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useRouter } from 'next/navigation';
 
 interface ProductPageProps {
   params: Promise<{
@@ -15,6 +16,7 @@ interface ProductPageProps {
 }
 
 const ProductPage = ({ params }: ProductPageProps) => {
+  const router = useRouter()
   // Unwrap the params Promise using React.use
   const { id } = use(params);
   const [product, setProduct] = useState<Product | null>(null);
@@ -213,11 +215,10 @@ const ProductPage = ({ params }: ProductPageProps) => {
             
             {/* Action buttons */}
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-6">
+              <Button onClick={()=> {
+                router.push('/contact')
+              }} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-6">
                 Na Kontaktoni
-              </Button>
-              <Button variant="outline" className="flex-1 py-6">
-                Manuali i Perdorimit
               </Button>
             </div>
           </div>
