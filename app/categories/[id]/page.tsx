@@ -14,6 +14,9 @@ interface CategoryPageProps {
   }>;
 }
 
+// Add default hero image
+const DEFAULT_HERO_IMAGE = '/hero/default-hero.jpg';
+
 const CategoryPage = ({ params }: CategoryPageProps) => {
   // Unwrap the params Promise using React.use
   const { id } = use(params);
@@ -24,11 +27,17 @@ const CategoryPage = ({ params }: CategoryPageProps) => {
   const [loading, setLoading] = useState(true);
   const [activeSubcategory, setActiveSubcategory] = useState<string | null>(subcategoryId);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [heroImageError, setHeroImageError] = useState(false);
 
   // Load category and products
   useEffect(() => {
-    const categoryData = getCategoryById(id);
-    if (categoryData) {
+    try {
+      const categoryData = getCategoryById(id);
+      if (!categoryData) {
+        setLoading(false);
+        return;
+      }
+      
       setCategory(categoryData);
       
       // Get all products for this category
@@ -40,8 +49,11 @@ const CategoryPage = ({ params }: CategoryPageProps) => {
         : allProducts;
         
       setFilteredProducts(initialProducts);
+    } catch (error) {
+      console.error('Error loading category data:', error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [id, activeSubcategory]);
 
   // Select a subcategory
@@ -77,11 +89,12 @@ const CategoryPage = ({ params }: CategoryPageProps) => {
       {/* Hero section with image that covers the header */}
       <div className="relative h-[60vh] w-full">
         <Image 
-          src={category.heroImage}
+          src={heroImageError ? DEFAULT_HERO_IMAGE : category.heroImage}
           alt={category.title}
           fill
           className="object-cover"
           priority
+          onError={() => setHeroImageError(true)}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/30 flex items-center justify-center">
           <div className="text-center text-white px-4 max-w-4xl">

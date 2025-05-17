@@ -479,7 +479,23 @@ export const categories: Category[] = [
 
 // Function to get a category by ID
 export function getCategoryById(id: string): Category | undefined {
-  return categories.find(category => category.id === id);
+  console.log('[DEBUG] Searching for category ID:', JSON.stringify(id));
+  console.log('[DEBUG] Available category IDs:', categories.map(c => c.id));
+  
+  // Trim and normalize comparison
+  const normalizedInput = id.trim().toLowerCase();
+  const found = categories.find(category => {
+    const normalizedCategoryId = category.id.trim().toLowerCase();
+    console.log(`[DEBUG] Comparing: ${normalizedInput} vs ${normalizedCategoryId}`);
+    return normalizedCategoryId === normalizedInput;
+  });
+
+  if (!found) {
+    console.warn('[DEBUG] Category not found:', id);
+    console.warn('[DEBUG] Available categories:', categories.map(c => c.id));
+  }
+  
+  return found;
 }
 
 // Function to get all products

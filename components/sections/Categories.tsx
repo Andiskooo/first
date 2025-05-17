@@ -25,7 +25,7 @@ const categories = [
     icon: (
       <Image src="/icons/hvac.svg" alt="Klimatizim/Ventilim" width={64} height={64} className="text-blue-500 group-hover:text-blue-600 transition-colors" />
     ),
-    link: '/categories/klimatizim',
+    link: '/categories/klimatizim-ventilim',
     color: 'text-blue-500 group-hover:text-blue-600',
     bgColor: 'bg-blue-50 group-hover:bg-blue-100',
     borderColor: 'border-blue-500/50 group-hover:border-blue-600/50',
