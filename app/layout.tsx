@@ -22,6 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="sq" suppressHydrationWarning>
+      <meta name="facebook-domain-verification" content="xv4f6pb11tao8f8jryy1rgkco6eqs3" />
       <ClarityAnalytics />
       <body className={inter.className}>
         <MainLayout>
