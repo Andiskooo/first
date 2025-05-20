@@ -109,7 +109,7 @@ Kur jashtë është 0°C apo më ftohtë, ajri ka ende energji termike. 0°C ës
 Ka ende shumë nxehtësi në ajër. Zeroja reale është “zero absolute” = -273°C. Pra, nëse nuk jetoni në ato temperatura, ka një pompë nxehtësie që do të funksionojë për ju. Pompat tipike janë të projektuara të funksionojnë deri në -20°C dhe mund të ngrohin shtëpinë pa problem nëse janë të projektuara siç duhet. Nëse dëgjoni për probleme me pompat e nxehtësisë në të ftohtë, zakonisht janë gabime në dizajn, instalim ose konfigurim.  Edhe nëse COP bie në 2.8 në -1°C, kjo është ende 280% efikasitet. Një kaldajë moderne me kondensim mund të jetë vetëm 88% efikase në atë skenar. 
 Pra, edhe pse pompat nuk janë aq efikase në dimër të thellë, ato janë ende më shumë se 3 herë më efikase se një kaldajë me gaz.
 `,
-    imageUrl: '/blog/BLog-3.jpg',
+    imageUrl: '/blog/Blog-3.jpg',
     link: '/blog/ac-leaking-water',
     accentColor: 'green-600'
   },
