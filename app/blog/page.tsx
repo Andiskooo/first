@@ -9,6 +9,14 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription }
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Calendar } from 'lucide-react';
 
+<head>
+<meta property="og:title" content="Your Blog Title" />
+  <meta property="og:description" content="A brief summary of your blog post." />
+  <meta property="og:image" content="https://yourwebsite.com/path/to/image.jpg" />
+  <meta property="og:url" content="https://yourwebsite.com/blog-post-url" />
+  <meta property="og:type" content="article" /> 
+</head>
+
 const BlogPage = () => {
   // State for filtered blog posts
   const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>(blogPosts);
