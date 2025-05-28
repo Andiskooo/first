@@ -1,25 +1,27 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import { ArrowLeft, Calendar, Share2 } from 'lucide-react';
 import { blogPosts, BlogPost } from '@/app/blog/[id]/data';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 
-export default function BlogPostPage() {
-  const params = useParams<{ id: string }>();
+interface BlogPostClientProps {
+  id: string;
+}
+
+export default function BlogPostClient({ id }: BlogPostClientProps) {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     // Find the blog post with the matching ID
-    const foundPost = blogPosts.find((p) => p.id === params.id || p.link.includes(params.id as string));
+    const foundPost = blogPosts.find((p) => p.id === id || p.link.includes(id));
     setPost(foundPost || null);
     setLoading(false);
-  }, [params.id]);
+  }, [id]);
   
   if (loading) {
     return (
@@ -63,7 +65,7 @@ export default function BlogPostPage() {
     
     // Step 3: Handle lists - wrap in proper ul tags
     const listRegex = /((?:^- .+\n?)+)/gm;
-    formattedContent = formattedContent.replace(listRegex, (match: string) => {
+    formattedContent = formattedContent.replace(listRegex, (match) => {
       const listItems = match
         .split('\n')
         .filter(line => line.trim().startsWith('- '))
@@ -89,7 +91,7 @@ export default function BlogPostPage() {
         dangerouslySetInnerHTML={{ __html: paragraphs }} 
       />
     );
-  }
+  };
 
   // Get accent color
   const accentColor = post.accentColor?.split('-')[0] || 'blue';
@@ -198,6 +200,18 @@ export default function BlogPostPage() {
             <article className="mt-8">
               {renderContent(post.fullContent)}
             </article>
+            
+            {/* Footer with navigation links */}
+            <div className="mt-16 pt-8 border-t border-gray-200">
+              <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
+                <Button variant="outline" asChild>
+                  <Link href="/blog">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Kthehu në faqen e blogut
+                  </Link>
+                </Button>
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>
