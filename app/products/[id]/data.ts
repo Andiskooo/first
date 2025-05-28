@@ -29,7 +29,7 @@ export interface Product {
   title: string;
   description?: string;
   price: string;
-  image: string;
+  imageUrl: string;
   category: string;
   subcategory?: string;
   badges?: Badge[];
@@ -61,7 +61,7 @@ export function getAllProducts(): Product[] {
       title: 'Pompa Termike Vanguard Comfort',
       description: 'Pompë termike ajër-ujë me efikasitet të lartë për ngrohje dhe ujë të ngrohtë sanitar.',
       price: '2450 - 5500',
-      image: '/produktet/pompa-termike-vanguard.png',
+      imageUrl: '/produktet/pompa-termike-vanguard.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
       badges: [
@@ -125,7 +125,7 @@ export function getAllProducts(): Product[] {
           price: '5500'
         }
       ],
-      features: [
+      features: [ 
         'Energy Efficiency Class A++, Ngrohje dhe Ftohje',
         'R32 Gaz - Më ekologjik dhe efikas',
         'Inverter Technology - Për kursim energjie dhe operim të qetë',
@@ -268,7 +268,7 @@ export function getAllProducts(): Product[] {
       title: 'Pompa Termike Serene Climate',
       description: 'Pompë termike ajër-ujë A+++ me teknologji Inverter dhe ftohës R32.',
       price: '3100 - 4950',
-      image: '/produktet/pompa-termike-serene.png',
+      imageUrl: '/produktet/pompa-termike-serene.png', 
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
       badges: [
@@ -582,7 +582,7 @@ export function getAllProducts(): Product[] {
       title: 'Pompa Termike Apex Heating',
       description: 'Pompë termike ajër-ujë A+++ me Gaz natyral R290 dhe temperaturë të lartë ujit dalës (75°C).',
       price: '3000 - 5050',
-      image: '/produktet/pompa-termike-apex.png',
+      imageUrl: '/produktet/pompa-termike-apex.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
       badges: [
@@ -931,7 +931,7 @@ export function getAllProducts(): Product[] {
       title: 'Pompa Termike Maxi Afariste',
       description: 'Pompë termike ajër-ujë A++ me Gaz R410a, ideale për hapësira komerciale ose afariste.',
       price: '12,000 - 25,000',
-      image: '/produktet/pompa-termike-maxi.png',
+      imageUrl: '/produktet/pompa-termike-maxi.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
       badges: [
@@ -1195,7 +1195,7 @@ export function getAllProducts(): Product[] {
       title: 'Pompa Gjeotermike Sinceko',
       description: 'Pompë Gjeotermike ujë-ujë A+++ me Gaz R410a, zgjidhje ekonomike për ngrohje.',
       price: '1950 - 5850',
-      image: '/produktet/pompa-gjeotermike-sinceko.png',
+      imageUrl: '/produktet/pompa-gjeotermike-sinceko.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
       badges: [
@@ -1386,7 +1386,7 @@ export function getAllProducts(): Product[] {
       title: 'Kalldaja Elektrike OG Comfort',
       description: 'Kalldajë elektrike me efikasitet të lartë për ngrohje.',
       price: '250-390',
-      image: '/produktet/kalldaja-og.jpg',
+      imageUrl: '/produktet/kalldaja-og.jpg',
       category: 'ngrohje-qendrore',
       subcategory: 'kalldaja',
       badges: [
@@ -1504,7 +1504,7 @@ export function getAllProducts(): Product[] {
       title: 'Kalldaja Elektrike MP Comfort',
       description: 'Kalldajë elektrike me efikasitet të lartë për ngrohje.',
       price: '250-390',
-      image: '/produktet/kalldaja-mp.png',
+      imageUrl: '/produktet/kalldaja-mp.png',  
       category: 'ngrohje-qendrore',
       subcategory: 'kalldaja',
       badges: [
@@ -1622,7 +1622,7 @@ export function getAllProducts(): Product[] {
       title: 'Kalldaja Elektrike ECOTEK JP',
       description: 'Kalldajë elektrike me efikasitet të lartë për ngrohje.',
       price: '250-390',
-      image: '/produktet/kalldaja-jp.png',
+      imageUrl: '/produktet/kalldaja-jp.png',
       category: 'ngrohje-qendrore',
       subcategory: 'kalldaja',
       badges: [
@@ -1741,7 +1741,7 @@ export function getAllProducts(): Product[] {
       title: 'Radiator Panel',
       description: 'Radiator panel çeliku me efikasitet të lartë për shpërndarje të shpejtë dhe uniforme të ngrohjes.',
       price: '80 - 160',
-      image: '/produktet/radiator.png',
+      imageUrl: '/produktet/radiator.png',
       category: 'ngrohje-qendrore',
       subcategory: 'radiator',
       badges: [
@@ -1822,7 +1822,7 @@ export function getAllProducts(): Product[] {
       title: 'Radiator Gypor',
       description: 'Radiator alumini gypor me dizajn elegant dhe transferim të shkëlqyer të nxehtësisë.',
       price: '60 - 120',
-      image: '/produktet/radiator-gypor.png',
+      imageUrl: '/produktet/radiator-gypor.png',
       category: 'ngrohje-qendrore',
       subcategory: 'radiator',
       badges: [
@@ -1903,7 +1903,7 @@ export function getAllProducts(): Product[] {
       title: 'Fancoiler Slim ECOTEK',
       description: 'Fancoiler mural me dizajn modern për ngrohje dhe ftohje efikase dhe të qetë.',
       price: '250 - 300',
-      image: '/produktet/fancoiler.png',
+      imageUrl: '/produktet/fancoiler.png',
       category: 'ngrohje-qendrore',
       subcategory: 'fancoiler',
       badges: [
@@ -2060,7 +2060,7 @@ export function getAllProducts(): Product[] {
       title: 'Fancoiler Kasetor',
       description: 'Fancoiler kasetor për montim në tavan, ideal për shpërndarje uniforme të ajrit në 4 drejtime.',
       price: '500 - 1200',
-      image: '/produktet/fancoiler-kasetor.png',
+      imageUrl: '/produktet/fancoiler-kasetor.png',
       category: 'ngrohje-qendrore',
       subcategory: 'fancoiler',
       badges: [
@@ -2200,7 +2200,7 @@ export function getAllProducts(): Product[] {
       title: 'Akumulues ECOTEK',
       description: 'Akumulues uji inoksi për ngrohje qendrore dhe sisteme solare.',
       price: '150-400',
-      image: '/produktet/akumulues.png',
+      imageUrl: '/produktet/akumulues.png',
       category: 'ngrohje-solare',
       subcategory: 'akumulues',
       badges: [
@@ -2351,7 +2351,7 @@ Investoni në akumuluesin tonë të ujit për ngrohje qendrore dhe siguroni një
       title: 'Boiler Me Spirale',
       description: 'Boiler me spirale për ujë të ngrohtë sanitar me cilësi të lartë dhe efikasitet maksimal.',
       price: '500-700',
-      image: '/produktet/boiler-spiral.png',
+      imageUrl: '/produktet/boiler-spiral.png',
       category: 'sanitari',
       subcategory: 'bojler',
       badges: [
@@ -2440,7 +2440,7 @@ Siguroni ujë të ngrohtë të pastër dhe të vazhdueshëm me bojlerët tanë t
       title: 'Boileri ECOPUMP',
       description: 'Boileri ECOPUMP për ngrohje të ujit efficiente.',
       price: '1400 - 1600',
-      image: '/produktet/boiler-ecopump.png',
+      imageUrl: '/produktet/boiler-ecopump.png',
       category: 'sanitari',
       subcategory: 'bojler',
       badges: [
@@ -2605,7 +2605,7 @@ Siguroni ujë të ngrohtë të pastër dhe të vazhdueshëm me bojlerët tanë t
       title: "Candy - Aria Series",
       description: "Kondicioner split me efikasitet të lartë dhe lidhje WiFi.",
       price: "500 - 750",
-      image: "/produktet/kondicioner-aria.png",
+      imageUrl: "/produktet/kondicioner-aria.png",
       category: "klimatizim-ventilim",
       subcategory: "kondicioner",
       badges: [
@@ -2900,7 +2900,7 @@ Siguroni ujë të ngrohtë të pastër dhe të vazhdueshëm me bojlerët tanë t
       title: "Candy - Pura Series",
       description: "Kondicioner split me gamë të gjerë kapacitetesh dhe lidhje WiFi.",
       price: "350 - 750",
-      image: "/produktet/kondicioner-pura.png",
+      imageUrl: "/produktet/kondicioner-pura.png",
       category: "klimatizim-ventilim",
       subcategory: "kondicioner",
       badges: [
