@@ -31,6 +31,7 @@ export async function generateMetadata(
   return {
     title: product.title,
     description: description,
+
   };
 }
 
@@ -75,9 +76,9 @@ const ProductPage = async ({ params }: ProductPageProps) => {
           {/* Product image */}
           <div className="lg:w-1/2">
             <div className="bg-gray-50 rounded-lg p-8 relative aspect-square">
-              {product.image ? (
+              {product.imageUrl ? (
                 <Image
-                  src={product.image}
+                  src={product.imageUrl}
                   alt={product.title}
                   fill
                   className="object-contain"
@@ -157,7 +158,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
                       {/* Product image */}
                       <div className="relative h-48 bg-gray-100">
                         <Image
-                          src={relatedProduct.image}
+                          src={relatedProduct.imageUrl}
                           alt={relatedProduct.title}
                           fill
                           className="object-contain p-4"
