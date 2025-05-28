@@ -8,6 +8,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 // Metadata MUST be exported from a Server Component
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.ecotek-ks.com'),
   title: 'ECOTEK - Zgjidhje Inovative Elektrike & Hidrosanitare',
   description: 'ECOTEK ofron zgjidhje të avancuara për ngrohje qendrore, klimatizim, ventilim dhe energji solare në Kosovë.',
   icons: {
