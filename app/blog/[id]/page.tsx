@@ -1,34 +1,34 @@
-'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import { ArrowLeft, Calendar, Share2 } from 'lucide-react';
-import { blogPosts, BlogPost } from '@/app/blog/[id]/data';
+import { ArrowLeft } from 'lucide-react';
+import { blogPosts} from '@/app/blog/[id]/data';
 import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
+import { Metadata } from 'next';
+import { NavigationButtons } from '@/components/blog/NavigationButtons';
+import { AnimatedContent } from '@/components/blog/AnimatedContent';
+import { AnimatedArticle } from '@/components/blog/AnimatedArticle';
 
-export default function BlogPostPage() {
-  const params = useParams<{ id: string }>();
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [loading, setLoading] = useState(true);
-  
-  useEffect(() => {
-    // Find the blog post with the matching ID
-    const foundPost = blogPosts.find((p) => p.id === params.id || p.link.includes(params.id as string));
-    setPost(foundPost || null);
-    setLoading(false);
-  }, [params.id]);
-  
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
-  }
-  
+type Props = {
+  params: Promise<{ id: string }>
+}
+
+export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
+  const id = (await params).id;
+  const post = blogPosts.find((p) => p.id === id || p.link.includes(id)) || null;
+  return {
+    title: post ? post.title : 'Blog Post',
+    description: post ? post.content : 'A blog post',
+  };
+};
+
+export default async function BlogPostPage({params}: Props) {
+  const id = (await params).id;
+  // Find the blog post with the matching ID directly
+  const post = blogPosts.find((p) => p.id === id || p.link.includes(id)) || null;
+
+
   if (!post) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
@@ -41,53 +41,6 @@ export default function BlogPostPage() {
           </Link>
         </Button>
       </div>
-    );
-  }
-
-  // Format the markdown-like content with enhanced HTML
-  function renderContent(content: string) {
-    // Process the content in multiple steps for better formatting
-    let formattedContent = content.trim();
-    
-    // Step 1: Handle headings
-    formattedContent = formattedContent
-      .replace(/^## (.+)$/gm, '<h2 class="text-2xl font-bold my-6 text-gray-800 border-b pb-2">$1</h2>')
-      .replace(/^### (.+)$/gm, '<h3 class="text-xl font-bold my-4 text-gray-800">$1</h3>')
-      .replace(/^#### (.+)$/gm, '<h4 class="text-lg font-bold my-3 text-gray-800">$1</h4>');
-    
-    // Step 2: Handle text formatting
-    formattedContent = formattedContent
-      .replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>')
-      .replace(/\*(.+?)\*/g, '<em class="italic">$1</em>')
-      .replace(/`(.+?)`/g, '<code class="bg-gray-100 px-1 py-0.5 rounded font-mono text-sm">$1</code>');
-    
-    // Step 3: Handle lists - wrap in proper ul tags
-    const listRegex = /((?:^- .+\n?)+)/gm;
-    formattedContent = formattedContent.replace(listRegex, (match: string) => {
-      const listItems = match
-        .split('\n')
-        .filter(line => line.trim().startsWith('- '))
-        .map(line => line.replace(/^- (.+)$/, '<li class="ml-5 my-1">$1</li>'))
-        .join('');
-      return `<ul class="list-disc my-4 space-y-2">${listItems}</ul>`;
-    });
-    
-    // Step 4: Handle paragraphs and spacing
-    const paragraphs = formattedContent
-      .split('\n\n')
-      .map(para => {
-        if (!para.trim().startsWith('<') && para.trim() !== '') {
-          return `<p class="my-4 text-gray-700 leading-relaxed">${para.replace(/\n/g, ' ')}</p>`;
-        }
-        return para;
-      })
-      .join('\n');
-    
-    return (
-      <div 
-        className="prose prose-lg max-w-none prose-headings:text-gray-800 prose-p:text-gray-700 prose-li:text-gray-700 prose-strong:font-bold prose-a:text-blue-600 prose-img:rounded-lg"
-        dangerouslySetInnerHTML={{ __html: paragraphs }} 
-      />
     );
   }
 
@@ -107,35 +60,12 @@ export default function BlogPostPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/30 flex items-end">
           <div className="container mx-auto px-4 pb-12 max-w-4xl">
-            {post.subtitle && (
-              <motion.p 
-                className={`text-sm md:text-base font-medium uppercase tracking-wider text-white py-1 px-3 ${`bg-${accentColor}-600`} inline-block mb-4 rounded`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                {post.subtitle}
-              </motion.p>
-            )}
-            <motion.h1 
-              className="text-3xl md:text-5xl font-bold text-white mb-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              {post.title}
-            </motion.h1>
-            {post.date && (
-              <motion.div 
-                className="flex items-center text-white/80"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-              >
-                <Calendar className="w-4 h-4 mr-2" />
-                <span>{post.date}</span>
-              </motion.div>
-            )}
+            <AnimatedContent 
+              subtitle={post.subtitle}
+              title={post.title}
+              date={post.date}
+              accentColor={accentColor}
+            />
           </div>
         </div>
       </div>
@@ -151,14 +81,7 @@ export default function BlogPostPage() {
               <span className="mx-2">/</span>
               <span className="text-gray-900 font-medium truncate max-w-[200px]">{post.title}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => window.history.back()}>
-                <ArrowLeft className="w-4 h-4 mr-1" /> Kthehu
-              </Button>
-              <Button variant="outline" size="icon" onClick={() => navigator.share({ title: post.title, url: window.location.href })}>
-                <Share2 className="w-4 h-4" />
-              </Button>
-            </div>
+            <NavigationButtons postTitle={post.title} />
           </div>
         </div>
       </div>
@@ -166,41 +89,47 @@ export default function BlogPostPage() {
       {/* Main content */}
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="bg-white p-6 md:p-10 rounded-lg shadow-sm">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            {/* Short summary/introduction */}
-            <p className="text-xl text-gray-700 mb-8 font-medium leading-relaxed">{post.content}</p>
-            
-            {/* Tags */}
-            {post.tags && post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-8">
-                {post.tags.map(tag => {
-                  const accentColor = post.accentColor?.split('-')[0] || 'blue';
-                  return (
-                    <span 
-                      key={tag} 
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-${accentColor}-100 text-${accentColor}-800`}
-                    >
-                      {tag}
-                    </span>
-                  );
-                })}
-              </div>
-            )}
-            
-            {/* Divider */}
-            <hr className="my-8 border-gray-200" />
-            
-            {/* Full content */}
-            <article className="mt-8">
-              {renderContent(post.fullContent)}
-            </article>
-          </motion.div>
+          <AnimatedArticle
+            content={post.content}
+            tags={post.tags}
+            accentColor={accentColor}
+            fullContent={post.fullContent}
+          />
+        </div>
+
+        {/* Related posts or call to action */}
+        <div className="mt-12 text-center">
+          <h3 className="text-xl font-bold mb-4">Të tjera nga blogu</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
+            {blogPosts
+              .filter(relatedPost => relatedPost.id !== post.id)
+              .slice(0, 3)
+              .map(relatedPost => (
+                <Link key={relatedPost.id} href={relatedPost.link} className="group">
+                  <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className="relative h-40 w-full">
+                      <Image
+                        src={relatedPost.imageUrl}
+                        alt={relatedPost.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-medium group-hover:text-blue-600 transition-colors">{relatedPost.title}</h4>
+                    </div>
+                  </div>
+                </Link>
+              ))
+            }
+          </div>
+          <div className="mt-8">
+            <Button asChild>
+              <Link href="/blog">Shiko të gjitha artikujt</Link>
+            </Button>
+          </div>
         </div>
       </div>
     </div>
   );
-}
+};
