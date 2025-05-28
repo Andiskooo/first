@@ -1,72 +1,56 @@
-'use client';
-
-import React, { useState, useEffect, use } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Metadata} from 'next';
 import { Button } from '@/components/ui/button';
-import { getProductById, Product, ProductModel } from '@/app/products/[id]/data';
-import { ArrowLeft, Battery, ChevronDown, ChevronUp, CircleCheck, Download, Gauge, HelpCircle, Settings, ThermometerSnowflake, Timer } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useRouter } from 'next/navigation';
+import { getProductById } from '@/app/products/[id]/data';
+import { Battery, Gauge, HelpCircle, ThermometerSnowflake, Timer } from 'lucide-react';
+import ProductInteractiveSections from '@/components/products/ProductInteractiveSections';
+import ContactButtonClient from '@/components/products/ContactButtonClient';
+import { notFound } from 'next/navigation';
 
 interface ProductPageProps {
-  params: Promise<{
-    id: string;
-  }>;
+  params: Promise<{ id: string }>;
 }
 
-const ProductPage = ({ params }: ProductPageProps) => {
-  const router = useRouter()
-  // Unwrap the params Promise using React.use
-  const { id } = use(params);
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [selectedModel, setSelectedModel] = useState<ProductModel | null>(null);
-  const [isDescriptionOpen, setIsDescriptionOpen] = useState(true);
-
-  // Load product data
-  useEffect(() => {
-    const productData = getProductById(id);
-    if (productData) {
-      setProduct(productData);
-      // Set the first model as default selected if models exist
-      if (productData.models && productData.models.length > 0) {
-        setSelectedModel(productData.models[0]);
-      }
-    }
-    setLoading(false);
-  }, [id]);
-
-  // Update price when model changes
-  const handleModelChange = (model: ProductModel) => {
-    setSelectedModel(model);
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
-  }
+export async function generateMetadata(
+  { params }: ProductPageProps
+): Promise<Metadata> {
+  const id = (await params).id;
+  const product = getProductById(id);
 
   if (!product) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4">
-        <h1 className="text-2xl font-bold mb-4">Produkti nuk u gjet</h1>
-        <p className="mb-6">Na vjen keq, por produkti që kërkuat nuk u gjet.</p>
-        <Button asChild>
-          <Link href="/">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Kthehu në faqen kryesore
-          </Link>
-        </Button>
-      </div>
-    );
+    return {
+      title: 'Produkti nuk u gjet - EcoTek',
+      description: 'Na vjen keq, por produkti që kërkuat nuk mund të gjendet në EcoTek.',
+    };
   }
 
-  // Determine the price to display
-  const displayPrice = selectedModel?.price ?? product.price;
+  const description = product.description || product.longDescription?.substring(0, 160).replace(/<[^>]+>/g, '').trim() || `Shikoni detajet për ${product.title} në EcoTek.`;
+
+  return {
+    title: product.title,
+    description: description,
+  };
+}
+
+const ProductPage = async ({ params }: ProductPageProps) => {
+  const id = (await params).id;
+  const product = getProductById(id);
+
+  if (!product) {
+    notFound();
+  }
+
+  const getIcon = (name: string) => {
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes('fuqi')) return <Gauge className="h-5 w-5" />;
+    if (lowerName.includes('efikas')) return <Battery className="h-5 w-5" />;
+    if (lowerName.includes('garanc')) return <Timer className="h-5 w-5" />;
+    if (lowerName.includes('zhurm') || lowerName.includes('temperat')) 
+      return <ThermometerSnowflake className="h-5 w-5" />;
+    return <HelpCircle className="h-5 w-5" />;
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -91,22 +75,27 @@ const ProductPage = ({ params }: ProductPageProps) => {
           {/* Product image */}
           <div className="lg:w-1/2">
             <div className="bg-gray-50 rounded-lg p-8 relative aspect-square">
-              <Image
-                src={product.image}
-                alt={product.title}
-                fill
-                className="object-contain"
-                priority
-              />
+              {product.image ? (
+                <Image
+                  src={product.image}
+                  alt={product.title}
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                  <span className="text-gray-500">No Image Available</span>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Product info */}
+          {/* Product info (Static part + Client Component for Interactive parts) */}
           <div className="lg:w-1/2">
             <h1 className="text-3xl font-bold mb-3">{product.title}</h1>
             
-            {/* Badges */}
-            {product.badges && (
+            {product.badges && product.badges.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
                 {product.badges.map((badge, index: number) => (
                   <span 
@@ -123,21 +112,9 @@ const ProductPage = ({ params }: ProductPageProps) => {
               </div>
             )}
             
-            {/* Key characteristics */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              {product.keyCharacteristics && product.keyCharacteristics.map((characteristic, index: number) => {
-                // Function to get the appropriate icon based on characteristic name
-                const getIcon = (name: string) => {
-                  const lowerName = name.toLowerCase();
-                  if (lowerName.includes('fuqi')) return <Gauge className="h-5 w-5" />;
-                  if (lowerName.includes('efikas')) return <Battery className="h-5 w-5" />;
-                  if (lowerName.includes('garanc')) return <Timer className="h-5 w-5" />;
-                  if (lowerName.includes('zhurm') || lowerName.includes('temperat')) 
-                    return <ThermometerSnowflake className="h-5 w-5" />;
-                  return <HelpCircle className="h-5 w-5" />;
-                };
-                
-                return (
+            {product.keyCharacteristics && product.keyCharacteristics.length > 0 && (
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                {product.keyCharacteristics.map((characteristic, index: number) => (
                   <div key={index} className="flex items-center gap-2 p-2 rounded-lg bg-gray-50">
                     <div className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-600">
                       {getIcon(characteristic.name)}
@@ -147,197 +124,18 @@ const ProductPage = ({ params }: ProductPageProps) => {
                       <div className="font-medium">{characteristic.value}</div>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-            
-            {/* Description and key features in dropdown */}
-            <div className="mb-6 border border-gray-200 rounded-lg overflow-hidden">
-              <button 
-                onClick={() => setIsDescriptionOpen(!isDescriptionOpen)}
-                className="w-full py-3 px-4 flex justify-between items-center bg-gray-50 hover:bg-gray-100 transition-colors"
-              >
-                <h3 className="font-medium text-gray-800">Karakteristikat Kryesore</h3>
-                {isDescriptionOpen ? 
-                  <ChevronUp className="h-5 w-5 text-gray-500" /> : 
-                  <ChevronDown className="h-5 w-5 text-gray-500" />
-                }
-              </button>
-              
-              {isDescriptionOpen && (
-                <div className="p-4 border-t border-gray-200">
-                  {product.longDescription && (
-                    <div className="prose prose-sm max-w-none mb-4" dangerouslySetInnerHTML={{ __html: product.longDescription }} />
-                  )}
-                  
-                  {/* Key features */}
-                  <div className="mt-4">
-                    <h3 className="text-sm font-medium text-gray-700 mb-2">Karakteristikat kryesore</h3>
-                    <ul className="space-y-1 text-sm">
-                      {product.features.map((feature: string, index: number) => (
-                        <li key={index} className="flex items-start">
-                          <CircleCheck className="text-green-500 mr-2 h-4 w-4 flex-shrink-0 mt-0.5" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              )}
-            </div>
-            
-            {/* Models selection */}
-            {product.models && product.models.length > 0 && (
-              <div className="mb-6">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">Zgjidhni modelin:</h3>
-                <div className="flex flex-wrap gap-2">
-                  {product.models.map((model) => (
-                    <button
-                      key={model.id}
-                      onClick={() => handleModelChange(model)}
-                      className={`px-4 py-2 border ${
-                        selectedModel?.id === model.id
-                          ? 'border-blue-600 bg-blue-50 text-blue-600'
-                          : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                      } rounded-md text-sm font-medium transition-colors`}
-                    >
-                      {model.name}
-                    </button>
-                  ))}
-                </div>
+                ))}
               </div>
             )}
-            
-            {/* Price */}
-            <div className="text-2xl font-bold text-blue-600 mb-6">
-              {displayPrice} €
-            </div>
-            
-            {/* Action buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <Button onClick={()=> {
-                router.push('/contact')
-              }} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-6">
-                Na Kontaktoni
-              </Button>
-            </div>
+
+            <ProductInteractiveSections product={product} />
+
           </div>
         </div>
         
-        {/* Specifications and Downloads Tabs */}
-        <div className="mt-16">
-          <Tabs defaultValue="specifications" className="w-full">
-            <TabsList className="w-full border-b flex justify-start mb-6 bg-transparent p-0 h-auto">
-              <TabsTrigger 
-                value="specifications" 
-                className="text-base py-3 px-5 rounded-none border-0 border-b-2 data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 data-[state=active]:shadow-none"
-              >
-                <Settings className="w-4 h-4 mr-2" />
-                Specifikimet
-              </TabsTrigger>
-              <TabsTrigger 
-                value="downloads" 
-                className="text-base py-3 px-5 rounded-none border-0 border-b-2 data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 data-[state=active]:shadow-none"
-              >
-                <Download className="w-4 h-4 mr-2" />
-                Shkarkime
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="specifications" className="mt-0">
-              {(() => {
-                if (!product?.specifications || Object.keys(product.specifications).length === 0) {
-                  return <p className="text-gray-500">Specifikimet nuk janë të disponueshme.</p>;
-                }
-
-                const characteristics = Object.keys(product.specifications);
-                const firstCharacteristicValues = product.specifications[characteristics[0]];
-
-                // Check if we have multiple models defined for the product
-                if (product.models && product.models.length > 0) {
-                  const models = product.models;
-                  return (
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full divide-y divide-gray-200 border border-gray-200">
-                        <thead className="bg-gray-50">
-                          <tr>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Karakteristika
-                            </th>
-                            {models.map(model => (
-                              <th key={model.id} scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {model.name}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                          {characteristics.map(charKey => (
-                            <tr key={charKey}>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{charKey}</td>
-                              {models.map(model => (
-                                <td key={model.id} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                  {product.specifications?.[charKey]?.[model.id] ?? '-'}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  );
-                } 
-                // Check if it's the nested structure but without multiple models (e.g., using a single 'default' key)
-                else if (typeof firstCharacteristicValues === 'object' && firstCharacteristicValues !== null) {
-                  const innerKeys = Object.keys(firstCharacteristicValues);
-                  if (innerKeys.length === 1) {
-                    const singleModelKey = innerKeys[0];
-                    return (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                        {characteristics.map(charKey => (
-                          <div key={charKey} className="flex justify-between border-b border-gray-200 pb-2">
-                            <span className="font-medium text-sm text-gray-700">{charKey}</span>
-                            <span className="text-sm text-gray-600 text-right">{product.specifications?.[charKey]?.[singleModelKey] ?? '-'}</span>
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  }
-                }
-                
-                // Fallback if structure is unexpected or empty after checks
-                return <p className="text-gray-500">Formati i specifikimeve nuk njihet ose është bosh.</p>;
-              })()}
-            </TabsContent>
-            
-            <TabsContent value="downloads" className="mt-0">
-              <div className="space-y-4">
-                {product.downloads && product.downloads.map((download, index: number) => (
-                  <a 
-                    key={index} 
-                    href={download.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="bg-blue-100 text-blue-600 p-2 rounded-md mr-4">
-                      <Download className="h-6 w-6" />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium">{download.title}</h4>
-                      <p className="text-sm text-gray-500">{download.description}</p>
-                    </div>
-                  </a>
-                ))}
-                
-                {(!product.downloads || product.downloads.length === 0) && (
-                  <div className="text-center py-10">
-                    <p className="text-gray-500">Nuk ka shkarkime të disponueshme për këtë produkt.</p>
-                  </div>
-                )}
-              </div>
-            </TabsContent>
-          </Tabs>
+        {/* Contact Button below interactive sections */}
+        <div className="mt-8">
+          <ContactButtonClient />
         </div>
         
         {/* Related products */}
@@ -376,7 +174,7 @@ const ProductPage = ({ params }: ProductPageProps) => {
                           {relatedProduct.price} €
                         </div>
                       </div>  
-                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md mt-auto">
                         Shiko detajet
                       </Button>
                     </div>

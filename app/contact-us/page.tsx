@@ -105,7 +105,7 @@ const ContactUsPage = () => {
         throw new Error('Failed to send email');
       }
       
-      console.log('Email sent successfully');
+
       setSubmitting(false);
       setSubmitted(true);
       setFormData({

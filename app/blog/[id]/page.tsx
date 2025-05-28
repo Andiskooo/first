@@ -28,7 +28,6 @@ export default async function BlogPostPage({params}: Props) {
   // Find the blog post with the matching ID directly
   const post = blogPosts.find((p) => p.id === id || p.link.includes(id)) || null;
 
-
   if (!post) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
