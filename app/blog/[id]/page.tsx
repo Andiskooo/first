@@ -17,19 +17,73 @@ type Props = {
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
   const id = (await params).id;
   const post = blogPosts.find((p) => p.id === id || p.link.includes(id)) || null;
+  if (!post) {
+    // Handle case where post is not found
+    return {
+      title: 'Artikulli nuk u gjet',
+      description: 'Përmbajtja e kërkuar nuk është e disponueshme.',
+      openGraph: {
+        title: 'Artikulli nuk u gjet',
+        description: 'Përmbajtja e kërkuar nuk është e disponueshme.',
+        url: 'https://www.ecotek-ks.com/blog',
+        siteName: 'ECO TEK',
+        images: [
+          {
+            url: 'https://www.ecotek-ks.com/default-blog-image.jpg', // Default image for not found posts
+            width: 1200,
+            height: 630,
+            alt: 'ECO TEK Blog',
+          },
+        ],
+        locale: 'sq_AL',
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Artikulli nuk u gjet',
+        description: 'Përmbajtja e kërkuar nuk është e disponueshme.',
+        images: ['https://www.ecotek-ks.com/default-blog-image.jpg'],
+      },
+    };
+  }
+
+  // Metadata for a found blog post
   return {
-    title: post ? post.title : 'Blog Post',
-    description: post ? post.content : 'A blog post',
+    title: post.title,
+    description: post.content, // Assuming post.content is a concise summary for description
     openGraph: {
+      title: post.title,
+      description: post.content,
+      url: `https://www.ecotek-ks.com${post.link}`,
+      siteName: 'ECO TEK',
       images: [
         {
-          url: post && post.imageUrl ? `https://www.ecotek-ks.com${post.imageUrl}` : 'https://www.ecotek-ks.com/default-blog-image.jpg', // Provide a default image if post.imageUrl is not available
-          width: 1200,
-          height: 630,
-          alt: post ? post.title : 'Blog Post Image',
+          url: `https://www.ecotek-ks.com${post.imageUrl}`,
+          width: 1200, // Ideal OG image width
+          height: 630, // Ideal OG image height
+          alt: post.title,
         },
       ],
+      locale: 'sq_AL', // Albanian (Albania). Consider 'sq_XK' for Kosovo.
+      type: 'article',
+      // Optional: Article specific tags
+      // article: {
+      //   publishedTime: post.date, // Requires post.date to be in ISO 8601 format
+      //   authors: ['Ari Sylafeta'], // Example author
+      //   tags: post.tags, // Requires post.tags to be an array of strings
+      // },
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.content,
+      images: [`https://www.ecotek-ks.com${post.imageUrl}`],
+      creator: '@EcotekKosova', // Replace with your actual Twitter handle or remove
+    },
+    // To add Facebook App ID, uncomment the 'other' section and replace 'YOUR_FACEBOOK_APP_ID'
+    // other: {
+    //   'fb:app_id': 'YOUR_FACEBOOK_APP_ID',
+    // },
   };
 };
 
