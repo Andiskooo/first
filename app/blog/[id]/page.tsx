@@ -20,6 +20,16 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
   return {
     title: post ? post.title : 'Blog Post',
     description: post ? post.content : 'A blog post',
+    openGraph: {
+      images: [
+        {
+          url: post ? post.imageUrl : '/default-blog-image.jpg', // Provide a default image if post.imageUrl is not available
+          width: 1200,
+          height: 630,
+          alt: post ? post.title : 'Blog Post Image',
+        },
+      ],
+    },
   };
 };
 
