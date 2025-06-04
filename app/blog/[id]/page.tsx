@@ -18,7 +18,7 @@ type Props = {
 
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
   const id = (await params).id;
-  const post = blogPosts.find((p) => p.id === id || p.link.includes(id)) || null;
+  const post = blogPosts.find((p) => p.id === id) || null;
   if (!post) {
     // Handle case where post is not found
     return {
@@ -56,7 +56,7 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
     openGraph: {
       title: post.title,
       description: post.content,
-      url: `https://www.ecotek-ks.com${post.link}`,
+      url: `https://www.ecotek-ks.com/blog/${post.id}`,
       siteName: 'ECO TEK',
       images: [
         {
@@ -92,7 +92,7 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 export default async function BlogPostPage({params}: Props) {
   const id = (await params).id;
 
-  const post = blogPosts.find((p) => p.id === id || p.link.includes(id)) || null;
+  const post = blogPosts.find((p) => p.id === id) || null;
 
   if (!post) {
     return (
@@ -202,7 +202,7 @@ export default async function BlogPostPage({params}: Props) {
               .filter(relatedPost => relatedPost.id !== post.id)
               .slice(0, 3)
               .map(relatedPost => (
-                <Link key={relatedPost.id} href={relatedPost.link} className="group">
+                <Link key={relatedPost.id} href={`/blog/${relatedPost.id}`} className="group">
                   <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="relative h-40 w-full">
                       <Image

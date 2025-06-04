@@ -6,7 +6,6 @@ export type BlogPost = {
   content: string;
   fullContent: string; // Added full content parameter
   imageUrl: string;
-  link: string;
   date?: string;
   accentColor?: string; // Optional color for accents
   tags?: string[]; // Added tags for categorization
@@ -22,7 +21,6 @@ export const blogPosts: BlogPost[] = [
     tags: ['Këshilla', 'Teknologji', 'Klimatizim'],
     fullContent: '/blog/blogContent/1.md',
     imageUrl: '/blog/Blog-1.jpg',
-    link: '/blog/1',
     accentColor: 'red-600'
   },
   {
@@ -33,7 +31,6 @@ export const blogPosts: BlogPost[] = [
     tags: ['Problemet e Zakonshme', 'Mirëmbajtje', 'Klimatizim'],
     fullContent: '/blog/blogContent/2.md',
     imageUrl: '/blog/Blog-2.png',
-    link: '/blog/dirty-sock-ac',
     accentColor: 'blue-600'
   },
   {
@@ -44,7 +41,6 @@ export const blogPosts: BlogPost[] = [
     tags: ['Teknologji', 'Efikasitet', 'Ngrohje'],
     fullContent: '/blog/blogContent/3.md',
     imageUrl: '/blog/Blog-3.jpg',
-    link: '/blog/ac-leaking-water',
     accentColor: 'green-600'
   },
   {
@@ -54,7 +50,14 @@ export const blogPosts: BlogPost[] = [
     content: "Si të përcaktoni kapacitetin optimal të pompës termike për shtëpinë tuaj?",
     fullContent: '/blog/blogContent/4.md',
     imageUrl: '/blog/Blog-4.jpg',
-    link: '/blog/extend-ac-life',
     accentColor: 'orange-600'
+  },{
+    id: '05',
+    title: 'Si të Zgjidhni Kapacitetin e sakët për Kondicjoner Candy Split?',
+    subtitle: 'Faktorët që duhen marrë parasysh për të zgjidhur njësinë e duhur',
+    content: "Zgjedhja e kondicionerit të duhur Candy mini split përfshin më shumë sesa thjesht përputhjen e një vlerësimi BTU me madhësinë e dhomës suaj.",
+    fullContent: '/blog/blogContent/5.md',
+    imageUrl: '/blog/Blog-5.jpg',
+    accentColor: 'blue-600'
   },
 ];

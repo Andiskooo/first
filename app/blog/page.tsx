@@ -159,7 +159,7 @@ const BlogPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <Link href={post.link} className="h-full block">
+                <Link href={`/blog/${post.id}`} className="h-full block">
                   <Card className="overflow-hidden h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col p-0 border-0" style={{ borderTop: post.accentColor ? `4px solid var(--${post.accentColor.split('-')[0]}-600)` : '4px solid var(--blue-600)' }}>
                     <div className="relative h-48 w-full overflow-hidden">
                       <Image
