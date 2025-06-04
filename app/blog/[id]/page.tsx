@@ -9,9 +9,11 @@ import { Metadata } from 'next';
 import { NavigationButtons } from '@/components/blog/NavigationButtons';
 import { AnimatedContent } from '@/components/blog/AnimatedContent';
 import { AnimatedArticle } from '@/components/blog/AnimatedArticle';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 type Props = {
-  params: Promise<{ id: string }>
+  params: { id: string }
 }
 
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
@@ -89,7 +91,7 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 
 export default async function BlogPostPage({params}: Props) {
   const id = (await params).id;
-  // Find the blog post with the matching ID directly
+
   const post = blogPosts.find((p) => p.id === id || p.link.includes(id)) || null;
 
   if (!post) {
@@ -107,7 +109,39 @@ export default async function BlogPostPage({params}: Props) {
     );
   }
 
-  // Get accent color
+  let fullMarkdownContent = post.fullContent; // Initialize with the path or raw content
+
+  // Check if fullContent is a path to a markdown file that needs to be read
+  // The path in data.ts is like '/blog/[id]/blogsContent/1.md'
+  // This implies the filename is the last part, and the directory structure for content
+  // is expected to be PROJECT_ROOT/app/blog/ACTUAL_ID/blogsContent/FILENAME.md
+  if (post.fullContent.startsWith('/blog/blogContent/') && post.fullContent.endsWith('.md')) {
+    const filename = post.fullContent.split('/').pop(); // Extracts '1.md'
+
+    if (filename) {
+      // Construct the filePath using the *dynamic id* from the URL params
+      // This assumes your markdown files are structured like:
+      // app/blog/{actual_post_id}/blogsContent/{filename.md}
+      // e.g., app/blog/1/blogsContent/1.md
+      const filePath = path.join(process.cwd(), 'app', 'blog', 'blogContent', filename);
+      
+      // console.log(`Attempting to read markdown file from: ${filePath}`); // For debugging
+
+      try {
+        fullMarkdownContent = await fs.readFile(filePath, 'utf8');
+      } catch (error) {
+        console.error(`Error reading markdown file ${filePath}:`, error);
+        // Provide a more helpful error message in the UI
+        fullMarkdownContent = `Error: Could not load content for this article. \n\nDebug: Tried to read from ${filePath}. Please check if the file exists and the path is correct.`;
+      }
+    } else {
+      console.error(`Could not extract filename from post.fullContent: ${post.fullContent}`);
+      fullMarkdownContent = 'Error: Could not determine content file name.';
+    }
+  }
+  // If post.fullContent was not a path matching the pattern, 
+  // it's assumed to be either direct markdown content or an error state already.
+
   const accentColor = post.accentColor?.split('-')[0] || 'blue';
 
   return (
@@ -156,7 +190,7 @@ export default async function BlogPostPage({params}: Props) {
             content={post.content}
             tags={post.tags}
             accentColor={accentColor}
-            fullContent={post.fullContent}
+            fullContent={fullMarkdownContent} // *** IMPORTANT: Pass the loaded markdown content ***
           />
         </div>
 
