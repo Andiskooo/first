@@ -147,7 +147,7 @@ const BlogSection = ({
                     {activePost.content}
                   </p>
                   <Link 
-                    href={activePost.link}
+                    href={`/blog/${activePost.id}`}
                     className={`inline-flex items-center gap-2 font-medium ${activePost.accentColor ? 'text-' + activePost.accentColor.split('-')[0] + '-600' : 'text-red-600'} hover:underline`}
                   >
                     Read more

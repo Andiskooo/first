@@ -13,7 +13,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 
 type Props = {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
