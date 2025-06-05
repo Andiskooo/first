@@ -1,7 +1,7 @@
 # Si të aktivizoni funksionin e lidhjes Wi-Fi të Kondicionerëve CANDY
 
 
-![Kondicioner modern në shtëpi](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhup33jiDsqujDt6JOrwYwfIQeWGuNvQG3CdfLUk951-_Aptore_DIXDC9eIPp_Dt74cRCM-aZ5NRDXPD0SN5TGLNchvPVowQUs994emq8H3LWoCWc_dgsAlIBVy3r57aIW8sz2UowsbxfI/s1600/wifi_wallunit.jpg)
+![Kondicioner modern në shtëpi](https://images.unsplash.com/photo-1742832599361-7aa7decd73b4?w=1200&h=800&fit=crop&crop=faces,edges&auto=format&q=80&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)
 
 
 ## Përshkrim i shkurtër
@@ -16,7 +16,7 @@ Para se të filloni, sigurohuni që keni:
 - [x] Telefon ose tablet me sistem operativ iOS 9.0+ ose Android 5.0+
 - [x] Rrjet Wi-Fi funksional
 - [x] Aplikacioni hOn i instaluar
-- [x] Kondicioneri i ndezur dhe në modalitetin e duhur
+- [ ] Kondicioneri i ndezur dhe në modalitetin e duhur
 
 ### 2. Procesi i lidhjes
 
@@ -44,7 +44,29 @@ Për të konfiguruar lidhjen Wi-Fi:
 | Ruter Wi-Fi | 2.4GHz, WPA/WPA2 |
 | Kondicioneri | Modeli i përkrahur CANDY |
 
-![Kondicioner modern në shtëpi](https://www.nabto.com/wp-content/uploads/2022/08/My-project-1-17-948x800.png)
+### Kodi shembull për integrim
+
+```javascript
+// Shembull kodi për integrimin e API
+const connectToDevice = async (deviceId) => {
+  try {
+    const response = await fetch(\`https://api.honn.com/devices/\${deviceId}/connect\`, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer YOUR_TOKEN',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ssid: 'YOUR_WIFI_SSID',
+        password: 'YOUR_WIFI_PASSWORD'
+      })
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Gabim gjatë lidhjes:', error);
+  }
+};
+```
 
 ## Përfitimet e lidhjes Wi-Fi
 

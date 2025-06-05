@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Product, ProductModel, Download as DownloadData } from '@/app/products/[id]/data'; // Added DownloadData alias
-import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronUp, CircleCheck, Download as DownloadIcon } from 'lucide-react'; // Renamed Download to DownloadIcon
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Product, ProductModel } from '@/app/products/[id]/data';
+import { ChevronDown, ChevronUp, CircleCheck } from 'lucide-react';
+import ContactButtonClient from './ContactButtonClient';
+
 
 interface ProductInteractiveSectionsProps {
   product: Product;
@@ -87,98 +87,9 @@ const ProductInteractiveSections: React.FC<ProductInteractiveSectionsProps> = ({
         {displayPrice && (
           <p className="text-3xl font-bold text-blue-600 mb-4">€{displayPrice}</p>
         )}
-        <Button size="lg" className="w-full bg-green-600 hover:bg-green-700">
-          Shto në shportë
-        </Button>
       </div>
 
-      {/* Specifications & Downloads Tabs */}
-      {(product.specifications && Object.keys(product.specifications).length > 0) || (product.downloads && product.downloads.length > 0) ? (
-        <Tabs defaultValue={(product.specifications && Object.keys(product.specifications).length > 0) ? "specifications" : "downloads"} className="w-full">
-          <TabsList className={`grid w-full mb-4 ${
-            (product.specifications && Object.keys(product.specifications).length > 0 && product.downloads && product.downloads.length > 0) ? 'grid-cols-2' : 'grid-cols-1'
-          }`}>
-            {product.specifications && Object.keys(product.specifications).length > 0 && <TabsTrigger value="specifications">Specifikimet</TabsTrigger>}
-            {product.downloads && product.downloads.length > 0 && <TabsTrigger value="downloads">Shkarkime</TabsTrigger>}
-          </TabsList>
-          
-          {product.specifications && Object.keys(product.specifications).length > 0 && (
-            <TabsContent value="specifications">
-              <div className="overflow-x-auto bg-gray-50 p-4 rounded-lg">
-                <table className="min-w-full text-sm">
-                  <tbody>
-                    {Object.entries(product.specifications).map(([specName, modelsData], specIndex) => (
-                      <React.Fragment key={specIndex}>
-                        <tr className="bg-gray-100">
-                          <td colSpan={selectedModel && product.models && product.models.length > 0 ? 2 : 1} className="py-2 px-3 font-semibold text-gray-700">
-                            {specName}
-                          </td>
-                        </tr>
-                        {selectedModel && product.models && product.models.length > 0 ? (
-                           // Display data for selected model if models exist and one is selected
-                          <tr>
-                            <td className="py-2 px-3 border-b border-gray-200 w-1/2">{selectedModel.name}</td>
-                            <td className="py-2 px-3 border-b border-gray-200 w-1/2">
-                              {modelsData[selectedModel.id] ?? modelsData[Object.keys(modelsData)[0]] ?? 'N/A'}
-                            </td>
-                          </tr>
-                        ) : (
-                          // Fallback if no models or no model selected: display all data or direct values
-                          Object.entries(modelsData).map(([key, value]) => {
-                            if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-                              // Nested object (e.g., for products without distinct models but grouped specs)
-                              return Object.entries(value as Record<string, string>).map(([subKey, subValue], subIdx) => (
-                                <tr key={`${specName}-${key}-${subIdx}`}>
-                                  <td className="py-2 px-3 border-b border-gray-200 w-1/2">{subKey}</td>
-                                  <td className="py-2 px-3 border-b border-gray-200 w-1/2">{subValue}</td>
-                                </tr>
-                              ));
-                            } else if (typeof value === 'string') {
-                               // Direct key-value pair
-                               return (
-                                <tr key={`${specName}-${key}`}>
-                                  <td className="py-2 px-3 border-b border-gray-200 w-1/2">{key}</td>
-                                  <td className="py-2 px-3 border-b border-gray-200 w-1/2">{value}</td>
-                                </tr>
-                              );
-                            }
-                            return null;
-                          })
-                        )}
-                      </React.Fragment>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </TabsContent>
-          )}
-
-          {product.downloads && product.downloads.length > 0 && (
-            <TabsContent value="downloads">
-              <div className="space-y-3">
-                {product.downloads.map((downloadItem: DownloadData, index: number) => ( // Typed downloadItem
-                  <a 
-                    key={index} 
-                    href={downloadItem.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-200 transition-colors"
-                  >
-                    <div>
-                      <h4 className="font-medium text-gray-800">{downloadItem.title}</h4>
-                      {downloadItem.description && <p className="text-xs text-gray-500">{downloadItem.description}</p>}
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      {downloadItem.fileSize && <span className="text-xs text-gray-500">{downloadItem.fileSize}</span>}
-                      <DownloadIcon className="h-5 w-5 text-blue-600" />
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </TabsContent>
-          )}
-        </Tabs>
-      ) : null}
+      <ContactButtonClient />
     </>
   );
 };

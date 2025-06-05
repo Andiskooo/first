@@ -1,13 +1,14 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Metadata} from 'next';
+import { Metadata } from 'next';
 import { Button } from '@/components/ui/button';
 import { getProductById } from '@/app/products/[id]/data';
 import { Battery, Gauge, HelpCircle, ThermometerSnowflake, Timer } from 'lucide-react';
 import ProductInteractiveSections from '@/components/products/ProductInteractiveSections';
 import ContactButtonClient from '@/components/products/ContactButtonClient';
 import { notFound } from 'next/navigation';
+import ProductSpecsAndDownloads from '@/components/products/ProductSpecsAndDownloads';
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -48,7 +49,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
     if (lowerName.includes('fuqi')) return <Gauge className="h-5 w-5" />;
     if (lowerName.includes('efikas')) return <Battery className="h-5 w-5" />;
     if (lowerName.includes('garanc')) return <Timer className="h-5 w-5" />;
-    if (lowerName.includes('zhurm') || lowerName.includes('temperat')) 
+    if (lowerName.includes('zhurm') || lowerName.includes('temperat'))
       return <ThermometerSnowflake className="h-5 w-5" />;
     return <HelpCircle className="h-5 w-5" />;
   };
@@ -95,16 +96,16 @@ const ProductPage = async ({ params }: ProductPageProps) => {
           {/* Product info (Static part + Client Component for Interactive parts) */}
           <div className="lg:w-1/2">
             <h1 className="text-3xl font-bold mb-3">{product.title}</h1>
-            
+
             {product.badges && product.badges.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
                 {product.badges.map((badge, index: number) => (
-                  <span 
-                    key={index} 
+                  <span
+                    key={index}
                     className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
-                    style={{ 
-                      backgroundColor: badge.bgColor || '#e5f6fd', 
-                      color: badge.textColor || '#0284c7' 
+                    style={{
+                      backgroundColor: badge.bgColor || '#e5f6fd',
+                      color: badge.textColor || '#0284c7'
                     }}
                   >
                     {badge.text}
@@ -112,7 +113,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
                 ))}
               </div>
             )}
-            
+
             {product.keyCharacteristics && product.keyCharacteristics.length > 0 && (
               <div className="grid grid-cols-2 gap-4 mb-6">
                 {product.keyCharacteristics.map((characteristic, index: number) => (
@@ -130,15 +131,17 @@ const ProductPage = async ({ params }: ProductPageProps) => {
             )}
 
             <ProductInteractiveSections product={product} />
-
           </div>
         </div>
         
-        {/* Contact Button below interactive sections */}
-        <div className="mt-8">
-          <ContactButtonClient />
+        <div className="container mx-auto px-4 py-12">
+          <ProductSpecsAndDownloads
+            specifications={product.specifications}
+            downloads={product.downloads}
+            models={product.models}
+          />
         </div>
-        
+
         {/* Related products */}
         {product.relatedProducts && product.relatedProducts.length > 0 && (
           <div className="mt-16">
@@ -147,10 +150,10 @@ const ProductPage = async ({ params }: ProductPageProps) => {
               {product.relatedProducts.map((relatedId: string) => {
                 const relatedProduct = getProductById(relatedId);
                 if (!relatedProduct) return null;
-                
+
                 return (
-                  <Link 
-                    href={`/products/${relatedProduct.id}`} 
+                  <Link
+                    href={`/products/${relatedProduct.id}`}
                     key={relatedProduct.id}
                     className="group h-full"
                   >
@@ -164,17 +167,17 @@ const ProductPage = async ({ params }: ProductPageProps) => {
                           className="object-contain p-4"
                         />
                       </div>
-                      
+
                       {/* Product info */}
                       <div className="p-4 flex flex-col flex-grow">
                         <h3 className="text-lg font-semibold mb-2 group-hover:text-blue-600 transition-colors">
                           {relatedProduct.title}
                         </h3>
-                        
+
                         <div className="text-blue-600 font-medium mt-auto">
                           {relatedProduct.price} €
                         </div>
-                      </div>  
+                      </div>
                       <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md mt-auto">
                         Shiko detajet
                       </Button>
