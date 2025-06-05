@@ -131,6 +131,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
             )}
 
             <ProductInteractiveSections product={product} />
+            <ContactButtonClient />
           </div>
         </div>
 

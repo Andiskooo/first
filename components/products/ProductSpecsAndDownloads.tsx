@@ -10,8 +10,12 @@ interface DownloadData {
   fileSize?: string;
 }
 
+interface SpecificationValue {
+  [modelId: string]: string | number | boolean;
+}
+
 interface ProductSpecsAndDownloadsProps {
-  specifications?: Record<string, any>;
+  specifications?: Record<string, SpecificationValue>;
   downloads?: DownloadData[];
   selectedModel?: {
     id: string;
@@ -29,28 +33,31 @@ export function ProductSpecsAndDownloads({
   selectedModel = null,
   models = []
 }: ProductSpecsAndDownloadsProps) {
-  const hasSpecs = specifications && Object.keys(specifications).length > 0;
-  const hasDownloads = downloads && downloads.length > 0;
-
-  if (!hasSpecs && !hasDownloads) return null;
-
   // Get all unique model IDs from specifications
   const allModelIds = React.useMemo(() => {
     const ids = new Set<string>();
     if (models && models.length > 0) {
       models.forEach(model => ids.add(model.id));
     }
-    Object.values(specifications).forEach(spec => {
-      if (spec && typeof spec === 'object') {
-        Object.keys(spec).forEach(key => {
-          if (key !== 'name' && key !== 'description') {
-            ids.add(key);
-          }
-        });
-      }
-    });
+    // Ensure specifications is treated as an object for iteration
+    if (specifications) {
+      Object.values(specifications).forEach(spec => {
+        if (spec && typeof spec === 'object') {
+          Object.keys(spec).forEach(key => {
+            if (key !== 'name' && key !== 'description') {
+              ids.add(key);
+            }
+          });
+        }
+      });
+    }
     return Array.from(ids);
   }, [specifications, models]);
+
+  const hasSpecs = specifications && Object.keys(specifications).length > 0;
+  const hasDownloads = downloads && downloads.length > 0;
+
+  if (!hasSpecs && !hasDownloads) return null;
 
   return (
     <div className="w-full">
