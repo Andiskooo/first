@@ -16,7 +16,7 @@ Para se të filloni, sigurohuni që keni:
 - [x] Telefon ose tablet me sistem operativ iOS 9.0+ ose Android 5.0+
 - [x] Rrjet Wi-Fi funksional
 - [x] Aplikacioni hOn i instaluar
-- [ ] Kondicioneri i ndezur dhe në modalitetin e duhur
+- [x] Kondicioneri i ndezur dhe në modalitetin e duhur
 
 ### 2. Procesi i lidhjes
 

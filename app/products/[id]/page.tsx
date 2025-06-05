@@ -133,7 +133,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
             <ProductInteractiveSections product={product} />
           </div>
         </div>
-        
+
         <div className="container mx-auto px-4 py-12">
           <ProductSpecsAndDownloads
             specifications={product.specifications}
