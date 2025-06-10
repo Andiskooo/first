@@ -51,7 +51,8 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/4.md',
     imageUrl: '/blog/Blog-4.jpg',
     accentColor: 'orange-600'
-  },{
+  },
+  {
     id: '05',
     title: 'Si të Zgjidhni Kapacitetin e sakët për Kondicjoner Candy Split?',
     subtitle: 'Faktorët që duhen marrë parasysh për të zgjidhur njësinë e duhur',
@@ -60,4 +61,13 @@ export const blogPosts: BlogPost[] = [
     imageUrl: '/blog/Blog-5.jpg',
     accentColor: 'blue-600'
   },
+  {
+    id: '06',
+    title: 'Çfarë Do të Thotë me të Vërtetë Termi "BTU"?',
+    subtitle: 'Guida e Plotë për BTU: Si të Zgjidhni Kondicionerin e Duhur',
+    content: "Në këtë artikull, ne do të diskutojmë se çfarë është një BTU, sa BTU ju nevojiten për shtëpinë tuaj.",
+    fullContent: '/blog/blogContent/6.md',
+    imageUrl: '/blog/Blog-6.jpg',
+    accentColor: 'purple-600'
+  }
 ];
