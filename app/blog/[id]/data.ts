@@ -69,5 +69,14 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/6.md',
     imageUrl: '/blog/Blog-6.jpg',
     accentColor: 'purple-600'
+  },
+  {
+    id: '07',
+    title: 'Pse Instalimi Profesional i Klimës është më i rëndësishëm se Marka që zgjidhni!',
+    subtitle: 'Kostot e fsheta nga instalimi jo profesjonal i klimës ',
+    content: "Kondicioneri juaj i ri nuk do t'ju ngrohë këtë dimër nëse nuk instalohet si duhet. Mësoni si të mbroni investimin tuaj!",
+    fullContent: '/blog/blogContent/7.md',
+    imageUrl: '/blog/Blog-7.jpg',
+    accentColor: 'black-400'
   }
 ];
