@@ -117,10 +117,11 @@ const FeaturedProductsSection = ({
                   fill
                   style={{ objectFit: 'cover' }}
                   priority
-                  onLoad={(event) => {
-                    const img = event.currentTarget;
-                    const ratio = img.naturalWidth / img.naturalHeight;
-                    setImgRatios(prev => ({ ...prev, [product.id]: ratio }));
+                  onLoadingComplete={({ naturalWidth, naturalHeight }) => {
+                    if (naturalHeight > 0) {
+                      const ratio = naturalWidth / naturalHeight;
+                      setImgRatios(prev => ({ ...prev, [product.id]: ratio }));
+                    }
                   }}
                 />
                 {/* Subtle hover overlay */}

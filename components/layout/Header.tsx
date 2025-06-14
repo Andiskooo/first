@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { categories } from '@/app/categories/[id]/data';
 import {
@@ -14,13 +15,11 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-// No longer using Lucide icons directly
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp } from 'lucide-react'; // Import icons for accordion
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 // --- Navigation Menu Data ---
-// Convert the categories data to the format needed for the navigation menu
 const produkteCategories = categories.map(category => {
   return {
     title: category.title,
@@ -34,36 +33,36 @@ const produkteCategories = categories.map(category => {
   };
 });
 
-// --- ListItem Helper Component (from shadcn/ui docs) ---
+// --- ListItem Helper Component ---
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a"> & { icon?: string } // Updated icon type to string
->(({ className, title, children, icon, ...props }, ref) => { // Fixed syntax with proper parentheses
+  React.ComponentPropsWithoutRef<"a"> & { icon?: string }
+>(({ className, title, children, icon, ...props }, ref) => {
   return (
-    <li> {/* Removed flex items-center from li */}
+    <li>
       <NavigationMenuLink asChild>
         <a
           ref={ref}
           className={cn(
-            "block w-full text-left p-4 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50", // Increased padding
+            "block w-full text-left p-4 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
             className
           )}
           {...props}
         >
-          <div className="flex items-start gap-4"> {/* Increased gap */}
+          <div className="flex items-start gap-4">
             {icon && (
               <Image 
                 src={`/${icon}`} 
                 alt="Icon" 
-                width={24} // Increased icon size to 24px
+                width={24}
                 height={24} 
                 className="mt-0.5 flex-shrink-0"
                 unoptimized
               />
             )}
             <div className="flex flex-col">
-              <div className="font-medium text-base text-foreground leading-tight">{title}</div> {/* Increased font size */}
-              <p className="text-sm text-muted-foreground leading-snug">{children}</p> {/* Increased font size */}
+              <div className="font-medium text-base text-foreground leading-tight">{title}</div>
+              <p className="text-sm text-muted-foreground leading-snug">{children}</p>
             </div>
           </div>
         </a>
@@ -74,21 +73,19 @@ const ListItem = React.forwardRef<
 ListItem.displayName = "ListItem";
 
 // --- Kompania Menu Data ---
-const kompaniaItems: { title: string; href: string; description: string; icon: string }[] = [ // Updated icon type to string
+const kompaniaItems: { title: string; href: string; description: string; icon: string }[] = [
   { title: "Blog", href: "/blog", description: "Lexoni artikujt dhe këshillat më të fundit.", icon: 'icons/blogger.svg' },
   { title: "Kontakto", href: "/contact-us", description: "Na kontaktoni për çdo pyetje ose kërkesë.", icon: 'icons/phone.svg' },
 ];
 
-// Define prop types for the Header
-interface HeaderProps {
-  variant?: 'transparent' | 'solid';
-}
-
 // --- Header Component ---
-const Header = ({ variant = 'transparent' }: HeaderProps) => {
+const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  // State for the active category in the Produkte dropdown
-  const [openAccordionCategory, setOpenAccordionCategory] = useState<string | null>(null); // State for mobile accordion
+  const pathname = usePathname();
+  const isTransparentHeader = pathname === "/" || pathname.startsWith("/categories") || pathname.startsWith("/blog") || pathname.startsWith("/contact-us");
+  const variant = isTransparentHeader ? 'transparent' : 'solid';
+
+  const [openAccordionCategory, setOpenAccordionCategory] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState(produkteCategories[0].title);
 
   return (

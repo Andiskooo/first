@@ -23,8 +23,8 @@ const CategoryHero: React.FC<CategoryHeroProps> = ({ heroImage, defaultHeroImage
         priority
         onError={() => setImageError(true)}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/30 flex items-center justify-center">
-        <div className="text-center text-white px-4 max-w-4xl">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/30 flex items-center justify-center p-4">
+        <div className="text-center text-white max-w-4xl">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">{title}</h1>
           <p className="text-lg md:text-xl">{description}</p>
         </div>

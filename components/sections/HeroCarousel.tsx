@@ -68,7 +68,7 @@ const HeroCarousel = ({ slides }: HeroCarouselProps) => {
   }, [page]); // Re-run effect if page changes manually. Paginate dependency is omitted intentionally.
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ height: '100vh' }}>
+    <section className="relative w-full overflow-hidden bg-black" style={{ height: '100vh' }}>
       <AnimatePresence initial={false} custom={direction}>
         <motion.div
           key={page}
@@ -78,8 +78,8 @@ const HeroCarousel = ({ slides }: HeroCarouselProps) => {
           animate="center"
           exit="exit"
           transition={{
-            x: { type: "spring", stiffness: 100, damping: 30 },
-            opacity: { duration: 1 }
+            x: { type: "spring", stiffness: 250, damping: 50 },
+            opacity: { duration: 0.5 }
           }}
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
