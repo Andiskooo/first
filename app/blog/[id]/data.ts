@@ -78,5 +78,14 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/7.md',
     imageUrl: '/blog/Blog-7.jpg',
     accentColor: 'black-400'
+  },
+  {
+    id: '08',
+    title: 'Si Funksionon Sistemi i Pompës Termike për Ngrohje Qëndrore dhe Ujë të Nxehtë',
+    subtitle: 'Si një Valvul Tre-Kahëorshe Mundëson Përdorimin e Dyfishtë të Pompës Tuaj Termike',
+    content: "Përdorimi i Dyfishtë: Si Një Pompë Termike Ngroh Shtëpinë dhe Ujin Sanitar Tuaj!",
+    fullContent: '/blog/blogContent/8.md',
+    imageUrl: '/blog/Blog-8.png',
+    accentColor: 'black-400'
   }
 ];
