@@ -87,6 +87,7 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/8.md',
     imageUrl: '/blog/Blog-8.png',
     accentColor: 'black-400'
+
   },
   {
     id: '09',
