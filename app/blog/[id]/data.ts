@@ -97,5 +97,14 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/9.md',
     imageUrl: '/blog/Blog-9.jpg',
     accentColor: 'black-400'
+  },
+  {
+    id: '10',
+    title: 'Cili është ndryshimi midis pompave termike monobllok dhe atyre split(dy njësi)?',
+    subtitle: 'Cili është sistemi më i mirë për shtëpinë tuaj?',
+    content: "Ndryshimet kryesore midis pompave termike monobllok dhe atyre split(dy njësi)",
+    fullContent: '/blog/blogContent/10.md',
+    imageUrl: '/blog/Blog-10.png',
+    accentColor: 'black-400'
   }
 ];
