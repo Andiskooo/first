@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import FacebookPixel from '@/components/FacebookPixel';
 
 // --- Navigation Menu Data ---
 const produkteCategories = categories.map(category => {
@@ -312,6 +313,7 @@ const Header = () => {
           )}
         </AnimatePresence>
       </div>
+      <FacebookPixel />
     </header>
   );
 };
