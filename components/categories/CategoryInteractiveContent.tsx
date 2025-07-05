@@ -122,12 +122,13 @@ const CategoryInteractiveContent: React.FC<CategoryInteractiveContentProps> = ({
                 className="group h-full"
               >
                 <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
-                  <div className="relative h-48 bg-gray-100">
+                  <div className="relative h-64 bg-transparent">
                     <Image
                       src={product.image}
                       alt={product.title}
                       fill
-                      className="object-contain p-2"
+                      className="object-contain p-0"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw)"
                     />
                   </div>
                   <div className="p-4 flex flex-col flex-grow">

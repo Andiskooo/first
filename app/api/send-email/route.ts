@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend only if API key is available
+const resendApiKey = process.env.RESEND_API_KEY || '';
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,6 +27,15 @@ export async function POST(request: NextRequest) {
       Message:
       ${message}
     `;
+
+    // Check if Resend is properly initialized
+    if (!resend) {
+      console.warn('Resend API key is missing. Email functionality is disabled.');
+      return NextResponse.json(
+        { success: true, message: 'Email would have been sent (API key not configured)' },
+        { status: 200 }
+      );
+    }
 
     const data = await resend.emails.send({
       from: 'ECOTEK Contact Form <onboarding@resend.dev>',

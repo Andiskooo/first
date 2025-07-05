@@ -115,7 +115,8 @@ const FeaturedProductsSection = ({
                   src={product.imageUrl}
                   alt={product.title}
                   fill
-                  style={{ objectFit: 'cover' }}
+                  style={{ objectFit: 'contain' }}
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   priority
                   onLoadingComplete={({ naturalWidth, naturalHeight }) => {
                     if (naturalHeight > 0) {

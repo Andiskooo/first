@@ -136,14 +136,15 @@ const ProductsCarousel = () => {
                   whileHover={{ y: -8 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <Card className="overflow-hidden h-full border border-slate-200">
-                    <CardContent className="p-0">
-                      <div className="relative h-64 w-full">
+                  <Card className="overflow-hidden h-full border border-slate-200 flex flex-col bg-transparent">
+                    <CardContent className="p-0 flex-grow flex flex-col">
+                      <div className="relative w-full" style={{ height: '280px' }}>
                         <Image
                           src={product.image}
                           alt={product.name}
                           fill
-                          className="object-cover"
+                          className="object-scale-down p-0"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       </div>
                       <div className="p-4">

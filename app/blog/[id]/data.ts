@@ -106,5 +106,14 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/10.md',
     imageUrl: '/blog/Blog-10.png',
     accentColor: 'black-400'
+  },
+  {
+    id: '11',
+    title: 'Si funskjonon pastrimi i ajrit nga Klimat?',
+    subtitle: 'A kanë të gjithë kondicionerët pastrues ajri?. ',
+    content: "Po, kondicioneri juaj mund të përmirësojë cilësinë e ajrit të brendshëm në shtëpinë tuaj.",
+    fullContent: '/blog/blogContent/11.md',
+    imageUrl: '/blog/Blog-11.webp',
+    accentColor: 'black-400'
   }
 ];
