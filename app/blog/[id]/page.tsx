@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { blogPosts} from '@/app/blog/[id]/data';
 import { Button } from '@/components/ui/button';
+import NewsletterSubscribe from '@/components/NewsletterSubscribe';
 import { Metadata } from 'next';
 import { NavigationButtons } from '@/components/blog/NavigationButtons';
 import { AnimatedContent } from '@/components/blog/AnimatedContent';
@@ -192,6 +193,9 @@ export default async function BlogPostPage({params}: Props) {
             accentColor={accentColor}
             fullContent={fullMarkdownContent} // *** IMPORTANT: Pass the loaded markdown content ***
           />
+          
+          {/* Newsletter subscription form */}
+          <NewsletterSubscribe />
         </div>
 
         {/* Related posts or call to action */}
