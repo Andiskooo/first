@@ -115,5 +115,15 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/11.md',
     imageUrl: '/blog/Blog-11.png',
     accentColor: 'black-400'
+  },
+  {
+    id: '12',
+    title: 'Dallimi mes Gazit R32 dhe R410A: Një Krahasim i Gjithanshëm?',
+    subtitle: 'Efiçienca dhe Performanca?. ',
+    content: "Dallimi më kritik midis dy ftohësve qëndron në ndikimin e tyre në mjedis.",
+    fullContent: '/blog/blogContent/12.md',
+    imageUrl: '/blog/Blog-12.webp',
+    accentColor: 'black-400'
   }
+
 ];
