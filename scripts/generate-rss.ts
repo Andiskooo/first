@@ -1,19 +1,19 @@
 import fs from 'fs';
 import { Feed } from 'feed';
-import { getAllPosts } from '../lib/posts.ts'; // Using import and added .js extension
+import { getAllPosts } from '../lib/posts';
 
 async function generateRssFeed() {
-  const posts = await getAllPosts();
-  const siteURL = 'https://yourwebsite.com'; // ✅ IMPORTANT: Replace with your website's URL
+  const posts = getAllPosts();
+  const siteURL = 'https://ecotek.vercel.app'; // Replace with your actual website URL
 
   const feedOptions = {
-    title: 'ECOTEK Blog | RSS Feed', // ✅ Replace with your info
+    title: 'ECOTEK Blog | RSS Feed',
     description: 'Latest news and articles from ECOTEK',
     id: siteURL,
     link: siteURL,
     copyright: `All rights reserved ${new Date().getFullYear()}, ECOTEK`,
     author: {
-      name: 'Your Name', // ✅ Replace
+      name: 'ECOTEK',
     },
   };
 
@@ -22,10 +22,10 @@ async function generateRssFeed() {
   posts.forEach(post => {
     feed.addItem({
       title: post.title,
-      id: `${siteURL}/blog/${post.slug}`,
-      link: `${siteURL}/blog/${post.slug}`,
-      description: post.subtitle,
-      date: new Date(post.date),
+      id: `${siteURL}/blog/${post.id}`,
+      link: `${siteURL}/blog/${post.id}`,
+      description: post.subtitle || '',
+      date: new Date(post.date || new Date()),
     });
   });
 
