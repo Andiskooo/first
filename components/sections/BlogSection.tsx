@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { blogPosts as defaultBlogPosts } from '@/app/blog/[id]/data';
 import { BlogPost } from '@/app/blog/[id]/data';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -64,27 +64,27 @@ const BlogSection = ({
 
   
   // Animation variants
-  const slideVariants = {
+  const slideVariants: Variants = {
     enter: (direction: number) => ({
       x: direction > 0 ? 500 : -500,
-      opacity: 0,
+      opacity: 0
     }),
     center: {
       x: 0,
       opacity: 1,
       transition: {
         duration: 0.4,
-        ease: "easeOut"
-      },
+        ease: "easeInOut"
+      }
     },
     exit: (direction: number) => ({
       x: direction > 0 ? -500 : 500,
       opacity: 0,
       transition: {
         duration: 0.4,
-        ease: "easeOut"
-      },
-    }),
+        ease: "easeInOut"
+      }
+    })
   };
 
   return (
