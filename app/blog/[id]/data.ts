@@ -15,7 +15,7 @@ export type BlogPost = {
 export const blogPosts: BlogPost[] = [
   {
     id: '01',
-    title: 'Si të aktivizoni funksionin e lidhjes Wi-Fi të Kondicionerëve CANDY',
+    title: 'Si të aktivizoni funksionin e lidhjes Wi-Fi të Kondicionerit CANDY',
     subtitle: 'Përdorimi i Aplikacionit hOn',
     content: "Lidhni kondicionerin me Wi-Fi përmes aplikacionit hOn dhe kontrolloni pajisjen tuaj nga kudo.",
     tags: ['Këshilla', 'Teknologji', 'Klimatizim'],
