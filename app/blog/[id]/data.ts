@@ -124,6 +124,15 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/12.md',
     imageUrl: '/blog/Blog-12.webp',
     accentColor: 'black-400'
+  },
+  {
+    id: '13',
+    title: 'Si dhe Pse Kondicionerët Prodhojnë Ujë: Shpjegimi i Plotë?',
+    subtitle: 'Mësoni pse prodhimi i ujit është shenjë e një kondicioneri efikas.',
+    content: "Pse kondicioneri juaj prodhon ujë, dhe a është ky një proces normal dhe thelbësor për ftohjen dhe largimin e lagështisë nga ajri.",
+    fullContent: '/blog/blogContent/13.md',
+    imageUrl: '/blog/Blog-13.webp',
+    accentColor: 'black-400'
   }
 
 ];
