@@ -1,14 +1,13 @@
-// Blog post data types and mock data
 export type BlogPost = {
   id: string;
   title: string;
   subtitle?: string;
   content: string;
-  fullContent: string; // Added full content parameter
+  fullContent: string;
   imageUrl: string;
-  date?: string;
-  accentColor?: string; // Optional color for accents
-  tags?: string[]; // Added tags for categorization
+  date: string; // CHANGED: Made date a required field
+  accentColor?: string;
+  tags?: string[];
 };
 
 // Mock blog data
@@ -17,6 +16,7 @@ export const blogPosts: BlogPost[] = [
     id: '01',
     title: 'Si të aktivizoni funksionin e lidhjes Wi-Fi të Kondicionerit CANDY',
     subtitle: 'Përdorimi i Aplikacionit hOn',
+    date: '2025-07-06', // ADDED
     content: "Lidhni kondicionerin me Wi-Fi përmes aplikacionit hOn dhe kontrolloni pajisjen tuaj nga kudo.",
     tags: ['Këshilla', 'Teknologji', 'Klimatizim'],
     fullContent: '/blog/blogContent/1.md',
@@ -27,6 +27,7 @@ export const blogPosts: BlogPost[] = [
     id: '02',
     title: '5 Arsye Pse Kondicioneri Juaj Mban Erë?',
     subtitle: 'Arsyet dhe zgjidhjet e problemit',
+    date: '2025-07-07', // ADDED
     content: "Në këtë artikull do të mësoni disa arsye pse kondicioneri juaj mban këtë erë dhe si mund të zgjidhet kjo çështje.",
     tags: ['Problemet e Zakonshme', 'Mirëmbajtje', 'Klimatizim'],
     fullContent: '/blog/blogContent/2.md',
@@ -37,6 +38,7 @@ export const blogPosts: BlogPost[] = [
     id: '03',
     title: 'Si janë Pompat e Nxehtësisë Më shumë se 100% Efikase?',
     subtitle: 'Teknologjia e pompës termike',
+    date: '2025-07-08', // ADDED
     content: "Zbuloni pse pompat termike janë zgjidhje efikase për ngrohje dhe si funksionojnë ato.",
     tags: ['Teknologji', 'Efikasitet', 'Ngrohje'],
     fullContent: '/blog/blogContent/3.md',
@@ -47,6 +49,7 @@ export const blogPosts: BlogPost[] = [
     id: '04',
     title: 'Si të Zgjidhni një Pompë Nxehtësie?',
     subtitle: 'Çfarë duhet të merrni parasysh para blerjes',
+    date: '2025-07-09', // ADDED
     content: "Si të përcaktoni kapacitetin optimal të pompës termike për shtëpinë tuaj?",
     fullContent: '/blog/blogContent/4.md',
     imageUrl: '/blog/Blog-4.jpg',
@@ -56,6 +59,7 @@ export const blogPosts: BlogPost[] = [
     id: '05',
     title: 'Si të Zgjidhni Kapacitetin e sakët për Kondicjoner Candy Split?',
     subtitle: 'Faktorët që duhen marrë parasysh për të zgjidhur njësinë e duhur',
+    date: '2025-07-10', // ADDED
     content: "Zgjedhja e kondicionerit të duhur Candy mini split përfshin më shumë sesa thjesht përputhjen e një vlerësimi BTU me madhësinë e dhomës suaj.",
     fullContent: '/blog/blogContent/5.md',
     imageUrl: '/blog/Blog-5.jpg',
@@ -65,6 +69,7 @@ export const blogPosts: BlogPost[] = [
     id: '06',
     title: 'Çfarë Do të Thotë me të Vërtetë Termi "BTU"?',
     subtitle: 'Guida e Plotë për BTU: Si të Zgjidhni Kondicionerin e Duhur',
+    date: '2025-07-11', // ADDED
     content: "Në këtë artikull, ne do të diskutojmë se çfarë është një BTU, sa BTU ju nevojiten për shtëpinë tuaj.",
     fullContent: '/blog/blogContent/6.md',
     imageUrl: '/blog/Blog-6.jpg',
@@ -74,6 +79,7 @@ export const blogPosts: BlogPost[] = [
     id: '07',
     title: 'Pse Instalimi Profesional i Klimës është më i rëndësishëm se Marka që zgjidhni!',
     subtitle: 'Kostot e fsheta nga instalimi jo profesjonal i klimës ',
+    date: '2025-07-12', // ADDED
     content: "Kondicioneri juaj i ri nuk do t'ju ngrohë këtë dimër nëse nuk instalohet si duhet. Mësoni si të mbroni investimin tuaj!",
     fullContent: '/blog/blogContent/7.md',
     imageUrl: '/blog/Blog-7.jpg',
@@ -83,16 +89,17 @@ export const blogPosts: BlogPost[] = [
     id: '08',
     title: 'Si Funksionon Sistemi i Pompës Termike për Ngrohje Qëndrore dhe Ujë të Nxehtë',
     subtitle: 'Si një Valvul Tre-Kahëorshe Mundëson Përdorimin e Dyfishtë të Pompës Tuaj Termike',
+    date: '2025-07-13', // ADDED
     content: "Përdorimi i Dyfishtë: Si Një Pompë Termike Ngroh Shtëpinë dhe Ujin Sanitar Tuaj!",
     fullContent: '/blog/blogContent/8.md',
     imageUrl: '/blog/Blog-8.png',
     accentColor: 'black-400'
-
   },
   {
     id: '09',
     title: 'Avantazhi i Vërtetë i Klimës Inteligjente - Kontroll i Plotë nga Çdo Cep i Botës',
     subtitle: 'Jetoni Jashtë? Kontrolloni Klimën në Kosovë sikur të ishit Aty: Zbuloni Fuqinë e Wi-Fi',
+    date: '2025-07-14', // ADDED
     content: "Një Klik Larg: Si Wi-Fi po Revolucionarizon Komoditetin!",
     fullContent: '/blog/blogContent/9.md',
     imageUrl: '/blog/Blog-9.jpg',
@@ -102,6 +109,7 @@ export const blogPosts: BlogPost[] = [
     id: '10',
     title: 'Cili është ndryshimi midis pompave termike monobllok dhe atyre split(dy njësi)?',
     subtitle: 'Cili është sistemi më i mirë për shtëpinë tuaj?',
+    date: '2025-07-15', // ADDED
     content: "Ndryshimet kryesore midis pompave termike monobllok dhe atyre split(dy njësi)",
     fullContent: '/blog/blogContent/10.md',
     imageUrl: '/blog/Blog-10.png',
@@ -111,6 +119,7 @@ export const blogPosts: BlogPost[] = [
     id: '11',
     title: 'Si funskjonon pastrimi i ajrit nga Klimat?',
     subtitle: 'A kanë të gjithë kondicionerët pastrues ajri?. ',
+    date: '2025-07-16', // ADDED
     content: "Po, kondicioneri juaj mund të përmirësojë cilësinë e ajrit të brendshëm në shtëpinë tuaj.",
     fullContent: '/blog/blogContent/11.md',
     imageUrl: '/blog/Blog-11.png',
@@ -120,6 +129,7 @@ export const blogPosts: BlogPost[] = [
     id: '12',
     title: 'Dallimi mes Gazit R32 dhe R410A: Një Krahasim i Gjithanshëm?',
     subtitle: 'Efiçienca dhe Performanca?. ',
+    date: '2025-07-17', // ADDED
     content: "Dallimi më kritik midis dy ftohësve qëndron në ndikimin e tyre në mjedis.",
     fullContent: '/blog/blogContent/12.md',
     imageUrl: '/blog/Blog-12.webp',
@@ -129,10 +139,10 @@ export const blogPosts: BlogPost[] = [
     id: '13',
     title: 'Si dhe Pse Kondicionerët Prodhojnë Ujë: Shpjegimi i Plotë?',
     subtitle: 'Mësoni pse prodhimi i ujit është shenjë e një kondicioneri efikas.',
+    date: '2025-07-18', // ADDED - Today's Date
     content: "Pse kondicioneri juaj prodhon ujë, dhe a është ky një proces normal dhe thelbësor për ftohjen dhe largimin e lagështisë nga ajri.",
     fullContent: '/blog/blogContent/13.md',
     imageUrl: '/blog/Blog-13.webp',
     accentColor: 'black-400'
   }
-
 ];
