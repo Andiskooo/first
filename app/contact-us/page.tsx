@@ -49,9 +49,9 @@ const locations: LocationData[] = [
   },
   {
     id: 'prishtine',
-    name: 'ECOTEK Prishtinë',
-    address: 'Rruga B, Prishtinë 10000, Kosovë',
-    phone: '+383 45 123 456',
+    name: 'ECOTEK Fushe Kosove',
+    address: 'Ulgare, Fushe Kosove 10000, Kosovë',
+    phone: '+383 44 831 040',
     email: 'prishtina@ecotek-ks.com',
     coordinates: {
       lat: 42.66400271620296,
@@ -62,7 +62,7 @@ const locations: LocationData[] = [
       saturday: 'E Shtunë: 09:00 - 13:00',
       sunday: 'E Diel: Mbyllur'
     },
-    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2934.2995686635356!2d21.159150675949244!3d42.66400271620296!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13549ee605110927%3A0x9365bfb2c5079811!2sSkenderbeu%2C%20Pristina!5e0!3m2!1sen!2s!4v1712687456789!5m2!1sen!2s'
+    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2934.7147893993307!2d21.10613837675948!3d42.63776797116985!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13549d6ad68afe3b%3A0xcfadac12011efef8!2sOrdinanca%20Ors!5e0!3m2!1sen!2s!4v1721412618000!5m2!1sen!2s'
   }
 ];
 
