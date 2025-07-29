@@ -144,5 +144,15 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/13.md',
     imageUrl: '/blog/Blog-13.webp',
     accentColor: 'black-400'
+  },
+  {
+    id: '14',
+    title: 'Çfarë janë Fan Coil-at Horizontalë të Dyshemesë dhe si Funksionon?',
+    subtitle: 'Mësoni më shumë për modelet e ndrryshme të paisjeve për nxehmje.',
+    date: '2025-07-29', // ADDED - Today's Date
+    content: "Zgjidhja Shumëfunksionale për Komfortin Modern në Shtëpi: Fan Coil-at Horizontalë të Dyshemesë.",
+    fullContent: '/blog/blogContent/14.md',
+    imageUrl: '/blog/Blog-14.png',
+    accentColor: 'black-400'
   }
 ];
