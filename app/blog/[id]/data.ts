@@ -154,5 +154,15 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/14.md',
     imageUrl: '/blog/Blog-14.png',
     accentColor: 'black-400'
+  },
+  {
+    id: '15',
+    title: 'Si E Bllokon Izolimi Transferimin e Nxehtësisë?',
+    subtitle: 'Mbrojtja e Shtëpisë Tuaj.',
+    date: '2025-08-08', // ADDED - Today's Date
+    content: "Izolimi i shtëpisë është çelësi për të ruajtur një temperaturë të rehatshme të brendshme dhe për të ulur faturat e energjisë.",
+    fullContent: '/blog/blogContent/15.md',
+    imageUrl: '/blog/Blog-15.jpg',
+    accentColor: 'black-400'
   }
 ];
