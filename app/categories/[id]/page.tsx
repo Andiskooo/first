@@ -64,6 +64,7 @@ const CategoryPage = async ({ params, searchParams }: CategoryPageProps) => {
         defaultHeroImage={DEFAULT_HERO_IMAGE}
         title={category.title}
         description={category.description}
+        categoryId={category.id}
       />
 
       <CategoryInteractiveContent 

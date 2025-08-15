@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Category, Product} from '@/app/categories/[id]/data'; // Assuming data types are exported
 import {  CircleCheck } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useT } from '@/components/i18n';
 
 interface CategoryInteractiveContentProps {
   category: Category;
@@ -20,6 +21,7 @@ const CategoryInteractiveContent: React.FC<CategoryInteractiveContentProps> = ({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useT();
 
   useEffect(() => {
     const products = activeSubcategory
@@ -58,14 +60,14 @@ const CategoryInteractiveContent: React.FC<CategoryInteractiveContentProps> = ({
       <div className="bg-gray-100 py-3">
         <div className="container mx-auto px-4">
           <div className="flex items-center text-sm text-gray-600">
-            <Link href="/" className="hover:text-blue-600">Kryefaqja</Link>
+            <Link href="/" className="hover:text-blue-600">{t('categories.home', 'Kryefaqja')}</Link>
             <span className="mx-2">/</span>
-            <Link href={`/categories/${category.id}`} className="hover:text-blue-600">{category.title}</Link>
+            <Link href={`/categories/${category.id}`} className="hover:text-blue-600">{t(`nav.cat.${category.id}.title`, category.title)}</Link>
             {currentSubcategoryDetails && (
               <>
                 <span className="mx-2">/</span>
                 <span className="text-gray-900 font-medium">
-                  {currentSubcategoryDetails.title}
+                  {t(`nav.cat.${category.id}.sub.${currentSubcategoryDetails.id}.title`, currentSubcategoryDetails.title)}
                 </span>
               </>
             )}
@@ -85,12 +87,12 @@ const CategoryInteractiveContent: React.FC<CategoryInteractiveContentProps> = ({
               >
                 <Image
                   src="/icons/info.svg" // Generic icon for 'All'
-                  alt="Të gjitha"
+                  alt={t('categories.all', 'Të gjitha')}
                   width={32}
                   height={32}
                   className={`w-8 h-8 sm:w-6 sm:h-6 filter ${activeSubcategory === null ? 'brightness-90' : 'brightness-110'}`}
                 />
-                <span className="hidden sm:inline font-medium">Të gjitha</span>
+                <span className="hidden sm:inline font-medium">{t('categories.all', 'Të gjitha')}</span>
               </button>
               {category.subcategories.map(sub => (
                 <button
@@ -100,12 +102,12 @@ const CategoryInteractiveContent: React.FC<CategoryInteractiveContentProps> = ({
                 >
                   <Image
                     src={`/${sub.icon}`}
-                    alt={sub.title}
+                    alt={t(`nav.cat.${category.id}.sub.${sub.id}.title`, sub.title)}
                     width={32}
                     height={32}
                     className={`w-8 h-8 sm:w-6 sm:h-6 filter ${activeSubcategory === sub.id ? 'brightness-90' : 'brightness-110'}`}
                   />
-                  <span className="hidden sm:inline font-medium">{sub.title}</span>
+                  <span className="hidden sm:inline font-medium">{t(`nav.cat.${category.id}.sub.${sub.id}.title`, sub.title)}</span>
                 </button>
               ))}
             </div>
@@ -147,7 +149,7 @@ const CategoryInteractiveContent: React.FC<CategoryInteractiveContentProps> = ({
                       </div>
                     )}
                     <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white mt-auto">
-                      Shiko detajet
+                      {t('home.products.viewDetails', 'Shiko detajet')}
                     </Button>
                   </div>
                 </div>
@@ -156,8 +158,8 @@ const CategoryInteractiveContent: React.FC<CategoryInteractiveContentProps> = ({
           </div>
         ) : (
           <div className="text-center py-10">
-            <h2 className="text-xl font-semibold mb-2">Nuk ka produkte</h2>
-            <p className="text-gray-600">Na vjen keq, nuk ka produkte që përputhen me këtë nënkategori.</p>
+            <h2 className="text-xl font-semibold mb-2">{t('categories.empty.title', 'Nuk ka produkte')}</h2>
+            <p className="text-gray-600">{t('categories.empty.desc', 'Na vjen keq, nuk ka produkte që përputhen me këtë nënkategori.')}</p>
           </div>
         )}
       </div>

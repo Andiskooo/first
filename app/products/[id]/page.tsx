@@ -9,6 +9,8 @@ import ProductInteractiveSections from '@/components/products/ProductInteractive
 import ContactButtonClient from '@/components/products/ContactButtonClient';
 import { notFound } from 'next/navigation';
 import ProductSpecsAndDownloads from '@/components/products/ProductSpecsAndDownloads';
+import ProductBreadcrumb from '@/components/products/ProductBreadcrumb';
+import T from '@/components/common/T';
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -57,19 +59,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
   return (
     <div className="min-h-screen bg-white">
       {/* Breadcrumb */}
-      <div className="bg-gray-100 py-3">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center text-sm text-gray-600">
-            <Link href="/" className="hover:text-blue-600">Kryefaqja</Link>
-            <span className="mx-2">/</span>
-            <Link href={`/categories/${product.category}`} className="hover:text-blue-600">
-              {product.category.split('-').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-            </Link>
-            <span className="mx-2">/</span>
-            <span className="text-gray-900 font-medium">{product.title}</span>
-          </div>
-        </div>
-      </div>
+      <ProductBreadcrumb categoryId={product.category} productTitle={product.title} />
 
       {/* Product details */}
       <div className="container mx-auto px-4 py-12">
@@ -87,7 +77,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                  <span className="text-gray-500">No Image Available</span>
+                  <span className="text-gray-500"><T k="productPage.noImage" fallback="No Image Available" /></span>
                 </div>
               )}
             </div>
@@ -146,7 +136,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
         {/* Related products */}
         {product.relatedProducts && product.relatedProducts.length > 0 && (
           <div className="mt-16">
-            <h2 className="text-2xl font-bold mb-8">Produkte të ngjashme</h2>
+            <h2 className="text-2xl font-bold mb-8"><T k="productPage.relatedTitle" fallback="Produkte të ngjashme" /></h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {product.relatedProducts.map((relatedId: string) => {
                 const relatedProduct = getProductById(relatedId);
@@ -180,7 +170,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
                         </div>
                       </div>
                       <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md mt-auto">
-                        Shiko detajet
+                        <T k="home.products.viewDetails" fallback="Shiko detajet" />
                       </Button>
                     </div>
                   </Link>

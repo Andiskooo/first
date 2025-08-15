@@ -4,10 +4,13 @@ import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from 
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { useT } from '@/components/i18n';
 
+// Use stable keys to map translations
 const categories = [
   {
     id: 1,
+    key: 'ngrohje-qendrore',
     title: 'Ngrohje Qëndrore',
     description: 'Kompetencë dhe Efikasitet në Menaxhimin e Energjisë.',
     icon: (
@@ -20,6 +23,7 @@ const categories = [
   },
   {
     id: 2,
+    key: 'klimatizim-ventilim',
     title: 'Klimatizim/Ventilim',
     description: 'Ekspertët për Freski dhe Rehati në Shtëpinë Tuaj.',
     icon: (
@@ -32,6 +36,7 @@ const categories = [
   },
   {
     id: 3,
+    key: 'sanitari',
     title: 'Sanitari',
     description: 'Zgjidhje sanitare dhe higjienike për shtëpinë tuaj.',
     icon: (
@@ -44,6 +49,7 @@ const categories = [
   },
   {
     id: 4,
+    key: 'instalim-servisim',
     title: 'Instalim/Servisim',
     description: 'Profesionalizëm dhe siguri për ambientin tuaj.',
     icon: (
@@ -57,6 +63,7 @@ const categories = [
 ];
 
 const Categories = () => {
+  const t = useT();
   const containerVariants = {
     hidden: {},
     visible: {
@@ -82,9 +89,9 @@ const Categories = () => {
 
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Kategorit Tona</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('home.categories.sectionTitle', 'Kategorit Tona')}</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Zgjidhje të specializuara për çdo nevojë të shtëpisë dhe biznesit tuaj
+            {t('home.categories.sectionSubtitle', 'Zgjidhje të specializuara për çdo nevojë të shtëpisë dhe biznesit tuaj')}
           </p>
         </div>
 
@@ -103,11 +110,13 @@ const Categories = () => {
                     <div className={`p-4 rounded-full ${category.bgColor} mb-4 transition-colors`}>
                       {category.icon}
                     </div>
-                    <CardTitle className={`text-xl font-bold ${category.color}`}>{category.title}</CardTitle>
+                    <CardTitle className={`text-xl font-bold ${category.color}`}>
+                      {t(`home.categories.cards.${category.key}.title`, category.title)}
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="flex-grow">
                     <CardDescription className="text-base text-slate-600 text-center">
-                      {category.description}
+                      {t(`home.categories.cards.${category.key}.description`, category.description)}
                     </CardDescription>
                   </CardContent>
                   <CardFooter className="flex justify-center pt-4 pb-6">
@@ -125,7 +134,7 @@ const Categories = () => {
                       {/* Hover State: Text + Arrow */}
                       <div className="absolute inset-0 flex justify-center items-center gap-2 transition-all duration-300 ease-in-out opacity-0 invisible group-hover:opacity-100 group-hover:visible">
                           <span className="text-current font-medium whitespace-nowrap transition-transform duration-300 ease-in-out transform -translate-x-2 group-hover:translate-x-0">
-                              Mësoni Më Shumë
+                              {t('home.categories.learnMore', 'Mësoni Më Shumë')}
                           </span>
                           <div className="transition-transform duration-300 ease-in-out transform translate-x-2 group-hover:translate-x-0"> {/* Wrapper for SVG */}
                               <svg 

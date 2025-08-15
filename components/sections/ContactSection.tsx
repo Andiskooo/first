@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { motion } from 'framer-motion';
+import { useT } from '@/components/i18n';
 
 const ContactSection = () => {
+  const t = useT();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -58,7 +60,7 @@ const ContactSection = () => {
     } catch (error) {
       console.error('Error sending email:', error);
       setSubmitting(false);
-      alert('Ndodhi një gabim. Ju lutemi provoni përsëri.');
+      alert(t('contact.form.errorAlert', 'Ndodhi një gabim. Ju lutemi provoni përsëri.'));
     }
   };
 
@@ -67,9 +69,9 @@ const ContactSection = () => {
 
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Na Kontaktoni</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('contact.title', 'Na Kontaktoni')}</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Jemi këtu për t&apos;ju ndihmuar me çdo pyetje dhe kërkesë. Mos hezitoni të na kontaktoni.
+            {t("contact.description", "Jemi këtu për t'ju ndihmuar me çdo pyetje dhe kërkesë. Mos hezitoni të na kontaktoni.")}
           </p>
         </div>
 
@@ -82,7 +84,7 @@ const ContactSection = () => {
             viewport={{ once: true }}
             className="bg-white p-8 rounded-lg shadow-md"
           >
-            <h3 className="text-2xl font-semibold mb-6">Dërgoni një Mesazh</h3>
+            <h3 className="text-2xl font-semibold mb-6">{t('contact.form.sendMessageTitle', 'Dërgoni një Mesazh')}</h3>
             {submitted ? (
               <div className="bg-green-50 border border-green-200 text-green-700 rounded-lg p-6 text-center">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -90,28 +92,28 @@ const ContactSection = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h4 className="text-xl font-semibold mb-2">Faleminderit për mesazhin!</h4>
-                <p className="mb-4">Mesazhi juaj u dërgua me sukses. Do t&apos;ju kontaktojmë së shpejti.</p>
-                <Button onClick={() => setSubmitted(false)}>Dërgo një mesazh tjetër</Button>
+                <h4 className="text-xl font-semibold mb-2">{t('contact.form.successTitle', 'Faleminderit për mesazhin!')}</h4>
+                <p className="mb-4">{t('contact.form.successBody', "Mesazhi juaj u dërgua me sukses. Do t'ju kontaktojmë së shpejti.")}</p>
+                <Button onClick={() => setSubmitted(false)}>{t('contact.form.successAnother', 'Dërgo një mesazh tjetër')}</Button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-1">
-                  Emri i plotë
+                  {t('contact.form.nameLabel', 'Emri i plotë')}
                 </label>
                 <Input
                   id="name"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Emri juaj i plotë"
+                  placeholder={t('contact.form.namePlaceholder', 'Emri juaj i plotë')}
                   required
                 />
               </div>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium mb-1">
-                  Email
+                  {t('contact.form.emailLabel', 'Email')}
                 </label>
                 <Input
                   id="email"
@@ -119,32 +121,32 @@ const ContactSection = () => {
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="email@juaj.com"
+                  placeholder={t('contact.form.emailPlaceholder', 'email@juaj.com')}
                   required
                 />
               </div>
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium mb-1">
-                  Numri i telefonit
+                  {t('contact.form.phoneLabel', 'Numri i telefonit')}
                 </label>
                 <Input
                   id="phone"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="+383 44 123 456"
+                  placeholder={t('contact.form.phonePlaceholder', '+383 44 123 456')}
                 />
               </div>
               <div>
                 <label htmlFor="message" className="block text-sm font-medium mb-1">
-                  Mesazhi
+                  {t('contact.form.messageLabel', 'Mesazhi')}
                 </label>
                 <Textarea
                   id="message"
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
-                  placeholder="Shkruani mesazhin tuaj këtu..."
+                  placeholder={t('contact.form.messagePlaceholder', 'Shkruani mesazhin tuaj këtu...')}
                   rows={5}
                   required
                 />
@@ -160,10 +162,10 @@ const ContactSection = () => {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Duke dërguar...
+                    {t('contact.form.sending', 'Duke dërguar...')}
                   </>
                 ) : (
-                  'Dërgo Mesazhin'
+                  t('contact.form.submit', 'Dërgo Mesazhin')
                 )}
               </Button>
             </form>
@@ -178,7 +180,7 @@ const ContactSection = () => {
             viewport={{ once: true }}
           >
             <div className="bg-white p-8 rounded-lg shadow-md mb-8">
-              <h3 className="text-2xl font-semibold mb-6">Informacione Kontakti</h3>
+              <h3 className="text-2xl font-semibold mb-6">{t('contact.info.title', 'Informacione Kontakti')}</h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-1 text-blue-600">
@@ -186,8 +188,8 @@ const ContactSection = () => {
                     <circle cx="12" cy="10" r="3"/>
                   </svg>
                   <div>
-                    <h4 className="font-medium">Adresa</h4>
-                    <p className="text-slate-600">Dah Polloshka 14, Gjakovë 50000, Kosovë</p>
+                    <h4 className="font-medium">{t('contact.info.addressLabel', 'Adresa')}</h4>
+                    <p className="text-slate-600">{t('contact.info.addressValue', 'Dah Polloshka 14, Gjakovë 50000, Kosovë')}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -195,8 +197,8 @@ const ContactSection = () => {
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                   </svg>
                   <div>
-                    <h4 className="font-medium">Telefoni</h4>
-                    <p className="text-slate-600">+383 44 914 480</p>
+                    <h4 className="font-medium">{t('contact.info.phoneLabel', 'Telefoni')}</h4>
+                    <p className="text-slate-600">{t('contact.info.phoneValue', '+383 44 914 480')}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -205,8 +207,8 @@ const ContactSection = () => {
                     <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
                   </svg>
                   <div>
-                    <h4 className="font-medium">Email</h4>
-                    <p className="text-slate-600">info@ecotek-ks.com</p>
+                    <h4 className="font-medium">{t('contact.info.emailLabel', 'Email')}</h4>
+                    <p className="text-slate-600">{t('contact.info.emailValue', 'info@ecotek-ks.com')}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -215,9 +217,9 @@ const ContactSection = () => {
                     <polyline points="12 6 12 12 16 14"/>
                   </svg>
                   <div>
-                    <h4 className="font-medium">Orari i Punës</h4>
-                    <p className="text-slate-600">E Hënë - E Premte: 09:00 - 17:00</p>
-                    <p className="text-slate-600">E Shtunë: 09:00 - 13:00</p>
+                    <h4 className="font-medium">{t('contact.info.hoursLabel', 'Orari i Punës')}</h4>
+                    <p className="text-slate-600">{t('contact.info.weekday', 'E Hënë - E Premte: 09:00 - 17:00')}</p>
+                    <p className="text-slate-600">{t('contact.info.saturday', 'E Shtunë: 09:00 - 13:00')}</p>
                   </div>
                 </div>
               </div>

@@ -1,7 +1,10 @@
+'use client';
+
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Download as DownloadIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useT } from '@/components/i18n';
 
 interface DownloadData {
   title: string;
@@ -33,6 +36,7 @@ export function ProductSpecsAndDownloads({
   selectedModel = null,
   models = []
 }: ProductSpecsAndDownloadsProps) {
+  const t = useT();
   // Get all unique model IDs from specifications
   const allModelIds = React.useMemo(() => {
     const ids = new Set<string>();
@@ -68,8 +72,8 @@ export function ProductSpecsAndDownloads({
         <TabsList className={`grid w-full mb-4 ${
           (hasSpecs && hasDownloads) ? 'grid-cols-2' : 'grid-cols-1'
         }`}>
-          {hasSpecs && <TabsTrigger value="specifications">Specifikimet</TabsTrigger>}
-          {hasDownloads && <TabsTrigger value="downloads">Shkarkime</TabsTrigger>}
+          {hasSpecs && <TabsTrigger value="specifications">{t('productPage.ui.tabs.specs', 'Specifikimet')}</TabsTrigger>}
+          {hasDownloads && <TabsTrigger value="downloads">{t('productPage.ui.tabs.downloads', 'Shkarkime')}</TabsTrigger>}
         </TabsList>
         
         {hasSpecs && (
@@ -79,7 +83,7 @@ export function ProductSpecsAndDownloads({
                 <table className="min-w-full text-sm">
                   <thead>
                     <tr>
-                      <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b border-gray-200">Karakteristika</th>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b border-gray-200">{t('productPage.ui.table.characteristic', 'Karakteristika')}</th>
                       {allModelIds.map(modelId => {
                         const model = models?.find(m => m.id === modelId);
                         return (
@@ -116,7 +120,7 @@ export function ProductSpecsAndDownloads({
                                 selectedModel?.id === modelId && 'bg-blue-50'
                               )}
                             >
-                              {modelsData[modelId] ?? 'N/A'}
+                              {modelsData[modelId] ?? t('productPage.ui.table.na', 'N/A')}
                             </td>
                           ))}
                         </tr>
@@ -142,10 +146,10 @@ export function ProductSpecsAndDownloads({
                 >
                   <div>
                     <h4 className="font-medium text-gray-800">{downloadItem.title}</h4>
-                    {downloadItem.description && <p className="text-xs text-gray-500">{downloadItem.description}</p>}
+                    {downloadItem.description && <p className="text-xs text-gray-500">{t('productPage.ui.downloads.description', 'Description')}: {downloadItem.description}</p>}
                   </div>
                   <div className="flex items-center space-x-2">
-                    {downloadItem.fileSize && <span className="text-xs text-gray-500">{downloadItem.fileSize}</span>}
+                    {downloadItem.fileSize && <span className="text-xs text-gray-500">{t('productPage.ui.downloads.fileSize', 'File size')}: {downloadItem.fileSize}</span>}
                     <DownloadIcon className="h-5 w-5 text-blue-600" />
                   </div>
                 </a>

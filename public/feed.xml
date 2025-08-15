@@ -4,10 +4,24 @@
         <title>ECOTEK Blog | RSS Feed</title>
         <link>https://ecotek.vercel.app</link>
         <description>Latest news and articles from ECOTEK</description>
-        <lastBuildDate>Fri, 18 Jul 2025 12:17:58 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 15 Aug 2025 19:59:24 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <copyright>All rights reserved 2025, ECOTEK</copyright>
+        <item>
+            <title><![CDATA[Si E Bllokon Izolimi Transferimin e Nxehtësisë?]]></title>
+            <link>https://ecotek.vercel.app/blog/15</link>
+            <guid isPermaLink="false">https://ecotek.vercel.app/blog/15</guid>
+            <pubDate>Fri, 08 Aug 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Mbrojtja e Shtëpisë Tuaj.]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Çfarë janë Fan Coil-at Horizontalë të Dyshemesë dhe si Funksionon?]]></title>
+            <link>https://ecotek.vercel.app/blog/14</link>
+            <guid isPermaLink="false">https://ecotek.vercel.app/blog/14</guid>
+            <pubDate>Tue, 29 Jul 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Mësoni më shumë për modelet e ndrryshme të paisjeve për nxehmje.]]></description>
+        </item>
         <item>
             <title><![CDATA[Si dhe Pse Kondicionerët Prodhojnë Ujë: Shpjegimi i Plotë?]]></title>
             <link>https://ecotek.vercel.app/blog/13</link>

@@ -19,20 +19,10 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import FacebookPixel from '@/components/FacebookPixel';
+import LanguangeSwitche from '@/components/LanguangeSwitche';
+import { useT } from '@/components/i18n';
 
-// --- Navigation Menu Data ---
-const produkteCategories = categories.map(category => {
-  return {
-    title: category.title,
-    icon: category.icon,
-    items: category.subcategories.map(subcategory => ({
-      title: subcategory.title,
-      href: subcategory.href,
-      description: subcategory.description,
-      icon: subcategory.icon
-    }))
-  };
-});
+// Navigation data will be localized inside the component using useT()
 
 // --- ListItem Helper Component ---
 const ListItem = React.forwardRef<
@@ -73,21 +63,33 @@ const ListItem = React.forwardRef<
 });
 ListItem.displayName = "ListItem";
 
-// --- Kompania Menu Data ---
-const kompaniaItems: { title: string; href: string; description: string; icon: string }[] = [
-  { title: "Blog", href: "/blog", description: "Lexoni artikujt dhe këshillat më të fundit.", icon: 'icons/blogger.svg' },
-  { title: "Kontakto", href: "/contact-us", description: "Na kontaktoni për çdo pyetje ose kërkesë.", icon: 'icons/phone.svg' },
-];
+// Note: Kompania items will be built inside the component to use translations.
 
 // --- Header Component ---
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const t = useT();
   const pathname = usePathname();
   const isTransparentHeader = pathname === "/" || pathname.startsWith("/categories") || pathname.startsWith("/blog") || pathname.startsWith("/contact-us");
   const variant = isTransparentHeader ? 'transparent' : 'solid';
 
   const [openAccordionCategory, setOpenAccordionCategory] = useState<string | null>(null);
-  const [activeCategory, setActiveCategory] = useState(produkteCategories[0].title);
+  // Track active category by ID to remain stable across languages
+  const [activeCategoryId, setActiveCategoryId] = useState<string>(categories[0]?.id ?? '');
+
+  // Build localized categories from IDs
+  const prodCats = categories.map((category) => ({
+    id: category.id,
+    title: t(`nav.cat.${category.id}.title`, category.title),
+    icon: category.icon,
+    items: category.subcategories.map((subcategory) => ({
+      id: subcategory.id,
+      title: t(`nav.cat.${category.id}.sub.${subcategory.id}.title`, subcategory.title),
+      description: t(`nav.cat.${category.id}.sub.${subcategory.id}.description`, subcategory.description),
+      href: subcategory.href,
+      icon: subcategory.icon,
+    })),
+  }));
 
   return (
     <header className={cn(
@@ -163,19 +165,19 @@ const Header = () => {
                       "bg-transparent hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent",
                       variant === 'transparent' ? "text-white hover:text-white/80" : "text-foreground hover:text-foreground/80"
                     )}>
-                    Produkte
+                    {t('header.produkte')}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <div className="flex w-[650px] p-4 md:w-[700px]">
                       {/* Left Column: Category Triggers */}
                       <div className="w-[200px] flex-grow flex flex-col justify-between pr-4 border-r border-muted"> {/* Replaced h-full with flex-grow */}
-                        {produkteCategories.map((category) => (
+                        {prodCats.map((category) => (
                           <button
-                            key={category.title}
-                            onMouseEnter={() => setActiveCategory(category.title)}
+                            key={category.id}
+                            onMouseEnter={() => setActiveCategoryId(category.id)}
                             className={cn(
                               "flex items-center gap-3 w-full text-left p-3 rounded text-base font-medium transition-colors", // Increased gap, padding, font size
-                              activeCategory === category.title
+                              activeCategoryId === category.id
                                 ? "bg-accent text-accent-foreground"
                                 : "hover:bg-accent/50"
                             )}
@@ -190,13 +192,13 @@ const Header = () => {
                       <div className="w-[calc(100%-200px)] pl-4">
                         <ul className={cn(
                           "gap-x-4", // Horizontal gap for grid
-                          (produkteCategories.find((cat) => cat.title === activeCategory)?.items.length ?? 0) > 3
+                          (prodCats.find((cat) => cat.id === activeCategoryId)?.items.length ?? 0) > 3
                             ? "grid grid-cols-2" // Apply 2-column grid if more than 3 items
                             : "space-y-1" // Otherwise, use vertical spacing
-                        )}>
-                          {produkteCategories
-                            .find((cat) => cat.title === activeCategory)?.items.map((item) => (
-                              <ListItem key={item.title} title={item.title} href={item.href} icon={item.icon}>{item.description}</ListItem> // Re-added children
+                          )}>
+                          {prodCats
+                            .find((cat) => cat.id === activeCategoryId)?.items.map((item) => (
+                              <ListItem key={item.id} title={item.title} href={item.href} icon={item.icon}>{item.description}</ListItem> // Re-added children
                             ))}
                         </ul>
                       </div>
@@ -210,12 +212,22 @@ const Header = () => {
                       "bg-transparent hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent",
                       variant === 'transparent' ? "text-white hover:text-white/80" : "text-foreground hover:text-foreground/80"
                     )}>
-                    Kompania
+                    {t('header.kompania')}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-1 lg:w-[600px]">
-                      {kompaniaItems.map((item) => (
-                        <ListItem key={item.title} title={item.title} href={item.href} icon={item.icon}> {/* Pass icon prop */}
+                      {[{
+                        title: t('header.blog'),
+                        href: '/blog',
+                        description: t('header.blog_desc', 'Lexoni artikujt dhe këshillat më të fundit.'),
+                        icon: 'icons/blogger.svg'
+                      },{
+                        title: t('header.kontakto'),
+                        href: '/contact-us',
+                        description: t('header.kontakto_desc', 'Na kontaktoni për çdo pyetje ose kërkesë.'),
+                        icon: 'icons/phone.svg'
+                      }].map((item) => (
+                        <ListItem key={item.title} title={item.title} href={item.href} icon={item.icon}>
                           {item.description}
                         </ListItem>
                       ))}
@@ -226,6 +238,17 @@ const Header = () => {
                 {/* Removed standalone Kontakto item as it's now in the Kompania dropdown */}
               </NavigationMenuList>
             </NavigationMenu>
+            {/* Language Switcher (Desktop) */}
+            <div className="ml-auto">
+              <LanguangeSwitche
+                variant="ghost"
+                className={cn(
+                  variant === 'transparent'
+                    ? 'text-white [&_button]:text-white [&_button:hover]:text-white/80'
+                    : ''
+                )}
+              />
+            </div>
           </nav>
         </div>
 
@@ -250,23 +273,27 @@ const Header = () => {
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="absolute inset-x-0 top-full mt-0 flex flex-col bg-background shadow-lg md:hidden max-h-[calc(100vh-80px)] overflow-y-auto z-50" // Added max-height, scroll, and higher z-index
               >
+                {/* Language Switcher (Mobile) */}
+                <div className="p-4 border-b border-border">
+                  <LanguangeSwitche />
+                </div>
                 {/* Accordion for Produkte Categories */}
                 <div className="border-b border-border">
-                  <div className="p-4 font-semibold text-lg text-foreground">Produkte</div> {/* Section Title */}
-                  {produkteCategories.map((category) => (
-                    <div key={category.title} className="border-t border-border">
+                  <div className="p-4 font-semibold text-lg text-foreground">{t('header.produkte')}</div> {/* Section Title */}
+                  {prodCats.map((category) => (
+                    <div key={category.id} className="border-t border-border">
                       <button
                         className="flex w-full items-center justify-between p-4 text-left font-medium text-foreground hover:bg-accent"
-                        onClick={() => setOpenAccordionCategory(openAccordionCategory === category.title ? null : category.title)}
+                        onClick={() => setOpenAccordionCategory(openAccordionCategory === category.id ? null : category.id)}
                       >
                         <span className="flex items-center gap-2">
                            <Image src={`/${category.icon}`} alt="" width={20} height={20} unoptimized className="flex-shrink-0" />
                            {category.title}
                         </span>
-                        {openAccordionCategory === category.title ? <ChevronUp className="h-5 w-5 flex-shrink-0" /> : <ChevronDown className="h-5 w-5 flex-shrink-0" />}
+                        {openAccordionCategory === category.id ? <ChevronUp className="h-5 w-5 flex-shrink-0" /> : <ChevronDown className="h-5 w-5 flex-shrink-0" />}
                       </button>
                       <AnimatePresence>
-                        {openAccordionCategory === category.title && (
+                        {openAccordionCategory === category.id && (
                           <motion.div
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
@@ -276,7 +303,7 @@ const Header = () => {
                           >
                              <ul className="py-2 pl-8">
                               {category.items.map((item) => (
-                                <li key={item.href}>
+                                <li key={item.id}>
                                   <Link
                                     href={item.href}
                                     className="block py-1.5 pl-3 text-sm text-muted-foreground hover:text-foreground"
@@ -296,8 +323,11 @@ const Header = () => {
 
                 {/* Links for Kompania */}
                 <div className="border-b border-border p-4">
-                   <div className="mb-2 font-semibold text-lg text-foreground">Kompania</div>
-                   {kompaniaItems.map((item) => (
+                   <div className="mb-2 font-semibold text-lg text-foreground">{t('header.kompania')}</div>
+                   {([
+                     { title: t('header.blog'), href: '/blog' },
+                     { title: t('header.kontakto'), href: '/contact-us' },
+                   ] as { title: string; href: string }[]).map((item) => (
                      <Link key={item.href} href={item.href} className="block py-1.5 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsOpen(false)}> {item.title} </Link>
                    ))}
                 </div>

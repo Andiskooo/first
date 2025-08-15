@@ -1,19 +1,18 @@
-import HeroCarousel from "@/components/sections/HeroCarousel";
 import Categories from "@/components/sections/Categories";
 import BlogSection from "@/components/sections/BlogSection";
 import ContactSection from "@/components/sections/ContactSection";
 import FeaturedProductsSection, { defaultFeaturedProducts } from "@/components/sections/FeaturedProductsSection";
 import VideoSection from "@/components/sections/VideoSection"; // Import the new component
-import { heroSlidesData } from '@/app/data';
+import LocalizedHero from "@/components/sections/LocalizedHero";
 
 export default function Home() {
   return (
     <>
-      <HeroCarousel slides={heroSlidesData} />
+      {/* Localized Hero picks texts based on current language */}
+      <LocalizedHero />
       <Categories />
       <FeaturedProductsSection 
         products={defaultFeaturedProducts} 
-        title="Produktet Tona"
         showArrow={true}
       />
       <VideoSection />

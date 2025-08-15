@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { useState } from 'react';
+import { useT } from '@/components/i18n';
 
 // Define the type for a featured product
 export type FeaturedProduct = {
@@ -68,7 +69,9 @@ const FeaturedProductsSection = ({
   showArrow = true,
   buttonText = 'Shiko Produktin'
 }: FeaturedProductsSectionProps) => {
+  const t = useT();
   const [imgRatios, setImgRatios] = useState<Record<string, number>>({});
+  const displayTitle = title ?? t('home.products.sectionTitle', 'Produktet Tona');
   // Color mapping for Tailwind classes
   const colorMap: Record<string, { bg: string, hover: string, text: string }> = {
     'red': {
@@ -95,9 +98,9 @@ const FeaturedProductsSection = ({
   
   return (
     <section className={`py-16 space-y-24 ${className}`}>
-      {title && (
+      {displayTitle && (
         <div className="container mx-auto px-4 text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">{title}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">{displayTitle}</h2>
         </div>
       )}
 
@@ -148,14 +151,17 @@ const FeaturedProductsSection = ({
                   const colorKey = product.accentColor?.split('-')[0] || 'red';
                   return colorMap[colorKey]?.text || colorMap.red.text;
                 })()}`}>
-                  {product.subtitle}
+                  {/* Localize common subtitle phrase if it matches default */}
+                  {product.subtitle === 'Cilësia është kursim' 
+                    ? t('home.products.qualityIsSaving', 'Cilësia është kursim')
+                    : product.subtitle}
                 </p>
               )}
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                {product.title}
+                {t(`home.products.featured.${product.id}.title`, product.title)}
               </h2>
               <p className="text-base md:text-lg mb-8 opacity-90">
-                {product.description}
+                {t(`home.products.featured.${product.id}.description`, product.description)}
               </p>
               <Button asChild size="lg" className={`${(() => {
                 const colorKey = product.accentColor?.split('-')[0] || 'red';
@@ -163,7 +169,9 @@ const FeaturedProductsSection = ({
                 return `${color.bg} ${color.hover}`;
               })()} text-white group transition-all`}>
                 <Link href={product.link}>
-                  {buttonText}
+                  {buttonText === 'Shiko Produktin' 
+                    ? t('home.products.viewProduct', 'Shiko Produktin')
+                    : buttonText}
                   {showArrow && (
                     <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                   )}

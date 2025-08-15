@@ -28,6 +28,7 @@ export interface Product {
   id: string;
   title: string;
   description?: string;
+  descriptionKey?: string;
   price: string;
   imageUrl: string;
   category: string;
@@ -36,8 +37,11 @@ export interface Product {
   keyCharacteristics?: KeyCharacteristic[];
   models?: ProductModel[];
   features: string[];
+  featuresKey?: string;
   longDescription?: string;
+  longDescriptionKey?: string;
   details?: Record<string, string>;
+  detailsKey?: string;
   specifications?: Record<string, Record<string, string>>;
   downloads?: Download[];
   relatedProducts?: string[];
@@ -60,6 +64,7 @@ export function getAllProducts(): Product[] {
       id: 'pompa-nxehtesie-vanguard',
       title: 'Pompa Termike Vanguard Comfort',
       description: 'Pompë termike ajër-ujë me efikasitet të lartë për ngrohje dhe ujë të ngrohtë sanitar.',
+      descriptionKey: 'products.pompa-nxehtesie-vanguard.description',
       price: '2450 - 5500',
       imageUrl: '/produktet/pompa-termike-vanguard.png',
       category: 'ngrohje-qendrore',
@@ -128,15 +133,18 @@ export function getAllProducts(): Product[] {
       features: [ 
         'Energy Efficiency Class A++, Ngrohje dhe Ftohje',
         'R32 Gaz - Më ekologjik dhe efikas',
-        'Inverter Technology - Për kursim energjie dhe operim të qetë',
+        'Teknologji Inverter për kursim energjie dhe operim të qetë',
         'Temperaturë e lartë uji deri në 55°C',
         'Disponueshme në kapacitete 12kW, 18kW, 24kW, 32kW',
         'Kontroll i avancuar dixhital',
         'Certifikimet: ISO9001, CE, Etiketa e Energjisë erP, ROHS'
       ],
+      featuresKey: 'products.pompa-nxehtesie-vanguard.features',
       longDescription: `
-        <p>Pompa Termike EcoTek “Vanguard Comfort”</p><p>Pompat Termike EcoTek Vanguard Comfort me kompresor të gazit R32 janë projektuar për të sjellë komoditet në jetën e njerëzve me ujë të nxehtë, ngrohje dhe ftohje. Karakteristikat e punës së pompës termike dhe funksionet e krahasueshme përfshijnë vlerësimin e energjisë ERP A++, operacionin me zhurmë të ulët 55 Db, gazin R32, kontrollin inteligjent dhe shkrirjen “defrost” inteligjente. Përveç kësaj, këto pompa të ngrohjes me inverter të teknologjis së fundit për të reduktuar kostot efektive përdoren me anë të ekranit touch screen 5-inch. Pompa termike funksionon deri në temperaturën e ulët -25°C EVI dhe funksionimin e softuerit në distancë me një klikim të programit telefonik.</p>
-      `,      specifications: {
+        <p>Pompa Termike EcoTek “Vanguard Comfort”</p><p>Pompat Termike EcoTek Vanguard Comfort me kompresor të gazit R32 janë projektuar për të sjellë komoditet në jetën e njerëzve me ujë të nxehtë, ngrohje dhe ftohje. Karakteristikat e punës së pompës termike dhe funksionet e krahasueshme përfshijnë vlerësimin e energjisë ERP A++, operacionin me zhurmë të ulët 55 Db, gazin R32, kontrollin inteligjent dhe shkrirjen “defrost” inteligjente. Përveç kësaj, këto pompa të ngrohjes me inverter të teknologjis së fundit për të reduktuar kostat efektive përdoren me anë të ekranit touch screen 5-inch. Pompa termike funksionon deri në temperaturën e ulët -25°C EVI dhe funksionimin e softuerit në distancë me një klikim të programit telefonik.</p>
+      `,
+      longDescriptionKey: 'products.pompa-nxehtesie-vanguard.longDescription',
+      specifications: {
         // Data structured as: Characteristic -> Model -> Value
         'Model No.': {
           'vanguard-12': 'BLN-012TA1',
@@ -267,8 +275,9 @@ export function getAllProducts(): Product[] {
       id: 'pompa-nxehtesie-serene',
       title: 'Pompa Termike Serene Climate',
       description: 'Pompë termike ajër-ujë A+++ me teknologji Inverter dhe ftohës R32.',
-      price: '3100 - 4950',
-      imageUrl: '/produktet/pompa-termike-serene.png', 
+      descriptionKey: 'products.pompa-nxehtesie-serene.description',
+      price: '2600 - 5600',
+      imageUrl: '/produktet/pompa-termike-serene.png',
       category: 'ngrohje-qendrore',
       subcategory: 'pompa-termike',
       badges: [
@@ -333,28 +342,30 @@ export function getAllProducts(): Product[] {
         }
       ],
       features: [
-        'Klasa e Efikasitetit Energjetik A+++, Ngrohje dhe Ftohje',
-        'Gaz ekologjik R32',
-        'Teknologji Inverter për kursim energjie',
-        'Temperaturë maksimale e ujit 55°C',
-        'Pompë qarkullimi e integruar',
-        'Enë ekspansioni e integruar',
-        'Valvula sigurie të integruara',
-        'Operim i qetë',
-        'Kontroll inteligjent'
+        'A+++ Energy Efficiency Class, Heating and Cooling',
+        'R32 Eco-friendly Refrigerant',
+        'Inverter Technology',
+        'Maximum water temperature 55°C',
+        'Integrated circulation pump',
+        'Integrated expansion vessel',
+        'Integrated safety valves',
+        'Quiet operation',
+        'Smart control'
       ],
+      featuresKey: 'products.pompa-nxehtesie-serene.features',
       longDescription: `
-<p>Pompa e Ngrohjes Serene Climate R32 ka një dizajn modern dhe vlerësim A+++. Ajo përdor gazin miqësor për mjedisin R32 dhe teknologjinë inverter, duke siguruar ujë deri në 55°C me konsum të ulët energjie dhe performancë të lartë. Pajisja vjen e kompletuar me:</p>
-<p>Pompë qarkulluese të integruar për shpërndarje të barabartë të ngrohjes dhe ftohjes,</p>
+<p>Pompa e Ngrohjes Serene Climate R32 ka një dizajn modern dhe vlerësim A+++. Ajo përdor gazin miqësor për mjedisin R32 dhe teknologjinë inverter, duke siguruar ujë deri në 55°C me konsum të ulët energjie dhe performancë të lartë.</p>
       `,
+      longDescriptionKey: 'products.pompa-nxehtesie-serene.longDescription',
       details: {
-        'Prodhuesi': 'ECOTEK (Shembull)',
+        'Prodhuesi': 'ECOTEK',
         'Tipi': 'Pompë Termike Ajër-Ujë',
         'Teknologjia': 'Inverter',
         'Ftohësi': 'R32',
         'Klasa e Energjisë': 'A+++',
         'Garancia': '4 vite'
       },
+      detailsKey: 'products.pompa-nxehtesie-serene.details',
       specifications: {
         'Model No.': {
           'serene-10kw': 'BLN-010TB1',
@@ -581,6 +592,7 @@ export function getAllProducts(): Product[] {
       id: 'pompa-nxehtesie-apex',
       title: 'Pompa Termike Apex Heating',
       description: 'Pompë termike ajër-ujë A+++ me Gaz natyral R290 dhe temperaturë të lartë ujit dalës (75°C).',
+      descriptionKey: 'products.pompa-nxehtesie-apex.description',
       price: '3000 - 5050',
       imageUrl: '/produktet/pompa-termike-apex.png',
       category: 'ngrohje-qendrore',
@@ -675,6 +687,9 @@ export function getAllProducts(): Product[] {
 
         <p>Përfshin komponentë hidraulikë të integruar për instalim të lehtë dhe ofron operim të besueshëm edhe në temperatura të ulëta të ambientit.</p>
       `,
+      longDescriptionKey: 'products.pompa-nxehtesie-apex.longDescription',
+      featuresKey: 'products.pompa-nxehtesie-apex.features',
+      detailsKey: 'products.pompa-nxehtesie-apex.details',
       details: {
         'Prodhuesi': 'ECOTEK (Shembull)',
         'Tipi': 'Pompë Termike Ajër-Ujë (Temp. Lartë)',

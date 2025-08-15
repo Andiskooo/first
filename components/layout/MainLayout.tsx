@@ -2,6 +2,7 @@
 
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { LanguageProvider } from '@/components/LanguageProvider';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -10,11 +11,13 @@ interface MainLayoutProps {
 export default function MainLayout({ children }: MainLayoutProps) {
   return (
     <>
-      <Header />
-      <main>
-        {children}
-      </main>
-      <Footer />
+      <LanguageProvider>
+        <Header />
+        <main>
+          {children}
+        </main>
+        <Footer />
+      </LanguageProvider>
     </>
   );
 }

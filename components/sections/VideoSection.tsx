@@ -2,14 +2,16 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { useT } from '@/components/i18n';
 
 const VideoSection = () => {
+  const t = useT();
   return (
     <section className="py-12 md:py-24 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <p className="text-lg text-gray-600 mt-4 max-w-3xl mx-auto">
-          Shijoni freskinë dhe komoditetin maksimal në shtëpinë tuaj me kondicionerët e ajrit CANDY. Zgjidhja ideale për një verë pa stres.
+            {t('home.video.title', 'Shijoni freskinë dhe komoditetin maksimal në shtëpinë tuaj me kondicionerët e ajrit CANDY. Zgjidhja ideale për një verë pa stres.')}
           </p>
         </div>
         <div className="relative aspect-video max-w-4xl mx-auto rounded-lg overflow-hidden shadow-2xl">
@@ -28,7 +30,7 @@ const VideoSection = () => {
         </div>
         <div className="text-center mt-12">
           <Button size="lg" asChild>
-            <a href="/contact-us">Na Kontaktoni për një Konsultë</a>
+            <a href="/contact-us">{t('home.video.cta', 'Na Kontaktoni për një Konsultë')}</a>
           </Button>
         </div>
       </div>

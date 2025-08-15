@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { useT } from '@/components/i18n';
 import {
   Carousel,
   CarouselContent,
@@ -20,6 +21,7 @@ const products = [
     id: 1,
     name: 'Kaldajë me Pelet 25kW',
     category: 'Ngrohje Qendrore',
+    catKey: 'ngrohje-qendrore',
     price: '1,250.00€',
     image: '/images/product-1.jpg',
     link: '/produktet/kaldaje-pelet-25kw',
@@ -28,6 +30,7 @@ const products = [
     id: 2,
     name: 'Klimë Inverter 12000 BTU',
     category: 'Klimatizim',
+    catKey: 'klimatizim',
     price: '450.00€',
     image: '/images/product-2.jpg',
     link: '/produktet/klime-inverter-12000',
@@ -36,6 +39,7 @@ const products = [
     id: 3,
     name: 'Panel Solar 400W',
     category: 'Solar',
+    catKey: 'solar',
     price: '320.00€',
     image: '/images/product-3.jpg',
     link: '/produktet/panel-solar-400w',
@@ -44,6 +48,7 @@ const products = [
     id: 4,
     name: 'Pompa e Nxehtësisë 8kW',
     category: 'Ngrohje Qendrore',
+    catKey: 'ngrohje-qendrore',
     price: '2,100.00€',
     image: '/images/product-4.jpg',
     link: '/produktet/pompa-nxehtesise-8kw',
@@ -52,6 +57,7 @@ const products = [
     id: 5,
     name: 'Sistem Ventilimi me Rekuperim',
     category: 'Ventilim',
+    catKey: 'ventilim',
     price: '980.00€',
     image: '/images/product-5.jpg',
     link: '/produktet/sistem-ventilimi-rekuperim',
@@ -60,6 +66,7 @@ const products = [
     id: 6,
     name: 'Inverter Solar 5kW',
     category: 'Solar',
+    catKey: 'solar',
     price: '1,450.00€',
     image: '/images/product-6.jpg',
     link: '/produktet/inverter-solar-5kw',
@@ -68,6 +75,7 @@ const products = [
     id: 7,
     name: 'Radiator Alumini 10 Elementë',
     category: 'Ngrohje Qendrore',
+    catKey: 'ngrohje-qendrore',
     price: '180.00€',
     image: '/images/product-7.jpg',
     link: '/produktet/radiator-alumini-10-elemente',
@@ -75,6 +83,7 @@ const products = [
 ];
 
 const ProductsCarousel = () => {
+  const t = useT();
   const [api, setApi] = useState<CarouselApi | null>(null);
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
@@ -96,13 +105,11 @@ const ProductsCarousel = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-end mb-8">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-2">Produktet Tona</h2>
-            <p className="text-lg text-slate-600">
-              Zgjidhje të avancuara për nevojat tuaja
-            </p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-2">{t('home.products.sectionTitle', 'Produktet Tona')}</h2>
+            <p className="text-lg text-slate-600">{t('home.products.sectionSubtitle', 'Zgjidhje të avancuara për nevojat tuaja')}</p>
           </div>
           <Link href="/produktet" className="text-blue-600 font-medium flex items-center gap-1 group">
-            Shiko të gjitha
+            {t('home.products.viewAll', 'Shiko të gjitha')}
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
               width="16" 
@@ -148,14 +155,14 @@ const ProductsCarousel = () => {
                         />
                       </div>
                       <div className="p-4">
-                        <div className="text-sm text-blue-600 mb-1">{product.category}</div>
+                        <div className="text-sm text-blue-600 mb-1">{t(`home.products.cat.${product.catKey}`, product.category)}</div>
                         <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
                         <div className="font-bold text-xl">{product.price}</div>
                       </div>
                     </CardContent>
                     <CardFooter className="border-t p-4">
                       <Button asChild className="w-full">
-                        <Link href={product.link}>Shiko Detajet</Link>
+                        <Link href={product.link}>{t('home.products.viewDetails', 'Shiko Detajet')}</Link>
                       </Button>
                     </CardFooter>
                   </Card>

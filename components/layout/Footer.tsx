@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import { useT } from '@/components/i18n';
 
 const Footer = () => {
+  const t = useT();
   return (
     <footer className="bg-slate-900 text-white">
       <div className="container mx-auto px-4 py-12">
@@ -21,7 +23,7 @@ const Footer = () => {
               />
             </Link>
             <p className="text-sm text-slate-300 mt-4">
-              EcoTek ofron zgjidhje inovative për ngrohje qendrore, klimatizim, ventilim dhe sisteme solare për shtëpi dhe biznese.
+              {t('footer.about')}
             </p>
             <div className="flex gap-4 mt-6">
               <Link href="https://www.facebook.com/ecotek.kosove" target="_blank" rel="noopener noreferrer">
@@ -50,21 +52,21 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div className="col-span-1">
-            <h3 className="text-lg font-semibold mb-4">Lidhje të Shpejta</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('footer.quickLinksTitle')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/about-us" className="text-slate-300 hover:text-white transition-colors">
-                  Rreth Nesh
+                  {t('footer.links.about')}
                 </Link>
               </li>
               <li>
                 <Link href="/contact-us" className="text-slate-300 hover:text-white transition-colors">
-                  Kontakti
+                  {t('footer.links.contact')}
                 </Link>
               </li>
               <li>
                 <Link href="/blog" className="text-slate-300 hover:text-white transition-colors">
-                  Blog
+                  {t('footer.links.blog')}
                 </Link>
               </li>
             </ul>
@@ -72,7 +74,7 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div className="col-span-1">
-            <h3 className="text-lg font-semibold mb-4">Kontakto</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('footer.contactTitle')}</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-1 text-slate-300">
@@ -80,7 +82,7 @@ const Footer = () => {
                   <circle cx="12" cy="10" r="3"/>
                 </svg>
                 <span className="text-slate-300">
-                  Rruga Dah Polloshka, Gjakovë 50000, Kosovë
+                  {t('contact.info.addressValue')}
                 </span>
               </li>
               <li className="flex items-start gap-3">
@@ -88,7 +90,7 @@ const Footer = () => {
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                 </svg>
                 <span className="text-slate-300">
-                  +383 44 914 480
+                  {t('contact.info.phoneValue')}
                 </span>
               </li>
               <li className="flex items-start gap-3">
@@ -97,7 +99,7 @@ const Footer = () => {
                   <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
                 </svg>
                 <span className="text-slate-300">
-                  info@ecotek-ks.com
+                  {t('contact.info.emailValue')}
                 </span>
               </li>
             </ul>
@@ -105,25 +107,23 @@ const Footer = () => {
 
           {/* Newsletter */}
           <div className="col-span-1">
-            <h3 className="text-lg font-semibold mb-4">Abonohu për Njoftime</h3>
-            <p className="text-sm text-slate-300 mb-4">
-              Merrni njoftime për produktet dhe shërbimet tona më të reja.
-            </p>
+            <h3 className="text-lg font-semibold mb-4">{t('footer.newsletter.title')}</h3>
+            <p className="text-sm text-slate-300 mb-4">{t('footer.newsletter.desc')}</p>
             <form className="flex flex-col gap-3">
               <input 
                 type="email" 
-                placeholder="Email juaj" 
+                placeholder={t('footer.newsletter.placeholder')}
                 className="px-4 py-2 rounded-md bg-slate-800 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                Abonohu
+                {t('footer.newsletter.subscribe')}
               </Button>
             </form>
           </div>
         </div>
 
         <div className="border-t border-slate-800 mt-10 pt-6 text-center text-sm text-slate-400">
-          <p>© {new Date().getFullYear()} EcoTek. Të gjitha të drejtat e rezervuara.</p>
+          <p>{t('footer.rightsPrefix')} {new Date().getFullYear()} EcoTek. {t('footer.rightsSuffix')}</p>
         </div>
       </div>
     </footer>
