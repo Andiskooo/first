@@ -945,6 +945,7 @@ export function getAllProducts(): Product[] {
       id: 'pompa-nxehtesie-maxi',
       title: 'Pompa Termike Maxi Afariste',
       description: 'Pompë termike ajër-ujë A++ me Gaz R410a, ideale për hapësira komerciale ose afariste.',
+      descriptionKey: 'products.pompa-nxehtesie-maxi.description',
       price: '12,000 - 25,000',
       imageUrl: '/produktet/pompa-termike-maxi.png',
       category: 'ngrohje-qendrore',
@@ -1020,9 +1021,11 @@ export function getAllProducts(): Product[] {
         'Mbrojtje nga ngrirja',
         'Kapacitete të ndryshme: 50kW, 100kW, 200kW, 400kW'
       ],
+      featuresKey: 'products.pompa-nxehtesie-maxi.features',
       longDescription: `
 <p>Seria e Pumpave të Ngrohjes dhe Ftohjes Komerciale Maxi nga EcoTek duke përdorur gazin e ftohjes R410a, ofron avantazhe të shumta. R410a është miqësor për mjedisin, pa ndikim potencial në ozon, duke zvogëluar ndikimin e tij. Ai ofron vetitë termodinamike të përmirësuara, duke rezultuar në efikasitet të lartë të energjisë dhe zvogëlim të kostove operative. Mundësia e shkëlqyer e transferimit të nxehtësisë të gazit lejon performancë optimale në ngrohje dhe ftohje. Mundësia e tij për të operuar në presione më të larta lejon dizajne sistemi më kompakte.</p>
       `,
+      longDescriptionKey: 'products.pompa-nxehtesie-maxi.longDescription',
       details: {
         'Prodhuesi': 'ECOTEK',
         'Tipi': 'Pompë Termike Ajër-Ujë',
@@ -1031,6 +1034,7 @@ export function getAllProducts(): Product[] {
         'Klasa e Energjisë': 'A++',
         'Garancia': '4 vite'
       },
+      detailsKey: 'products.pompa-nxehtesie-maxi.details',
       specifications: {
         'Model No.': {
           'maxi-50kw': 'DLN-050TA1',
@@ -1209,6 +1213,7 @@ export function getAllProducts(): Product[] {
       id: 'pompa-nxehtesie-sinceko',
       title: 'Pompa Gjeotermike Sinceko',
       description: 'Pompë Gjeotermike ujë-ujë A+++ me Gaz R410a, zgjidhje ekonomike për ngrohje.',
+      descriptionKey: 'products.pompa-nxehtesie-sinceko.description',
       price: '1950 - 5850',
       imageUrl: '/produktet/pompa-gjeotermike-sinceko.png',
       category: 'ngrohje-qendrore',
@@ -1264,6 +1269,7 @@ export function getAllProducts(): Product[] {
           price: '4500'
         },
       ],
+      featuresKey: 'products.pompa-nxehtesie-sinceko.features',
       features: [
         'Klasa e Efikasitetit Energjetik A+++',
         'Gaz ekologjik R410a',
@@ -1272,10 +1278,12 @@ export function getAllProducts(): Product[] {
         'Operim i besueshëm dhe ekonomik',
         'Kontrollues i thjeshtë dhe intuitiv'
       ],
+      longDescriptionKey: 'products.pompa-nxehtesie-sinceko.longDescription',
       longDescription: `
         <p>Sinceko Ground Source “Uj-Uj</p>
 <p>Pompa e Ngrohjes nga Burimet e Tokës SINCEKO ofron një zgjidhje të gjithëpërfshirëse, të miqësueshme ndaj mjedisit dhe të kursyer për energjinë për ngrohjen, ftohjen dhe ujin e nxehtë shtëpiake. Përveç dy avantazheve kryesore të energjisë së lartë dhe zhurmës së ulët, kontrolluesi inteligjent i pompa e ngrohjes nga burimet e tokës SINCEKO gjithashtu ofron funksionin e kurvës së ngrohjes për të bërë ngrohjen më të rehatshme dhe funksionin EKO që përfshin tre mënyra për të përshtatur zakonet e ndryshme të jetës familjare për të arritur qëllimin më të madh të kursyerjes së energjisë.</p>
       `,
+      detailsKey: 'products.pompa-nxehtesie-sinceko.details',
       details: {
         'Prodhuesi': 'Sinceko (Shembull)',
         'Tipi': 'Pompë Termike Ujë-Ujë Split',
@@ -1400,6 +1408,7 @@ export function getAllProducts(): Product[] {
       id: 'kalldaja-og',
       title: 'Kalldaja Elektrike OG Comfort',
       description: 'Kalldajë elektrike me efikasitet të lartë për ngrohje.',
+      descriptionKey: 'products.kalldaja-og.description',
       price: '250-390',
       imageUrl: '/produktet/kalldaja-og.jpg',
       category: 'ngrohje-qendrore',
@@ -1475,6 +1484,7 @@ export function getAllProducts(): Product[] {
           price: '350'
         },      
       ],
+      featuresKey: 'products.kalldaja-og.features',
       features: [
         '2 Modele, Digitale dhe Manuale',
         'Pompe Qarkulluese Tisea',
@@ -1484,6 +1494,7 @@ export function getAllProducts(): Product[] {
         'Instalim i thjeshte',
         'Kapacitet nga 6kW - 27kW'
       ],
+      longDescriptionKey: 'products.kalldaja-og.longDescription',
       longDescription: `
         <p>Kalldaja Elektrike nga firma ECOTEK,</p>
         <p>Me dizajn modern dhe siguri të dëshmuar, është produkti më i shitur dhe më i preferuar për të gjithë konsumatorët që kërkojnë sisteme ngrohjeje me çmim konkurrues dhe jetëgjatësi të lartë.</p>
@@ -1500,6 +1511,7 @@ export function getAllProducts(): Product[] {
         <p>4. Lidhje me WiFi</p>
         <p>Me opsion të integruar për lidhje WiFi, ndezja dhe fikja e kaldajës mund të bëhet në distancë përmes aplikacionit në telefon.</p>
       `,
+      detailsKey: 'products.kalldaja-og.details',
       details: {
         'Prodhuesi': 'ECOTEK',
         'Tipi': 'Kalldajë Originale',
@@ -1518,6 +1530,7 @@ export function getAllProducts(): Product[] {
       id: 'kalldaja-mp',
       title: 'Kalldaja Elektrike MP Comfort',
       description: 'Kalldajë elektrike me efikasitet të lartë për ngrohje.',
+      descriptionKey: 'products.kalldaja-mp.description',
       price: '250-390',
       imageUrl: '/produktet/kalldaja-mp.png',  
       category: 'ngrohje-qendrore',
@@ -1593,6 +1606,7 @@ export function getAllProducts(): Product[] {
           price: '350'
         },
       ],
+      featuresKey: 'products.kalldaja-mp.features',
       features: [
         '2 Modele, Digitale dhe Manuale',
         'Pompe Qarkulluese Tisea',
@@ -1602,6 +1616,7 @@ export function getAllProducts(): Product[] {
         'Instalim i thjeshte',
         'Kapacitet nga 6kW - 27kW'
       ],
+      longDescriptionKey: 'products.kalldaja-mp.longDescription',
       longDescription: `
         <p>Kalldaja Elektrike nga firma ECOTEK,</p>
         <p>Me dizajn modern dhe siguri të dëshmuar, është produkti më i shitur dhe më i preferuar për të gjithë konsumatorët që kërkojnë sisteme ngrohjeje me çmim konkurrues dhe jetëgjatësi të lartë.</p>
@@ -1618,6 +1633,7 @@ export function getAllProducts(): Product[] {
         <p>4. Lidhje me WiFi</p>
         <p>Me opsion të integruar për lidhje WiFi, ndezja dhe fikja e kaldajës mund të bëhet në distancë përmes aplikacionit në telefon.</p>
       `,
+      detailsKey: 'products.kalldaja-mp.details',
       details: {
         'Prodhuesi': 'ECOTEK',
         'Tipi': 'Kalldajë Originale',
@@ -1635,6 +1651,7 @@ export function getAllProducts(): Product[] {
     {
       id: 'kalldaja-jp',
       title: 'Kalldaja Elektrike ECOTEK JP',
+      descriptionKey: 'products.kalldaja-jp.description',
       description: 'Kalldajë elektrike me efikasitet të lartë për ngrohje.',
       price: '250-390',
       imageUrl: '/produktet/kalldaja-jp.png',
@@ -1711,6 +1728,7 @@ export function getAllProducts(): Product[] {
           price: '350'
         },
       ],
+      featuresKey: 'products.kalldaja-jp.features',
       features: [
         '2 Modele, Digitale dhe Manuale',
         'Pompe Qarkulluese Tisea',
@@ -1720,6 +1738,7 @@ export function getAllProducts(): Product[] {
         'Instalim i thjeshte',
         'Kapacitet nga 6kW - 27kW'
       ],
+      longDescriptionKey: 'products.kalldaja-jp.longDescription',
       longDescription: `
         <p>Kalldaja Elektrike nga firma ECOTEK,</p>
         <p>Me dizajn modern dhe siguri të dëshmuar, është produkti më i shitur dhe më i preferuar për të gjithë konsumatorët që kërkojnë sisteme ngrohjeje me çmim konkurrues dhe jetëgjatësi të lartë.</p>
@@ -1736,6 +1755,7 @@ export function getAllProducts(): Product[] {
         <p>4. Lidhje me WiFi</p>
         <p>Me opsion të integruar për lidhje WiFi, ndezja dhe fikja e kaldajës mund të bëhet në distancë përmes aplikacionit në telefon.</p>
       `,
+      detailsKey: 'products.kalldaja-jp.details',
       details: {
         'Prodhuesi': 'ECOTEK',
         'Tipi': 'Kalldajë Originale',
@@ -1754,6 +1774,7 @@ export function getAllProducts(): Product[] {
     {
       id: 'radiator',
       title: 'Radiator Panel',
+      descriptionKey: 'products.radiator.description',
       description: 'Radiator panel çeliku me efikasitet të lartë për shpërndarje të shpejtë dhe uniforme të ngrohjes.',
       price: '80 - 160',
       imageUrl: '/produktet/radiator.png',
@@ -1805,6 +1826,7 @@ export function getAllProducts(): Product[] {
           price: 'Kontakto për çdo model'
         }
       ],
+      featuresKey: 'products.radiator.features',
       features: [
         'Ngrohje e Shpejtë dhe e Barabartë falë dizajnit panel',
         'Materiale të Cilësisë së Lartë - Çelik rezistent ndaj korrozionit',
@@ -1813,9 +1835,11 @@ export function getAllProducts(): Product[] {
         'Gama e gjerë e dimensioneve dhe tipeve (Tip 11, 21, 22, 33)',
         'Instalim i lehtë'
       ],
+      longDescriptionKey: 'products.radiator.longDescription',
       longDescription: `
         <p>Radiatorët panel prej çeliku janë zgjidhja klasike dhe efikase për sistemet e ngrohjes qendrore. Ata ofrojnë shpërndarje të shpejtë dhe uniforme të nxehtësisë në të gjithë hapësirën.</p>
       `,
+      detailsKey: 'products.radiator.details',
       details: {
         'Prodhuesi': 'ECOTEK/Partner (Shembull)',
         'Materiali': 'Çelik',
@@ -1835,6 +1859,7 @@ export function getAllProducts(): Product[] {
     {
       id: 'radiator-gypor',
       title: 'Radiator Gypor',
+      descriptionKey: 'products.radiator-gypor.description',
       description: 'Radiator alumini gypor me dizajn elegant dhe transferim të shkëlqyer të nxehtësisë.',
       price: '60 - 120',
       imageUrl: '/produktet/radiator-gypor.png',
@@ -1886,6 +1911,7 @@ export function getAllProducts(): Product[] {
           price: 'Kontakto për çdo model'
         }
       ],
+      featuresKey: 'products.radiator-gypor.features',
       features: [
         'Ngrohje e Shpejtë dhe e Barabartë falë qelikut',
         'Materiale të Cilësisë së Lartë - Çelik rezistent',
@@ -1893,9 +1919,11 @@ export function getAllProducts(): Product[] {
         'Dizajn Modern dhe Elegant - Përshtatet me interierët bashkëkohorë',
         'Modular - Mundësi konfigurimi sipas nevojës'
       ],
+      longDescriptionKey: 'products.radiator-gypor.longDescription',
       longDescription: `
         <p>Radiatori gypor është modeli më i njohur për banjo, duke kombinuar dizajnin elegant me efikasitetin e lartë të shpërndarjes së nxehtësisë. Struktura me gypa lejon ngrohjen e ambientit dhe tharjen e peshqirëve njëkohësisht. I ndërtuar nga materiale rezistente ndaj lagështisë, ky radiator përshtatet lehtësisht në çdo hapësirë dhe mund të funksionojë me ngrohje qendrore ose si njësi elektrike.</p>
       `,
+      detailsKey: 'products.radiator-gypor.details',
       details: {
         'Prodhuesi': 'ECOTEK',
         'Materiali': 'Çelik',
@@ -1916,6 +1944,7 @@ export function getAllProducts(): Product[] {
     {
       id: 'fancoiler',
       title: 'Fancoiler Slim ECOTEK',
+      descriptionKey: 'products.fancoiler.description',
       description: 'Fancoiler mural me dizajn modern për ngrohje dhe ftohje efikase dhe të qetë.',
       price: '250 - 300',
       imageUrl: '/produktet/fancoiler.png',
@@ -1977,6 +2006,7 @@ export function getAllProducts(): Product[] {
           price: '350'
         }
       ],
+      featuresKey: 'products.fancoiler.features',
       features: [
        'Efiçiencë Energjitike në ngrohje dhe ftohje',
         'Materiale të Cilësisë së Lartë dhe dizajn modern',
@@ -1986,11 +2016,13 @@ export function getAllProducts(): Product[] {
         'Telekomandë infra të kuqe (opsionale)',
         'Instalim i lehtë në mur'
       ],
+      longDescriptionKey: 'products.fancoiler.longDescription',
       longDescription: `
         <p>Fancoiler-at muralë ECOTEK ofrojnë një zgjidhje elegante dhe efikase për klimatizimin e hapësirave rezidenciale dhe komerciale. Ata mund të përdoren si për ngrohje (në kombinim me pompa termike ose kaldaja) ashtu edhe për ftohje.</p>
         
         <p>Dizajni modern dhe operimi i qetë i bëjnë të përshtatshëm për çdo ambient. Kontrolli i avancuar lejon rregullim të saktë të temperaturës dhe komoditetit.</p>
       `,
+      detailsKey: 'products.fancoiler.details',
       details: {
         'Prodhuesi': 'ECOTEK (Shembull)',
         'Tipi': 'Fancoiler Mural',
@@ -2073,6 +2105,7 @@ export function getAllProducts(): Product[] {
     {
       id: 'fancoiler-kasetor',
       title: 'Fancoiler Kasetor',
+      descriptionKey: 'products.fancoiler-kasetor.description',
       description: 'Fancoiler kasetor për montim në tavan, ideal për shpërndarje uniforme të ajrit në 4 drejtime.',
       price: '500 - 1200',
       imageUrl: '/produktet/fancoiler-kasetor.png',
@@ -2124,6 +2157,7 @@ export function getAllProducts(): Product[] {
           price: 'Kontakto për çdo model'
         }
       ],
+      featuresKey: 'products.fancoiler-kasetor.features',
       features: [
         'Efiçiencë Energjitike në ngrohje dhe ftohje',
         'Materiale të Cilësisë së Lartë',
@@ -2134,11 +2168,13 @@ export function getAllProducts(): Product[] {
         'Pompë kondensate e integruar (në shumicën e modeleve)',
         'Panel dekorativ estetik'
       ],
+      longDescriptionKey: 'products.fancoiler-kasetor.longDescription',
       longDescription: `
         <p>Fancoiler-at kasetorë janë zgjidhja diskrete dhe efikase për klimatizimin e zyrave, dyqaneve dhe hapësirave të tjera komerciale ose rezidenciale me tavane të varur. Montimi në tavan dhe shpërndarja e ajrit në 4 drejtime sigurojnë një ambient uniform dhe komod.</p>
         
         <p>Me kapacitete të ndryshme dhe operim të qetë, fancoiler-at kasetorë ECOTEK integrohen lehtësisht në çdo dizajn interieri duke ofruar performancë të lartë.</p>
       `,
+      detailsKey: 'products.fancoiler-kasetor.details',
       details: {
         'Prodhuesi': 'ECOTEK',
         'Tipi': 'Fancoiler Kasetor',
@@ -2213,7 +2249,7 @@ export function getAllProducts(): Product[] {
     {
       id: 'akumulues',
       title: 'Akumulues ECOTEK',
-      description: 'Akumulues uji inoksi për ngrohje qendrore dhe sisteme solare.',
+      descriptionKey: 'products.akumulues.description',
       price: '150-400',
       imageUrl: '/produktet/akumulues.png',
       category: 'ngrohje-solare',
@@ -2274,26 +2310,11 @@ export function getAllProducts(): Product[] {
           price: '400'
         }
       ],
-      features: [
-        'Kapacitetet 60 L, 100 L, 200 L',
-        'Materiali Inoksi - Jetëgjatësi maksimale',
-        'Izolim me Poliuretan me Densitet të Lartë për efiçencë energjitike',
-        'Mundësi me 1 ose 2 Serpentina (solar + pompe termike)',
-        'Nxems Elektrik te integruar',
-        'Mbrojtje Anodike Magnezi',
-        'Garanci 4 vite'
-      ],
-      longDescription: `
-        <p>Akumulues Uji për Ngrohje Qendrore - Për një Temperaturë Konstante dhe Efiçiencë Maksimale
-Investoni në akumuluesin tonë të ujit për ngrohje qendrore dhe siguroni një ambient të ngrohtë dhe të rehatshëm gjatë gjithë vitit. Me kapacitete prej 60 L, 100 L, dhe 200 L, akumuluesit tanë janë zgjidhja ideale për të mbajtur temperaturën konstante në sistemin tuaj të ngrohjes qendrore, qoftë për radiatorë, ngrohje dyshemeje apo fan coilers.</p>
-      `,
-      details: {
-        'Prodhuesi': 'ECOTEK',
-        'Tipi': 'Akumulues Uji',
-        'Materiali i Brendshëm': 'Inoksi',
-        'Izolimi': 'Poliuretan (50mm)',
-        'Garancia': '4 vite'
-      },
+      // features is required by interface; content is sourced via featuresKey
+      features: [],
+      featuresKey: 'products.akumulues.features',
+      longDescriptionKey: 'products.akumulues.longDescription',
+      detailsKey: 'products.akumulues.details',
       specifications: {
         'MODEL': {
           'akumulues-60l': 'HWT60L',
@@ -2365,6 +2386,7 @@ Investoni në akumuluesin tonë të ujit për ngrohje qendrore dhe siguroni një
       id: 'boiler-spiral',
       title: 'Boiler Me Spirale',
       description: 'Boiler me spirale për ujë të ngrohtë sanitar me cilësi të lartë dhe efikasitet maksimal.',
+      descriptionKey: 'products.boiler-spiral.description',
       price: '500-700',
       imageUrl: '/produktet/boiler-spiral.png',
       category: 'sanitari',
@@ -2425,6 +2447,7 @@ Investoni në akumuluesin tonë të ujit për ngrohje qendrore dhe siguroni një
           price: 'Kontakto për çmimin'
         }
       ],
+      featuresKey: 'products.boiler-spiral.features',
       features: [
         'Kapaciteti nga 150 Litra deri në 300 Litra',
         'Materiali Inoksi AISI 316L - Jetëgjatësi maksimale dhe higjienë',
@@ -2433,10 +2456,12 @@ Investoni në akumuluesin tonë të ujit për ngrohje qendrore dhe siguroni një
         'Mbrojtje Anodike Magnezi',
         'Garanci 4 vite'
       ],
+      longDescriptionKey: 'products.boiler-spiral.longDescription',
       longDescription: `
         <p>Boiler Spiral -  Efikasitet dhe Komoditet për Ujin e Ngrohtë në Shtëpinë Tuaj
 Siguroni ujë të ngrohtë të pastër dhe të vazhdueshëm me bojlerët tanë të ujit me kapacitete të ndryshme prej 60 L, 100 L, 200 L, dhe 300 L. Të dizajnuar për të plotësuar nevojat tuaja për ujë sanitar të ngrohtë, bojlerët tanë me ngrohës elektrik janë të përshtatshëm për përdorime të ndryshme në shtëpi, duke ofruar efikasitet dhe komoditet të lartë.</p>
       `,
+      detailsKey: 'products.boiler-spiral.details',
       details: {
         'Prodhuesi': 'ECOTEK',
         'Tipi': 'Bojler Me Spirale',
@@ -2454,6 +2479,7 @@ Siguroni ujë të ngrohtë të pastër dhe të vazhdueshëm me bojlerët tanë t
       id: 'boiler-ecopump',
       title: 'Boileri ECOPUMP',
       description: 'Boileri ECOPUMP për ngrohje të ujit efficiente.',
+      descriptionKey: 'products.boiler-ecopump.description',
       price: '1400 - 1600',
       imageUrl: '/produktet/boiler-ecopump.png',
       category: 'sanitari',
@@ -2509,6 +2535,7 @@ Siguroni ujë të ngrohtë të pastër dhe të vazhdueshëm me bojlerët tanë t
           price: '1600'
         }
       ],
+      featuresKey: 'products.boiler-ecopump.features',
       features: [
         'Ngrohje me Pumpe Termike, Gaz R290/R134a',
         '600 Watt/hr shpenzime',
@@ -2518,10 +2545,12 @@ Siguroni ujë të ngrohtë të pastër dhe të vazhdueshëm me bojlerët tanë t
         'Nxehmës Elektrike të integruar',
         'Garanci 4 vite'
       ],
+      longDescriptionKey: 'products.boiler-ecopump.longDescription',
       longDescription: `
         <p>Boiler ECOPUMP - Zgjidhje e Avancuar për Ujë të Ngrohtë Sanitar</p>
         <p>Zbuloni bojlerin tonë të avancuar të ujit me pompë termike të integruar, me kapacitete prej 200 L dhe 300 L. Boileri me pompë termike redukton shpenzimet e energjisë deri në 4 herë më shumë krahasuar me bojlerët klasikë me ngrohës elektrik, që ofron një efikasitet të jashtëzakonshëm dhe kursim të konsiderueshëm të energjisë. Ky bojler inovativ shfrytëzon vetitë e gazit për të rritur temperaturën e ujit, duke siguruar një ngrohje efikase dhe ekonomike, ndryshe nga bojlerët klasikë me ngrohës elektrik.</p>
       `,
+      detailsKey: 'products.boiler-ecopump.details',
       details: {
         'Prodhuesi': 'ECOTEK',
         'Tipi': 'Bojler Akumulues Uji',
@@ -2619,6 +2648,7 @@ Siguroni ujë të ngrohtë të pastër dhe të vazhdueshëm me bojlerët tanë t
       id: "kondicioner-aria",
       title: "Candy - Aria Series",
       description: "Kondicioner split me efikasitet të lartë dhe lidhje WiFi.",
+      descriptionKey: 'products.kondicioner-aria.description',
       price: "500 - 750",
       imageUrl: "/produktet/kondicioner-aria.png",
       category: "klimatizim-ventilim",
@@ -2690,6 +2720,7 @@ Siguroni ujë të ngrohtë të pastër dhe të vazhdueshëm me bojlerët tanë t
           price: '650'
         }
       ],
+      featuresKey: 'products.kondicioner-aria.features',
       features: [
         "Prodhuesi: Candy",
         "Klasa e Efikasitetit A+++ (Ftohje) / A+++ (Ngrohje)",
@@ -2699,7 +2730,9 @@ Siguroni ujë të ngrohtë të pastër dhe të vazhdueshëm me bojlerët tanë t
         "Kapacitete: 12,000 BTU, 18,000 BTU",
         "SteriClean Teknologjia 56°C"
       ],
+      longDescriptionKey: 'products.kondicioner-aria.longDescription',
       longDescription: "<p>Zbuloni kondicionerin e avancuar Candy modeli Aria, një produkt i jashtëzakonshëm nga brandi me famë italiane Candy. Ky kondicioner inteligjent me kompresor gazi është dizajnuar për të ofruar rehatinë maksimale si në verë ashtu edhe në dimër. Me teknologji të përparuar dhe një sërë funksionesh të zgjuara, Aria është zgjidhja ideale për çdo shtëpi apo zyrë.</p>",
+      detailsKey: 'products.kondicioner-aria.details',
       details: { 'Prodhuesi': 'Candy', 'Tipi': 'Mural Split', 'Garancia': '2 vite (Shembull)' },
       specifications: {
         'Model': {
@@ -2914,6 +2947,7 @@ Siguroni ujë të ngrohtë të pastër dhe të vazhdueshëm me bojlerët tanë t
       id: "kondicioner-pura",
       title: "Candy - Pura Series",
       description: "Kondicioner split me gamë të gjerë kapacitetesh dhe lidhje WiFi.",
+      descriptionKey: 'products.kondicioner-pura.description',
       price: "350 - 750",
       imageUrl: "/produktet/kondicioner-pura.png",
       category: "klimatizim-ventilim",
@@ -2995,6 +3029,7 @@ Siguroni ujë të ngrohtë të pastër dhe të vazhdueshëm me bojlerët tanë t
           price: '640'
         }
       ],
+      featuresKey: 'products.kondicioner-pura.features',
       features: [
         "Prodhuesi: Candy",
         "Klasa e Efikasitetit A+++ (Ftohje) / A+++ (Ngrohje)",
@@ -3004,7 +3039,9 @@ Siguroni ujë të ngrohtë të pastër dhe të vazhdueshëm me bojlerët tanë t
         "Kapacitete: 9,000 BTU, 12,000 BTU, 18,000 BTU, 24,000 BTU",
         "SteriClean Teknologjia 56°C"
       ],
+      longDescriptionKey: 'products.kondicioner-pura.longDescription',
       longDescription: "<p>Zbuloni kondicionerin e ri Candy Modeli Pura, një produkt inovativ nga brandi me famë italiane Candy, krijuar për të sjellë një frymë ajri të pastër në shtëpinë tuaj. Me një dizajn modern dhe funksionalitete të avancuara, Pura ofron performancë të shkëlqyer dhe komoditet maksimal gjatë gjithë vitit.</p>",
+      detailsKey: 'products.kondicioner-pura.details',
       details: { 'Prodhuesi': 'Candy', 'Tipi': 'Mural Split', 'Garancia': '4 vite' },
       specifications: {
         'Model': {

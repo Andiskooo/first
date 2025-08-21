@@ -68,6 +68,190 @@ export const dict = {
           Garancia: '4 vite',
         },
       },
+      'fancoiler-kasetor': {
+        description: 'Fancoiler kasetor për montim në tavan, ideal për shpërndarje uniforme të ajrit në 4 drejtime.',
+        longDescription: `
+<p>Fancoiler-at kasetorë janë zgjidhja diskrete dhe efikase për klimatizimin e zyrave, dyqaneve dhe hapësirave të tjera komerciale ose rezidenciale me tavane të varur. Montimi në tavan dhe shpërndarja e ajrit në 4 drejtime sigurojnë një ambient uniform dhe komod.</p>
+
+<p>Me kapacitete të ndryshme dhe operim të qetë, fancoiler-at kasetorë ECOTEK integrohen lehtësisht në çdo dizajn interieri duke ofruar performancë të lartë.</p>
+        `,
+        features: [
+          'Efiçiencë Energjitike në ngrohje dhe ftohje',
+          'Materiale të Cilësisë së Lartë',
+          'Funksionim i Heshtur',
+          'Kontroll i Saktë i Temperaturës',
+          'Kapacitete nga 3kW deri në 12kW',
+          'Shpërndarje ajri në 4 drejtime për komfort maksimal',
+          'Pompë kondensate e integruar (në shumicën e modeleve)',
+          'Panel dekorativ estetik'
+        ],
+        details: {
+          Prodhuesi: 'ECOTEK',
+          Tipi: 'Fancoiler Kasetor',
+          Funksioni: 'Ngrohje / Ftohje',
+          Montimi: 'Në tavan të varur',
+          Garancia: '2 vite',
+        },
+      },
+      'kalldaja-mp': {
+        description: 'Kalldajë elektrike me efikasitet të lartë për ngrohje.',
+        longDescription: `
+<p>Kalldaja Elektrike nga firma ECOTEK,</p>
+<p>Me dizajn modern dhe siguri të dëshmuar, është produkti më i shitur dhe më i preferuar për të gjithë konsumatorët që kërkojnë sisteme ngrohjeje me çmim konkurrues dhe jetëgjatësi të lartë.</p>
+
+<p>1. Mbrojtje nga Uji</p>
+<p>Mbrojtje ndaj punës prej sasive të pakta ose të tepërta të ujit, me sensor presioni që ndryshon gjendjen e punës së kaldajës nëse presioni i ujit bie nën 1 bar ose ngjitet mbi 3 bar.</p>
+
+<p>2. Mbrojtje nga Mbirryma</p>
+<p>Siguresa dhe mbrojtje ndaj mbivoltazhit të integruara në sistemin elektrik të kaldajës, për parandalimin e dëmtimeve nga parregullsitë e furnizimit elektrik.</p>
+
+<p>3. Kontaktor Silent</p>
+<p>Modelet më të fundit kanë të integruar kontaktorë elektrikë që reduktojnë nivelin e zhurmës së lëshuar nga kaldaja, për një përdorim më të qetë dhe familjar.</p>
+
+<p>4. Lidhje me WiFi</p>
+<p>Me opsion të integruar për lidhje WiFi, ndezja dhe fikja e kaldajës mund të bëhet në distancë përmes aplikacionit në telefon.</p>
+        `,
+        features: [
+          '2 Modele, Digitale dhe Manuale',
+          'Pompe Qarkulluese Tisea',
+          'Ekran Touchscreen me Programim Javor apo Sistem Analog',
+          'Temperatura Maksimale deri në 90°C',
+          'Zhurme nen 55dB',
+          'Instalim i thjeshte',
+          'Kapacitet nga 6kW - 27kW'
+        ],
+        details: {
+          Prodhuesi: 'ECOTEK',
+          Tipi: 'Kalldajë Originale',
+          Karburanti: 'Elektrtike',
+          'Klasa e Energjisë (Ngrohje)': 'A',
+          Garancia: '2 vite',
+        },
+      },
+      radiator: {
+        description: 'Radiator panel çeliku me efikasitet të lartë për shpërndarje të shpejtë dhe uniforme të ngrohjes.',
+        longDescription: `
+<p>Radiatorët panel prej çeliku janë zgjidhja klasike dhe efikase për sistemet e ngrohjes qendrore. Ata ofrojnë shpërndarje të shpejtë dhe uniforme të nxehtësisë në të gjithë hapësirën.</p>
+        `,
+        features: [
+          'Ngrohje e Shpejtë dhe e Barabartë falë dizajnit panel',
+          'Materiale të Cilësisë së Lartë - Çelik rezistent ndaj korrozionit',
+          'Efiçiencë e Lartë Energjitike - Transferim optimal i nxehtësisë',
+          'Dizajn Modern dhe Elegant - Përshtatet me çdo ambient',
+          'Gama e gjerë e dimensioneve dhe tipeve (Tip 11, 21, 22, 33)',
+          'Instalim i lehtë'
+        ],
+        details: {
+          Prodhuesi: 'ECOTEK/Partner (Shembull)',
+          Materiali: 'Çelik',
+          Lyerja: 'Bojë pluhur RAL 9016 (Shembull)',
+          'Presioni maksimal': '10 bar (Shembull)',
+          'Temperatura maksimale': '110°C (Shembull)',
+          Garancia: '10 vite (Shembull)',
+        },
+      },
+      'radiator-gypor': {
+        description: 'Radiator alumini gypor me dizajn elegant dhe transferim të shkëlqyer të nxehtësisë.',
+        longDescription: `
+<p>Radiatori gypor është modeli më i njohur për banjo, duke kombinuar dizajnin elegant me efikasitetin e lartë të shpërndarjes së nxehtësisë. Struktura me gypa lejon ngrohjen e ambientit dhe tharjen e peshqirëve njëkohësisht. I ndërtuar nga materiale rezistente ndaj lagështisë, ky radiator përshtatet lehtësisht në çdo hapësirë dhe mund të funksionojë me ngrohje qendrore ose si njësi elektrike.</p>
+        `,
+        features: [
+          'Ngrohje e Shpejtë dhe e Barabartë falë qelikut',
+          'Materiale të Cilësisë së Lartë - Çelik rezistent',
+          'Efiçiencë e Lartë Energjitike - Transferim i shkëlqyer termik',
+          'Dizajn Modern dhe Elegant - Përshtatet me interierët bashkëkohorë',
+          'Modular - Mundësi konfigurimi sipas nevojës'
+        ],
+        details: {
+          Prodhuesi: 'ECOTEK',
+          Materiali: 'Çelik',
+          Lyerja: 'Bojë pluhur RAL 9016',
+          'Presioni maksimal': '6 bar',
+          'Temperatura maksimale': '110°C',
+          Garancia: '4 vite',
+        },
+      },
+      fancoiler: {
+        description: 'Fancoiler mural me dizajn modern për ngrohje dhe ftohje efikase dhe të qetë.',
+        longDescription: `
+<p>Fancoiler-at muralë ECOTEK ofrojnë një zgjidhje elegante dhe efikase për klimatizimin e hapësirave rezidenciale dhe komerciale. Ata mund të përdoren si për ngrohje (në kombinim me pompa termike ose kaldaja) ashtu edhe për ftohje.</p>
+
+<p>Dizajni modern dhe operimi i qetë i bëjnë të përshtatshëm për çdo ambient. Kontrolli i avancuar lejon rregullim të saktë të temperaturës dhe komoditetit.</p>
+        `,
+        features: [
+          'Efiçiencë Energjitike në ngrohje dhe ftohje',
+          'Materiale të Cilësisë së Lartë dhe dizajn modern',
+          'Funksionim i Heshtur falë ventilatorit tangjencial',
+          'Kontroll i Saktë i Temperaturës dhe shpejtësisë së ventilatorit',
+          'Kapacitete nga 1.5kW deri në 5.65kW',
+          'Telekomandë infra të kuqe (opsionale)',
+          'Instalim i lehtë në mur'
+        ],
+        details: {
+          Prodhuesi: 'ECOTEK (Shembull)',
+          Tipi: 'Fancoiler Mural',
+          Funksioni: 'Ngrohje / Ftohje',
+          Kontrolli: 'Panel kontrolli i integruar / Telekomandë (opsion)',
+          Garancia: '2 vite (Shembull)',
+        },
+      },
+      'kalldaja-jp': {
+        description: 'Kalldajë elektrike me efikasitet të lartë për ngrohje.',
+        longDescription: `
+<p>Kalldaja Elektrike nga firma ECOTEK,</p>
+<p>Me dizajn modern dhe siguri të dëshmuar, është produkti më i shitur dhe më i preferuar për të gjithë konsumatorët që kërkojnë sisteme ngrohjeje me çmim konkurrues dhe jetëgjatësi të lartë.</p>
+
+<p>1. Mbrojtje nga Uji</p>
+<p>Mbrojtje ndaj punës prej sasive të pakta ose të tepërta të ujit, me sensor presioni që ndryshon gjendjen e punës së kaldajës nëse presioni i ujit bie nën 1 bar ose ngjitet mbi 3 bar.</p>
+
+<p>2. Mbrojtje nga Mbirryma</p>
+<p>Siguresa dhe mbrojtje ndaj mbivoltazhit të integruara në sistemin elektrik të kaldajës, për parandalimin e dëmtimeve nga parregullsitë e furnizimit elektrik.</p>
+
+<p>3. Kontaktor Silent</p>
+<p>Modelet më të fundit kanë të integruar kontaktorë elektrikë që reduktojnë nivelin e zhurmës së lëshuar nga kaldaja, për një përdorim më të qetë dhe familjar.</p>
+
+<p>4. Lidhje me WiFi</p>
+<p>Me opsion të integruar për lidhje WiFi, ndezja dhe fikja e kaldajës mund të bëhet në distancë përmes aplikacionit në telefon.</p>
+        `,
+        features: [
+          '2 Modele, Digitale dhe Manuale',
+          'Pompe Qarkulluese Tisea',
+          'Ekran Touchscreen me Programim Javor apo Sistem Analog',
+          'Temperatura Maksimale deri në 90°C',
+          'Zhurme nen 55dB',
+          'Instalim i thjeshte',
+          'Kapacitet nga 6kW - 27kW'
+        ],
+        details: {
+          Prodhuesi: 'ECOTEK',
+          Tipi: 'Kalldajë Originale',
+          Karburanti: 'Elektrtike',
+          'Klasa e Energjisë (Ngrohje)': 'A',
+          Garancia: '2 vite',
+        },
+      },
+      'pompa-nxehtesie-sinceko': {
+        description: 'Pompë gjeotermike ujë‑ujë A+++ me R410a – zgjidhje ekonomike për ngrohje/fTohje dhe ujë të ngrohtë.',
+        longDescription: `
+<p>Sinceko – Pompë gjeotermike ujë‑ujë që ofron ngrohje, ftohje dhe ujë të ngrohtë sanitar me efikasitet shumë të lartë. Kontrolleri inteligjent mbështet kurbën e ngrohjes për rehati maksimale dhe modalitetin EKO me tre mënyra pune për të ulur konsumin e energjisë.</p>
+        `,
+        features: [
+          'Klasa e efikasitetit energjetik A+++',
+          'Gaz ekologjik R410a',
+          'Teknologji Inverter për funksionim efikas',
+          'Temperaturë maksimale e ujit 55°C',
+          'Operim i besueshëm dhe ekonomik',
+          'Kontrollues i thjeshtë dhe intuitiv'
+        ],
+        details: {
+          Prodhuesi: 'Sinceko (Shembull)',
+          Tipi: 'Pompë Termike Ujë‑Ujë Split',
+          Teknologjia: 'Inverter',
+          Ftohësi: 'R410a',
+          'Klasa e Energjisë': 'A+++',
+          Garancia: '4 vite',
+        },
+      },
       'pompa-nxehtesie-apex': {
         description: 'Pompë termike ajër-ujë A+++ me Gaz natyral R290 dhe temperaturë të lartë ujit dalës (75°C).',
         longDescription: `
@@ -98,6 +282,89 @@ export const dict = {
           Garancia: '4 vite',
         },
       },
+      'pompa-nxehtesie-maxi': {
+        description: 'Pompë termike ajër-ujë A++ me Gaz R410a, ideale për hapësira komerciale ose afariste.',
+        longDescription: `
+<p>Seria e Pumpave të Ngrohjes dhe Ftohjes Komerciale Maxi nga EcoTek duke përdorur gazin e ftohjes R410a, ofron avantazhe të shumta. R410a është miqësor për mjedisin, pa ndikim potencial në ozon, duke zvogëluar ndikimin e tij. Ai ofron vetitë termodinamike të përmirësuara, duke rezultuar në efikasitet të lartë të energjisë dhe zvogëlim të kostove operative. Mundësia e shkëlqyer e transferimit të nxehtësisë të gazit lejon performancë optimale në ngrohje dhe ftohje. Mundësia e tij për të operuar në presione më të larta lejon dizajne sistemi më kompakte.</p>
+        `,
+        features: [
+          'Klasa e Efikasitetit Energjetik A++',
+          'Gaz ekologjik R410a',
+          'Teknologji Inverter DC për modulim të vazhdueshëm',
+          'Temperaturë maksimale e ujit 55°C',
+          'Operim i qetë si për njësinë e jashtme',
+          'Kontroll inteligjent me ekran LCD dhe mundësi WiFi',
+          'Mbrojtje nga ngrirja',
+          'Kapacitete të ndryshme: 50kW, 100kW, 200kW, 400kW'
+        ],
+        details: {
+          Prodhuesi: 'ECOTEK',
+          Tipi: 'Pompë Termike Ajër-Ujë',
+          Teknologjia: 'Inverter DC',
+          Ftohësi: 'R410a',
+          'Klasa e Energjisë': 'A++',
+          Garancia: '4 vite',
+        },
+      },
+      'kalldaja-og': {
+        description: 'Kalldajë elektrike me efikasitet të lartë për ngrohje.',
+        longDescription: `
+<p>Kalldaja Elektrike nga firma ECOTEK,</p>
+<p>Me dizajn modern dhe siguri të dëshmuar, është produkti më i shitur dhe më i preferuar për të gjithë konsumatorët që kërkojnë sisteme ngrohjeje me çmim konkurrues dhe jetëgjatësi të lartë.</p>
+
+<p>1. Mbrojtje nga Uji</p>
+<p>Mbrojtje ndaj punës prej sasive të pakta ose të tepërta të ujit, me sensor presioni që ndryshon gjendjen e punës së kaldajës nëse presioni i ujit bie nën 1 bar ose ngjitet mbi 3 bar.</p>
+
+<p>2. Mbrojtje nga Mbirryma</p>
+<p>Siguresa dhe mbrojtje ndaj mbivoltazhit të integruara në sistemin elektrik të kaldajës, për parandalimin e dëmtimeve nga parregullsitë e furnizimit elektrik.</p>
+
+<p>3. Kontaktor Silent</p>
+<p>Modelet më të fundit kanë të integruar kontaktorë elektrikë që reduktojnë nivelin e zhurmës së lëshuar nga kaldaja, për një përdorim më të qetë dhe familjar.</p>
+
+<p>4. Lidhje me WiFi</p>
+<p>Me opsion të integruar për lidhje WiFi, ndezja dhe fikja e kaldajës mund të bëhet në distancë përmes aplikacionit në telefon.</p>
+        `,
+        features: [
+          '2 Modele, Digitale dhe Manuale',
+          'Pompe Qarkulluese Tisea',
+          'Ekran Touchscreen me Programim Javor apo Sistem Analog',
+          'Temperatura Maksimale deri në 90°C',
+          'Zhurme nen 55dB',
+          'Instalim i thjeshte',
+          'Kapacitet nga 6kW - 27kW'
+        ],
+        details: {
+          Prodhuesi: 'ECOTEK',
+          Tipi: 'Kalldajë Originale',
+          Karburanti: 'Elektrtike',
+          'Klasa e Energjisë (Ngrohje)': 'A',
+          Garancia: '2 vite',
+        },
+      },
+      'akumulues': {
+        description: 'Akumulues uji inoksi për ngrohje qendrore dhe sisteme solare.',
+        longDescription: `
+<p>Akumulues Uji për Ngrohje Qendrore - Për një Temperaturë Konstante dhe Efiçiencë Maksimale
+Investoni në akumuluesin tonë të ujit për ngrohje qendrore dhe siguroni një ambient të ngrohtë dhe të rehatshëm gjatë gjithë vitit. Me kapacitete prej 60 L, 100 L, dhe 200 L, akumuluesit tanë janë zgjidhja ideale për të mbajtur temperaturën konstante në sistemin tuaj të ngrohjes qendrore, qoftë për radiatorë, ngrohje dyshemeje apo fan coilers.</p>
+        `,
+        features: [
+          'Kapacitetet 60 L, 100 L, 200 L',
+          'Materiali Inoksi - Jetëgjatësi maksimale',
+          'Izolim me Poliuretan me Densitet të Lartë për efiçencë energjitike',
+          'Mundësi me 1 ose 2 Serpentina (solar + pompe termike)',
+          'Nxems Elektrik te integruar',
+          'Mbrojtje Anodike Magnezi',
+          'Garanci 4 vite'
+        ],
+        details: {
+          Prodhuesi: 'ECOTEK',
+          Tipi: 'Akumulues Uji',
+          'Materiali i Brendshëm': 'Inoksi',
+          Izolimi: 'Poliuretan (50mm)',
+          Garancia: '4 vite',
+        },
+      },
+      
     },
     hero: {
       slide1: {
@@ -338,6 +605,377 @@ export const dict = {
           Garantie: '4 Jahre',
         },
       },
+      'pompa-nxehtesie-sinceko': {
+        description: 'A+++ Wasser‑Wasser‑Erdwärmepumpe mit R410a – wirtschaftliche Lösung für Heizen/Kühlen und Warmwasser.',
+        longDescription: `
+<p>Sinceko – Eine Wasser‑Wasser‑Erdwärmepumpe, die Heizen, Kühlen und Warmwasser mit sehr hoher Effizienz bietet. Die intelligente Steuerung unterstützt die Heizkurve für maximalen Komfort sowie den EKO‑Modus mit drei Betriebsarten zur Reduzierung des Energieverbrauchs.</p>
+        `,
+        features: [
+          'Energieeffizienzklasse A+++',
+          'Umweltfreundliches R410a Kältemittel',
+          'Inverter‑Technologie für effizienten Betrieb',
+          'Maximale Wassertemperatur 55°C',
+          'Zuverlässiger und wirtschaftlicher Betrieb',
+          'Einfache und intuitive Steuerung'
+        ],
+        details: {
+          Hersteller: 'Sinceko (Beispiel)',
+          Typ: 'Wasser‑Wasser‑Wärmepumpe (Split)',
+          Technologie: 'Inverter',
+          Kältemittel: 'R410a',
+          'Energieklasse': 'A+++',
+          Garantie: '4 Jahre',
+        },
+      },
+      'pompa-nxehtesie-apex': {
+        description: 'A+++ Luft‑Wasser‑Wärmepumpe mit natürlichem Kältemittel R290 und hoher Austrittwassertemperatur (75°C).',
+        longDescription: `
+        <p>Apex Heating repräsentiert die Spitze der Wärmepumpentechnologie und nutzt das natürliche Kältemittel R290 (Propan) für minimale Umweltbelastung und außergewöhnliche A+++ Effizienz.</p>
+        
+        <p>Ein Hauptmerkmal ist die Fähigkeit, Wasser mit einer Temperatur von bis zu 75°C zu liefern – ideal zum Austausch alter Kessel in bestehenden Heizkörpersystemen, ohne Änderungen am vorhandenen System.</p>
+
+        <p>Mit integrierten Hydraulikkomponenten für eine einfache Installation und zuverlässigen Betrieb auch bei niedrigen Außentemperaturen.</p>
+        `,
+        features: [
+          'Höchste Energieeffizienzklasse A+++',
+          'Natürliches Kältemittel R290 mit sehr niedrigem GWP (Treibhauspotenzial)',
+          'Inverter‑Technologie für Leistungsanpassung und maximale Einsparungen',
+          'Hohe Austrittwassertemperatur bis 75°C, ideal für bestehende Heizkörper',
+          'Integrierte Hocheffizienz‑Umwälzpumpe',
+          'Integriertes Ausdehnungsgefäß',
+          'Integrierte Sicherheitsventile und Hydraulikkomponenten',
+          'Sehr leiser Betrieb',
+          'Intelligente Steuerung mit WiFi‑Option',
+          'Leistungsgrößen: 6kW bis 18kW'
+        ],
+        details: {
+          Hersteller: 'ECOTEK (Beispiel)',
+          Typ: 'Luft‑Wasser‑Wärmepumpe (Hochtemperatur)',
+          Technologie: 'Inverter',
+          Kältemittel: 'R290 (Propan)',
+          'Energieklasse': 'A+++',
+          Garantie: '4 Jahre',
+        },
+      },
+      'pompa-nxehtesie-maxi': {
+        description: 'A++ Luft‑Wasser‑Wärmepumpe mit R410a – ideal für gewerbliche oder kommerzielle Anwendungen.',
+        longDescription: `
+<p>Die kommerzielle Maxi‑Serie von EcoTek verwendet das Kältemittel R410a und bietet zahlreiche Vorteile. R410a ist ozonneutral und umweltfreundlich und ermöglicht verbesserte thermodynamische Eigenschaften, was zu hoher Energieeffizienz und niedrigeren Betriebskosten führt. Die hervorragende Wärmeübertragung sorgt für optimale Leistung beim Heizen und Kühlen. Dank höherer Betriebsdrücke sind kompaktere Systemdesigns möglich.</p>
+        `,
+        features: [
+          'Energieeffizienzklasse A++',
+          'Umweltfreundliches R410a Kältemittel',
+          'DC‑Inverter‑Technologie für kontinuierliche Modulation',
+          'Maximale Wassertemperatur 55°C',
+          'Leiser Betrieb der Außeneinheit',
+          'Intelligente Steuerung mit LCD‑Display und optionalem WiFi',
+          'Frostschutz',
+          'Leistungsgrößen: 50kW, 100kW, 200kW, 400kW'
+        ],
+        details: {
+          Hersteller: 'ECOTEK',
+          Typ: 'Luft‑Wasser‑Wärmepumpe',
+          Technologie: 'DC‑Inverter',
+          Kältemittel: 'R410a',
+          'Energieklasse': 'A++',
+          Garantie: '4 Jahre',
+        },
+      },
+      'kalldaja-og': {
+        description: 'Elektrischer Heizkessel mit hoher Effizienz für die Raumheizung.',
+        longDescription: `
+<p>Elektrischer Heizkessel von ECOTEK,</p>
+<p>Mit modernem Design und bewährter Sicherheit ist er das meistverkaufte und bevorzugte Produkt für alle, die ein kostengünstiges und langlebiges Heizsystem suchen.</p>
+
+<p>1. Wasserschutz</p>
+<p>Schutz bei zu geringer oder zu hoher Wassermenge. Ein Drucksensor ändert den Betriebszustand des Kessels, wenn der Wasserdruck unter 1 bar fällt oder über 3 bar steigt.</p>
+
+<p>2. Überspannungsschutz</p>
+<p>In das elektrische System integrierte Sicherungen und Überspannungsschutz verhindern Schäden durch Unregelmäßigkeiten in der Stromversorgung.</p>
+
+<p>3. Leiser Schütz</p>
+<p>Neueste Modelle integrieren elektrische Schütze, die das Geräuschniveau des Kessels reduzieren – für einen ruhigeren und komfortableren Betrieb.</p>
+
+<p>4. WiFi‑Anbindung</p>
+<p>Mit integrierter WiFi‑Option können Ein‑/Ausschalten des Kessels per Smartphone‑App aus der Ferne erfolgen.</p>
+        `,
+        features: [
+          '2 Modelle: Digital und Manuell',
+          'Tisea‑Umwälzpumpe',
+          'Touchscreen mit Wochenprogrammierung oder Analogsystem',
+          'Maximale Temperatur bis 90°C',
+          'Geräuschpegel unter 55 dB',
+          'Einfache Installation',
+          'Leistungsbereich 6 kW – 27 kW'
+        ],
+        details: {
+          Hersteller: 'ECOTEK',
+          Typ: 'Original‑Heizkessel',
+          Brennstoff: 'Elektrisch',
+          'Energieklasse (Heizung)': 'A',
+          Garantie: '2 Jahre',
+        },
+      },
+      radiator: {
+        description: 'Stahl‑Paneelheizkörper mit hoher Effizienz für eine schnelle und gleichmäßige Wärmeverteilung.',
+        longDescription: `
+<p>Stahl‑Paneelheizkörper sind die klassische und effiziente Lösung für Zentralheizungssysteme. Sie bieten eine schnelle und gleichmäßige Wärmeverteilung im gesamten Raum.</p>
+        `,
+        features: [
+          'Schnelle und gleichmäßige Wärme dank Paneel‑Design',
+          'Hochwertige Materialien – Korrosionsbeständiger Stahl',
+          'Hohe Energieeffizienz – Optimaler Wärmeübergang',
+          'Modernes, elegantes Design – Passt in jedes Interieur',
+          'Breite Auswahl an Größen und Typen (Typ 11, 21, 22, 33)',
+          'Einfache Installation'
+        ],
+        details: {
+          Hersteller: 'ECOTEK/Partner (Beispiel)',
+          Material: 'Stahl',
+          Beschichtung: 'Pulverbeschichtung RAL 9016 (Beispiel)',
+          'Maximaler Druck': '10 bar (Beispiel)',
+          'Maximale Temperatur': '110°C (Beispiel)',
+          Garantie: '10 Jahre (Beispiel)',
+        },
+      },
+      'radiator-gypor': {
+        description: 'Röhrenheizkörper aus Aluminium mit elegantem Design und hervorragender Wärmeübertragung.',
+        longDescription: `
+<p>Der Röhrenheizkörper ist das beliebteste Modell für Badezimmer. Er kombiniert elegantes Design mit hoher Effizienz der Wärmeabgabe. Die Rohrstruktur ermöglicht das Beheizen des Raumes und gleichzeitiges Trocknen von Handtüchern. Gefertigt aus feuchtigkeitsbeständigen Materialien, passt er in jeden Raum und kann mit Zentralheizung oder als elektrische Einheit betrieben werden.</p>
+        `,
+        features: [
+          'Schnelle und gleichmäßige Wärme dank Stahl',
+          'Hochwertige Materialien – Robuster Stahl',
+          'Hohe Energieeffizienz – Hervorragender Wärmeübergang',
+          'Modernes, elegantes Design – Für moderne Innenräume',
+          'Modular – Konfiguration nach Bedarf'
+        ],
+        details: {
+          Hersteller: 'ECOTEK',
+          Material: 'Stahl',
+          Beschichtung: 'Pulverbeschichtung RAL 9016',
+          'Maximaler Druck': '6 bar',
+          'Maximale Temperatur': '110°C',
+          Garantie: '4 Jahre',
+        },
+      },
+      fancoiler: {
+        description: 'Wand‑Fancoil mit modernem Design für effizientes, leises Heizen und Kühlen.',
+        longDescription: `
+<p>Die wandmontierten ECOTEK Fancoils bieten eine elegante und effiziente Lösung für die Klimatisierung von Wohn‑ und Gewerberäumen. Sie können sowohl zum Heizen (in Kombination mit Wärmepumpen oder Kesseln) als auch zum Kühlen verwendet werden.</p>
+
+<p>Modernes Design und leiser Betrieb machen sie für jede Umgebung geeignet. Die fortschrittliche Steuerung ermöglicht eine präzise Regelung von Temperatur und Komfort.</p>
+        `,
+        features: [
+          'Energieeffizient im Heiz‑ und Kühlbetrieb',
+          'Hochwertige Materialien und modernes Design',
+          'Leiser Betrieb dank tangentialem Ventilator',
+          'Präzise Temperatur‑ und Lüfterstufenregelung',
+          'Leistungsbereich von 1,5 kW bis 5,65 kW',
+          'IR‑Fernbedienung optional',
+          'Einfache Wandmontage'
+        ],
+        details: {
+          Hersteller: 'ECOTEK (Beispiel)',
+          Typ: 'Wand‑Fancoil',
+          Funktion: 'Heizen / Kühlen',
+          Steuerung: 'Integriertes Bedienfeld / Fernbedienung (optional)',
+          Garantie: '2 Jahre (Beispiel)',
+        },
+      },
+      'fancoiler-kasetor': {
+        description: 'Kassetten‑Fancoil zur Deckenmontage, ideal für gleichmäßige Luftverteilung in 4 Richtungen.',
+        longDescription: `
+<p>Kassetten‑Fancoils sind eine diskrete und effiziente Lösung für die Klimatisierung von Büros, Geschäften sowie anderen gewerblichen oder privaten Räumen mit abgehängten Decken. Die Deckenmontage und die Luftverteilung in 4 Richtungen sorgen für ein gleichmäßiges und komfortables Raumklima.</p>
+<p>Mit verschiedenen Leistungsgrößen und leisem Betrieb fügen sich ECOTEK Kassetten‑Fancoils nahtlos in jedes Interieur ein und liefern eine hohe Leistung.</p>
+        `,
+        features: [
+          'Energieeffizienz beim Heizen und Kühlen',
+          'Hochwertige Materialien',
+          'Leiser Betrieb',
+          'Präzise Temperaturregelung',
+          'Kapazitäten von 3 kW bis 12 kW',
+          'Luftverteilung in 4 Richtungen für maximalen Komfort',
+          'Integrierte Kondensatpumpe (bei den meisten Modellen)',
+          'Ästhetisches Dekorpanel'
+        ],
+        details: {
+          Hersteller: 'ECOTEK',
+          Typ: 'Kassetten‑Fancoil',
+          Funktion: 'Heizen / Kühlen',
+          Montage: 'In abgehängter Decke',
+          Garantie: '2 Jahre',
+        },
+      },
+      'kalldaja-jp': {
+        description: 'Hocheffizienter elektrischer Heizkessel für die Raumheizung.',
+        longDescription: `
+<p>Elektrischer Heizkessel von ECOTEK,</p>
+<p>Mit modernem Design und bewährter Sicherheit ist er das meistverkaufte und bevorzugte Produkt für alle, die ein kostengünstiges und langlebiges Heizsystem suchen.</p>
+
+<p>1. Wasserschutz</p>
+<p>Schutz bei zu geringer oder zu hoher Wassermenge. Ein Drucksensor ändert den Betriebszustand des Kessels, wenn der Wasserdruck unter 1 bar fällt oder über 3 bar steigt.</p>
+
+<p>2. Überspannungsschutz</p>
+<p>In das elektrische System integrierte Sicherungen und Überspannungsschutz verhindern Schäden durch Unregelmäßigkeiten in der Stromversorgung.</p>
+
+<p>3. Leiser Schütz</p>
+<p>Neueste Modelle integrieren elektrische Schütze, die das Geräuschniveau des Kessels reduzieren – für einen ruhigeren und komfortableren Betrieb.</p>
+
+<p>4. WiFi‑Anbindung</p>
+<p>Mit integrierter WiFi‑Option können Ein‑/Ausschalten des Kessels per Smartphone‑App aus der Ferne erfolgen.</p>
+        `,
+        features: [
+          '2 Modelle: Digital und Manuell',
+          'Tisea‑Umwälzpumpe',
+          'Touchscreen mit Wochenprogrammierung oder Analogsystem',
+          'Maximale Temperatur bis 90°C',
+          'Geräuschpegel unter 55 dB',
+          'Einfache Installation',
+          'Leistungsbereich 6 kW – 27 kW'
+        ],
+        details: {
+          Hersteller: 'ECOTEK',
+          Typ: 'Original‑Heizkessel',
+          Brennstoff: 'Elektrisch',
+          'Energieklasse (Heizung)': 'A',
+          Garantie: '2 Jahre',
+        },
+      },
+      'kalldaja-mp': {
+        description: 'Hocheffizienter elektrischer Heizkessel für die Raumheizung.',
+        longDescription: `
+<p>Elektrischer Heizkessel von ECOTEK,</p>
+<p>Mit modernem Design und bewährter Sicherheit ist er das meistverkaufte und bevorzugte Produkt für alle, die ein kostengünstiges und langlebiges Heizsystem suchen.</p>
+
+<p>1. Wasserschutz</p>
+<p>Schutz bei zu geringer oder zu hoher Wassermenge. Ein Drucksensor ändert den Betriebszustand des Kessels, wenn der Wasserdruck unter 1 bar fällt oder über 3 bar steigt.</p>
+
+<p>2. Überspannungsschutz</p>
+<p>In das elektrische System integrierte Sicherungen und Überspannungsschutz verhindern Schäden durch Unregelmäßigkeiten in der Stromversorgung.</p>
+
+<p>3. Leiser Schütz</p>
+<p>Neueste Modelle integrieren elektrische Schütze, die das Geräuschniveau des Kessels reduzieren – für einen ruhigeren und komfortableren Betrieb.</p>
+
+<p>4. WiFi‑Anbindung</p>
+<p>Mit integrierter WiFi‑Option können Ein‑/Ausschalten des Kessels per Smartphone‑App aus der Ferne erfolgen.</p>
+        `,
+        features: [
+          '2 Modelle: Digital und Manuell',
+          'Tisea‑Umwälzpumpe',
+          'Touchscreen mit Wochenprogrammierung oder Analogsystem',
+          'Maximale Temperatur bis 90°C',
+          'Geräuschpegel unter 55 dB',
+          'Einfache Installation',
+          'Leistungsbereich 6 kW – 27 kW'
+        ],
+        details: {
+          Hersteller: 'ECOTEK',
+          Typ: 'Original‑Heizkessel',
+          Brennstoff: 'Elektrisch',
+          'Energieklasse (Heizung)': 'A',
+          Garantie: '2 Jahre',
+        },
+      },
+      'akumulues': {
+        description: 'Edelstahl‑Wasserspeicher für Zentralheizung und Solarsysteme.',
+        longDescription: `
+<p>Wasserspeicher für Zentralheizung – Für konstante Temperatur und maximale Effizienz. Investieren Sie in unseren Wasserspeicher für Zentralheizung und sorgen Sie das ganze Jahr über für eine warme und komfortable Umgebung. Mit Kapazitäten von 60 L, 100 L und 200 L sind unsere Speicher die ideale Lösung, um eine konstante Temperatur in Ihrem Heizsystem aufrechtzuerhalten – ob mit Heizkörpern, Fußbodenheizung oder Fancoils.</p>
+        `,
+        features: [
+          'Kapazitäten 60 L, 100 L, 200 L',
+          'Edelstahl – maximale Langlebigkeit',
+          'Hochdichte PU‑Isolierung für Energieeffizienz',
+          'Optional mit 1 oder 2 Wärmetauschern (Solar + Wärmepumpe)',
+          'Integrierter Elektroheizer',
+          'Magnesium‑Anodenschutz',
+          '4 Jahre Garantie'
+        ],
+        details: {
+          Hersteller: 'ECOTEK',
+          Typ: 'Wasserspeicher',
+          'Innenmaterial': 'Edelstahl',
+          Isolierung: 'Polyurethan (50 mm)',
+          Garantie: '4 Jahre',
+        },
+      },
+      'boiler-spiral': {
+        description: 'Spiral‑Boiler für warmes Sanitärwasser mit hoher Qualität und maximaler Effizienz.',
+        longDescription: `
+<p>Spiral‑Boiler – Effizienz und Komfort für Warmwasser in Ihrem Zuhause.
+Sorgen Sie für sauberes und kontinuierlich verfügbares Warmwasser mit unseren Spiral‑Boilern in verschiedenen Kapazitäten von 60 L, 100 L, 200 L und 300 L. Entwickelt für den Bedarf an warmem Sanitärwasser, eignen sich unsere Geräte für vielfältige Anwendungen im Haushalt und bieten hohen Komfort bei maximaler Effizienz.</p>
+        `,
+        features: [
+          'Kapazität von 150 bis 300 Litern',
+          'Edelstahl AISI 316L – maximale Langlebigkeit und Hygiene',
+          'Hochdichte PU‑Isolierung – minimale Wärmeverluste',
+          'Optionaler Elektroheizer für sofortige Erwärmung',
+          'Magnesium‑Anodenschutz',
+          '4 Jahre Garantie'
+        ],
+        details: {
+          Hersteller: 'ECOTEK',
+          Typ: 'Spiral‑Boiler',
+          'Innenmaterial': 'Edelstahl AISI 316L',
+          Isolierung: 'Polyurethan (50 mm)',
+          Garantie: '4 Jahre',
+        },
+      },
+      'boiler-ecopump': {
+        description: 'ECOPUMP‑Boiler für hocheffiziente Warmwasserbereitung.',
+        longDescription: `
+<p>ECOPUMP Boiler – Fortschrittliche Lösung für warmes Sanitärwasser</p>
+<p>Entdecken Sie unseren fortschrittlichen Warmwasserboiler mit integrierter Wärmepumpe, verfügbar mit 200 L und 300 L Kapazität. Im Vergleich zu klassischen Elektro‑Boilern reduziert der Wärmepumpen‑Boiler den Energieverbrauch um bis zu das Vierfache und bietet damit herausragende Effizienz und deutliche Kosteneinsparungen. Durch die Nutzung der Eigenschaften des Kältemittels wird die Wassertemperatur effizient erhöht – eine leise, komfortable und wirtschaftliche Lösung für Ihr Zuhause.</p>
+        `,
+        features: [
+          'Heizung mit Wärmepumpe, Kältemittel R290/R134a',
+          '600 Watt/h Verbrauch',
+          'Kapazitäten 200 L – 300 L',
+          'Digitales Display mit Programmierung',
+          'Hochdichte PU‑Isolierung für Energieeffizienz',
+          'Integrierter Elektroheizer',
+          '4 Jahre Garantie'
+        ],
+        details: {
+          Hersteller: 'ECOTEK',
+          Typ: 'Warmwasserspeicher',
+          'Innenmaterial': 'Emaillierter Stahl / Edelstahl',
+          Isolierung: 'Polyurethan (50–60 mm)',
+          Garantie: '4 Jahre',
+        },
+      },
+      'kondicioner-aria': {
+        description: 'Split‑Klimaanlage mit hoher Effizienz und Wi‑Fi‑Steuerung.',
+        longDescription: `
+<p>Entdecken Sie die fortschrittliche Klimaanlage Candy Aria – ein herausragendes Produkt der bekannten italienischen Marke Candy. Diese smarte Klimaanlage ist für maximalen Komfort im Sommer wie im Winter konzipiert. Mit moderner Technologie und zahlreichen intelligenten Funktionen ist Aria die ideale Lösung für jedes Zuhause oder Büro.</p>
+        `,
+        features: [
+          'Hersteller: Candy',
+          'Energieeffizienzklasse A+++ (Kühlen) / A+++ (Heizen)',
+          'Integrierte Wi‑Fi‑Steuerung über die hOn‑App',
+          'Modernes und elegantes Design',
+          'Leiser Betrieb',
+          'Kapazitäten: 12.000 BTU, 18.000 BTU',
+          'SteriClean‑Technologie 56°C'
+        ],
+        details: { Hersteller: 'Candy', Typ: 'Wand‑Split', Garantie: '2 Jahre (Beispiel)' },
+      },
+      'kondicioner-pura': {
+        description: 'Split‑Klimaanlage mit breiter Leistungsspanne und Wi‑Fi‑Steuerung.',
+        longDescription: `
+<p>Entdecken Sie die neue Candy Pura Klimaanlage – ein innovatives Produkt der renommierten italienischen Marke Candy, entwickelt, um frische und saubere Luft in Ihr Zuhause zu bringen. Mit modernem Design und fortschrittlichen Funktionen bietet Pura das ganze Jahr über hervorragende Leistung und maximalen Komfort.</p>
+        `,
+        features: [
+          'Hersteller: Candy',
+          'Energieeffizienzklasse A+++ (Kühlen) / A++ (Heizen)',
+          'Integrierte Wi‑Fi‑Steuerung über die hOn‑App',
+          'Modernes und elegantes Design',
+          'Leiser Betrieb',
+          'Kapazitäten: 9.000, 12.000, 18.000, 24.000 BTU',
+          'SteriClean‑Technologie 56°C'
+        ],
+        details: { Hersteller: 'Candy', Typ: 'Wand‑Split', Garantie: '4 Jahre' },
+      },
     },
     hero: {
       slide1: {
@@ -414,6 +1052,14 @@ export const dict = {
           title: 'Sanitär',
         },
       },
+    },
+    productPage: {
+      notFound: {
+        title: 'Produkt nicht gefunden – EcoTek',
+        description: 'Leider konnte das von Ihnen angeforderte Produkt bei EcoTek nicht gefunden werden.',
+      },
+      relatedTitle: 'Ähnliche Produkte',
+      noImage: 'Kein Bild',
     },
     home: {
       categories: {
@@ -623,6 +1269,377 @@ export const dict = {
           Warranty: '4 years',
         },
       },
+      'pompa-nxehtesie-sinceko': {
+        description: 'A+++ water‑to‑water geothermal heat pump with R410a—an economical solution for heating/cooling and domestic hot water.',
+        longDescription: `
+<p>Sinceko is a water‑to‑water geothermal heat pump that provides heating, cooling, and domestic hot water with very high efficiency. Its intelligent controller supports a heating curve for maximum comfort and an ECO mode with three operating modes to reduce energy consumption.</p>
+        `,
+        features: [
+          'Energy Efficiency Class A+++',
+          'Eco‑friendly R410a refrigerant',
+          'Inverter technology for efficient operation',
+          'Maximum water temperature 55°C',
+          'Reliable and economical operation',
+          'Simple and intuitive controller'
+        ],
+        details: {
+          Manufacturer: 'Sinceko (Example)',
+          Type: 'Water‑to‑Water Heat Pump (Split)',
+          Technology: 'Inverter',
+          Refrigerant: 'R410a',
+          'Energy Class': 'A+++',
+          Warranty: '4 years',
+        },
+      },
+      'pompa-nxehtesie-apex': {
+        description: 'A+++ air‑to‑water heat pump with natural R290 refrigerant and high outlet water temperature (75°C).',
+        longDescription: `
+        <p>Apex Heating represents the pinnacle of heat pump technology, using natural R290 (Propane) for minimal environmental impact and outstanding A+++ efficiency.</p>
+        
+        <p>A key feature is its ability to deliver water temperatures up to 75°C, making it suitable for replacing old boilers in systems with traditional radiators without modifying the existing system.</p>
+
+        <p>It includes integrated hydraulic components for easy installation and offers reliable operation even at low ambient temperatures.</p>
+        `,
+        features: [
+          'Top Energy Efficiency Class A+++',
+          'Natural R290 refrigerant with very low GWP (Global Warming Potential)',
+          'Inverter technology for power modulation and maximum savings',
+          'High outlet water temperature up to 75°C, ideal for existing radiators',
+          'Integrated high‑efficiency circulation pump',
+          'Integrated expansion vessel',
+          'Integrated safety valves and hydraulic components',
+          'Very quiet operation',
+          'Smart control with WiFi option',
+          'Capacities: 6kW to 18kW'
+        ],
+        details: {
+          Manufacturer: 'ECOTEK (Example)',
+          Type: 'Air‑to‑Water Heat Pump (High Temp)',
+          Technology: 'Inverter',
+          Refrigerant: 'R290 (Propane)',
+          'Energy Class': 'A+++',
+          Warranty: '4 years',
+        },
+      },
+      'pompa-nxehtesie-maxi': {
+        description: 'A++ air‑to‑water heat pump with R410a, ideal for commercial or business spaces.',
+        longDescription: `
+<p>The EcoTek Maxi commercial heating and cooling series uses R410a refrigerant, delivering multiple advantages. R410a is ozone‑friendly with no ozone depletion potential. It offers improved thermodynamic properties for high energy efficiency and reduced operating costs. Its excellent heat transfer enables optimal heating and cooling performance, and higher operating pressures allow more compact system designs.</p>
+        `,
+        features: [
+          'Energy Efficiency Class A++',
+          'Eco‑friendly R410a refrigerant',
+          'DC inverter technology for continuous modulation',
+          'Maximum water temperature 55°C',
+          'Quiet operation of the outdoor unit',
+          'Smart control with LCD display and optional WiFi',
+          'Anti‑freeze protection',
+          'Capacities: 50kW, 100kW, 200kW, 400kW'
+        ],
+        details: {
+          Manufacturer: 'ECOTEK',
+          Type: 'Air‑to‑Water Heat Pump',
+          Technology: 'DC Inverter',
+          Refrigerant: 'R410a',
+          'Energy Class': 'A++',
+          Warranty: '4 years',
+        },
+      },
+      'kalldaja-og': {
+        description: 'High‑efficiency electric boiler for space heating.',
+        longDescription: `
+<p>Electric Boiler by ECOTEK,</p>
+<p>With modern design and proven safety, it is our best‑selling and most preferred product for customers seeking a cost‑effective and long‑lasting heating system.</p>
+
+<p>1. Water Protection</p>
+<p>Protection against too little or too much water. A pressure sensor changes the boiler’s operating state if water pressure falls below 1 bar or rises above 3 bar.</p>
+
+<p>2. Over‑current/Surge Protection</p>
+<p>Built‑in fuses and surge protection in the boiler’s electrical system help prevent damage from electrical supply irregularities.</p>
+
+<p>3. Silent Contactor</p>
+<p>Latest models integrate electric contactors that reduce the noise level emitted by the boiler for a quieter, home‑friendly operation.</p>
+
+<p>4. WiFi Connectivity</p>
+<p>With integrated WiFi option, the boiler can be turned on/off remotely via a smartphone app.</p>
+        `,
+        features: [
+          '2 Models: Digital and Manual',
+          'Tisea circulation pump',
+          'Touchscreen with weekly programming or analog system',
+          'Maximum temperature up to 90°C',
+          'Noise level under 55 dB',
+          'Easy installation',
+          'Capacity from 6 kW – 27 kW'
+        ],
+        details: {
+          Manufacturer: 'ECOTEK',
+          Type: 'Original Boiler',
+          Fuel: 'Electric',
+          'Energy Class (Heating)': 'A',
+          Warranty: '2 years',
+        },
+      },
+      radiator: {
+        description: 'Steel panel radiator with high efficiency for fast, even heat distribution.',
+        longDescription: `
+<p>Steel panel radiators are the classic and efficient solution for central heating systems. They deliver quick and uniform heat distribution throughout the space.</p>
+        `,
+        features: [
+          'Fast, even heating thanks to panel design',
+          'High‑quality materials – Corrosion‑resistant steel',
+          'High energy efficiency – Optimal heat transfer',
+          'Modern, elegant design – Suits any interior',
+          'Wide range of sizes and types (Type 11, 21, 22, 33)',
+          'Easy installation'
+        ],
+        details: {
+          Manufacturer: 'ECOTEK/Partner (Example)',
+          Material: 'Steel',
+          Coating: 'Powder coating RAL 9016 (Example)',
+          'Max pressure': '10 bar (Example)',
+          'Max temperature': '110°C (Example)',
+          Warranty: '10 years (Example)',
+        },
+      },
+      'radiator-gypor': {
+        description: 'Aluminum tubular radiator with elegant design and excellent heat transfer.',
+        longDescription: `
+<p>The tubular radiator is the most popular model for bathrooms, combining elegant design with high heat distribution efficiency. The tube structure allows space heating and towel drying simultaneously. Built from moisture‑resistant materials, it fits easily into any space and can operate with central heating or as an electric unit.</p>
+        `,
+        features: [
+          'Fast, even heating thanks to steel build',
+          'High‑quality materials – Durable steel',
+          'High energy efficiency – Excellent thermal transfer',
+          'Modern, elegant design – Fits contemporary interiors',
+          'Modular – Configurable to your needs'
+        ],
+        details: {
+          Manufacturer: 'ECOTEK',
+          Material: 'Steel',
+          Coating: 'Powder coating RAL 9016',
+          'Max pressure': '6 bar',
+          'Max temperature': '110°C',
+          Warranty: '4 years',
+        },
+      },
+      fancoiler: {
+        description: 'Wall‑mounted fancoil with modern design for efficient, quiet heating and cooling.',
+        longDescription: `
+<p>ECOTEK wall‑mounted fancoils provide an elegant, efficient solution for conditioning residential and commercial spaces. They can be used for heating (with heat pumps or boilers) and for cooling.</p>
+
+<p>The modern design and quiet operation suit any environment. Advanced control allows precise temperature and comfort adjustments.</p>
+        `,
+        features: [
+          'Energy‑efficient for heating and cooling',
+          'High‑quality materials and modern design',
+          'Quiet operation thanks to tangential fan',
+          'Precise temperature and fan‑speed control',
+          'Capacity from 1.5 kW to 5.65 kW',
+          'IR remote control (optional)',
+          'Easy wall installation'
+        ],
+        details: {
+          Manufacturer: 'ECOTEK (Example)',
+          Type: 'Wall Fancoil',
+          Function: 'Heating / Cooling',
+          Control: 'Integrated control panel / Remote (optional)',
+          Warranty: '2 years (Example)',
+        },
+      },
+      'fancoiler-kasetor': {
+        description: 'Ceiling cassette fancoil, ideal for uniform 4‑way air distribution.',
+        longDescription: `
+<p>Ceiling cassette fancoils are a discreet, efficient solution for conditioning offices, shops, and other commercial or residential spaces with suspended ceilings. The ceiling installation and 4‑way air discharge ensure a uniform and comfortable environment.</p>
+<p>With multiple capacity options and quiet operation, ECOTEK cassette fancoils integrate seamlessly into any interior while delivering high performance.</p>
+        `,
+        features: [
+          'Energy‑efficient in heating and cooling',
+          'High‑quality materials',
+          'Quiet operation',
+          'Precise temperature control',
+          'Capacities from 3 kW to 12 kW',
+          '4‑way air distribution for maximum comfort',
+          'Integrated condensate pump (in most models)',
+          'Aesthetic decorative panel'
+        ],
+        details: {
+          Manufacturer: 'ECOTEK',
+          Type: 'Cassette Fancoil',
+          Function: 'Heating / Cooling',
+          Mounting: 'In suspended ceiling',
+          Warranty: '2 years',
+        },
+      },
+      'kalldaja-jp': {
+        description: 'High‑efficiency electric boiler for space heating.',
+        longDescription: `
+<p>Electric Boiler by ECOTEK,</p>
+<p>With modern design and proven safety, it is our best‑selling and most preferred product for customers seeking a cost‑effective and long‑lasting heating system.</p>
+
+<p>1. Water Protection</p>
+<p>Protection against too little or too much water. A pressure sensor changes the boiler’s operating state if water pressure falls below 1 bar or rises above 3 bar.</p>
+
+<p>2. Over‑current/Surge Protection</p>
+<p>Built‑in fuses and surge protection in the boiler’s electrical system help prevent damage from electrical supply irregularities.</p>
+
+<p>3. Silent Contactor</p>
+<p>Latest models integrate electric contactors that reduce the noise level emitted by the boiler for a quieter, home‑friendly operation.</p>
+
+<p>4. WiFi Connectivity</p>
+<p>With integrated WiFi option, the boiler can be turned on/off remotely via a smartphone app.</p>
+        `,
+        features: [
+          '2 Models: Digital and Manual',
+          'Tisea circulation pump',
+          'Touchscreen with weekly programming or analog system',
+          'Maximum temperature up to 90°C',
+          'Noise level under 55 dB',
+          'Easy installation',
+          'Capacity from 6 kW – 27 kW'
+        ],
+        details: {
+          Manufacturer: 'ECOTEK',
+          Type: 'Original Boiler',
+          Fuel: 'Electric',
+          'Energy Class (Heating)': 'A',
+          Warranty: '2 years',
+        },
+      },
+      'kalldaja-mp': {
+        description: 'High‑efficiency electric boiler for space heating.',
+        longDescription: `
+<p>Electric Boiler by ECOTEK,</p>
+<p>With modern design and proven safety, it is our best‑selling and most preferred product for customers seeking a cost‑effective and long‑lasting heating system.</p>
+
+<p>1. Water Protection</p>
+<p>Protection against too little or too much water. A pressure sensor changes the boiler’s operating state if water pressure falls below 1 bar or rises above 3 bar.</p>
+
+<p>2. Over‑current/Surge Protection</p>
+<p>Built‑in fuses and surge protection in the boiler’s electrical system help prevent damage from electrical supply irregularities.</p>
+
+<p>3. Silent Contactor</p>
+<p>Latest models integrate electric contactors that reduce the noise level emitted by the boiler for a quieter, home‑friendly operation.</p>
+
+<p>4. WiFi Connectivity</p>
+<p>With integrated WiFi option, the boiler can be turned on/off remotely via a smartphone app.</p>
+        `,
+        features: [
+          '2 Models: Digital and Manual',
+          'Tisea circulation pump',
+          'Touchscreen with weekly programming or analog system',
+          'Maximum temperature up to 90°C',
+          'Noise level under 55 dB',
+          'Easy installation',
+          'Capacity from 6 kW – 27 kW'
+        ],
+        details: {
+          Manufacturer: 'ECOTEK',
+          Type: 'Original Boiler',
+          Fuel: 'Electric',
+          'Energy Class (Heating)': 'A',
+          Warranty: '2 years',
+        },
+      },
+      'akumulues': {
+        description: 'Stainless steel water accumulator for central heating and solar systems.',
+        longDescription: `
+<p>Domestic Hot Water Accumulator – For constant temperature and maximum efficiency. Invest in our central heating water accumulator and ensure a warm, comfortable environment year‑round. With capacities of 60 L, 100 L, and 200 L, our tanks are the ideal solution for maintaining a constant temperature in your heating system—whether radiators, underfloor heating, or fancoils.</p>
+        `,
+        features: [
+          'Capacities 60 L, 100 L, 200 L',
+          'Stainless steel – maximum durability',
+          'High‑density PU insulation for energy efficiency',
+          'Option with 1 or 2 coils (solar + heat pump)',
+          'Integrated electric heater',
+          'Magnesium anode protection',
+          '4‑year warranty'
+        ],
+        details: {
+          Manufacturer: 'ECOTEK',
+          Type: 'Water Accumulator',
+          'Inner Material': 'Stainless steel',
+          Insulation: 'Polyurethane (50 mm)',
+          Warranty: '4 years',
+        },
+      },
+      'boiler-spiral': {
+        description: 'Spiral boiler for domestic hot water with high quality and maximum efficiency.',
+        longDescription: `
+<p>Spiral Boiler – Efficiency and comfort for hot water in your home.
+Ensure clean, continuous hot water with our spiral boilers available in capacities of 60 L, 100 L, 200 L, and 300 L. Designed to meet your domestic hot water needs, our electric‑heater ready units suit various household uses while delivering high efficiency and comfort.</p>
+        `,
+        features: [
+          'Capacity from 150 to 300 liters',
+          'AISI 316L stainless steel – maximum durability and hygiene',
+          'High‑density polyurethane insulation – minimal heat loss',
+          'Optional electric heater for instant heating',
+          'Magnesium anode protection',
+          '4‑year warranty'
+        ],
+        details: {
+          Manufacturer: 'ECOTEK',
+          Type: 'Spiral boiler',
+          'Inner Material': 'Stainless steel AISI 316L',
+          Insulation: 'Polyurethane (50 mm)',
+          Warranty: '4 years',
+        },
+      },
+      'boiler-ecopump': {
+        description: 'ECOPUMP boiler for efficient domestic hot water.',
+        longDescription: `
+<p>ECOPUMP Boiler – Advanced solution for domestic hot water</p>
+<p>Discover our advanced hot water boiler with an integrated heat pump, available in 200 L and 300 L capacities. Compared to classic electric‑resistance boilers, the heat‑pump boiler reduces energy consumption by up to 4×, delivering outstanding efficiency and significant savings. By leveraging refrigerant properties to raise the water temperature, it ensures efficient, quiet, and economical operation for your home.</p>
+        `,
+        features: [
+          'Heating with heat pump, refrigerant R290/R134a',
+          '600 Watt/h consumption',
+          'Capacities 200 L – 300 L',
+          'Digital display with programming',
+          'High‑density PU insulation for energy efficiency',
+          'Integrated electric heater',
+          '4‑year warranty'
+        ],
+        details: {
+          Manufacturer: 'ECOTEK',
+          Type: 'Domestic hot water tank',
+          'Inner Material': 'Enameled steel / Stainless steel',
+          Insulation: 'Polyurethane (50–60 mm)',
+          Warranty: '4 years',
+        },
+      },
+      'kondicioner-aria': {
+        description: 'High‑efficiency split AC with Wi‑Fi control.',
+        longDescription: `
+<p>Discover the advanced Candy Aria air conditioner from the renowned Italian brand Candy. This smart, compressor‑driven AC is designed to deliver maximum comfort in both summer and winter. With modern technology and a host of smart features, Aria is the ideal choice for any home or office.</p>
+        `,
+        features: [
+          'Manufacturer: Candy',
+          'Energy class A+++ (Cooling) / A+++ (Heating)',
+          'Integrated Wi‑Fi control via hOn app',
+          'Modern and elegant design',
+          'Quiet operation',
+          'Capacities: 12,000 BTU, 18,000 BTU',
+          'SteriClean 56°C technology'
+        ],
+        details: { Manufacturer: 'Candy', Type: 'Wall Split', Warranty: '2 years (Example)' },
+      },
+      'kondicioner-pura': {
+        description: 'Split AC with a wide capacity range and Wi‑Fi control.',
+        longDescription: `
+<p>Discover the new Candy Pura air conditioner – an innovative product from the renowned Italian brand Candy, designed to bring a breath of fresh air to your home. With modern styling and advanced features, Pura delivers excellent performance and maximum comfort all year round.</p>
+        `,
+        features: [
+          'Manufacturer: Candy',
+          'Energy efficiency A+++ (Cooling) / A++ (Heating)',
+          'Integrated Wi‑Fi control via hOn app',
+          'Modern and elegant design',
+          'Quiet operation',
+          'Capacities: 9,000 BTU, 12,000 BTU, 18,000 BTU, 24,000 BTU',
+          'SteriClean 56°C technology'
+        ],
+        details: { Manufacturer: 'Candy', Type: 'Wall Split', Warranty: '4 years' },
+      },
     },
     hero: {
       slide1: {
@@ -699,6 +1716,14 @@ export const dict = {
           title: 'Sanitary',
         },
       },
+    },
+    productPage: {
+      notFound: {
+        title: 'Product Not Found - EcoTek',
+        description: 'Sorry, the product you requested could not be found on EcoTek.',
+      },
+      relatedTitle: 'Related Products',
+      noImage: 'No image',
     },
     home: {
       categories: {
