@@ -164,5 +164,15 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/15.md',
     imageUrl: '/blog/Blog-15.jpg',
     accentColor: 'black-400'
+  },
+  {
+    id: '16',
+    title: 'Gazi R290: Revolucioni i Gjelbër dhe Efikas në Ngrohjen e Shtëpisë Tuaj me Pompa Termike',
+    subtitle: 'R290 – Zgjedhja Superiore për Temperaturë të Lartë dhe Efikasitet',
+    date: '2025-02-09', // ADDED - Today's Date
+    content: "Gazrat e Ndryshëm në Zemër të Pompës Termike",
+    fullContent: '/blog/blogContent/16.md',
+    imageUrl: '/blog/Blog-16.jpg',
+    accentColor: 'black-400'
   }
 ];
