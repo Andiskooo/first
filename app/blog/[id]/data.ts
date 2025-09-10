@@ -174,5 +174,15 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/16.md',
     imageUrl: '/blog/Blog-16.jpg',
     accentColor: 'black-400'
+  },
+  {
+    id: '17',
+    title: 'Për cfar shërbejnë ventilatorët apo fluturat në pompa termike, si funksjonojin ato? ',
+    subtitle: 'Roli Jetik i Ventilatorëve në Pompat Termike: Si Funksionon Ngrohja',
+    date: '2025-09-10', // ADDED - Today's Date
+    content: "Cikli i Gazit: Nga i Ngrohtë në të Ftohtë",
+    fullContent: '/blog/blogContent/17.md',
+    imageUrl: '/blog/Blog-17.jpg',
+    accentColor: 'black-400'
   }
 ];
