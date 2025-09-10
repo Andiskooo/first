@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { getProductById } from '@/app/products/[id]/data';
 import { Battery, Gauge, HelpCircle, ThermometerSnowflake, Timer } from 'lucide-react';
 import ProductInteractiveSections from '@/components/products/ProductInteractiveSections';
-import ContactButtonClient from '@/components/products/ContactButtonClient';
 import { notFound } from 'next/navigation';
 import ProductSpecsAndDownloads from '@/components/products/ProductSpecsAndDownloads';
 import ProductBreadcrumb from '@/components/products/ProductBreadcrumb';
@@ -121,7 +120,6 @@ const ProductPage = async ({ params }: ProductPageProps) => {
             )}
 
             <ProductInteractiveSections product={product} />
-            <ContactButtonClient />
           </div>
         </div>
 
