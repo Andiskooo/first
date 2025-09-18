@@ -184,5 +184,15 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/17.md',
     imageUrl: '/blog/Blog-17.jpg',
     accentColor: 'black-400'
+  },
+  {
+    id: '18',
+    title: 'Si të Zgjidhni Kapacitetin e Duhur të Pompës Termike për Shtëpinë Tuaj ',
+    subtitle: 'RFaktorët Kryesorë që Përcaktojnë Kapacitetin e Nevojshëm',
+    date: '2025-09-18', // ADDED - Today's Date
+    content: "Rregulli i përgjithshëm: Nevojitet afërsisht 0.08 kW fuqi për çdo meter katrore hapësirë.",
+    fullContent: '/blog/blogContent/18.md',
+    imageUrl: '/blog/Blog-18.png',
+    accentColor: 'black-400'
   }
 ];
