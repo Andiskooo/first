@@ -194,5 +194,15 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/18.md',
     imageUrl: '/blog/Blog-18.png',
     accentColor: 'black-400'
+  },
+  {
+    id: '19',
+    title: 'Funksionimi i Akumuluesit Buffer për Pompat Termike: Një Udhëzues i Plotë',
+    subtitle: 'Kur dhe Pse Nevojitet një Akumulues Buffer?',
+    date: '2025-09-18', // ADDED - Today's Date
+    content: "Çfarë është dhe si Funksionon Akumuluesi Buffer?",
+    fullContent: '/blog/blogContent/19.md',
+    imageUrl: '/blog/Blog-19.jpg',
+    accentColor: 'black-400'
   }
 ];
