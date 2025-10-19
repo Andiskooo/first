@@ -204,5 +204,15 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/19.md',
     imageUrl: '/blog/Blog-19.jpg',
     accentColor: 'black-400'
+  },
+  {
+    id: '20',
+    title: 'Sa do të më kushtojë instalimi i pompës termike?',
+    subtitle: 'Çfarë paisjesh përcjellëse i duhen pompës termike?',
+    date: '2025-10-19', // ADDED - Today's Date
+    content: "Për të pasur një sistem funksional, ju duhet të llogarisni edhe koston e të gjitha pajisjeve ndihmëse.",
+    fullContent: '/blog/blogContent/20.md',
+    imageUrl: '/blog/Blog-20.png',
+    accentColor: 'black-400'
   }
 ];
