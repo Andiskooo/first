@@ -4,10 +4,45 @@
         <title>ECOTEK Blog | RSS Feed</title>
         <link>https://ecotek.vercel.app</link>
         <description>Latest news and articles from ECOTEK</description>
-        <lastBuildDate>Thu, 21 Aug 2025 14:30:06 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 19 Nov 2025 17:59:34 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <copyright>All rights reserved 2025, ECOTEK</copyright>
+        <item>
+            <title><![CDATA[Sa EURO do të ketë shpenzime në muaj pompa termike?]]></title>
+            <link>https://ecotek.vercel.app/blog/21</link>
+            <guid isPermaLink="false">https://ecotek.vercel.app/blog/21</guid>
+            <pubDate>Sun, 19 Oct 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Llogaritja e shpenzimeve mujore në Euro]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Sa do të më kushtojë instalimi i pompës termike?]]></title>
+            <link>https://ecotek.vercel.app/blog/20</link>
+            <guid isPermaLink="false">https://ecotek.vercel.app/blog/20</guid>
+            <pubDate>Sun, 19 Oct 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Çfarë paisjesh përcjellëse i duhen pompës termike?]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Funksionimi i Akumuluesit Buffer për Pompat Termike: Një Udhëzues i Plotë]]></title>
+            <link>https://ecotek.vercel.app/blog/19</link>
+            <guid isPermaLink="false">https://ecotek.vercel.app/blog/19</guid>
+            <pubDate>Thu, 18 Sep 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Kur dhe Pse Nevojitet një Akumulues Buffer?]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Si të Zgjidhni Kapacitetin e Duhur të Pompës Termike për Shtëpinë Tuaj ]]></title>
+            <link>https://ecotek.vercel.app/blog/18</link>
+            <guid isPermaLink="false">https://ecotek.vercel.app/blog/18</guid>
+            <pubDate>Thu, 18 Sep 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[RFaktorët Kryesorë që Përcaktojnë Kapacitetin e Nevojshëm]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Për cfar shërbejnë ventilatorët apo fluturat në pompa termike, si funksjonojin ato? ]]></title>
+            <link>https://ecotek.vercel.app/blog/17</link>
+            <guid isPermaLink="false">https://ecotek.vercel.app/blog/17</guid>
+            <pubDate>Wed, 10 Sep 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Roli Jetik i Ventilatorëve në Pompat Termike: Si Funksionon Ngrohja]]></description>
+        </item>
         <item>
             <title><![CDATA[Si E Bllokon Izolimi Transferimin e Nxehtësisë?]]></title>
             <link>https://ecotek.vercel.app/blog/15</link>
@@ -112,6 +147,13 @@
             <guid isPermaLink="false">https://ecotek.vercel.app/blog/01</guid>
             <pubDate>Sun, 06 Jul 2025 00:00:00 GMT</pubDate>
             <description><![CDATA[Përdorimi i Aplikacionit hOn]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Gazi R290: Revolucioni i Gjelbër dhe Efikas në Ngrohjen e Shtëpisë Tuaj me Pompa Termike]]></title>
+            <link>https://ecotek.vercel.app/blog/16</link>
+            <guid isPermaLink="false">https://ecotek.vercel.app/blog/16</guid>
+            <pubDate>Sun, 09 Feb 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[R290 – Zgjedhja Superiore për Temperaturë të Lartë dhe Efikasitet]]></description>
         </item>
     </channel>
 </rss>

@@ -214,5 +214,15 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/20.md',
     imageUrl: '/blog/Blog-20.png',
     accentColor: 'black-400'
+  },
+    {
+    id: '21',
+    title: 'Sa EURO do të ketë shpenzime në muaj pompa termike?',
+    subtitle: 'Llogaritja e shpenzimeve mujore në Euro',
+    date: '2025-10-19', // ADDED - Today's Date
+    content: "Për të pasur një sistem funksional, ju duhet të llogarisni edhe koston e të gjitha pajisjeve ndihmëse.",
+    fullContent: '/blog/blogContent/21.md',
+    imageUrl: '/blog/Blog-21.png',
+    accentColor: 'black-400'
   }
 ];
