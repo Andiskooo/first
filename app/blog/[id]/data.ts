@@ -224,5 +224,15 @@ export const blogPosts: BlogPost[] = [
     fullContent: '/blog/blogContent/21.md',
     imageUrl: '/blog/Blog-21.png',
     accentColor: 'black-400'
+  },
+      {
+    id: '22',
+    title: 'Pse Duhet te Pastroni Njësisën e Jashtme (Lladnjakut/Fletëve) të Kondicionerit?',
+    subtitle: 'Rëndësia e Qarkullimit të Ajrit për Sistemet Split',
+    date: '2025-12-01', // ADDED - Today's Date
+    content: "Pengimi i Qarkullimit të Ajrit: Shtresa e papastër e ndalon ajrin të kalojë nëpër fletë, duke pamundësuar shkëmbimin efikas të nxehtësisë.",
+    fullContent: '/blog/blogContent/22.md',
+    imageUrl: '/blog/Blog-22.jpg',
+    accentColor: 'black-400'
   }
 ];
