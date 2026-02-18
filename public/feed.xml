@@ -4,10 +4,24 @@
         <title>ECOTEK Blog | RSS Feed</title>
         <link>https://ecotek.vercel.app</link>
         <description>Latest news and articles from ECOTEK</description>
-        <lastBuildDate>Wed, 19 Nov 2025 17:59:34 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 18 Feb 2026 22:14:49 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
-        <copyright>All rights reserved 2025, ECOTEK</copyright>
+        <copyright>All rights reserved 2026, ECOTEK</copyright>
+        <item>
+            <title><![CDATA[Izolimi Termik: Investimi që Mbron Portofolin dhe Komoditetin Tuaj]]></title>
+            <link>https://ecotek.vercel.app/blog/23</link>
+            <guid isPermaLink="false">https://ecotek.vercel.app/blog/23</guid>
+            <pubDate>Wed, 18 Feb 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[Si "arratiset" nxehtësia nga shtëpia?]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Pse Duhet te Pastroni Njësisën e Jashtme (Lladnjakut/Fletëve) të Kondicionerit?]]></title>
+            <link>https://ecotek.vercel.app/blog/22</link>
+            <guid isPermaLink="false">https://ecotek.vercel.app/blog/22</guid>
+            <pubDate>Mon, 01 Dec 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Rëndësia e Qarkullimit të Ajrit për Sistemet Split]]></description>
+        </item>
         <item>
             <title><![CDATA[Sa EURO do të ketë shpenzime në muaj pompa termike?]]></title>
             <link>https://ecotek.vercel.app/blog/21</link>
