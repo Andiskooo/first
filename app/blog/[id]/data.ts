@@ -215,7 +215,7 @@ export const blogPosts: BlogPost[] = [
     imageUrl: '/blog/Blog-20.png',
     accentColor: 'black-400'
   },
-    {
+  {
     id: '21',
     title: 'Sa EURO do të ketë shpenzime në muaj pompa termike?',
     subtitle: 'Llogaritja e shpenzimeve mujore në Euro',
@@ -225,7 +225,7 @@ export const blogPosts: BlogPost[] = [
     imageUrl: '/blog/Blog-21.png',
     accentColor: 'black-400'
   },
-      {
+  {
     id: '22',
     title: 'Pse Duhet te Pastroni Njësisën e Jashtme (Lladnjakut/Fletëve) të Kondicionerit?',
     subtitle: 'Rëndësia e Qarkullimit të Ajrit për Sistemet Split',
@@ -233,6 +233,16 @@ export const blogPosts: BlogPost[] = [
     content: "Pengimi i Qarkullimit të Ajrit: Shtresa e papastër e ndalon ajrin të kalojë nëpër fletë, duke pamundësuar shkëmbimin efikas të nxehtësisë.",
     fullContent: '/blog/blogContent/22.md',
     imageUrl: '/blog/Blog-22.jpg',
+    accentColor: 'black-400'
+  },
+  {
+    id: '23',
+    title: 'Izolimi Termik: Investimi që Mbron Portofolin dhe Komoditetin Tuaj',
+    subtitle: 'Si "arratiset" nxehtësia nga shtëpia?',
+    date: '2026-02-18', // ADDED - Today's Date
+    content: "Kur jashtë mbretëron i ftohti dhe brenda kemi ndezur ngrohjen, krijohet një fenomen fizik i pashmangshëm: transferimi i nxehtësisë.",
+    fullContent: '/blog/blogContent/23.md',
+    imageUrl: '/blog/Blog-23.jpg',
     accentColor: 'black-400'
   }
 ];
