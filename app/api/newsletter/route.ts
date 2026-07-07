@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json();
+    const { email, phone, viberConsent, timestamp } = await request.json();
 
     if (!email || !email.includes('@')) {
       return NextResponse.json(
@@ -22,8 +22,10 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         email,
+        phone,
+        viberConsent,
         source: 'blog_subscription',
-        timestamp: new Date().toISOString(),
+        timestamp: timestamp || new Date().toISOString(),
       }),
     });
 
