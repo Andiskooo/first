@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+hardy-mercury-501720-c3-c595c0d12a3d.json
 
 # vercel
 .vercel

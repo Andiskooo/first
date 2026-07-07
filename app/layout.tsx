@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { Toaster } from 'react-hot-toast';
 import MainLayout from '@/components/layout/MainLayout'; // Import the new client layout wrapper
 import './globals.css';
 import ClarityAnalytics from '@/components/clarity';
@@ -30,6 +31,7 @@ export default function RootLayout({
         <MainLayout>
           {children}
         </MainLayout>
+        <Toaster position="top-center" />
       </body>
     </html>
   );
