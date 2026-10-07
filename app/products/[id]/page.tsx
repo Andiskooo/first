@@ -10,6 +10,9 @@ import { notFound } from 'next/navigation';
 import ProductSpecsAndDownloads from '@/components/products/ProductSpecsAndDownloads';
 import ProductBreadcrumb from '@/components/products/ProductBreadcrumb';
 import T from '@/components/common/T';
+import { pageMetadata } from '@/lib/seo';
+import RelatedInstallations from '@/components/installations/RelatedInstallations';
+import { categories } from '@/app/categories/[id]/data';
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -30,11 +33,7 @@ export async function generateMetadata(
 
   const description = product.description || product.longDescription?.substring(0, 160).replace(/<[^>]+>/g, '').trim() || `Shikoni detajet për ${product.title} në EcoTek.`;
 
-  return {
-    title: product.title,
-    description: description,
-
-  };
+  return pageMetadata(product.title, description, `/products/${product.id}`, product.imageUrl);
 }
 
 const ProductPage = async ({ params }: ProductPageProps) => {
@@ -58,7 +57,8 @@ const ProductPage = async ({ params }: ProductPageProps) => {
   return (
     <div className="min-h-screen bg-white">
       {/* Breadcrumb */}
-      <ProductBreadcrumb categoryId={product.category} productTitle={product.title} />
+      <ProductBreadcrumb categoryId={categories.find(c => c.id === product.category)?.id
+        ?? categories.find(c => c.subcategories.some(s => s.products.some(p => p.id === product.id)))?.id} productTitle={product.title} />
 
       {/* Product details */}
       <div className="container mx-auto px-4 py-12">
@@ -131,6 +131,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
           />
         </div>
 
+        <RelatedInstallations product={product} />
         {/* Related products */}
         {product.relatedProducts && product.relatedProducts.length > 0 && (
           <div className="mt-16">

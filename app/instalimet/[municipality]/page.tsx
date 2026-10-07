@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import { getInstallations } from '@/lib/installations/data';
-import { collectionCopy, siteUrl } from '@/lib/installations/copy';
+import { collectionCopy } from '@/lib/installations/copy';
+import { pageMetadata } from '@/lib/seo';
 import { InstallationBreadcrumbs, InstallationCTA, ProjectSection } from '@/components/installations/Portfolio';
 
 interface Props { params: Promise<{ municipality: string }> }
@@ -16,15 +17,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const collection = (await getInstallations()).find(c => c.slug === municipality);
   if (!collection) notFound();
   const copy = collectionCopy(collection);
-  const url = `${siteUrl}/instalimet/${collection.slug}`;
   const image = collection.projects[0]?.images[0];
-  return {
-    title: `${copy.title} | ECOTEK`, description: copy.description,
-    alternates: { canonical: url },
-    robots: collection.projects.length ? undefined : { index: false, follow: true },
-    openGraph: { title: copy.title, description: copy.description, url, siteName: 'ECOTEK', locale: 'sq_AL', type: 'website',
-      images: image ? [{ url: `${siteUrl}${image.src}`, alt: copy.title }] : [] },
-  };
+  return pageMetadata(collection.isLocation ? `Pompa Termike në ${collection.label} | Instalime Profesionale` : copy.title,
+    copy.description, `/instalimet/${collection.slug}`, image?.src);
 }
 export default async function MunicipalityPage({ params }: Props) {
   const { municipality } = await params;

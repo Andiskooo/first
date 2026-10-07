@@ -7,7 +7,9 @@
     "prebuild": "npx tsx ./scripts/generate-rss.ts",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint app components lib scripts --ignore-pattern scripts/generate-rss.js",
+    "test:installations": "tsx scripts/test-installations.ts",
+    "test:seo": "tsx scripts/test-seo.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

@@ -3,7 +3,8 @@ import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { collectionName, parseInstallationFilename } from '../lib/installations/parser';
-import { getInstallations, getInstallationNavigation } from '../lib/installations/data';
+import { getInstallations, getInstallationNavigation, projectPath, projectSlug } from '../lib/installations/data';
+import { projectMunicipality } from '../lib/installations/editorial';
 import { collectionCopy, projectCopy } from '../lib/installations/copy';
 
 async function main() {
@@ -43,6 +44,17 @@ async function main() {
   assert.equal(collectionName('Gjilan').slug, 'gjilan');
 
   const collections = await getInstallations();
+  assert.equal(projectMunicipality('gjakove', 'Rahovec'), 'Rahovec');
+  assert.equal(projectMunicipality('prishtin', 'Graçanicë'), 'Graçanicë');
+  assert.equal(projectMunicipality('prishtin', 'Dragodan'), 'prishtin');
+  assert.equal(projectSlug(first), projectSlug(second), 'Extra photographs must not change a project URL');
+  assert.ok(collections.every(c => c.projects.length > 0), 'Empty collections must not create landing pages');
+  const paths = collections.flatMap(c => c.projects.map(p => projectPath(c, p)));
+  assert.equal(new Set(paths).size, paths.length);
+  const titles = collections.flatMap(c => c.projects.map(p => projectCopy(p, c).title));
+  assert.equal(new Set(titles).size, titles.length, 'Project titles must be distinct');
+  assert.equal(collections.find(c => c.slug === 'rahovec')?.projects.length, 2);
+  assert.equal(collections.find(c => c.slug === 'gracanice')?.projects.length, 2);
   assert.deepEqual(getInstallationNavigation(), collections.map(({ slug, label }) => ({ slug, label })));
   const baseUrl = process.argv[2];
   let photos = 0;

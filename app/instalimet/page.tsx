@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowDown, ArrowRight } from 'lucide-react';
 import { getInstallations } from '@/lib/installations/data';
-import { siteUrl } from '@/lib/installations/copy';
+import { pageMetadata } from '@/lib/seo';
 import { CollectionCard, InstallationBreadcrumbs, InstallationCTA } from '@/components/installations/Portfolio';
 
 const title = 'Instalime të pompave termike në Kosovë';
@@ -10,12 +10,7 @@ const description = 'Shikoni instalimet e pompave termike nga ECOTEK në Kosovë
 export async function generateMetadata(): Promise<Metadata> {
   const collections = await getInstallations();
   const image = collections.flatMap(c => c.projects)[0]?.images[0];
-  return {
-    title: `${title} | ECOTEK`, description,
-    alternates: { canonical: `${siteUrl}/instalimet` },
-    openGraph: { title, description, url: `${siteUrl}/instalimet`, siteName: 'ECOTEK', locale: 'sq_AL', type: 'website',
-      images: image ? [{ url: `${siteUrl}${image.src}`, alt: title }] : [] },
-  };
+  return pageMetadata(title, description, '/instalimet', image?.src);
 }
 
 export default async function InstallationsPage() {
@@ -28,7 +23,8 @@ export default async function InstallationsPage() {
         <div className="max-w-3xl">
           <p className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">Instalimet / ECOTEK</p>
           <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">{title}</h1>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-600">Shikoni disa nga instalimet e realizuara nga ekipi ynë në Kosovë. Për çdo objekt, përzgjedhja e sistemit merr parasysh sipërfaqen, kërkesat për ngrohje dhe efikasitetin e energjisë.</p>
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-600">Shikoni disa nga instalimet e pompave termike të realizuara nga ECOTEK në Kosovë. Fotografitë dhe të dhënat e çdo projekti tregojnë zgjidhje ngrohjeje për sipërfaqe dhe sisteme të ndryshme.</p>
+          <Link href="/pompa-termike" className="mt-5 inline-block font-medium text-blue-600 hover:underline">Pompa termike për ngrohje në Kosovë</Link>
           <a href="#vendndodhjet" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-800">Eksploroni instalimet <ArrowDown size={16} aria-hidden="true" /></a>
         </div>
         <div className="flex gap-10 border-t border-slate-200 pt-6 lg:justify-end lg:border-t-0 lg:pb-2">

@@ -87,7 +87,7 @@ const Header = ({ installationLocations }: { installationLocations: Installation
       id: subcategory.id,
       title: t(`nav.cat.${category.id}.sub.${subcategory.id}.title`, subcategory.title),
       description: t(`nav.cat.${category.id}.sub.${subcategory.id}.description`, subcategory.description),
-      href: subcategory.href,
+      href: subcategory.id === 'pompa-termike' ? '/pompa-termike' : subcategory.href,
       icon: subcategory.icon,
     })),
   }));

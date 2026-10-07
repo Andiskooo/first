@@ -131,7 +131,7 @@ export const categories: Category[] = [
           {
             id: "kalldaja-og",
             title: "Kalldaja Elektrike ECOTEK OG",
-            image: "/produktet/kalldaja-og.jpg",
+            image: "/produktet/Kalldaja-og.jpg",
             category: "ngrohje-qendrore",
             subcategory: "kalldaja-elektrike",
             features: [

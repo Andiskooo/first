@@ -56,8 +56,8 @@ const Footer = () => {
             <ul className="space-y-2">
               <li><Link href="/instalimet" className="text-slate-300 hover:text-white transition-colors">Instalimet</Link></li>
               <li>
-                <Link href="/about-us" className="text-slate-300 hover:text-white transition-colors">
-                  {t('footer.links.about')}
+                <Link href="/pompa-termike" className="text-slate-300 hover:text-white transition-colors">
+                  Pompa termike
                 </Link>
               </li>
               <li>

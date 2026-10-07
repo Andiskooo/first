@@ -1410,7 +1410,7 @@ export function getAllProducts(): Product[] {
       description: 'Kalldajë elektrike me efikasitet të lartë për ngrohje.',
       descriptionKey: 'products.kalldaja-og.description',
       price: '250-390',
-      imageUrl: '/produktet/kalldaja-og.jpg',
+      imageUrl: '/produktet/Kalldaja-og.jpg',
       category: 'ngrohje-qendrore',
       subcategory: 'kalldaja',
       badges: [

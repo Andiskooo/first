@@ -25,6 +25,7 @@ const names: Record<string, { slug: string; label: string }> = {
   mitrovice: { slug: 'mitrovice', label: 'Mitrovicë' },
   gjakove: { slug: 'gjakove', label: 'Gjakovë' },
   peje: { slug: 'peje', label: 'Pejë' },
+  gracanice: { slug: 'gracanice', label: 'Graçanicë' },
 };
 
 export function collectionName(folder: string) {
