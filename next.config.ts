@@ -2,6 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    localPatterns: [
+      { pathname: '/**', search: '' },
+      // Content-version queries invalidate optimized photos after an edit.
+      { pathname: '/instalimet/**' },
+    ],
     remotePatterns: [
       {
         protocol: 'https',

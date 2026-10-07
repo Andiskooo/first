@@ -28,7 +28,7 @@ interface LocationData {
   mapUrl: string;
 }
 
-// Sample location data
+// Contact location data
 const locations: LocationData[] = [
   {
     id: 'gjakove',
@@ -46,23 +46,6 @@ const locations: LocationData[] = [
       sunday: 'E Diel: Mbyllur'
     },
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1920.6320617416666!2d20.466225867526365!3d42.365867617706165!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1353b1a29466cfd1%3A0x6c7d20302c8e123c!2sECOTEK!5e0!3m2!1sen!2s!4v1745607963392!5m2!1sen!2s'
-  },
-  {
-    id: 'prishtine',
-    name: 'ECOTEK Fushe Kosove',
-    address: 'Ulgare, Fushe Kosove 10000, Kosovë',
-    phone: '+383 44 831 040',
-    email: 'prishtina@ecotek-ks.com',
-    coordinates: {
-      lat: 42.66400271620296,
-      lng: 21.159150675949244
-    },
-    workingHours: {
-      weekdays: 'E Hënë - E Premte: 09:00 - 17:00',
-      saturday: 'E Shtunë: 09:00 - 13:00',
-      sunday: 'E Diel: Mbyllur'
-    },
-    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2934.7147893993307!2d21.10613837675948!3d42.63776797116985!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13549d6ad68afe3b%3A0xcfadac12011efef8!2sOrdinanca%20Ors!5e0!3m2!1sen!2s!4v1721412618000!5m2!1sen!2s'
   }
 ];
 
@@ -162,7 +145,7 @@ const ContactUsPage = () => {
       <div className="container mx-auto px-4 py-12">
         {/* Location tabs */}
         <div className="mb-10">
-          <h2 className="text-2xl font-bold mb-6 text-center">Lokacionet Tona</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center">Lokacioni Ynë</h2>
           <div className="flex flex-wrap justify-center gap-4 mb-8">
             {locations.map((location) => (
               <button

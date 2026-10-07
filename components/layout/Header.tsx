@@ -21,6 +21,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import FacebookPixel from '@/components/FacebookPixel';
 import LanguangeSwitche from '@/components/LanguangeSwitche';
 import { useT } from '@/components/i18n';
+import type { InstallationNavItem } from '@/lib/installations/data';
 
 // Navigation data will be localized inside the component using useT()
 
@@ -66,7 +67,7 @@ ListItem.displayName = "ListItem";
 // Note: Kompania items will be built inside the component to use translations.
 
 // --- Header Component ---
-const Header = () => {
+const Header = ({ installationLocations }: { installationLocations: InstallationNavItem[] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const t = useT();
   const pathname = usePathname();
@@ -119,6 +120,8 @@ const Header = () => {
               size="icon"
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
+              aria-expanded={isOpen}
+              aria-controls="mobile-navigation"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -206,6 +209,24 @@ const Header = () => {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
 
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className={cn(
+                    "bg-transparent hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent",
+                    variant === 'transparent' ? "text-white hover:text-white/80" : "text-foreground hover:text-foreground/80",
+                    pathname.startsWith('/instalimet') && "font-semibold"
+                  )}>Instalimet</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] grid-cols-2 gap-1 p-4">
+                      <li className="col-span-2 border-b border-border pb-2 mb-2">
+                        <NavigationMenuLink asChild><Link href="/instalimet" className="block rounded-md p-3 font-semibold text-blue-600 hover:bg-accent">Të gjitha instalimet</Link></NavigationMenuLink>
+                      </li>
+                      {installationLocations.map(location => <li key={location.slug}>
+                        <NavigationMenuLink asChild><Link href={`/instalimet/${location.slug}`} aria-current={pathname === `/instalimet/${location.slug}` ? 'page' : undefined} className="block rounded-md p-3 text-sm font-medium hover:bg-accent aria-[current=page]:bg-accent">{location.label}</Link></NavigationMenuLink>
+                      </li>)}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
                 {/* Kompania Navigation Item */}
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className={cn(
@@ -267,6 +288,7 @@ const Header = () => {
               {/* Menu Content */}
               <motion.div
                 key="mobile-menu"
+                id="mobile-navigation"
                 initial={{ y: "-100%", opacity: 0 }}
                 animate={{ y: "0%", opacity: 1 }}
                 exit={{ y: "-100%", opacity: 0 }}
@@ -319,6 +341,21 @@ const Header = () => {
                       </AnimatePresence>
                     </div>
                   ))}
+                </div>
+
+                <div className="border-b border-border">
+                  <button type="button" className="flex w-full items-center justify-between p-4 text-left text-lg font-semibold hover:bg-accent"
+                    aria-expanded={openAccordionCategory === 'instalimet'} aria-controls="mobile-installations"
+                    onClick={() => setOpenAccordionCategory(openAccordionCategory === 'instalimet' ? null : 'instalimet')}>
+                    Instalimet
+                    <ChevronDown className={cn('h-5 w-5 transition-transform', openAccordionCategory === 'instalimet' && 'rotate-180')} aria-hidden="true" />
+                  </button>
+                  <div id="mobile-installations" hidden={openAccordionCategory !== 'instalimet'} className="bg-muted/50 px-4 pb-3">
+                    <Link href="/instalimet" onClick={() => setIsOpen(false)} className="block rounded-md px-3 py-3 text-sm font-semibold text-blue-600 hover:bg-accent">Të gjitha instalimet</Link>
+                    {installationLocations.map(location => <Link key={location.slug} href={`/instalimet/${location.slug}`}
+                      aria-current={pathname === `/instalimet/${location.slug}` ? 'page' : undefined}
+                      onClick={() => setIsOpen(false)} className="block rounded-md px-3 py-3 text-sm text-slate-700 hover:bg-accent aria-[current=page]:font-semibold">{location.label}</Link>)}
+                  </div>
                 </div>
 
                 {/* Links for Kompania */}

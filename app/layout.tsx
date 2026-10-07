@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import MainLayout from '@/components/layout/MainLayout'; // Import the new client layout wrapper
 import './globals.css';
 import ClarityAnalytics from '@/components/clarity';
+import { getInstallationNavigation } from '@/lib/installations/data';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const installationLocations = getInstallationNavigation();
   return (
     <html lang="sq" suppressHydrationWarning>
       <head>
@@ -28,7 +30,7 @@ export default function RootLayout({
         <ClarityAnalytics />
       </head>
       <body className={inter.className} suppressHydrationWarning>
-        <MainLayout>
+        <MainLayout installationLocations={installationLocations}>
           {children}
         </MainLayout>
         <Toaster position="top-center" />
