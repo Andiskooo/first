@@ -102,7 +102,7 @@ check(
 check(
   'no constant technician banner in chat UI',
   // The number may only survive inside genuine failure fallbacks, never as a banner/link.
-  !uiSrc.includes('teknik') && !uiSrc.includes('SUPPORT_TEL') && !uiSrc.includes('<a')
+  !uiSrc.includes('teknik') && !uiSrc.includes('SUPPORT_TEL') && !uiSrc.includes('href=')
 );
 check('support number only in unable-to-answer paths', (() => {
   const routeSrc = readFileSync(new URL('../app/api/chat/route.ts', import.meta.url), 'utf-8');

@@ -2,7 +2,15 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import Image from 'next/image';
-import { Loader2, Send, X } from 'lucide-react';
+import {
+  AlertTriangle,
+  Clock,
+  Loader2,
+  LockOpen,
+  Send,
+  Thermometer,
+  X,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const SUPPORT_PHONE = '+383 44 914 480';
@@ -15,6 +23,14 @@ const SUGGESTED_QUESTIONS = [
   'Si ta ndryshoj temperaturën?',
   'Si ta aktivizoj timerin?',
   'Çfarë do të thotë kodi i gabimit?',
+];
+
+// Template questions for the landing hero (icon + full question).
+const HERO_OPTIONS = [
+  { icon: LockOpen, question: 'Si ta zhbllokoj ekranin?' },
+  { icon: Thermometer, question: 'Si ta ndryshoj temperaturën?' },
+  { icon: Clock, question: 'Si ta aktivizoj timerin?' },
+  { icon: AlertTriangle, question: 'Çfarë do të thotë kodi i gabimit?' },
 ];
 
 export interface ChatImage {
@@ -58,10 +74,10 @@ function renderFormatted(text: string) {
   const flushSteps = () => {
     if (steps.length === 0) return;
     blocks.push(
-      <ol key={`steps-${key++}`} className="my-2 space-y-1.5">
+      <ol key={`steps-${key++}`} className="my-3 space-y-2">
         {steps.map((s, i) => (
-          <li key={i} className="flex gap-2 text-[13px] leading-relaxed">
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[11px] font-semibold text-white">
+          <li key={i} className="flex gap-2.5 text-[15px] leading-relaxed sm:text-base">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white">
               {i + 1}
             </span>
             <span className="flex-1">{renderInline(s.replace(/^\d+[.)]\s*/, ''))}</span>
@@ -110,7 +126,7 @@ function renderFormatted(text: string) {
       flushSteps();
       if (line) {
         blocks.push(
-          <p key={`p-${key++}`} className="my-1 text-[13px] leading-relaxed">
+          <p key={`p-${key++}`} className="my-1.5 text-[15px] leading-relaxed sm:text-base">
             {renderInline(line)}
           </p>
         );
@@ -197,6 +213,67 @@ export default function ChatPanel({ onClose, className, autoFocus, showHeader = 
     [loading, messages]
   );
 
+  const started = messages.some((m) => m.role === 'user') || loading;
+
+  // Minimal landing hero (ChatGPT-style): greeting, input bar,
+  // template questions as option rows. Shown until chat starts.
+  if (!started) {
+    return (
+      <div className={cn('flex flex-col items-center justify-center bg-white px-4 py-14 sm:py-20', className)}>
+        <h2 className="text-center text-2xl font-medium text-slate-900 sm:text-3xl">
+          Përshëndetje. Gati për të filluar?
+        </h2>
+
+        {/* Input bar */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void send(input);
+          }}
+          className="mt-8 flex w-full max-w-2xl items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 shadow-sm focus-within:border-blue-500"
+        >
+          <label htmlFor={inputId} className="sr-only">
+            Shkruani pyetjen tuaj
+          </label>
+          <input
+            id={inputId}
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Pyesni asistentin ECOTEK…"
+            maxLength={500}
+            autoComplete="off"
+            className="h-10 flex-1 bg-transparent text-[15px] text-slate-900 placeholder:text-slate-400 focus:outline-none sm:text-base"
+          />
+          <button
+            type="submit"
+            disabled={loading || !input.trim()}
+            aria-label="Dërgo pyetjen"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <Send className="h-4 w-4" aria-hidden="true" />
+          </button>
+        </form>
+
+        {/* Template questions as option rows */}
+        <div className="mt-6 w-full max-w-2xl">
+          {HERO_OPTIONS.map((o) => (
+            <button
+              key={o.question}
+              type="button"
+              onClick={() => void send(o.question)}
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[15px] text-slate-600 hover:bg-slate-100 sm:text-base"
+            >
+              <o.icon className="h-5 w-5 shrink-0 text-slate-400" aria-hidden="true" />
+              {o.question}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={cn('flex flex-col overflow-hidden bg-white', className)}>
       {/* Header */}
@@ -225,49 +302,50 @@ export default function ChatPanel({ onClose, className, autoFocus, showHeader = 
       </div>
       )}
 
-      {/* Messages */}
-      <div ref={scrollRef} aria-live="polite" className="flex-1 space-y-3 overflow-y-auto bg-slate-50 px-3 py-4">
-        {messages.map((m, i) => (
-          <div key={i} className={cn('flex', m.role === 'user' ? 'justify-end' : 'justify-start')}>
-            <div
-              className={cn(
-                'max-w-[85%] rounded-2xl px-3 py-2 shadow-sm',
-                m.role === 'user'
-                  ? 'rounded-br-md bg-blue-600 text-white'
-                  : 'rounded-bl-md border border-slate-200 bg-white text-slate-800'
-              )}
-            >
-              {m.role === 'assistant' ? (
-                <>
-                  {renderFormatted(m.content)}
-                  {m.images?.map((img) => (
-                    <span key={img.src} className="my-2 block overflow-hidden rounded-xl border border-slate-200">
-                      <img
-                        src={img.src}
-                        alt={img.caption}
-                        className="h-auto w-full"
-                        loading="lazy"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).closest('span')?.remove();
-                        }}
-                      />
-                      <span className="block bg-slate-100 px-2 py-1 text-center text-[11px] text-slate-500">
-                        {img.caption}
-                      </span>
-                    </span>
-                  ))}
-                </>
-              ) : (
-                <p className="text-[13px] leading-relaxed">{m.content}</p>
-              )}
+      {/* Messages — ChatGPT-style: plain full-width assistant rows, bubbled user rows */}
+      <div ref={scrollRef} aria-live="polite" className="flex-1 space-y-6 overflow-y-auto bg-white px-4 py-6 sm:px-8">
+        {messages.map((m, i) =>
+          m.role === 'user' ? (
+            <div key={i} className="flex justify-end">
+              <p className="max-w-[85%] rounded-2xl rounded-br-md bg-blue-600 px-4 py-2.5 text-[15px] leading-relaxed text-white shadow-sm sm:text-base">
+                {m.content}
+              </p>
             </div>
-          </div>
-        ))}
+          ) : (
+            <div key={i} className="flex gap-3">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-600">
+                <Image src="/logo-white.png" alt="ECOTEK" width={22} height={22} className="h-5 w-5 object-contain" unoptimized />
+              </span>
+              <div className="min-w-0 flex-1 text-slate-800">
+                {renderFormatted(m.content)}
+                {m.images?.map((img) => (
+                  <span key={img.src} className="my-3 block max-w-xl overflow-hidden rounded-xl border border-slate-200">
+                    <img
+                      src={img.src}
+                      alt={img.caption}
+                      className="h-auto w-full"
+                      loading="lazy"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).closest('span')?.remove();
+                      }}
+                    />
+                    <span className="block bg-slate-100 px-2 py-1 text-center text-xs text-slate-500">
+                      {img.caption}
+                    </span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )
+        )}
         {loading && (
-          <div className="flex justify-start">
-            <div className="flex items-center gap-2 rounded-2xl rounded-bl-md border border-slate-200 bg-white px-3 py-2.5 shadow-sm">
-              <Loader2 className="h-4 w-4 animate-spin text-blue-600" aria-hidden="true" />
-              <span className="text-[13px] text-slate-500">Po kërkoj në manuale…</span>
+          <div className="flex gap-3">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-600">
+              <Image src="/logo-white.png" alt="ECOTEK" width={22} height={22} className="h-5 w-5 object-contain" unoptimized />
+            </span>
+            <div className="flex items-center gap-2 py-1">
+              <Loader2 className="h-5 w-5 animate-spin text-blue-600" aria-hidden="true" />
+              <span className="text-[15px] text-slate-500">Po kërkoj në manuale…</span>
             </div>
           </div>
         )}
@@ -275,13 +353,13 @@ export default function ChatPanel({ onClose, className, autoFocus, showHeader = 
 
       {/* Suggested questions */}
       {showSuggestions && (
-        <div className="flex flex-wrap gap-1.5 border-t border-slate-100 bg-white px-3 pt-2.5">
+        <div className="flex flex-wrap gap-2 border-t border-slate-100 bg-white px-4 pt-3 sm:px-8">
           {SUGGESTED_QUESTIONS.map((q) => (
             <button
               key={q}
               type="button"
               onClick={() => void send(q)}
-              className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 hover:bg-blue-100 focus-visible:outline-2 focus-visible:outline-blue-600"
+              className="rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-100 focus-visible:outline-2 focus-visible:outline-blue-600"
             >
               {q}
             </button>
@@ -295,7 +373,7 @@ export default function ChatPanel({ onClose, className, autoFocus, showHeader = 
           e.preventDefault();
           void send(input);
         }}
-        className="flex items-center gap-2 border-t border-slate-200 bg-white p-2.5"
+        className="flex items-center gap-3 bg-white p-4 sm:px-8"
       >
         <label htmlFor={inputId} className="sr-only">
           Shkruani pyetjen tuaj
@@ -309,18 +387,18 @@ export default function ChatPanel({ onClose, className, autoFocus, showHeader = 
           placeholder="Shkruani pyetjen…"
           maxLength={500}
           autoComplete="off"
-          className="h-10 flex-1 rounded-full border border-slate-300 bg-slate-50 px-3.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none"
+          className="h-12 flex-1 rounded-2xl border border-slate-300 bg-slate-50 px-4 text-[15px] text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-blue-600 focus:outline-none sm:text-base"
         />
         <button
           type="submit"
           disabled={loading || !input.trim()}
           aria-label="Dërgo pyetjen"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40"
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40"
         >
           {loading ? (
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
           ) : (
-            <Send className="h-4 w-4" aria-hidden="true" />
+            <Send className="h-5 w-5" aria-hidden="true" />
           )}
         </button>
       </form>
