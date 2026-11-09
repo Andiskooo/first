@@ -1,0 +1,722 @@
+[
+ {
+  "id": "Screen Icons and operations.pdf#p1c1",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 1,
+  "text": "1. Controller Icon Icon Status Functions or meanings Remark Lights out Currently in off or non-hot water mode Display on/off status Constant flashing Currently in hot water mode on Display on/off status Lights out Currently in off or non-heating mode Display on/off status Constant flashing Currently in heating mode Display on/off status Lights out Currently in off or non-cooling mode Display on/off status Constant flashing Currently in cooling mode Display on/off status Lights out Currently in off or non-floor heating mode Display on/off status Constant flashing Currently in floor heating mode Display on/off status Constant flashing Silent mode / Night mode Power on display"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p1c2",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 1,
+  "text": "isplay on/off status Constant flashing Silent mode / Night mode Power on display Constant flashing Powerful mode Power on display Constant flashing Intelligent Mode Power on display Constant flashing Electric auxiliary heating work (AC, hot water electric heating) Power on display 1s flashing Electric auxiliary heat quick heat mode is enabled Power on display 2s flashing Electric auxiliary heat sterilization mode is enabled Power on display Flashing WIFI Allocation Constant flashing WIFI connection successful Constant flashing Represents water intake Constant flashing Represents water discharge Constant flashing Represents actual temperature/room temperature"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p1c3",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 1,
+  "text": "water discharge Constant flashing Represents actual temperature/room temperature Constant flashing Representative Settings Constant flashing Display Celsius temperature Constant flashing Display Fahrenheit temperature Constant flashing Show percentage 88.8 Constant flashing Display of actual values, set values and fault codes Flashing Circulating water pump: freeze-proof operation Constant flashing Circulating water pump: normal operation Constant flashing Hydration valve open Constant flashing Return water valve open c 1Hz flashing Activate timed water return feature 2Hz flashing Activate manual water return function Constant flashing High, medium and low water levels are displayed"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p1c4",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 1,
+  "text": "eturn function Constant flashing High, medium and low water levels are displayed Constant flashing The water supply valve Controller Supplement"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p2c1",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 2,
+  "text": "Icon Status Functions or meanings Remark Constant flashing Photovoltaic mode/solar heating 1 Hz flashing Start PV timing Flashing Currently in shutdown and refrigerant recovery state Constant flashing Currently on and defrosting Constant flashing Enter maintenance status Constant flashing Alarm is currently occurring Constant flashing Current button is locked Constant flashing Compressor operation Constant flashing High wind operation of the fan Constant flashing Fan low wind operation 1 second flash Ventilation mode: high speed wind 2 second flash Ventilation mode: low speed wind Constant flashing Online networking Constant flashing Display the current network unit number"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p2c2",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 2,
+  "text": "hing Online networking Constant flashing Display the current network unit number 88.8 Display Display real-time time Always bright Enable timed work mode Display Currently in the power-on timer period Flashing Current set working period start time Display Currently in power-on timed non-working hours Flashing Current set working period end time Flashing / Light out Timed working hours 1, 2, 3, always on when set or when the clock enters this period, off in the rest of the case Display Show current week 1, 2, 3, 4, 5, 6, 7"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p3c1",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 3,
+  "text": "2. Controller Manual 2.1 On/off button “ ”: when the power is off and unlocked, press and hold the key “ ” for 1S, the unit will start; when the power is on and unlocked, press and hold the \" \" key, the unit will stop running; if the line controller is in the \"lock key If the line controller is in the locked state, press and hold the \" \" key for more than 3 seconds to release the lock. 2.2 Mode key “ ”: When the line controller is on and unlocked, press the \" \" key to select the operation mode of the unit (different modes can be selected according to different models: floor heating, cooling, heating, hot water ........ etc.). 2.3 Temperature Setting 2.3.1 For Heating/Cooling/DHW"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p3c2",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 3,
+  "text": "hot water ........ etc.). 2.3 Temperature Setting 2.3.1 For Heating/Cooling/DHW 2.3.1.1 (When there is no curve setting) when the line controller is on and unlocked, press \"△\" or \"▽\" key, then press \"△\" or \"▽ \"△\" or \"▽\" key to adjust the current mode set temperature; press and hold the \"△\" or \"▽\" key for more than 0.5 seconds to quickly increase or decrease, stop operation after 5S or press the on/off key to return to normal display; combination mode (for example: heating + Hot water), press the \" \" key to switch the temperature setting of another mode, the icon of the corresponding mode flashes at 1Hz when the temperature is set."
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p3c3",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 3,
+  "text": ", the icon of the corresponding mode flashes at 1Hz when the temperature is set. 2.3.1.2 (When there is curve setting) when the line controller is on and unlocked, press \"△\" or \"▽\" key to display the current set temperature curve, then the curve setting value flashes, then press \"△\" or \"▽\" key can switch different curve control, combination mode (for example: heating + hot water), press \" \" key to switch the curve display and setting of another mode. After stopping the operation 5S or press the“ ” key to return to normal display. 2.3.1.3 Curve control setting: Press \"△\" or \"▽\" to enter temperature setting in the state without"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p3c4",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 3,
+  "text": "trol setting: Press \"△\" or \"▽\" to enter temperature setting in the state without curve setting, press \" \" for 5S to enter curve setting, the display shows OFF to cancel curve control, press \"△\" or \"▽\" to select the corresponding curve control at this time: press \"△\" or \"▽\" to enter curve selection in the state with curve control, the curve control can be canceled by setting the curve to OFF. 2.3.1.4 Refrigeration curve representation: CH1, 2, 3, 4, 5, 6, 7,8, represents the cooling high temperature curve 1, 2, 3, 4, 5, 6, 7,8 Refrigeration curve representation: CL1, 2, 3, 4, 5, 6, 7,8, represents refrigeration low temperature curve 1, 2, 3, 4, 5, 6, 7,8, The heating curve is represented by:"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p3c5",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 3,
+  "text": "ow temperature curve 1, 2, 3, 4, 5, 6, 7,8, The heating curve is represented by: HH1, 2, 3, 4, 5, 6, 7,8, represents the heating high temperature curve 1, 2, 3, 4, 5, 6, 7,8, Heating curve: HL1, 2, 3, 4, 5, 6, 7,8, The heating curve represents the low temperature curve 1, 2, 3, 4, 5, 6, 7,8, Floor heating curve: GH1, 2, 3, 4, 5, 6, 7,8, The floor heating curve represents the high temperature curve 1, 2, 3, 4, 5, 6, 7,8, Floor heating curve: GL1, 2, 3, 4, 5, 6, 7,8, representing the floor heating low temperature curve 1, 2, 3, 4, 5, 6, 7,8, Hot water curve: H1, 2, 3, 4, 5, 6, 7,8, on behalf of the hot water curve 1, 2, 3, 4, 5, 6, 7,8. 2.4 Quick heat function:"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p3c6",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 3,
+  "text": "on behalf of the hot water curve 1, 2, 3, 4, 5, 6, 7,8. 2.4 Quick heat function: When the power is on, in non-cooling mode, press and hold \" \" + \"△\" for 3s to enter/exit the quick heat function. LCD display: when the electric heating is on, the \" \"symbol lights up, when the electric heating is not on \" \"1Hz blinks to show the execution of the switch operation to turn off the quick heat function. 2.5 Forced defrost function: In the power-on state, in non-cooling mode, long press \"M\" + \"▽\" for 5s to enter the forced frosting. LCD display: the frosting icon \" \" lights up."
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p4c1",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 4,
+  "text": "2.6 IPLV test mode: For experimental test of inverter: At power on, press and hold \"On/Off\" + \"Timer\" + “ “ for 5s to enter; press \" \" to exit. LCD display: IPLU is displayed in the timing area. 2.7 Refrigerant recovery function: In the off state, within 5min of power on, long press \" \" + \"▽\" for 10s to enter the refrigerant recovery; press the \" \" key to exit. LCD display: frosting icon \" \" 1Hz flashing. Inverter two-tier and three-tier temperature zone flashing to show the low pressure temperature value. 2.8 Water line evacuation mode/forced on pump: In the off state, long press \" \" + \"△\" + \"▽\" for 5s to enter; press again or directly press \" \" key to exit. LCD display:"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p4c2",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 4,
+  "text": "\"▽\" for 5s to enter; press again or directly press \" \" key to exit. LCD display: pump icon \" \" flashing 2.9 Operation parameters query: 2.9.1 Enter to view: long press \"▽\" 3S under the regular interface to enter the operating parameters query, enter the parameter query state, the temperature display area shows the parameter serial number, the timing area shows the parameter content. Forced operation parameters table differs according to the model, refer to the attached table or motherboard function manual. 3.9.2 Check operation and exit: After entering parameter query, press \"△\" or \"▽\" key to scroll through the \"operating parameters\"; press \" \" key or 60 seconds without key operation"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p4c3",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 4,
+  "text": "gh the \"operating parameters\"; press \" \" key or 60 seconds without key operation automatically exit to view the status of parameters. 2.10 Parameter Setting 2.10.1 When the main interface is displayed, press and hold \" \" for 5S to enter the parameter query, in the query state, the parameter serial number flashes; press \" \" to enter the parameter setting state, the parameter value starts to flash, at this time, press \"△ \"or \"▽\" key to modify the parameters, press \" \" to determine the value of the parameter modification. Press the \" \" key or 60 seconds without key operation to exit the parameter state automatically, without saving the modified parameter value."
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p4c4",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 4,
+  "text": "the parameter state automatically, without saving the modified parameter value. 2.10.2 There are two levels of parameters that can be set for two or three inverters, press and hold \" \" for 5S to switch the parameter query. 2.10.3 Parameter table varies depending on the model, refer to the attached table or motherboard function manual 2.11 Display faults: 2.11.1 When there is a fault in the unit, the fault is displayed in the timing area and the fault code is displayed cyclically while \" \" flashes, and the normal display is restored when the fault is eliminated. The description of the fault code is shown in “Trouble Analysis”. 2.12 Clock Settings: 2.12.1 Enter the clock setting:"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p4c5",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 4,
+  "text": "hown in “Trouble Analysis”. 2.12 Clock Settings: 2.12.1 Enter the clock setting: the line controller unlocked state, press the \" \" key, the clock area flashing display, such as the start of the week function” ” will flash together, indicating that enter the clock setting state;. 2.12.2 Clock setting operation: Enter the clock setting state, press the \" \" key to switch to set the week, hour and minute settings, the set value flashes at this time, press the \"△\" or \"▽\" key to modify the corresponding value, after setting After setting the minute value, press the \"Timer\" key or \" \" key again or 5 seconds without key operation to save the current setting and exit automatically."
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p4c6",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 4,
+  "text": "econds without key operation to save the current setting and exit automatically. In the clock setting state, press and hold the \" \" key for 3 seconds to turn on/off the weekly function; when the weekly timer is enabled, enter the clock setting first, then press the \" \" key to enter the hour setting after setting, and skip the weekly setting directly when the weekly function is turned off. 2.13 Set on/off timer control"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p5c1",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 5,
+  "text": "2.13.1 Timer control has 3 groups of timer, 1~3 groups, each group can be set as \"timer start\" and \"timer stop\"; default is \"invalid\" state, i.e. the timer start and timer stop are the same time. 2.13.2 To access the timing settings: 2.13.2.1: Long press the \" \" key for 3 seconds under the main interface to enable or disable the timer working mode. 2.13.2.2: When the day starts timing, all timing of the day is cancelled; when the day does not start stopping, the timing setting is entered. 2.13.2.3: When the week function is activated, after entering the timing setting, first enter the week selection, then “ “flash, press the \"△\" or \"▽\" key to select the week that needs to set"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p5c2",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 5,
+  "text": "on, then “ “flash, press the \"△\" or \"▽\" key to select the week that needs to set the timing, and then proceed to the next operation. Skip this step when week function not start. 2.13.2.4 Short press the \" \" key, \"1\", \"ON\" icon at the bottom left of the screen, the hour display area flashes, it means enter the \"first group of timing Start\" setting state, digital flashing at hour, press \"△\" or \"▽\" key to modify the time, then press \"Timer\" key to confirm the modification and go to the minute Setting, digital flashing at the minute, press \"△\" or \"▽\" to modify the time, then press \"Timer\" to confirm the modification; at the same time, enter \"1 \","
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p5c3",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 5,
+  "text": "e, then press \"Timer\" to confirm the modification; at the same time, enter \"1 \", \"OFF\" icon display, setting status, digital flashing display at hour, press \"△\" or \"▽\" key to modify the time, and then press \"Timer\" key to confirm the modification and go to the minute setting, digital flashing display at the minute, then press \"△\" or \"▽\" key to modify the time, then press \" \"key to confirm the modification and start \"Timing of time slot 1\", and enter the setting of time period 2. 2.13.2.5 The operation of \"Time slot 2 and 3\" settings is the same as above. 2.13.3 Exit setting timing: When the timer is set, press the \" \" key or no key operation for 60"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p5c4",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 5,
+  "text": "ting timing: When the timer is set, press the \" \" key or no key operation for 60 seconds to abandon the current timer and exit the set timer. 2.13.4 When the weekly timer is enabled, set the weekly timer at the current time and press and hold the \" \" key for 3 seconds to cancel the timer for the day. 2.13.5 Timed display: After setting the timing, the clock immediately updates the current state, executes power on during the power-on time period, executes power off outside the timing time period, and then executes once at the time. The \" \" and \"OFF\" icons are displayed when it is in the shutdown period, and the \" \" and the current working period \"1/2/3\" and “ON” are"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p5c5",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 5,
+  "text": "shutdown period, and the \" \" and the current working period \"1/2/3\" and “ON” are displayed when it is in the power-on period. 2.14 ECO Mode Setting For TB series models, long press \"△\" or \"▽\" key in the main interface 3S to turn on/off ECO function, \" \" lights up when it is on. 2.15 Timed return water temperature setting Long press \" \" key + \"▽\" key under the main interface for 3 seconds, you can enable or cancel the timer back to the water function mode, enable the timer back to the water function mode into the timer back to the water time settings, then \" \" and \" \" characters flashing at the same time, set the same method and set the switch timing"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p5c6",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 5,
+  "text": "racters flashing at the same time, set the same method and set the switch timing A total of three timer back to the water period can be set. 2.16 Set timer refill function and (valid for commercial hot water models) Long press \" \" key + \"△\" key for 3 seconds under the main interface, you can enable or cancel the timer refill function mode, enable the timer refill function mode into the timer refill time settings, at this time \" \" and \" \" characters flashing at the same time, set the same method and set the switch timing. A total of two timer back to the water period can be set 2.17 Maintenance Mode Press and hold the \"▽\" key for more than 3 seconds to enter the maintenance mode, at this time"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p5c7",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 5,
+  "text": "the \"▽\" key for more than 3 seconds to enter the maintenance mode, at this time the maintenance symbol \" \" is lit up and displayed. In this mode, you can check the information, controller self-test and other operations, press and immediately release the \" \" key or no key operation within 60 seconds will automatically return to the normal display state. After entering the maintenance mode, the last viewed data code and its corresponding value are"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p6c1",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 6,
+  "text": "displayed, and thereafter each time the \"▽\" key is pressed and immediately released or \"△\" key can be displayed in sequence as shown in the attached table. Maintenance mode, press and release the \" \"key can display the main control board product information (temperature display area shows \"r10\" on behalf of the motherboard software version V1.1), the clock display area shows: \"SBP2 \"SBP2\" represents the commercial inverter two-unit supply, \"SBP3\" represents the commercial inverter three-unit supply, \"JdP\" represents the home fixed-frequency machine, \"SdP\" represents commercial fixed-frequency machine; after"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p6c2",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 6,
+  "text": "ed-frequency machine, \"SdP\" represents commercial fixed-frequency machine; after pressing and releasing the \" \" key can display the product information of the line controller (\"d10\" represents software version V1.1), and return to the data display after 3 seconds. Enter maintenance mode in the off state. Press and hold the \" \" key for more than 5 seconds to restore the factory settings and exit. Press and hold the \" \" key for more than 5 seconds to display self-test, all the display fields in turn after the end of the display self-test; display self-test after the end of the clock chip and memory chip, WIFI module detection. The left side of the temperature display area shows the"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p6c3",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 6,
+  "text": ", WIFI module detection. The left side of the temperature display area shows the detection result of the clock chip, the successful detection shows \"OK\", the failure shows \"--\", the right side shows the detection result of the memory chip, the successful detection shows \"OK \", failure display \"--\". Clock area shows WIFi detection results, successful detection shows the current WIFI signal strength, failure shows \"----\", 3S after the end of the self-test Press and hold the \" \" key for more than 5 seconds for output self-test, the relays of the control board are sucked and disconnected in turn, then end the output self-test."
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p6c4",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 6,
+  "text": "ontrol board are sucked and disconnected in turn, then end the output self-test. Press and hold the \" △ \" key for more than 5 seconds to enter or exit the refrigerant charging or recovery mode, the \"frost\" character flashes in this mode, while the compressor, four-way valve, evaporator fan high speed, circulation pump and bypass valve are working, press any key or 20 minutes to exit automatically. After pressing any key or 20 minutes, it will exit automatically. Note that the output self-test function is only for the quick test of the product, and it is strictly forbidden to use this function when it is under load. In order to avoid damage to the unit by"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p6c5",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 6,
+  "text": "use this function when it is under load. In order to avoid damage to the unit by misoperation, the factory setting cannot be restored after the controller is powered on for 5 minutes, and the output self-test and refrigerant charging or recovery mode cannot be entered. In maintenance mode, press and hold the \" \"+\" \"+\" △\"+\" ▽ \"key for 5 seconds to enter the model parameter setting Work-installation mode, which is shown on the right. In the work mode, press and hold the \" \"+\" \"+\" △\"+\" ▽ \"key for 5 seconds, then exit the work mode and carry out normal work display. Work mode, power on and after the initialization is complete, the display board cycle 1 second to"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p6c6",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 6,
+  "text": "on and after the initialization is complete, the display board cycle 1 second to send a setting command, and according to the motherboard to reply the results of success or failure instructions. Among them, when the setting is successful, \"JC\" and \"0\" are always displayed; when the setting fails, \"JC\" is always displayed and \"0 \" flashes. In the tooling mode, the model number \"0\" can be adjusted by \" △\" key and \" ▽ \" key, and in the process of model adjustment, \"JC \" and \"0\" are both flashing, you can confirm the setting by \" \" key 2.18 Online fast detection mode (valid for commercial machines with fixed frequency)"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p6c7",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 6,
+  "text": "Online fast detection mode (valid for commercial machines with fixed frequency) Power on and within 5 minutes, press and hold the \" \"+\" \"+\"▽ \"keys simultaneously for more than 5 seconds to enable the fast detection mode, which optimizes the press start-up delay, as follows : (1) The time to keep the electronic expansion valve initialized for 60 seconds before the press starts is shortened to 3 seconds. (2) The default 90-second time for the circulating water pump to start the press in advance is shortened to 15 seconds. (3) The electronic expansion valve opens up to 480 steps after the press stops and maintains a 2-minute delay time cancellation."
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p6c8",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 6,
+  "text": "80 steps after the press stops and maintains a 2-minute delay time cancellation. In the fast detection mode, press and hold \" \"+\" \"+\" ▽ \"at the same time for more than 5 seconds, then the fast detection mode is cancelled and normal control is restored. Power"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p7c1",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 7,
+  "text": "off and power on again, then normal control is automatically restored. 2.19 Usage period password setting In the unlocked state while holding down 5 keys 5S until \"beep\" into the use of the term password input, then the temperature zone display password \"0000\", you can press \"△\" or \"▽\" key to enter the password, and then press \"M\" to switch to the next password input, enter the 4-bit password and press \"M\" key to confirm, the password is correct to enter the term settings, then the clock area is displayed before the set value, press \"△\" or \"▽\" key to adjust, and then press \"M\" to confirm, return to the main interface, press and immediately release the \" \"key"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p7c2",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 7,
+  "text": "confirm, return to the main interface, press and immediately release the \" \"key or no key operation within 60 seconds will automatically return to the normal display state, does not save the set value. 2.20 Photovoltaic timing (valid for home machines) Under the main interface long press the \" \"+\" \"+\" \"key for 3 seconds to enter the PV timing settings, press and immediately release \" \" key can switch the hour part, minute part, hour part and minute part of the end time of the two time periods in turn, flashing display when switching to the corresponding value, while displaying the corresponding time period and"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p7c3",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 7,
+  "text": "g to the corresponding value, while displaying the corresponding time period and flashing display \"ON\" or \"OFF \" symbol, press \" △ \" or \" ▽ \" can be adjusted up or down and flashing display the corresponding value. After setting the timing period, press and release the \" \" key immediately or no key operation within 15 seconds can save the modification and return to normal display status. 2.21 Networking Features Network function display: when there is a slave access to the host, the host line controller display \" \" indicates that the device uses multiple devices networking function. Due to the display area limitation, the number shown in \" \" during the operation of the equipment"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p7c4",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 7,
+  "text": "y area limitation, the number shown in \" \" during the operation of the equipment indicates that the N (1~8) slave accesses the network connected to the host, and the actual network can be grouped 16 units (1 master, 15 slaves). How to query the operating parameters of master and slave machines under the network function: long press \" △ \" for 5 seconds to enter the query of master and slave machine parameters, the symbol \" \" indicates the master and slave machine number (0 is the master, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E F represents the slave code), switch the number of the group being checked by tapping \" \" key. After entering a host or slave, tap \" △ \", \" ▽ \" to scroll"
+ },
+ {
+  "id": "Screen Icons and operations.pdf#p7c5",
+  "manual": "Screen Icons and operations.pdf",
+  "page": 7,
+  "text": "d by tapping \" \" key. After entering a host or slave, tap \" △ \", \" ▽ \" to scroll through the lines to display each \"operation parameter\"; press \"On/Off \" key or no key operation for 60 seconds to exit automatically to view the parameter status."
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p1c1",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 1,
+  "text": "SolarEast Heat Pump Ltd. 2309.A01 97 3 Wired Controller & Parameters Settings 3.1 Wired Controller (LCD) 3.1.1 Interface 3.1.2 Mode Setting When the wired controller appears “ ”, long press “ ” to unlock, at this time, the wired controller can be operated. 3.1.2.1 Silent Mode With the wired controller unlocked, press “ ” and “ “ at the same time until the “ “ icon appears on the wired controller and the unit enters the silent mode. 3.1.2.2 Sterilization Mode ON: With the wired controller in the unlocked state, press and hold “ “ and “ “ and “ “ at Wi-Fi Icon Set Temp. Running Mode Currently Water Temp. ON/OFF Lock/Unlock Timer Setting Down Button Temp. Setting Button Up Button Temp."
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p1c2",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 1,
+  "text": "N/OFF Lock/Unlock Timer Setting Down Button Temp. Setting Button Up Button Temp. Setting Button Mode Time/Error Code"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p2c1",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 2,
+  "text": "SolarEast Heat Pump Ltd. 2309.A01 98 the same time for 5S until the wired controller appears the “ “ icon, the unit enters the sterilization mode. OFF: With the wired controller in the unlocked state, press and hold “ ” and “ “ and “ “ simultaneously for 5S until the wire controller “ ” icon disappears, the unit enters off sterilization mode. 3.1.2.3 Quick Heating Mode When the unit is running and the wire controller is unlocked, press “ “ and “ “ at the same time, the “ “ icon appears on the line controller and it enters the fast-heating mode. 3.1.3 Parameter Setting Parameter setting method: 1."
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p2c2",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 2,
+  "text": "ters the fast-heating mode. 3.1.3 Parameter Setting Parameter setting method: 1. When the unit is in the unlocked state of the wire controller, long press “ ” for 5S to enter the parameter setting interface. 2. After entering the setting interface, long press “ ” to switch different types of parameters. 3. In the parameter setting interface, press “ “ or “ ” to switch the parameter number, at this time, the parameter icon is flashing, press “ “ 1S, the parameter value in the lower right corner is flashing, press “ “or” ”for value modification, press “ “1S, confirm the value. 4. After the modification is completed, no operation within 5S or press “ “to save the value and return to"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p2c3",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 2,
+  "text": "is completed, no operation within 5S or press “ “to save the value and return to the main interface"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p3c1",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 3,
+  "text": "SolarEast Heat Pump Ltd. 2309.A01 99 3.1.3.1 Sterilization Setting Enter the parameter setting interface, switch to L12 parameter “ “, modify the value to enable the sterilization function, of which L13-L16 are the setting parameters of the sterilization function, refer to section 2.7.1.3 for parameter setting. 3.1.3.2 DHW Return Water Setting Enter the parameter setting interface, switch to the “L” parameter, modify the values of “L22-L26” to set the water return function, and refer to section 2.7.1.3 for parameter setting. 3.1.3.3 Daul Temperature Zone Setting Enter the parameter setting interface, switch to the P257 parameter, and refer to section 2.7.6 for parameter setting."
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p3c2",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 3,
+  "text": "switch to the P257 parameter, and refer to section 2.7.6 for parameter setting. 3.1.3.4 SG Ready Setting Enter the parameter setting interface, switch to the P255 parameter, and refer to section 2.7.8 for parameter setting. 3.1.3.5 Cascade Setting Enter the parameter setting interface, switch to the P164 parameter, and refer to section 2.7.7 for parameter setting. 3.1.4 Running Status Query 1. Long press “ ”5S to enter the running parameter query page."
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p4c1",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 4,
+  "text": "SolarEast Heat Pump Ltd. 2309.A01 100 2. Display the parameters and corresponding values, press “ “ or “ “ to query the values of different parameters. Running status query in cascade mode: 1. Press and hold “ “ for 5 seconds to enter the running status query page, and then enter the host status parameter interface “ “ 2. Press “ “ or “ ” to query the values of different parameters of the master unit. 3. Press and hold “ ” for 1S to switch the parameter of different salve unit “ ” 4.Press “ ” or “ ” to check different parameter of the salve unit 5. To back to the master unit status query interface, press “ ” for 1S and return 3.1.5 Factory Reset"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p4c2",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 4,
+  "text": "ter unit status query interface, press “ ” for 1S and return 3.1.5 Factory Reset 1.In standby mode, press “ “ for 3S, enters the maintenance mode interface;"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p5c1",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 5,
+  "text": "SolarEast Heat Pump Ltd. 2309.A01 101 2. In the maintenance mode interface, press “ ” for 5S. 3.The wired controller displays the following page, indicating that the factory settings have been restored successfully. It will return to the main interface after 3 seconds. 3.1.6 APP & Unit Binding The heat pump supports remote control by mobile phone. You need to download the APP in the app store and register an account to perform network distribution operations. The heat pump supports smart distribution network and AP distribution network. Under normal circumstances, it is recommended to use smart distribution network connection. For more APP operations, please refer to “Operation Manual.” 0."
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p5c2",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 5,
+  "text": "work connection. For more APP operations, please refer to “Operation Manual.” 0. Search “Smart Life” in the App Store or scan the following QR code with your mobile phone to download."
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p6c1",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 6,
+  "text": "SolarEast Heat Pump Ltd. 2309.A01 148 4.2 Error Code 4.2.1 Motherboard Error Code Error Description Troubleshooting E01 Wrong Phase Power Supply Connect Wrong Phase E02 Missing Phase Power Supply Missing Phase E03 Water Flow Failure 1.Check whether the circulating water pump is normal and whether the water system is blocked. 2.Check whether the water flow switch is normal and whether the installation direction is correct. 3.Check whether the wiring of the water flow switch is correct or not. 4.Check whether the water pump head meets the actual requirements 5.Check whether the water pump is reversed and installed in the wrong direction. E04 Abnormal Communication between"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p6c2",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 6,
+  "text": "eversed and installed in the wrong direction. E04 Abnormal Communication between Motherboard and Remote Module (Reserved) Check the communication connection between the motherboard and the remote module E05 High Pressure Switch Failure 1.Check pressure switch for damage, wiring error 2.Check if there is too much refrigerant in the system. 3.Check whether the fan is working properly and whether the water flow of the unit is normal. 4.Check whether there is air or blockage in the fluorine system. 5.Check whether the water-side heat exchanger is seriously caked with whitewash. E06 Low Pressure Switch Failure 1.Check pressure switch for damage, wiring error"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p6c3",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 6,
+  "text": "E06 Low Pressure Switch Failure 1.Check pressure switch for damage, wiring error 2.Check if there is not enough refrigerant in the system. 3.Check whether the fan is working properly 4.Check whether there is air or blockage in the fluorine system. E09 Wire Controller Communication Failure Check the communication connection between the wire controller and the main board E10 Reserve Reserve E11 Out of Use Time The free trial period has expired, enter the boot password"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p7c1",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 7,
+  "text": "SolarEast Heat Pump Ltd. 2309.A01 149 Error Code Error Description Troubleshooting E12 Exhaust Temp. Too High 1.Fluorine system clogging 2.Lack of refrigerant in the fluorine system or bad sensor E14 Water Tank Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged E15 Water Inlet Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged E16 Coil Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged E18 Exhaust Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3."
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p7c2",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 7,
+  "text": "p. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged E20 Indoor Ambient Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged E21 Outdoor Ambient Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged E22 DHW Return Water Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged E23 Water Outlet Temp. Too Low in Cooling Mode 1.Check whether the water flow is too low or no water flow 2.Check if the water outlet sensor is damaged 3.Fluorine system clogging"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p7c3",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 7,
+  "text": "er flow 2.Check if the water outlet sensor is damaged 3.Fluorine system clogging E24 Antifreeze Temp. Sensor Failure (Fluorine Circuit) 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged E25 Reserve Reserve E26 Antifreeze Temp. Sensor Failure (Water Circuit) 1. The sensor wire is loose or damaged 2. Sensor is damaged"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p8c1",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 8,
+  "text": "SolarEast Heat Pump Ltd. 2309.A01 150 Error Code Error Description Troubleshooting 3. The motherboard port is damaged E27 Water Outlet Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged E29 Suction Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged E30 Suction Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged E31 Water Pressure Failure 1.Water pressure switch wiring error 2.Water pressure switch failure E32 Water Outlet Temp. Sensor T15 Failure 1.Water flow is not enough 2.Sensor failure"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p8c2",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 8,
+  "text": "ater Outlet Temp. Sensor T15 Failure 1.Water flow is not enough 2.Sensor failure E33 High Pressure Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged E34 Low Pressure Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged E37 Large Temp. Difference between Water Inlet and Outlet 1.The water inlet or outlet sensor is damaged 2.Water inlet or outlet sensor not placed or in the wrong position 3.Water flow is not enough E38 Fan Failure Fan driver board or motor failure E42 Cooling Coil Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3."
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p8c3",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 8,
+  "text": "p. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged E44 Ambient Temp. Too Low Normal protection E47 Economizer Inlet Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged E48 Economizer Inlet Temp. Sensor 1. The sensor wire is loose or damaged"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p9c1",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 9,
+  "text": "SolarEast Heat Pump Ltd. 2309.A01 151 Error Code Error Description Troubleshooting Failure 2. Sensor is damaged 3. The motherboard port is damaged E49 Economizer Outlet Temp. Sensor Failure Same as E47 E51 High Pressure Too High Same as E05 E52 Low Pressure Too Low Same as E06 E55 Expansion Board Communication Failure 1.Poor contact or broken signal wire 2.Expansion board damage 3.Motherboard damage E80 Power Supply Error Single-phase power supply unit detects a three-phase electrical signal E88 Inverter Drive Module Protection Compressor or compressor driver board is damaged, specific faults see 4.2.2 E94 Built-in pump over/under voltage 1. Input power supply voltage＜165V 2."
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p9c2",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 9,
+  "text": "4.2.2 E94 Built-in pump over/under voltage 1. Input power supply voltage＜165V 2. Input power supply voltage＞265V 3. Electronic components on the pump drive board are damaged or damp 4. Water pump failure E96 Compressor Drive Board Communication Failure 1.Poor contact or broken signal wire 2.Electronic components on the motherboard are damaged or damp. 3.Compressor drive board on the electronic components are damaged or moisture 4.Compressor drive board power supply is not powered on E98/E99 Fan Board Communication Failure 1.Poor contact or broken signal wire 2.Electronic components on the motherboard are damaged or damp. 3.Fan drive board on the electronic components are damaged or moisture"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p9c3",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 9,
+  "text": "or damp. 3.Fan drive board on the electronic components are damaged or moisture 4.Fan drive board power supply is not powered on EA0 (100) EA1 (101) Cascade Model Mismatch Different series of units are not allowed to be cascaded EA2 (102) Solar Water Heater Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p10c1",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 10,
+  "text": "SolarEast Heat Pump Ltd. 2309.A01 152 Error Code Error Description Troubleshooting 3. The motherboard port is damaged EA3 (102) Zone 2 Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged EA4 (104) Buffer Tank Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged EA5 (105) Total Water Outlet Temp. Sensor Failure 1. The sensor wire is loose or damaged 2. Sensor is damaged 3. The motherboard port is damaged EB6 (116) Zone1 Temp. Sensor Failure EB7 (117) Anti-freeze Switch 1 Failure EB (118) Anti-freeze Switch 2 Failure EB9 (119) Heat Recovery Rear Temp. Sensor Failure"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p10c2",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 10,
+  "text": ") Anti-freeze Switch 2 Failure EB9 (119) Heat Recovery Rear Temp. Sensor Failure EC0 (120) Low Water Flow Protection EC1 (121) Refrigerant Sensor Failure EC2 (122) Refrigerant concentration exceeds the limit EC3 (123) Refrigerant Sensor Life Expiry 4.2.2 Driver Board (Compressor) Compressor Drive Error Description Table E88 P1 IPM Module Overheat and Shutdown P2 Compressor Driver Failure P3 Compressor Overcurrent P4 Input Voltage Missing Phase P5 IPM Supply Voltage Failure P6 Power Component Overheating and Shutdown P7 Pre-charge Circuit Voltage Failure P8 DC Bus Overvoltage P9 DC Bus Undervoltage P10 AC Input Undervoltage P11 AC Input Overvoltage"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p11c1",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 11,
+  "text": "SolarEast Heat Pump Ltd. 2309.A01 153 Compressor Drive Error Description Table P12 Input Voltage Sampling Failure P13 DSP and PFC Communication Failure P14 Board Radiator Temp. Sensor Failure P15 DSP and Communicate Board Communication Failure P16 Communication Failure with Motherboard P17 Compressor Overcurrent Alarm P18 Compressor Weak Magnetic Protection Alarm P19 IPM Overheat Alarm P20 PFC Overheat Alarm P21 AC Input Overcurrent Alarm P22 EEPROM Error Alarm P23 N/A P24 EEPROM Refresh Complete P25 Temperature Sensing Failure Limit P26 AC Undervoltage Frequency Limit Protection Alarm； P27 N/A P28 N/A P29 N/A P30 N/A P31 N/A P32 N/A P33 IPM Module Overheat and Shutdown"
+ },
+ {
+  "id": "User guide and Error codes extensive.pdf#p11c2",
+  "manual": "Udhëzuesi i zgjeruar dhe kodet e gabimit",
+  "page": 11,
+  "text": "N/A P28 N/A P29 N/A P30 N/A P31 N/A P32 N/A P33 IPM Module Overheat and Shutdown P34 Compressor Missing Phase P35 Compressor Overload P36 Input Current Sampling Failure P37 IPM Supply Voltage Failure P38 Pre-charge Circuit Voltage Failure P39 EEPROM Failure P40 AC Input Overvoltage Failure P41 Microelectronics Failure P42 Compressor Type Code Failure P43 Current Sampling Signal Overcurrent Wire controller blinks to cycle through E88 and above codes"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p1c1",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 1,
+  "text": "Control Panel 1. Operation Instruction Operation Instruction Timer Power ON/OFF Power ON/OFF Heating/Cooling/DHW Change Mode Water Temperature Current Mode Up Down Temperature Setting Time or fault display area Long press 2s to turn off the heat pump When the lock symbol is displayed, press and hold 5s to unlock the screen Long press 2s to turn on the heat pump Power On/Off Press M to switch mode Cooling/Heating/DHW Mode Setting"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p2c1",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 2,
+  "text": "使用操作说明 Time Setting Press the clock button for 1s to enter the current clock setting Press the clock key again, the hour area flashes Press the up and down keys to adjust the value Press the clock button again to enter the minute clock setting Press the clock button again, the minute area flashes Press the up and down keys to adjust the value If there is no operation or press the on/off button within 5 seconds, the setting temperature will be saved automatically and return to the homepage Temperature Setting Press the up button to raise the temperature If there is no operation or press the on/off button within 5 seconds, the setting temperature will be saved automatically and return to the"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p2c2",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 2,
+  "text": "5 seconds, the setting temperature will be saved automatically and return to the homepage Press the down button to lower the temperature Scheduled Power On 使用操作说明 Press and hold the clock key for 5s to enter the timer boot time setting Press the clock key again, the hour area flashes Press the up and down keys to adjust the value Press the clock button again to enter the minute clock setting Press the clock button again, the minute area flashes Press the up and down keys to adjust the value If there is no operation or press the on/off button within 5 seconds, the setting temperature will be saved automatically and return to the homepage. Three timings can be set."
+ },
+ {
+  "id": "User guide and Error codes.pdf#p3c1",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 3,
+  "text": "Temperature Setting Press the up button To increase the setting temperature Press the down button to lower the set temperature If there is no operation or press the on/off button within 5 seconds, the setting temperature will be saved automatically and return to the homepage Long press the down button for 5 s to enter the status search page Status Search Enter the status search page Adjust the status parameter serial number in combination with the up and down keys ECO Mode . Unlock the case while holding down the up button + down button to enter ECO energy-saving mode ECO symbol lit Pump forced evacuation mode Press and hold the on/off button + up button"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p3c2",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 3,
+  "text": "bol lit Pump forced evacuation mode Press and hold the on/off button + up button at the same time in the unlocked state to enter the intelligent distribution mode When the water pump symbol flashes enter forced emptying mode"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p4c1",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 4,
+  "text": "2. Wi-Fi Setting 2.1 Software Download and Account Registration 2.1.1 Search for Smart Life in the app store on the mobile phone, and download and install it. 2.1.2 Users who do not have an account can apply by clicking the \"Create New User\" function on the login page. 2.1.3 Create a new account → Enter your cell phone number or email address, → get the verification code → to enter the verification code → set the password → complete, in the following order. 2.1.4 After registration is complete, you need to create a family: create a family, → set the family name → set the location → to add a room → ultimately, in the following order."
+ },
+ {
+  "id": "User guide and Error codes.pdf#p4c2",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 4,
+  "text": "ly name → set the location → to add a room → ultimately, in the following order. 2.1.5 Click on the device name to enter the main interface of the device 1) Family name, which allows access to family management. 2) Adding devices. 3) Added room; click on it to view the devices added to that room. 4) Room management 2.2 Connection (Intelligent Mode) Step 1 Open the \"Smart Life\" APP, login to the main interface, click the \"lift\" icon in the upper right corner to add devices or \"Add Device\" in the interface, enter the device type selection, and select \"Smart Heat Pump (Wi-Fi)\" in the \"Main Appliance\" device, enter the add device interface. Step 2"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p4c3",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 4,
+  "text": "(Wi-Fi)\" in the \"Main Appliance\" device, enter the add device interface. Step 2 Select Smart Heat Pump (Wi-Fi) and enter into the Wi-Fi connection interface, enter the Wi-Fi password that the phone has been connected to (must be the same as the Wi-Fi connection to the phone), click Next, and confirm that the line controller has selected the intelligent distribution mode, \" \" icon is fast-flashing, click \"Confirm that the indicator is flashing, then start adding devices directly, click the \"lift\" icon to add devices. Note: The icon flashes slowly when the Wi-Fi module is connected to the Wi-Fi hotspot. Step 3"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p4c4",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 4,
+  "text": "n flashes slowly when the Wi-Fi module is connected to the Wi-Fi hotspot. Step 3 The system prompts \"Add Device Successfully\" and then the network is successfully distributed. Click on the icon in this interface to change the device name, select the device installation location (living room, main bedroom), and click Finish to enter the main interface of device operation. Manual Intelligent Distribution Network In the unlocked state, press and hold the on/off button + up button at the same time to enter the intelligent distribution mode Wifi signal flashes Enter distribution network status"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p5c1",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 5,
+  "text": "2.3 Connection (AP Mode) Step 1 and Step 2: Be consistent with the Intelligent Mode Step 3 Select innovative heat pump (Wi-Fi) after entering into the Wi-Fi connection interface, enter the phone has been connected to the (Wi-Fi) password (must be consistent with the Wi-Fi connected to the phone), click next, confirm that the line controller has selected AP distribution mode, an icon in the slow flashing state” ”, click \"Confirm that the indicator is in slow flashing,” then connect the phone Wi-Fi to the device hotspot (as shown below), confirm that the connection hotspot is correct to continue to the next step then directly begin to connect the device interface,"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p5c2",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 5,
+  "text": "o continue to the next step then directly begin to connect the device interface, find the device → registers to the cloud → device initialization is complete. Note: When the wire Wi-Fi module is connected to the Wi-Fi hotspot, the icon “ ”slows flashing. Step 4 The same as the Intelligent Mode Note: If the connection fails, manually enter the AP network configuration mode again and repeat the preceding steps to connect again. 2.4 Software Function Operation 4.4.1 A device is automatically bound to a virtual gateway. The \"My Home Heat Pump\" (device name, which can be changed) operation page is displayed. Buy a ticket to enter the device operation page of \"My Home Heat Pump\" by clicking on \"My"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p5c3",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 5,
+  "text": "ket to enter the device operation page of \"My Home Heat Pump\" by clicking on \"My Home Heat Pump\" in the \"All Devices\" screen of smart Life. 4.4.2 Modify device name and modify device location information Click \"Name\" to rename the device name and \"Location\" to alter the device location. 2.5 Device Sharing Share bound devices in the following sequence: 1) After successful sharing, the list is added to display the shared person. 2) To delete the shared user, long-press the selected user, and the deletion interface will pop up, click \"Delete\" 3) User interface operations are as follows: 4) Enter the account of the shared user and click \"Finish\" to display the newly shared history in the"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p5c4",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 5,
+  "text": "of the shared user and click \"Finish\" to display the newly shared history in the list of successful sharing 5) The interface of the shared person is as follows. The shared device received is displayed. Click in to operate and control the device. In the unlocked state, press and hold the on/off button + down button at the same time to enter the intelligent distribution mode Wifi signal flashes Enter distribution network status Manual AP Distribution Network"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p6c1",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 6,
+  "text": "Operation Parameter Query Query Code Description Range 1 Compressor Running Frequency 0 ~ 99 Hz 2 Fan Motor Running Frequency 0 ~ 99 Hz 3 Main EEV Opening 0 ~ 480 P 4 EVI EEV Opening 0 ~ 480 P 5 AC Input Voltage 0 ~ 500 V 6 AC Input Current 0 ~ 50 A 7 Compressor Phase Current 0 ~ 50 A 8 Compressor IPM Mould Temperature -50 ~ 200 ℃ 9 Condensing Temperature -50 ~ 200 ℃ 10 Vaporization Temperature -50 ~ 200 ℃ 11 Outdoor Ambient Temperature -50 ~ 200 ℃ 12 Outdoor Coil Temperature -50 ~ 200 ℃ 13 Indoor Coil Temperature -50 ~ 200 ℃ 14 Gas Suction Temperature -50 ~ 200 ℃ 15 Gas Exhaust Temperature -50 ~ 200 ℃ 16 Water Inlet Temperature -50 ~ 200 ℃ 17 Water Outlet Temperature -50 ~ 200 ℃"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p6c2",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 6,
+  "text": "℃ 16 Water Inlet Temperature -50 ~ 200 ℃ 17 Water Outlet Temperature -50 ~ 200 ℃ 18 Economizer Inlet Temperature -50 ~ 200 ℃ 19 Economizer Outlet Temperature -50 ~ 200 ℃ 20 Dialer Value 0 ~ 15 Display Fault: When the machine has a fault, the fault is flashing in the timing area and the fault code is displayed cyclically; when the fault is eliminated, the standard display is restored."
+ },
+ {
+  "id": "User guide and Error codes.pdf#p7c1",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 7,
+  "text": "Error code Fault Description Failure Causes E01 Wrong-Phase Protection Power supply phase sequence error E02 Power Supply Lack Of Phase The power supply is out of phase E03 Outside Water Flow Switch Fault 1. Circulating pump failed, or water system blocked 2. Water flow switch failed, or opposite installed direction 3. The lift of the circulating pump is not enough 4. Circulating pump has opposite installed direction E04 Abnormal Communication Between The Main Control Board And Remote Module Check the communication connection E05 High-Voltage Switch One Fault 1. High-voltage switch failed 2. Excessive refrigerant 3. Fan doesn’t work typically, or water circulated abnormally 4."
+ },
+ {
+  "id": "User guide and Error codes.pdf#p7c2",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 7,
+  "text": "ive refrigerant 3. Fan doesn’t work typically, or water circulated abnormally 4. Air or other objects mixed into the refrigeration system 5. Too much scale in the water heat exchanger E06 Low-Voltage Switch One Fault 1. Low-voltage switch fault 2. Lack of refrigerant 3. Fan doesn’t work normally 4. Block exists in refrigeration system E07 High-Voltage Switch Two Fault Same as E05 E08 Low-Voltage Switch Two Fault Same as E06 E10 Indoor Side Water Flow Failure Same as E03 E11 Limited Time Protection Enter the power-on password E12 Exhaust Gas Temperature One Too High Fault Lack of refrigerant in the fluorine circuit system or sensor damage E13 Exhaust Gas Temperature Two Too High Fault"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p7c3",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 7,
+  "text": "e circuit system or sensor damage E13 Exhaust Gas Temperature Two Too High Fault Lack of refrigerant in the fluorine circuit system or sensor damage E14 Hot Water Tank Temperature Failure Damaged motherboard or sensor E15 Water Inlet Temperature Sensor Failure Damaged motherboard or sensor E16 Coil Sensor One Failure Damaged motherboard or sensor E17 Coil Sensor Two Failure Damaged motherboard or sensor E18 Exhaust Gas Sensor One Fault Damaged motherboard or sensor E19 Exhaust Gas Sensor Two Fault Damaged motherboard or sensor E20 Indoor Temperature Sensor Failure Damaged motherboard or sensor E21 Environmental Sensor Failure Damaged motherboard or sensor"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p7c4",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 7,
+  "text": "erboard or sensor E21 Environmental Sensor Failure Damaged motherboard or sensor E22 User Return Water Sensor Failure Damaged motherboard or sensor E23 Cooling Subcooling Protection Normal anti-freeze protection E24 Board Change Out Temperature Fault Damaged motherboard or sensor E25 Water Level Switch Malfunction Damage to the mainboard or water Trouble Analysis"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p8c1",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 8,
+  "text": "level sensor E26 Anti-Freeze Sensor Malfunction Damaged motherboard or sensor E27 Water Outlet Sensor Failure Damaged motherboard or sensor E28 Reservation Reservation E29 Return Air Sensor One Fault Damage to the mainboard or water level sensor E30 Return Air Sensor Two Fault Damage to the mainboard or water level sensor E31 Water Pressure Switch Failure Water pressure switch failure E32 Excessive Water Temperature Protection Insufficient water flow or a damaged sensor E33 High Pressure One Sensor Fault Damaged motherboard or sensor E34 Low Pressure One Sensor Fault Damaged motherboard or sensor E35 Reservation Reservation E36 Reservation Reservation E37 The Excessive Temperature Difference"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p8c2",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 8,
+  "text": "Reservation E36 Reservation Reservation E37 The Excessive Temperature Difference Between Inlet And Outlet Water Protection Insufficient water flow E38 DC Fan One Failure Fan drive board or motor damage E39 DC Fan Two Failure Fan drive board or motor damage E40 DC Fan Three Failure Fan drive board or motor damage E41 DC Fan Four Failure Fan drive board or motor damage E42 Cooling Coil Sensor One Fault Damaged motherboard or sensor E43 Cooling Coil Sensor Two Fault Damaged motherboard or sensor E44 Low Ambient Temperature Protection It is a standard protection E45 High Voltage Two Sensor Failure Damaged motherboard or sensor E46 Low Voltage Two Sensor Failure Damaged motherboard or sensor"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p8c3",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 8,
+  "text": "board or sensor E46 Low Voltage Two Sensor Failure Damaged motherboard or sensor E47 Economizer Inlet Sensor One Failure Damaged motherboard or sensor E48 Economizer Inlet Sensor Two Failure Damaged motherboard or sensor E49 Economizer Outlet Sensor One Failure Damaged motherboard or sensor E50 Economizer Outlet Sensor Two Failure Damaged motherboard or sensor E51 High Voltage One Overvoltage Protection Same as E05 E52 Low Voltage One Undervoltage Protection Same as E06 E53 High Voltage Two Overvoltage Protection Same as E05 E54 High Voltage Two Undervoltage Protection Same as E06 E55 Expansion Board Communication Exception Poor or broken signal cable contact"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p8c4",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 8,
+  "text": "E55 Expansion Board Communication Exception Poor or broken signal cable contact E80 Power Supply Error Single-phase power unit detects a three-phase electrical signal. E88 Inverter Module 1 Protection Compressor or compressor driver board damaged E89 Inverter Module 2 Protection Compressor or compressor driver board damaged E94 Water Pump Feedback Failure Damaged DC pump or poor signal line contact E96 Abnormal Communication between Poor or broken signal cable contact"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p9c1",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 9,
+  "text": "Compressor One Driver and Main Control Board E97 Abnormal Communication between Compressor Two Driver and Main Control Board Poor or broken signal cable contact E98 Abnormal Communication between Fan Motor One Driver and Main Control Board Poor or broken signal cable contact E99 Abnormal Communication between Fan Motor Two Driver and Main Control Board Poor or broken signal cable contact Fault Protection Instructions 1. The machine stops running when a fault is detected; 2. When the fault is removed, the compressor is shut down for three minutes before the machine can be put back into operation; 3."
+ },
+ {
+  "id": "User guide and Error codes.pdf#p9c2",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 9,
+  "text": "hut down for three minutes before the machine can be put back into operation; 3. If there are three consecutive low-pressure faults, high-pressure fault, over the current spot, and gas exhaust temperature too high within 30 minutes, the machine will immediately stop running. After the fault is rectified, turn the power on again, start the controller, and the device can be put into operation. 4. If the machine stops running due to the inlet water temperature sensor or the coil temperature sensor fault due to compressor protection, the device will have to be back into operation 3mins later after the spot is removed. If the ambient temperature sensor fails, the machine continues to run."
+ },
+ {
+  "id": "User guide and Error codes.pdf#p9c3",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 9,
+  "text": "removed. If the ambient temperature sensor fails, the machine continues to run. Maintenance Instructions 1. The machine is equipped with an inspection needle valve on the suction and exhaust pipes. The maintenance personnel can connect the pressure gauge to check the high and low-pressure conditions of the system. 2. If the machine is filled with refrigerant under operating conditions, the refrigerant must be served at the needle valve of the low-pressure side. Suppose the refrigerant is added to the suction side. In that case, the refrigerant opening must be small so that the refrigerant in the refrigerant bottle slowly enters the system to prevent liquid slamming. 3."
+ },
+ {
+  "id": "User guide and Error codes.pdf#p9c4",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 9,
+  "text": "n the refrigerant bottle slowly enters the system to prevent liquid slamming. 3. Refrigerant leakage detection Check if there is any leakage at the joints with soapy water or a refrigerant leak detector. When a refrigerant leak occurs, the leak point must be found, and the leak point must be repaired. Please ensure no refrigerant or other pressures are left in the system when improving the leak point. Otherwise, it will easily cause copper pipe explosive during welding. The tube is blasted by refrigerant pressure or additional pressure, causing accidental injury to the operator. Note: When refrigerant leakage occurs in a small space, open all vents or forced ventilation to"
+ },
+ {
+  "id": "User guide and Error codes.pdf#p9c5",
+  "manual": "Udhëzuesi i përdorimit dhe kodet e gabimit",
+  "page": 9,
+  "text": "igerant leakage occurs in a small space, open all vents or forced ventilation to discharge the refrigerant before performing related operations to prevent people from suffocating accidents."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p1c1",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 1,
+  "text": "ECOTEK R32 Air Source Heat Pump Systems – Official Customer Guide Page 1 ECOTEK – Controller User Guide & Error Codes Comprehensive Customer Interface Reference, Key Combinations & Diagnostic Trouble Shooting CUSTOMER QUICK START NOTICE This guide provides complete, customer-accessible instructions for operating ECOTEK R32 Air Source Heat Pump wired controllers (LCD & TFT Touchscreen series). Use this document to master screen functions, lock/unlock sequences, mode changes, temperature adjustments, weekly timer programming, and diagnostic troubleshooting. 1. Controller Interface & Button Functions"
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p1c2",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 1,
+  "text": "ming, and diagnostic troubleshooting. 1. Controller Interface & Button Functions ECOTEK heat pump systems feature advanced wired controllers designed for intuitive residential and commercial climate management. The controller display provides real-time operational status, temperature readouts, active modes, and diagnostic indicators. Button / Icon Name Primary Function & Operation Details Power (ON/OFF) Power / Lock Key Turns heat pump ON or OFF (press & hold 1–2s when unlocked). Acts as Keypad Unlock when locked (press & hold 3–5s until lock icon disappears). Mode (M) Mode Selection Switches operating modes: Heating, Cooling, Domestic Hot Water (DHW), and Combined Modes. Confirms"
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p1c3",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 1,
+  "text": "modes: Heating, Cooling, Domestic Hot Water (DHW), and Combined Modes. Confirms settings in programming menus. Clock / Timer () Clock & Timer Key Short press to adjust time of day. Press & hold 3s to enable/disable Weekly Timer mode or clear daily timers. Up Arrow () Increase / Scroll Raises setpoint temperature, increases numerical values in parameter menus, and scrolls up through query status codes. Down Arrow () Decrease / Status Lowers setpoint temperature, decreases values in parameter menus, and enters Operating Status Query mode (press & hold 3s). Display Screen Icon Directory Icon Graphic / Label State / Mode Functional Meaning & System Indication Lock () Solid Keypad is locked."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p1c4",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 1,
+  "text": "te / Mode Functional Meaning & System Indication Lock () Solid Keypad is locked. Press and hold Power button for 3–5 seconds to unlock. Sun / Flame (/) Solid / Flashing Heating Mode active. Solid = operating normally; Flashing = unit demand active. Snowflake () Solid / Flashing Cooling Mode active. Provides chilled water for fan coils or space cooling. Water Tap / Tank (/) Solid / Flashing Domestic Hot Water (DHW) Mode active. System prioritizes hot water tank heating. Floor Grid () Solid / Flashing Underfloor Heating Mode active. Optimized low-temperature heating supply. Moon / Leaf (/) Solid Silent Mode (Quiet Operation) active. Compressor and fan speeds are capped."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p1c5",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 1,
+  "text": "olid Silent Mode (Quiet Operation) active. Compressor and fan speeds are capped. Lightning / Power () Solid Powerful / Booster Mode active. Maximum heating/cooling ramp-up speed. Sterilization (/70) Solid / Flashing High-Temperature Anti-Legionella Sterilization active (DHW tank heated to 70°C). Wi-Fi Signal () Fast / Slow Flash Fast flash = Smart Distribution Mode pairing; Slow flash = AP Hotspot pairing; Solid = Online. Water Pump () Solid / Flashing Solid = Circulation pump running; Flashing = Anti-freeze freeze-proof pump operation. Compressor () Solid Outdoor unit compressor is running. Defrost () Flashing Automatic Outdoor Coil Defrosting in progress (fan stops, 2–8 minutes)."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p1c6",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 1,
+  "text": "Flashing Automatic Outdoor Coil Defrosting in progress (fan stops, 2–8 minutes). Warning Triangle ( / Exx) Flashing Fault Alarm triggered. System displays alternating Error Code (e.g., E03, E37). 2. Detailed Button Combinations & Procedure Guide Follow these exact step-by-step procedures for controlling and configuring your ECOTEK heat pump. Ensure the controller is unlocked before attempting key sequences."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p2c1",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 2,
+  "text": "ECOTEK R32 Air Source Heat Pump Systems – Official Customer Guide Page 2 Unlocking & Locking Keypad Unlock: Press and hold the Power/Unlock button for 3 to 5 seconds until the Lock () icon disappears. Lock: Automatic after 60 seconds of key inactivity (or press & hold Power button for 3s while unlocked). Powering ON / OFF the System 1. Ensure keypad is unlocked. 2. Press and hold the Power (ON/OFF) button for 1 to 2 seconds. 3. The display illuminates and shows operational status (ON) or enters standby mode (OFF). Changing Operating Modes 1. With screen unlocked and powered ON, press the Mode (M) button once. 2. Repeatedly press Mode (M) to cycle through available modes: • Heating:"
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p2c2",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 2,
+  "text": "once. 2. Repeatedly press Mode (M) to cycle through available modes: • Heating: Space heating only. • Cooling: Space cooling (fan coil/chilled water) only. • DHW (Hot Water): Domestic hot water tank only. • Heating + DHW: Combined mode (DHW has priority via 3-way valve). • Cooling + DHW: Combined cooling and sanitary hot water. • Underfloor Heating: Dedicated low-temperature floor heating. Adjusting Target Temperatures 1. From homepage (unlocked), press Up () or Down () once. Target temperature digits flash. 2. Press Up () to raise or Down () to lower desired setpoint. 3."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p2c3",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 2,
+  "text": "e digits flash. 2. Press Up () to raise or Down () to lower desired setpoint. 3. In Combined Modes (e.g., Heating + DHW), short press Mode (M) while flashing to switch setting between Space Temp and Tank Temp. 4. Wait 5 seconds without pressing any key (or press Power ON/OFF) to save and return to homepage. Setting Real-Time Clock (Time of Day) 1. Unlock screen. Press Clock / Timer () for 1 second. Hour digits flash. 2. Use Up () / Down () to set current Hour (00–23). 3. Press Clock () again. Minute digits flash. 4. Use Up () / Down () to set current Minute (00–59). 5. Press Clock () again or wait 5 seconds to save settings. Weekly Timer & Schedule Management Enable / Disable Weekly Timer:"
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p2c4",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 2,
+  "text": "save settings. Weekly Timer & Schedule Management Enable / Disable Weekly Timer: Unlock screen, press Clock () once so time flashes, then press and hold Clock () for 3 seconds. 'W' icon turns ON or OFF. Programming Timers (Group 1–3): 1. Press & hold Clock () for 3–5 seconds to enter Timer Setup. 2. If Weekly mode is ON, select Day of Week (W1–W7 / Mon–Sun) using /, then press Clock. 3. '1 ON' flashes: Set Start Hour & Minute using /, press Clock to confirm. 4. '1 OFF' flashes: Set Stop Hour & Minute using /, press Clock to confirm. 5. Repeat for Groups 2 and 3. Wait 5 seconds to auto-save. ECO Energy-Saving Mode Standard Controller:"
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p2c5",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 2,
+  "text": "and 3. Wait 5 seconds to auto-save. ECO Energy-Saving Mode Standard Controller: In unlocked state, press & hold Up () + Down () simultaneously for 3 seconds. The ECO symbol illuminates. TB Series Controller: Long press Up () or Down () for 3 seconds on main screen. Function: Automatically applies energy-optimized temperature curves (Curve 4/6). Quick Heating / Booster Mode In unlocked state (power ON), press & hold Mode (M) + Up () (or Power + Up) simultaneously for 3 seconds. The Quick Heat symbol () lights up, energizing electric backup heaters (EH1/EH2) for rapid temperature recovery."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p3c1",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 3,
+  "text": "ECOTEK R32 Air Source Heat Pump Systems – Official Customer Guide Page 3 Silent / Night Mode In unlocked state, press & hold Timer () + Down () (or Mode + Timer) for 3 seconds. The Silent Mode symbol () turns ON. Caps compressor frequency to 50Hz and fan speed to 40Hz to minimize outdoor noise. Water Line Evacuation / Forced Pump Mode In Power OFF state, press & hold Power + Up () + Down () simultaneously for 5 seconds. The Pump symbol () flashes and the circulation pump runs continuously for water system purging/air bleeding. Press Power to exit. Wi-Fi Smart Life App Pairing Smart Mode (Fast Flashing ): Unlocked state Press & hold Power + Up () for 3s."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p3c2",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 3,
+  "text": "g Smart Mode (Fast Flashing ): Unlocked state Press & hold Power + Up () for 3s. Open Smart Life App Add Device Auto-detect Heat Pump. AP Mode (Slow Flashing ): Unlocked state Press & hold Power + Down () for 3s. Connect phone to hotspot 'smartlife-XXXX' Complete binding in App. Status Parameter Query (Live Data Readout) 1. In unlocked state, press & hold Down () for 3 to 5 seconds. 2. Temperature area displays Query Code (1–30); Timer area displays live value. 3. Press Up () / Down () to scroll through parameters: • Code 1: Compressor Freq (Hz) | Code 2: Fan Speed (Hz) | Code 11: Outdoor Ambient Temp (°C) • Code 16: Water Inlet Temp (°C) | Code 17: Water Outlet Temp (°C) | Code 21:"
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p3c3",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 3,
+  "text": "C) • Code 16: Water Inlet Temp (°C) | Code 17: Water Outlet Temp (°C) | Code 21: Tank Temp (°C) • Code 25: Water Flow Rate (L/min) | Code 26: Return Water Temp (°C) | Code 30: Total kWh. 4. Press Power (ON/OFF) to exit Query Mode. 3. Comprehensive Error Codes & Customer Troubleshooting When an operational anomaly occurs, the controller display flashes a yellow warning icon and cycles the corresponding Error Code (E01–E99, EA1–EA5, EC0). Review the complete diagnostic reference below for root causes and safe customer corrective steps. Code Error Description Root Cause Analysis Customer Troubleshooting & Corrective Action E03 Outside Water Flow Switch Fault No water flow, closed valves, pump"
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p3c4",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 3,
+  "text": "ve Action E03 Outside Water Flow Switch Fault No water flow, closed valves, pump failure, air locked in pipes, clogged filter, or faulty flow switch. 1. Verify circulation pump is running. 2. Open all water valves. 3. Clean water filter mesh. 4. Purge trapped air using automatic/manual air vents. E32 Excessive Water Temp / Overheating Water flow too low, thermal overload, or outlet sensor fault. 1. Check water flow rate. 2. Ensure circulating pump is operating. 3. Power off for 5 mins and restart. E37 Large Temp Difference Inlet/Outlet Extreme temperature gap between Inlet (T8) and Outlet (T15) due to restricted water flow or airlock. 1. Inspect water circulating pump. 2."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p3c5",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 3,
+  "text": ") due to restricted water flow or airlock. 1. Inspect water circulating pump. 2. Clean inline filter. 3. Fully purge air from heating loop. 4. Check sensor thermowell seating. EC0 Low Water Flow Protection (Fault 120) Measured water flow rate dropped below minimum protection limit (Parameter P134). 1. Check for valve restrictions. 2. Verify water pump speed setting. 3. Inspect filter strainer for debris. E14 Hot Water Tank Temp Sensor Fault Sensor T16 (Blue lead) disconnected, shorted, or mainboard port damaged. Check T16 sensor cable connection to tank thermowell. If disconnected, reconnect. Contact service if persistent."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p3c6",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 3,
+  "text": "n to tank thermowell. If disconnected, reconnect. Contact service if persistent. E15 Water Inlet Temp Sensor Fault Inlet Sensor T8 cable damaged, loose, or failed. Inspect T8 sensor lead on inlet piping. Restart controller. E16 Coil Sensor 1 Failure Outdoor coil sensor T1 damaged or loose. Contact service technician to check sensor resistance. E17 Coil Sensor 2 Failure Secondary coil sensor T4 damaged or loose. Contact service technician. E18 Exhaust Gas Temp Sensor 1 Fault Exhaust sensor T3 wire damaged or open circuit. Contact service technician."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p4c1",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 4,
+  "text": "ECOTEK R32 Air Source Heat Pump Systems – Official Customer Guide Page 4 E20 Indoor Temp Sensor Failure Indoor room sensor damaged or disconnected. Check room thermostat / indoor sensor cable. E21 Outdoor Ambient Temp Sensor Fault Ambient sensor T7 damaged or reading out of range. Ensure outdoor unit sensor is clean and unblocked by ice/snow. E22 User Return Water Sensor Failure Return water sensor T13 (Red lead) faulty. Inspect T13 sensor lead on return pipe loop. E23 Cooling Subcooling / Low Outlet Temp Water outlet temperature dropped too low during cooling mode (anti-freeze risk). Increase cooling water setpoint. Ensure sufficient water flow through fan coils."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p4c2",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 4,
+  "text": "Increase cooling water setpoint. Ensure sufficient water flow through fan coils. E24 Anti-Freeze Sensor Fault (Refrigerant) Refrigerant circuit freeze sensor T14 faulty. Contact service technician. E26 Anti-Freeze Sensor Fault (Water Side) Water circuit freeze protection sensor faulty. Contact service technician. E27 Water Outlet Temp Sensor Failure Outlet sensor T15 damaged or disconnected. Inspect T15 sensor lead on discharge pipe. E29 Suction Temp Sensor 1 Fault Compressor suction sensor T2 damaged. Contact service technician. E01 Wrong Phase Protection 3-Phase electrical power phase sequence inverted. Technician must swap two incoming phase wires (R-S-T) at breaker."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p4c3",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 4,
+  "text": "ence inverted. Technician must swap two incoming phase wires (R-S-T) at breaker. E02 Missing Phase Protection 3-Phase electrical supply missing one phase. Check main power breaker and incoming voltage lines. E05 High Pressure Switch 1 Fault High refrigerant pressure due to fan failure, dirty heat exchanger, excess gas, or low water flow. 1. Verify outdoor fan is spinning. 2. Ensure water pump is circulating. 3. Clean outdoor coil fins. E06 Low Pressure Switch 1 Fault Low refrigerant pressure due to leak, severe cold ambient, or ice blockage on evaporator. 1. Check for severe ice accumulation on outdoor coil. 2. Turn off unit and call service if refrigerant leak suspected."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p4c4",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 4,
+  "text": "n outdoor coil. 2. Turn off unit and call service if refrigerant leak suspected. E07 High Pressure Switch 2 Fault System 2 high pressure protection. Same as E05 for dual compressor units. E08 Low Pressure Switch 2 Fault System 2 low pressure protection. Same as E06 for dual compressor units. E09 Controller Communication Failure Communication signal lost between wired controller and mainboard (COM4 port). 1. Turn off power breaker. 2. Inspect 4-wire signal cable for loose screws or breaks. 3. Restore power after 60s. E11 Limited Time / Trial Lock Protection Service trial period expired or security lock. Contact installing dealer to enter activation code."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p4c5",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 4,
+  "text": "od expired or security lock. Contact installing dealer to enter activation code. E12 Exhaust Gas Temp 1 Too High Compressor discharge temperature exceeded 110°C due to gas shortage or blockage. Shut down unit immediately. Contact service technician. E31 Water Pressure Switch Failure Water loop static pressure dropped below 0.15 MPa (1.5 bar). Refill water system via feed valve until gauge reads 0.15–0.20 MPa (1.5–2.0 bar). E38 DC Fan 1 Failure Outdoor fan motor 1 or fan driver board AP5 faulty. Inspect fan blade for debris obstruction. Call service. E39 DC Fan 2 Failure Outdoor fan motor 2 faulty. Inspect fan blade for obstruction."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p4c6",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 4,
+  "text": "DC Fan 2 Failure Outdoor fan motor 2 faulty. Inspect fan blade for obstruction. E44 Low Ambient Temp Protection Outdoor ambient temperature below -30°C operating limit. Standard safety cutout. Unit automatically restarts when ambient temperature rises. E51 High Pressure 1 Overvoltage System 1 overpressure protection. Same as E05. E52 Low Pressure 1 Undervoltage System 1 underpressure protection. Same as E06. E55 Expansion Board Communication Error Signal connection failure between mainboard AP1 and expansion board AP3. Turn off power, inspect board interconnect ribbon cable. E80 Power Supply Error Single-phase unit connected to 3-phase power line or miswired."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p4c7",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 4,
+  "text": "ower Supply Error Single-phase unit connected to 3-phase power line or miswired. Check incoming electrical voltage specification. E88 Inverter Module 1 Protection (P1–P43) Compressor inverter drive board AP2 protection (Overcurrent, IPM overheat, bus voltage). 1. Disconnect main breaker for 3 minutes to reset inverter. 2. If error recurs, contact qualified service technician."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p5c1",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 5,
+  "text": "ECOTEK R32 Air Source Heat Pump Systems – Official Customer Guide Page 5 E89 Inverter Module 2 Protection Compressor inverter drive 2 protection. Same as E88 for System 2. E94 Water Pump Feedback / Voltage Fault Built-in DC pump supply voltage <165V or >265V, or internal pump board failure. Check main supply voltage stability. Inspect pump signal connector. E96 Compressor Driver 1 Comm Failure Communication lost between mainboard AP1 and compressor driver AP2. Turn off power breaker for 60s and re-power. E98 Fan Motor Driver Comm Failure Communication lost between mainboard AP1 and fan driver AP5. Turn off power breaker for 60s and re-power."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p5c2",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 5,
+  "text": "n mainboard AP1 and fan driver AP5. Turn off power breaker for 60s and re-power. EA1 Cascade Model Mismatch (101) Incompatible heat pump models connected on cascade RS485 bus. Ensure all cascaded units belong to identical model series. EA2 Solar Water Sensor Fault (102) Solar temperature sensor T12 lead damaged. Inspect T12 sensor lead. EA3 Zone 2 Temp Sensor Fault (103) Dual-zone 2 temperature sensor T11 lead damaged. Inspect T11 sensor lead. EA4 Buffer Tank Sensor Fault (104) Buffer tank temperature sensor T10 (Green lead) damaged. Inspect T10 sensor cable and thermowell. EA5 Total Outlet Sensor Fault (105) Total water outlet sensor T9 (Black lead) damaged."
+ },
+ {
+  "id": "ecotek-controller-user-guide.pdf#p5c3",
+  "manual": "Udhëzuesi ECOTEK për kontrolluesin",
+  "page": 5,
+  "text": "tal Outlet Sensor Fault (105) Total water outlet sensor T9 (Black lead) damaged. Inspect T9 sensor lead on discharge header. IMPORTANT FAULT RESET & SAFETY WARNING Standard System Reset Protocol: To clear persistent fault lockouts after rectifying the root cause (e.g., refilling water or clearing air), turn OFF the main electrical supply circuit breaker to the outdoor heat pump for at least 60 seconds to drain power from the control board memory, then restore power. Safety Warning: If Error E05, E12, E88, or E89 recurs immediately after resetting, do not attempt further power cycles. Turn off the main breaker and contact a certified HVAC technician."
+ }
+]

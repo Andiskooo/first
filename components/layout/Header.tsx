@@ -253,7 +253,23 @@ const Header = ({ installationLocations }: { installationLocations: Installation
                         </ListItem>
                       ))}
                     </ul>
-                  </NavigationMenuContent> 
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
+                {/* Asistenti Virtual — standalone page link */}
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      href="/asistenti"
+                      aria-current={pathname === '/asistenti' ? 'page' : undefined}
+                      className={cn(
+                        "inline-flex h-9 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none aria-[current=page]:font-semibold",
+                        variant === 'transparent' ? "text-white hover:text-white/80" : "text-foreground hover:text-foreground/80"
+                      )}
+                    >
+                      Asistenti
+                    </Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
 
                 {/* Removed standalone Kontakto item as it's now in the Kompania dropdown */}
@@ -356,6 +372,18 @@ const Header = ({ installationLocations }: { installationLocations: Installation
                       aria-current={pathname === `/instalimet/${location.slug}` ? 'page' : undefined}
                       onClick={() => setIsOpen(false)} className="block rounded-md px-3 py-3 text-sm text-slate-700 hover:bg-accent aria-[current=page]:font-semibold">{location.label}</Link>)}
                   </div>
+                </div>
+
+                {/* Standalone Asistenti link (mobile) */}
+                <div className="border-b border-border">
+                  <Link
+                    href="/asistenti"
+                    onClick={() => setIsOpen(false)}
+                    aria-current={pathname === '/asistenti' ? 'page' : undefined}
+                    className="block p-4 text-lg font-semibold text-blue-600 hover:bg-accent aria-[current=page]:underline"
+                  >
+                    Asistenti
+                  </Link>
                 </div>
 
                 {/* Links for Kompania */}
