@@ -169,9 +169,22 @@ export default function ChatPanel({ onClose, className, autoFocus, showHeader = 
   const inputRef = useRef<HTMLInputElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const inputId = useId();
+  // Stick-to-bottom: auto-scroll on new messages only when the user is
+  // already near the bottom, so reading older messages is never interrupted.
+  const stickToBottomRef = useRef(true);
+
+  const handleMessagesScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    stickToBottomRef.current =
+      el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+  }, []);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
+    const el = scrollRef.current;
+    if (el && stickToBottomRef.current) {
+      el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+    }
   }, [messages, loading]);
 
   useEffect(() => {
@@ -199,6 +212,8 @@ export default function ChatPanel({ onClose, className, autoFocus, showHeader = 
     async (text: string) => {
       const question = text.trim();
       if ((!question && !attachPreview) || loading) return;
+      // New outgoing message: pin back to the bottom.
+      stickToBottomRef.current = true;
       const finalText =
         question ||
         'Ju lutem shikoni foton e ekranit të kontrolluesit — çfarë duhet të bëj?';
@@ -378,7 +393,9 @@ export default function ChatPanel({ onClose, className, autoFocus, showHeader = 
   return (
     <div
       className={cn(
-        'relative flex overflow-hidden rounded-[24px] border border-slate-200/80 bg-[#eef1f5] shadow-[0_20px_60px_-20px_rgba(15,40,80,0.25)]',
+        // Mobile: flat fullscreen surface (no border/radius/shadow — the
+        // panel IS the viewport). Desktop: floating card around sidebar+chat.
+        'relative flex h-full min-h-0 w-full overflow-hidden bg-[#eef1f5] md:rounded-[24px] md:border md:border-slate-200/80 md:shadow-[0_20px_60px_-20px_rgba(15,40,80,0.25)]',
         className
       )}
     >
@@ -418,11 +435,11 @@ export default function ChatPanel({ onClose, className, autoFocus, showHeader = 
         </div>
       </aside>
 
-      {/* Main chat column */}
-      <div className="flex min-w-0 flex-1 flex-col bg-[#f6f8fa]">
-        {/* Header */}
+      {/* Main chat column: fixed header + scrollable messages + fixed composer */}
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-[#f6f8fa]">
+        {/* Header — fixed at top */}
         {showHeader && (
-          <header className="flex items-center gap-3 border-b border-slate-200/70 bg-white/80 px-4 py-3 backdrop-blur sm:px-6">
+          <header className="flex shrink-0 items-center gap-3 border-b border-slate-200/70 bg-white/80 px-4 py-3 backdrop-blur sm:px-6">
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
@@ -476,11 +493,12 @@ export default function ChatPanel({ onClose, className, autoFocus, showHeader = 
           </header>
         )}
 
-        {/* Messages */}
+        {/* Messages — the ONLY scrollable area */}
         <div
           ref={scrollRef}
+          onScroll={handleMessagesScroll}
           aria-live="polite"
-          className="min-h-0 flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-10"
+          className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-4 py-6 sm:px-6 lg:px-10"
         >
           {!started ? (
             <div className="mx-auto flex h-full w-full max-w-2xl flex-col items-center justify-center py-8 text-center">
@@ -508,11 +526,11 @@ export default function ChatPanel({ onClose, className, autoFocus, showHeader = 
               </div>
             </div>
           ) : (
-            <div className="mx-auto w-full max-w-3xl space-y-5">
+            <div className="mx-auto w-full max-w-3xl space-y-5 lg:max-w-4xl">
               {messages.map((m, i) =>
                 m.role === 'user' ? (
                   <div key={i} className="flex justify-end">
-                    <div className="max-w-[88%] rounded-2xl rounded-br-md bg-blue-600 px-4 py-3 text-white shadow-md shadow-blue-600/20 sm:max-w-[75%]">
+                    <div className="max-w-[88%] break-words rounded-2xl rounded-br-md bg-blue-600 px-4 py-3 text-white shadow-md shadow-blue-600/20 sm:max-w-[75%]">
                       {m.userImage && (
                         <span className="mb-2 block overflow-hidden rounded-xl">
                           <img
@@ -531,7 +549,7 @@ export default function ChatPanel({ onClose, className, autoFocus, showHeader = 
                     <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-600 shadow-sm">
                       <Image src="/logo-white.png" alt="ECOTEK" width={22} height={22} className="h-5 w-5 object-contain" unoptimized />
                     </span>
-                    <div className="min-w-0 flex-1 rounded-2xl rounded-tl-md border border-slate-200/80 bg-white px-4 py-3 shadow-sm">
+                    <div className="min-w-0 flex-1 break-words rounded-2xl rounded-tl-md border border-slate-200/80 bg-white px-4 py-3 shadow-sm">
                       {renderFormatted(m.content)}
                       {m.images?.map((img) => (
                         <span key={img.src} className="my-3 block max-w-xl overflow-hidden rounded-xl border border-slate-200">
@@ -576,10 +594,10 @@ export default function ChatPanel({ onClose, className, autoFocus, showHeader = 
           )}
         </div>
 
-        {/* Prompt chips (after chat starts) */}
+        {/* Prompt chips (after chat starts) — compact horizontal strip */}
         {started && (
-          <div className="border-t border-slate-200/60 bg-[#f6f8fa] px-4 pt-3 sm:px-6 lg:px-10">
-            <div className="mx-auto flex w-full max-w-3xl gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:overflow-visible">
+          <div className="shrink-0 border-t border-slate-200/60 bg-[#f6f8fa] px-4 pt-3 sm:px-6 lg:px-10">
+            <div className="mx-auto flex w-full max-w-3xl gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:flex-wrap sm:overflow-visible lg:max-w-4xl">
               {QUICK_PROMPTS.map((p) => (
                 <button
                   key={p.label}
@@ -596,14 +614,14 @@ export default function ChatPanel({ onClose, className, autoFocus, showHeader = 
           </div>
         )}
 
-        {/* Composer */}
-        <div className="bg-[#f6f8fa] px-4 pb-4 pt-2 sm:px-6 sm:pb-5 lg:px-10">
+        {/* Composer — anchored at bottom, above keyboard + safe-area */}
+        <div className="shrink-0 bg-[#f6f8fa] px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-2 sm:px-6 sm:pb-5 lg:px-10">
           <form
             onSubmit={(e) => {
               e.preventDefault();
               void send(input);
             }}
-            className="mx-auto w-full max-w-3xl"
+            className="mx-auto w-full max-w-3xl lg:max-w-4xl"
           >
             <div className="rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_8px_24px_-12px_rgba(15,40,80,0.25)] transition focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-100">
               {/* Image preview */}
@@ -655,6 +673,7 @@ export default function ChatPanel({ onClose, className, autoFocus, showHeader = 
                   placeholder="Pyetni për timerin, kodet e gabimeve, ekranin…"
                   maxLength={500}
                   autoComplete="off"
+                  enterKeyHint="send"
                   className="h-11 min-w-0 flex-1 bg-transparent text-[14.5px] text-slate-900 placeholder:text-slate-400 focus:outline-none sm:text-[15px]"
                 />
                 <button

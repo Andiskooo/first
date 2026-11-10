@@ -9,8 +9,13 @@ export const metadata = pageMetadata(
 
 export default function AsistentiPage() {
   return (
-    <section className="mx-auto flex min-h-[calc(100vh-160px)] w-full max-w-6xl flex-col px-3 py-4 sm:px-6 sm:py-6">
-      <div className="mb-4 px-1 sm:mb-5">
+    <section
+      aria-label="Asistenti virtual i ECOTEK"
+      className="mx-auto flex h-full w-full flex-col overflow-hidden bg-[#f6f8fa] md:h-[calc(100dvh-160px)] md:min-h-[560px] md:px-6 md:py-6 lg:px-10"
+    >
+      {/* Page heading: desktop only — on mobile the chat header is the title,
+          so this would waste fullscreen space and duplicate branding. */}
+      <div className="hidden shrink-0 px-1 pb-4 sm:pb-5 md:block">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-blue-600">
           ECOTEK Support
         </p>
@@ -25,7 +30,7 @@ export default function AsistentiPage() {
       <ChatPanel
         autoFocus
         showHeader
-        className="h-[min(78vh,780px)] min-h-[560px]"
+        className="h-full min-h-0 w-full rounded-none border-0 shadow-none md:h-auto md:min-h-0 md:flex-1 md:rounded-[24px] md:border md:border-slate-200/80 md:shadow-[0_20px_60px_-20px_rgba(15,40,80,0.25)]"
       />
     </section>
   );
