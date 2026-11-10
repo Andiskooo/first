@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import ChatPanel from '@/components/chat/ChatPanel';
 import { pageMetadata } from '@/lib/seo';
 
@@ -10,23 +9,23 @@ export const metadata = pageMetadata(
 
 export default function AsistentiPage() {
   return (
-    <section className="mx-auto flex min-h-[calc(100vh-160px)] w-full max-w-4xl flex-col px-4 py-6 sm:py-8">
-      <div className="mb-5 flex items-center gap-3 px-1 sm:px-2">
-        <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-blue-600">
-          <Image src="/logo-white.png" alt="ECOTEK" width={32} height={32} className="h-9 w-9 object-contain" unoptimized />
-        </span>
-        <div>
-          <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">Asistenti Virtual i ECOTEK</h1>
-          <p className="flex items-center gap-1.5 text-[15px] text-slate-500">
-            <span className="inline-block h-2 w-2 rounded-full bg-green-500" aria-hidden="true" />
-            Online — përgjigjet në shqip, nga manualet zyrtare
-          </p>
-        </div>
+    <section className="mx-auto flex min-h-[calc(100vh-160px)] w-full max-w-6xl flex-col px-3 py-4 sm:px-6 sm:py-6">
+      <div className="mb-4 px-1 sm:mb-5">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-blue-600">
+          ECOTEK Support
+        </p>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          Asistenti Virtual i ECOTEK
+        </h1>
+        <p className="mt-1 flex items-center gap-1.5 text-sm text-slate-500 sm:text-[15px]">
+          <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
+          Online — përgjigjet në shqip, nga manualet zyrtare
+        </p>
       </div>
       <ChatPanel
         autoFocus
-        showHeader={false}
-        className="h-[min(75vh,760px)] rounded-2xl border border-slate-200 shadow-xl"
+        showHeader
+        className="h-[min(78vh,780px)] min-h-[560px]"
       />
     </section>
   );
