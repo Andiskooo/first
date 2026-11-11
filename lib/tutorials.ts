@@ -25,6 +25,8 @@ export interface TutorialChapter {
   start: number;
 }
 
+export type TutorialOrientation = 'portrait' | 'landscape';
+
 export interface Tutorial {
   id: string;
   title: string;
@@ -32,6 +34,12 @@ export interface Tutorial {
   playbackId: string;
   category: TutorialCategory;
   keywords: string[];
+  /**
+   * 'portrait' = 9:16 phone video, 'landscape' = 16:9. Controls both the
+   * gallery thumbnail frame and the fullscreen player sizing, so the video
+   * is never cropped or stretched. Set this per video when adding new ones.
+   */
+  orientation: TutorialOrientation;
   duration?: string;
   chapters?: TutorialChapter[];
 }
@@ -53,6 +61,7 @@ export const tutorials: Tutorial[] = [
     playbackId: 'WBjQCR1FpY6020084ePByJFlV9fKzVBzMdgV1gW3pG028Y',
     category: 'Probleme',
     keywords: ['pse', 'nuk ndizet', 'ndezja', 'problem', 'gabim', 'error', 'troubleshooting', 'ndihmë', 'pompë termike'],
+    orientation: 'portrait',
   },
   {
     id: 'zhbllokimi-ekranit',
@@ -62,6 +71,7 @@ export const tutorials: Tutorial[] = [
     playbackId: 'oVXaMoF7KodB801q5kddey21pgHfWWk7Y9rQhR9xZkp8',
     category: 'Modalitetet',
     keywords: ['eco', 'force', 'modalitet', 'kursim', 'fuqi', 'mode', 'kontrollues', 'pompë termike'],
+    orientation: 'portrait',
   },
   {
     id: 'ndryshimi-temperatures',
@@ -71,6 +81,7 @@ export const tutorials: Tutorial[] = [
     playbackId: 'qq8M5GCjAZI02R00kNiehvlrHy00uwDZWC8iLRMcOdTyzY',
     category: 'Wi-Fi',
     keywords: ['wifi', 'wi-fi', 'konfigurim', 'aktivizim', 'internet', 'rrjet', 'lidhje', 'aplikacion'],
+    orientation: 'portrait',
   },
   {
     id: 'modalitetet-funksionimit',
@@ -80,6 +91,7 @@ export const tutorials: Tutorial[] = [
     playbackId: 'keWnv00xUW9RUxB00X53SW6lHW4vueix00kPdb1j400hnIo',
     category: 'Cilësimet',
     keywords: ['programim', 'orar', 'timer', 'tajmer', 'orari', 'caktim', 'aktivizim', 'pompë termike'],
+    orientation: 'portrait',
   },
   {
     id: 'timeri-programimi',
@@ -89,6 +101,7 @@ export const tutorials: Tutorial[] = [
     playbackId: '6hNZV019Vx011VIXnVZBzGHLgNMDVaNF8b02MWz5cQzoRo',
     category: 'Modalitetet',
     keywords: ['modalitet', 'ngrohje', 'ftohje', 'ujë sanitar', 'dhw', 'dysheme', 'floor', 'heating', 'cooling', 'mode'],
+    orientation: 'portrait',
   },
   {
     id: 'lidhja-wifi',
@@ -98,6 +111,7 @@ export const tutorials: Tutorial[] = [
     playbackId: 'XZmravSQY8T02IXc7sJLcQKSbFl37mjcDaQ7LFJERx64',
     category: 'Modalitetet',
     keywords: ['ftohje', 'cooling', 'ndez', 'verë', 'modalitet', 'ajër i ftohtë', 'pompë termike'],
+    orientation: 'portrait',
   },
   {
     id: 'cilësimet-avancuara',
@@ -107,6 +121,7 @@ export const tutorials: Tutorial[] = [
     playbackId: '02Br3xdbUWYndV3lulq9IkXGuaBMn900HfoksS54FXSbk',
     category: 'Modalitetet',
     keywords: ['ngrohje', 'heating', 'ndez', 'dimër', 'modalitet', 'radiator', 'dysheme', 'pompë termike'],
+    orientation: 'portrait',
   },
   {
     id: 'problemet-zgjidhjet',
@@ -116,6 +131,7 @@ export const tutorials: Tutorial[] = [
     playbackId: 'U7wahy52BI3oNQCYjUEW02M38r6NdY6CZIY1Zrrqamdk',
     category: 'Cilësimet',
     keywords: ['ndalim', 'ndal', 'programim', 'orar', 'timer', 'tajmer', 'çaktivizim', 'manual'],
+    orientation: 'portrait',
   },
   {
     id: 'lidhja-telefon-wifi',
@@ -125,6 +141,7 @@ export const tutorials: Tutorial[] = [
     playbackId: '8eckr5vi402009eVaKWZwakH2mS5Wh9Cq6itSaFas01vTI',
     category: 'Wi-Fi',
     keywords: ['wifi', 'wi-fi', 'telefon', 'lidhja me telefon', 'aplikacion', 'kontroll nga distanca', 'lidhje', 'internet', 'rrjet', 'distancë', 'smartphone'],
+    orientation: 'landscape',
   },
 ];
 

@@ -125,3 +125,17 @@
   .fill-orange-500 { fill: #F97316; }
   .fill-blue-500 { fill: #3B82F6; }
 }
+
+/* Tutorial fullscreen player sizing — matches each video's orientation so
+   nothing is cropped or stretched. vh first, dvh override where supported
+   (mobile Safari toolbar). */
+.tuto-player-portrait {
+  height: min(100vh, 177.78vw);
+  height: min(100dvh, 177.78vw);
+  aspect-ratio: 9 / 16;
+}
+.tuto-player-landscape {
+  width: min(100vw, 177.78vh);
+  width: min(100vw, 177.78dvh);
+  aspect-ratio: 16 / 9;
+}

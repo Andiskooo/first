@@ -4,7 +4,7 @@
 
 import { readFileSync } from 'node:fs';
 import { retrieveRelevant, extractCodes } from '../lib/chat/retrieve';
-import { findVideoRecommendation } from '../lib/tutorials';
+import { findVideoRecommendation, tutorials } from '../lib/tutorials';
 
 let failures = 0;
 
@@ -146,6 +146,15 @@ check(
 check(
   'ambiguous question gets no video recommendation',
   findVideoRecommendation('Si ta ndez pompën termike?') === null
+);
+check(
+  'every tutorial declares a valid orientation',
+  tutorials.every((t) => t.orientation === 'portrait' || t.orientation === 'landscape')
+);
+check(
+  'only the phone-wifi video is landscape, the rest are 9:16 portrait',
+  tutorials.filter((t) => t.orientation === 'landscape').map((t) => t.id).join(',') ===
+    'lidhja-telefon-wifi'
 );
 
 if (failures > 0) {

@@ -110,16 +110,18 @@ export default function VideoCenter() {
 
   return (
     <>
-      <ul aria-label="Video udhëzime" className="grid list-none grid-cols-2 gap-x-4 gap-y-7 p-0 md:grid-cols-3 lg:grid-cols-4">
-        {tutorials.map((t, i) => (
+      <ul aria-label="Video udhëzime" className="grid list-none grid-cols-2 gap-x-4 gap-y-6 p-0 md:grid-cols-3 lg:grid-cols-4">
+        {tutorials.map((t, i) => {
+          const portrait = t.orientation === 'portrait';
+          return (
           <li key={t.id}>
             <button
               type="button"
               onClick={() => openVideo(t.id)}
               aria-label={`Shiko videon: ${t.title}`}
-              className="group block w-full cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded-lg"
+              className="group block w-full cursor-pointer rounded-2xl bg-white p-2 text-left shadow-sm ring-1 ring-slate-200/70 transition hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
             >
-              <span className="relative block aspect-video w-full overflow-hidden rounded-lg bg-slate-100">
+              <span className={`relative block w-full overflow-hidden rounded-xl bg-slate-900/5 ${portrait ? 'aspect-[9/16]' : 'aspect-video'}`}>
                 <Image
                   src={thumbnailUrl(t.playbackId, 640)}
                   alt=""
@@ -130,23 +132,25 @@ export default function VideoCenter() {
                   className="object-cover transition duration-300 group-hover:scale-[1.03]"
                 />
                 <span className="absolute inset-0 flex items-center justify-center bg-slate-900/0 transition group-hover:bg-slate-900/15">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/95 shadow-md transition group-hover:scale-105">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/95 shadow-lg ring-1 ring-black/5 transition group-hover:scale-105">
                     <Play className="ml-0.5 h-5 w-5 fill-slate-900 text-slate-900" aria-hidden="true" />
                   </span>
                 </span>
               </span>
-              <span className="mt-2 line-clamp-2 block text-[13px] font-normal leading-snug text-slate-700">
+              <span className="line-clamp-2 block px-1 pb-1 pt-2 text-sm font-semibold leading-snug text-slate-900">
                 {t.title}
               </span>
             </button>
           </li>
-        ))}
+          );
+        })}
       </ul>
 
       {openTutorial && (
         <FullscreenPlayer
           playbackId={openTutorial.playbackId}
           title={openTutorial.title}
+          orientation={openTutorial.orientation}
           onClose={() => closeVideo()}
         />
       )}
