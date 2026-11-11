@@ -25,9 +25,10 @@ export default function MainLayout({ children, installationLocations }: MainLayo
             <div className="hidden md:block">
               <Header installationLocations={installationLocations} />
             </div>
-            {/* Mobile: lock to exactly one viewport height so the page itself
-                never scrolls — only the messages container scrolls. */}
-            <main className="h-dvh overflow-hidden md:h-auto md:overflow-visible">
+            {/* Mobile: the chat tab fills exactly one viewport height (its own
+                messages container scrolls); the video tab scrolls the page
+                normally — hence min-h, never a scroll lock. */}
+            <main className="min-h-dvh md:h-auto">
               {children}
             </main>
             <div className="hidden md:block">

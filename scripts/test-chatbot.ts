@@ -4,6 +4,7 @@
 
 import { readFileSync } from 'node:fs';
 import { retrieveRelevant, extractCodes } from '../lib/chat/retrieve';
+import { findVideoRecommendation } from '../lib/tutorials';
 
 let failures = 0;
 
@@ -87,6 +88,7 @@ const uiSrc = readFileSync(new URL('../components/chat/ChatPanel.tsx', import.me
 const headerSrc = readFileSync(new URL('../components/layout/Header.tsx', import.meta.url), 'utf-8');
 const layoutSrc = readFileSync(new URL('../components/layout/MainLayout.tsx', import.meta.url), 'utf-8');
 const pageSrc = readFileSync(new URL('../app/asistenti/page.tsx', import.meta.url), 'utf-8');
+const supportSrc = readFileSync(new URL('../components/support/SupportExperience.tsx', import.meta.url), 'utf-8');
 for (const s of [
   'Si ta zhbllokoj ekranin?',
   'Si ta ndryshoj temperaturën?',
@@ -102,7 +104,8 @@ check(
 check(
   'no constant technician banner in chat UI',
   // The number may only survive inside genuine failure fallbacks, never as a banner/link.
-  !uiSrc.includes('teknik') && !uiSrc.includes('SUPPORT_TEL') && !uiSrc.includes('href=')
+  // (Same-site video deep-links rendered via Link are intentional — see video checks below.)
+  !uiSrc.includes('teknik') && !uiSrc.includes('SUPPORT_TEL') && !uiSrc.includes('tel:')
 );
 check('support number only in unable-to-answer paths', (() => {
   const routeSrc = readFileSync(new URL('../app/api/chat/route.ts', import.meta.url), 'utf-8');
@@ -112,8 +115,38 @@ check('support number only in unable-to-answer paths', (() => {
   return idx > -1 && !smallTalk.includes(SUPPORT_LINE);
 })());
 check('header links to /asistenti (desktop + mobile)', headerSrc.includes('href="/asistenti"'));
+check('header has a single support entry point (no video link)', !headerSrc.includes('video-udhezime'));
 check('no floating bubble mounted globally', !layoutSrc.includes('EcotekChat'));
-check('dedicated /asistenti share page exists', pageSrc.includes('ChatPanel') && pageSrc.includes('Asistenti'));
+check('dedicated /asistenti share page exists', pageSrc.includes('SupportExperience') && pageSrc.includes('Asistenti'));
+check('unified support experience mounts the chatbot', supportSrc.includes('ChatPanel') && supportSrc.includes('VideoCenter'));
+
+// 7. Video recommendations: chatbot suggests the matching tutorial, else stays silent.
+check('chat API appends video recommendation', routeSrc.includes('findVideoRecommendation'));
+check('chat renders same-site links for video recommendations', uiSrc.includes("startsWith('/')"));
+check(
+  'timer question recommends the scheduling video',
+  findVideoRecommendation('Si ta aktivizoj timerin?')?.id === 'modalitetet-funksionimit'
+);
+check(
+  'wifi+phone question recommends the phone video',
+  findVideoRecommendation('Si ta lidh telefonin me wifi?')?.id === 'lidhja-telefon-wifi'
+);
+check(
+  'pump-not-starting question recommends the troubleshooting video',
+  findVideoRecommendation('Pse nuk ndizet pompa termike?')?.id === 'pult-kontrolluesi'
+);
+check(
+  'eco question recommends the ECO/FORCE video',
+  findVideoRecommendation('Si ta kaloj pompën në ECO?')?.id === 'zhbllokimi-ekranit'
+);
+check(
+  'greeting gets no video recommendation',
+  findVideoRecommendation('Përshëndetje!') === null
+);
+check(
+  'ambiguous question gets no video recommendation',
+  findVideoRecommendation('Si ta ndez pompën termike?') === null
+);
 
 if (failures > 0) {
   console.error(`\n${failures} test(s) failed.`);

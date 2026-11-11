@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { retrieveRelevant } from '@/lib/chat/retrieve';
+import { findVideoRecommendation } from '@/lib/tutorials';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -121,12 +122,28 @@ function fallbackAnswer(question: string): NextResponse {
   }
   const excerpt = chunks[0].text.slice(0, 900);
   return NextResponse.json({
-    answer:
+    answer: withVideoRecommendation(
+      question,
       'Shërbimi i inteligjencës artificiale është përkohësisht i padisponueshëm, por ja informacioni përkatës:\n\n' +
-      excerpt +
-      `\n\nPër ndihmë të mëtejshme, kontaktoni ECOTEK në ${SUPPORT_PHONE}.`,
+        excerpt +
+        `\n\nPër ndihmë të mëtejshme, kontaktoni ECOTEK në ${SUPPORT_PHONE}.`
+    ),
     sources: [],
   });
+}
+
+/**
+ * When the user's question distinctively matches one of the Video Udhëzime
+ * tutorials, append a recommendation with a deep link that opens that exact
+ * video in the fullscreen player. Returns the answer unchanged otherwise.
+ */
+function withVideoRecommendation(question: string, answer: string): string {
+  const rec = findVideoRecommendation(question);
+  if (!rec) return answer;
+  return (
+    `${answer}\n\n🎬 Për këtë temë kemi edhe një video-udhëzim: ` +
+    `[${rec.title}](/asistenti?tab=video&video=${rec.id}) — hapeni për ta parë hap pas hapi te Video Udhëzime.`
+  );
 }
 
 export async function POST(req: NextRequest) {
@@ -230,7 +247,7 @@ export async function POST(req: NextRequest) {
     if (!answer) return fallbackAnswer(question);
 
     return NextResponse.json({
-      answer,
+      answer: withVideoRecommendation(question, answer),
       sources: [],
     });
   } catch {

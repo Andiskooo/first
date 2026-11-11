@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import {
   AlertTriangle,
   BookOpen,
@@ -99,16 +100,35 @@ function renderFormatted(text: string) {
   };
 
   const renderInline = (line: string): React.ReactNode => {
-    const parts = line.split(/(\*\*[^*]+\*\*)/g);
-    return parts.map((p, i) =>
-      p.startsWith('**') && p.endsWith('**') && p.length > 4 ? (
-        <strong key={i} className="font-semibold text-slate-900">
-          {p.slice(2, -2)}
-        </strong>
-      ) : (
-        <span key={i}>{p.replace(/\*\*/g, '')}</span>
-      )
-    );
+    const parts = line.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\([^)\s]+\))/g);
+    return parts.map((p, i) => {
+      if (p.startsWith('**') && p.endsWith('**') && p.length > 4) {
+        return (
+          <strong key={i} className="font-semibold text-slate-900">
+            {p.slice(2, -2)}
+          </strong>
+        );
+      }
+      // Markdown links — only same-site (/) links are clickable (safety);
+      // anything else renders as plain label text.
+      const link = p.match(/^\[([^\]]+)\]\(([^)\s]+)\)$/);
+      if (link) {
+        const [, label, href] = link;
+        if (href.startsWith('/')) {
+          return (
+            <Link
+              key={i}
+              href={href}
+              className="font-medium text-blue-700 underline decoration-blue-300 underline-offset-2 transition hover:text-blue-800"
+            >
+              {label}
+            </Link>
+          );
+        }
+        return <span key={i}>{label}</span>;
+      }
+      return <span key={i}>{p.replace(/\*\*/g, '')}</span>;
+    });
   };
 
   for (const raw of lines) {
