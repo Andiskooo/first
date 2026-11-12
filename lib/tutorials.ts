@@ -54,11 +54,31 @@ export function streamUrl(playbackId: string): string {
 
 export const tutorials: Tutorial[] = [
   {
+    id: 'cilësimet-avancuara',
+    title: 'Si ta ndezim pompën termike për ngrohje?',
+    description:
+      'Si ta ndizni pompën termike në modalitetin e ngrohjes për dimër — zgjedhja e modalitetit dhe rregullimet bazë.',
+    playbackId: 'xiS02W7Zmsl5KbJLrJFPcQc1Hj8OarS57014f3pmmyMM00',
+    category: 'Modalitetet',
+    keywords: ['ngrohje', 'heating', 'ndez', 'dimër', 'modalitet', 'radiator', 'dysheme', 'pompë termike'],
+    orientation: 'portrait',
+  },
+  {
+    id: 'lidhja-wifi',
+    title: 'Si ta ndezim pompën termike për ftohje?',
+    description:
+      'Si ta ndizni pompën termike në modalitetin e ftohjes për verë — zgjedhja e modalitetit dhe rregullimet bazë.',
+    playbackId: 'b1gX0266rP7qpg3kDy8vCC2Ha8Opa002nM02fSzchG9l4w',
+    category: 'Modalitetet',
+    keywords: ['ftohje', 'cooling', 'ndez', 'verë', 'modalitet', 'ajër i ftohtë', 'pompë termike'],
+    orientation: 'portrait',
+  },
+  {
     id: 'pult-kontrolluesi',
     title: 'Pse nuk ndizet pompa termike?',
     description:
       'Arsyet më të zakonshme pse pompa termike nuk ndizet dhe çfarë të kontrolloni hap pas hapi para se të kërkoni servis.',
-    playbackId: 'WBjQCR1FpY6020084ePByJFlV9fKzVBzMdgV1gW3pG028Y',
+    playbackId: 'OXnfoGBRa7zqjoVbsrgBay0200RIUp5CxbZC15b01cx014k',
     category: 'Probleme',
     keywords: ['pse', 'nuk ndizet', 'ndezja', 'problem', 'gabim', 'error', 'troubleshooting', 'ndihmë', 'pompë termike'],
     orientation: 'portrait',
@@ -68,7 +88,7 @@ export const tutorials: Tutorial[] = [
     title: 'Si ta kalojmë pompën termike në ECO ose FORCE?',
     description:
       'Si ta kaloni pompën termike në modalitetin ECO për kursim energjie ose FORCE për fuqi maksimale, direkt nga kontrolluesi.',
-    playbackId: 'oVXaMoF7KodB801q5kddey21pgHfWWk7Y9rQhR9xZkp8',
+    playbackId: 'pUk011gDf5vNN00Zdw9qKmwIpnAZVthwCIRRG5vrFXs8U',
     category: 'Modalitetet',
     keywords: ['eco', 'force', 'modalitet', 'kursim', 'fuqi', 'mode', 'kontrollues', 'pompë termike'],
     orientation: 'portrait',
@@ -78,7 +98,7 @@ export const tutorials: Tutorial[] = [
     title: 'Si ta aktivizojmë konfigurimin me Wi-Fi?',
     description:
       'Si ta aktivizoni konfigurimin me Wi-Fi në kontrollues dhe ta lidhni pompën termike me rrjetin për kontroll nga distanca.',
-    playbackId: 'qq8M5GCjAZI02R00kNiehvlrHy00uwDZWC8iLRMcOdTyzY',
+    playbackId: 'DIaMj9UYaGmA28nNUWqzwCqpbAUP78C4T5B00Uu9sMCw',
     category: 'Wi-Fi',
     keywords: ['wifi', 'wi-fi', 'konfigurim', 'aktivizim', 'internet', 'rrjet', 'lidhje', 'aplikacion'],
     orientation: 'portrait',
@@ -88,7 +108,7 @@ export const tutorials: Tutorial[] = [
     title: 'Si ta programojmë pompën termike me orar?',
     description:
       'Si ta programoni pompën termike me orar kohor — caktimi i intervaleve të punës për ngrohje dhe ujë sanitar.',
-    playbackId: 'keWnv00xUW9RUxB00X53SW6lHW4vueix00kPdb1j400hnIo',
+    playbackId: 'fKK00eeCVbzUq1hkR74eTwVj711fJ602WX01kISfbjltN00',
     category: 'Cilësimet',
     keywords: ['programim', 'orar', 'timer', 'tajmer', 'orari', 'caktim', 'aktivizim', 'pompë termike'],
     orientation: 'portrait',
@@ -98,29 +118,9 @@ export const tutorials: Tutorial[] = [
     title: 'Modalitetet e pompës termike: Ngrohje, Ftohje, Ujë Sanitar dhe Ngrohje në Dysheme',
     description:
       'Përmbledhje e modaliteteve të pompës termike — ngrohje, ftohje, ujë sanitar dhe ngrohje në dysheme — dhe kur të përdorni secilin.',
-    playbackId: '6hNZV019Vx011VIXnVZBzGHLgNMDVaNF8b02MWz5cQzoRo',
+    playbackId: 'V5prU1qDLrtIUsckI01fevt14kRPfWTwDhe9XweJthw00',
     category: 'Modalitetet',
     keywords: ['modalitet', 'ngrohje', 'ftohje', 'ujë sanitar', 'dhw', 'dysheme', 'floor', 'heating', 'cooling', 'mode'],
-    orientation: 'portrait',
-  },
-  {
-    id: 'lidhja-wifi',
-    title: 'Si ta ndezim pompën termike për ftohje?',
-    description:
-      'Si ta ndizni pompën termike në modalitetin e ftohjes për verë — zgjedhja e modalitetit dhe rregullimet bazë.',
-    playbackId: 'XZmravSQY8T02IXc7sJLcQKSbFl37mjcDaQ7LFJERx64',
-    category: 'Modalitetet',
-    keywords: ['ftohje', 'cooling', 'ndez', 'verë', 'modalitet', 'ajër i ftohtë', 'pompë termike'],
-    orientation: 'portrait',
-  },
-  {
-    id: 'cilësimet-avancuara',
-    title: 'Si ta ndezim pompën termike për ngrohje?',
-    description:
-      'Si ta ndizni pompën termike në modalitetin e ngrohjes për dimër — zgjedhja e modalitetit dhe rregullimet bazë.',
-    playbackId: '02Br3xdbUWYndV3lulq9IkXGuaBMn900HfoksS54FXSbk',
-    category: 'Modalitetet',
-    keywords: ['ngrohje', 'heating', 'ndez', 'dimër', 'modalitet', 'radiator', 'dysheme', 'pompë termike'],
     orientation: 'portrait',
   },
   {
@@ -128,7 +128,7 @@ export const tutorials: Tutorial[] = [
     title: 'Si ta ndalim programimin me orar?',
     description:
       'Si ta ndaloni ose çaktivizoni programimin me orar të pompës termike dhe ta ktheni në punë manuale.',
-    playbackId: 'U7wahy52BI3oNQCYjUEW02M38r6NdY6CZIY1Zrrqamdk',
+    playbackId: 'bOxgdTH7kXrJmciwQHvwaBDEn4S3xm8ZyWo2rzXT33I',
     category: 'Cilësimet',
     keywords: ['ndalim', 'ndal', 'programim', 'orar', 'timer', 'tajmer', 'çaktivizim', 'manual'],
     orientation: 'portrait',
