@@ -165,7 +165,45 @@ function main() {
   thermoNodes[0] = { ...thermoNodes[0], params: { roomSet: 21, ambient: 24 } };
   assert.equal(computeOpenings({ nodes: thermoNodes, edges: thermoEdges, held: {} }).v3, 1);
   assert.equal(validateConnection(thermoNodes, [], 'rt', 'sig', 'v3', 'ctl').ok, true);
-  assert.equal(validateConnection(thermoNodes, [], 'rt', 'sig', 'v', 'ctl').ok, false);
+  assert.equal(validateConnection(thermoNodes, [], 'rt', 'sig', 'v', 'ctl').ok, true);
+  assert.equal(computeOpenings({ nodes: thermoNodes, edges: [{ id: 's2', source: 'rt', target: 'v', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' }], held: {} }).v, 0, 'a warm thermostat closes the two-way valve');
+  thermoNodes[0] = { ...thermoNodes[0], params: { roomSet: 21, ambient: 16 } };
+  assert.equal(computeOpenings({ nodes: thermoNodes, edges: [{ id: 's2', source: 'rt', target: 'v', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' }], held: {} }).v, 1, 'at or below the setpoint the two-way valve stays open');
+
+  function zoneLoop(ambient: number, valveParams: Record<string, number>, withSignal = true) {
+    const example = buildExample('direct');
+    const nodes: GraphNode[] = [
+      ...example.nodes,
+      { id: 'v', componentId: 'valve', params: { behavior: 0, motorized: 1, opening: 100, controlMode: 0, manualOpen: 1, ...valveParams } },
+      { id: 'rt', componentId: 'thermostat', params: { roomSet: 21, ambient } },
+    ];
+    const edges: GraphEdge[] = example.edges
+      .filter((edge) => edge.id !== 'e-ts-hk')
+      .concat([
+        { id: 'e-ts-v', source: 'ts', target: 'v', sourceHandle: 'b', targetHandle: 'in' },
+        { id: 'e-v-hk', source: 'v', target: 'hk', sourceHandle: 'out', targetHandle: 'supply-in' },
+        ...(withSignal ? [{ id: 's-v', source: 'rt', target: 'v', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' as const }] : []),
+      ]);
+    return simulate(nodes, edges, computeOpenings({ nodes, edges, held: {} }));
+  }
+  const zoneOpen = zoneLoop(16, {});
+  assert.equal(zoneOpen.ok, true, zoneOpen.issues.map((issue) => issue.code).join(','));
+  near(zoneOpen.nodes.hk?.flowLph ?? 0, 720, 30, 'an open two-way valve shares the radiator branch');
+  near(zoneOpen.nodes.fbh?.flowLph ?? 0, 720, 30, 'the parallel branch keeps its share while the valve is open');
+  const zoneShut = zoneLoop(24, {});
+  assert.equal(zoneShut.ok, true, zoneShut.issues.map((issue) => issue.code).join(','));
+  assert.ok(!zoneShut.issues.some((issue) => issue.level === 'warn' || issue.level === 'error'), 'a closed branch is not an error');
+  near(zoneShut.nodes.hk?.flowLph ?? 0, 0, 1, 'the thermostat closes the two-way valve');
+  near(zoneShut.nodes.fbh?.flowLph ?? 0, 1440, 30, 'the open branch takes the flow when the valve closes');
+  const heldOpen = zoneLoop(24, { controlMode: 1, manualOpen: 1 });
+  near(heldOpen.nodes.hk?.flowLph ?? 0, 720, 30, 'manual Open overrides a warm thermostat');
+  const heldShut = zoneLoop(16, { controlMode: 1, manualOpen: 0 });
+  near(heldShut.nodes.hk?.flowLph ?? 0, 0, 1, 'manual Closed overrides a cool thermostat');
+  const bareZone = zoneLoop(16, { opening: 50, manualOpen: 1 }, false);
+  assert.ok((bareZone.nodes.hk?.flowLph ?? 0) > 200, 'without a thermostat a half-open valve still passes water');
+  assert.ok((bareZone.nodes.fbh?.flowLph ?? 0) > (bareZone.nodes.hk?.flowLph ?? 0) + 100, 'the fully open branch takes more than the half-open valve');
+  const bareClosed = zoneLoop(16, { opening: 0 }, false);
+  near(bareClosed.nodes.hk?.flowLph ?? 0, 0, 1, 'without a thermostat the opening percentage can still shut the branch');
 
   const header: GraphNode[] = [
     { id: 'ms', componentId: 'manifold-supply', params: { branches: 3 } },
@@ -387,6 +425,18 @@ function main() {
   assert.equal(sharedWarm.v3, 1);
   assert.equal(sharedWarm.p, 0);
   assert.equal(sharedWarm.hp, 0);
+  const fanNodes: GraphNode[] = [...diverted.nodes, { id: 'v', componentId: 'valve', params: { opening: 100, controlMode: 0, manualOpen: 1 } }];
+  const fanEdges = shared.concat([{ id: 's-v', source: 'rt', target: 'v', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' }]);
+  assert.equal(validateConnection(fanNodes, shared, 'rt', 'sig', 'v', 'ctl').ok, true);
+  const fanWarm = computeOpenings({
+    nodes: fanNodes.map((node) => node.id === 'rt' ? { ...node, params: { ...node.params, ambient: 24 } } : node),
+    edges: fanEdges,
+    held: {},
+  });
+  assert.equal(fanWarm.v, 0, 'one thermostat closes the two-way valve along with the pump and the heat pump');
+  assert.equal(fanWarm.v3, 1);
+  assert.equal(fanWarm.p, 0);
+  assert.equal(fanWarm.hp, 0);
 
   function injectionCircuit(kind: 'tee' | 'junction' | 'manifold' | 'return-pump') {
     const nodes: GraphNode[] = [

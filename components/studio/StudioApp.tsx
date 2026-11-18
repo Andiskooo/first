@@ -125,7 +125,28 @@ function StudioShell() {
       };
     }));
   }, [edges, setNodes]);
-  const view = useMemo(() => ({ showThermo, result, toggleThreeWay }), [showThermo, result, toggleThreeWay]);
+  const toggleTwoWay = useCallback((id: string) => {
+    setNodes((current) => current.map((node) => {
+      const selected = node.id === id;
+      if (!selected) return node.selected ? { ...node, selected: false } : node;
+      if (node.data.componentId !== 'valve') return { ...node, selected: true };
+      const linked = edges.some((edge) => edge.type === 'signal' && edge.target === id);
+      const liveOpen = (resultRef.current?.nodes[id]?.opening ?? 1) >= 0.05;
+      return {
+        ...node,
+        selected: true,
+        data: {
+          ...node.data,
+          params: {
+            ...node.data.params,
+            manualOpen: liveOpen ? 0 : 1,
+            controlMode: linked ? 1 : (node.data.params.controlMode ?? 0),
+          },
+        },
+      };
+    }));
+  }, [edges, setNodes]);
+  const view = useMemo(() => ({ showThermo, result, toggleThreeWay, toggleTwoWay }), [showThermo, result, toggleThreeWay, toggleTwoWay]);
   const selectedEdge = edges.find((edge) => edge.selected) ?? null;
   const selected = selectedEdge ? null : (nodes.find((node) => node.selected) ?? null);
 
@@ -489,7 +510,11 @@ function StudioShell() {
                 setNodes((current) => current.map((node) => {
                   if (node.id !== id) return node;
                   const params = { ...node.data.params, [key]: value };
-                  if (key === 'manualPort' && node.data.componentId === 'valve-3way' && edges.some((edge) => edge.type === 'signal' && edge.target === id)) {
+                  const linked = edges.some((edge) => edge.type === 'signal' && edge.target === id);
+                  if (key === 'manualPort' && node.data.componentId === 'valve-3way' && linked) {
+                    params.controlMode = 1;
+                  }
+                  if (key === 'manualOpen' && node.data.componentId === 'valve' && linked) {
                     params.controlMode = 1;
                   }
                   const def = getComponent(node.data.componentId);

@@ -72,12 +72,21 @@ export function PropertiesPanel({
                 <NodeReadouts
                   text={text}
                   sim={sim}
-                  kind={def.id === 'buffer-tank' ? 'buffer' : def.id === 'thermostat' ? 'room' : def.id === 'valve-3way' ? 'valve3' : def.id === 'mixer' ? 'mixer' : def.id === 'pump' ? 'pump' : def.category === 'source' ? 'source' : def.category === 'consumer' ? 'consumer' : 'other'}
-                  modeText={def.id === 'valve-3way' ? (signalLinked && (selected.data.params.controlMode ?? 0) < 0.5 ? text.modeAuto : text.modeManual) : undefined}
+                  kind={def.id === 'buffer-tank' ? 'buffer' : def.id === 'thermostat' ? 'room' : def.id === 'valve-3way' ? 'valve3' : def.id === 'valve' ? 'valve2' : def.id === 'mixer' ? 'mixer' : def.id === 'pump' ? 'pump' : def.category === 'source' ? 'source' : def.category === 'consumer' ? 'consumer' : 'other'}
+                  modeText={def.id === 'valve-3way' || def.id === 'valve' ? (signalLinked && (selected.data.params.controlMode ?? 0) < 0.5 ? text.modeAuto : text.modeManual) : undefined}
                 />
               ) : null}
               {def.id === 'valve-3way' && selected ? (
                 <ThreeWayControls
+                  text={text}
+                  params={selected.data.params}
+                  opening={live?.opening}
+                  signalLinked={signalLinked}
+                  onParam={(key, value) => onParam(selected.id, key, value)}
+                />
+              ) : null}
+              {def.id === 'valve' && selected ? (
+                <TwoWayControls
                   text={text}
                   params={selected.data.params}
                   opening={live?.opening}
@@ -92,7 +101,11 @@ export function PropertiesPanel({
                 </p>
               ) : null}
               <div className="mt-4 space-y-4">
-                {def.params.filter((param) => def.id !== 'valve-3way' || (param.id !== 'controlMode' && param.id !== 'manualPort')).map((param) => (
+                {def.params.filter((param) => {
+                  if (def.id === 'valve-3way' && (param.id === 'controlMode' || param.id === 'manualPort')) return false;
+                  if (def.id === 'valve' && (param.id === 'controlMode' || param.id === 'manualOpen')) return false;
+                  return true;
+                }).map((param) => (
                   <ParamControl
                     key={param.id}
                     id={param.id}
@@ -222,6 +235,52 @@ function ThreeWayControls({
   );
 }
 
+function TwoWayControls({
+  text,
+  params,
+  opening,
+  signalLinked,
+  onParam,
+}: {
+  text: StudioCopy;
+  params: Record<string, number>;
+  opening: number | undefined;
+  signalLinked: boolean;
+  onParam: (key: string, value: number) => void;
+}) {
+  const manual = !signalLinked || (params.controlMode ?? 0) >= 0.5;
+  const liveOpen = opening != null ? opening >= 0.05 : (params.manualOpen ?? 1) >= 0.5;
+  const storedOpen = (params.manualOpen ?? 1) >= 0.5;
+  return (
+    <div className="mt-4 space-y-3">
+      <p className="rounded-lg bg-violet-50 px-3 py-2 text-xs leading-5 text-violet-950">
+        <span className="font-semibold">{manual ? text.modeManual : text.modeAuto}</span>
+        {' · '}
+        {liveOpen ? text.open : text.closed}
+        <span className="mt-0.5 block text-violet-800">
+          {signalLinked
+            ? (manual ? text.zoneManual : text.zoneAuto)
+            : text.zoneAlways}
+        </span>
+      </p>
+      <div>
+        <span className="text-sm text-slate-700">{text.params.controlMode}</span>
+        <div className="mt-1 grid grid-cols-2 gap-2">
+          <ModeButton label={text.modeAuto} pressed={signalLinked && !manual} disabled={!signalLinked} onClick={() => onParam('controlMode', 0)} />
+          <ModeButton label={text.modeManual} pressed={manual} onClick={() => onParam('controlMode', 1)} />
+        </div>
+      </div>
+      <div>
+        <span className="text-sm text-slate-700">{text.params.manualOpen}</span>
+        <div className="mt-1 grid grid-cols-2 gap-2">
+          <ModeButton label={text.open} pressed={storedOpen} onClick={() => onParam('manualOpen', 1)} />
+          <ModeButton label={text.closed} pressed={!storedOpen} onClick={() => onParam('manualOpen', 0)} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ModeButton({
   label,
   pressed,
@@ -254,7 +313,7 @@ function NodeReadouts({
 }: {
   text: StudioCopy;
   sim: NodeSim;
-  kind: 'buffer' | 'source' | 'consumer' | 'room' | 'valve3' | 'mixer' | 'pump' | 'other';
+  kind: 'buffer' | 'source' | 'consumer' | 'room' | 'valve3' | 'valve2' | 'mixer' | 'pump' | 'other';
   modeText?: string;
 }) {
   const supply = kind === 'source' ? sim.tOut : sim.tIn;
@@ -269,6 +328,12 @@ function NodeReadouts({
         <>
           <dt>{text.params.controlMode}</dt><dd>{modeText}</dd>
           <dt>{text.valveState}</dt><dd>{(sim.opening ?? 0) >= 0.5 ? text.portB : text.portA}</dd>
+        </>
+      ) : kind === 'valve2' ? (
+        <>
+          <dt>{text.params.controlMode}</dt><dd>{modeText}</dd>
+          <dt>{text.valveState}</dt><dd>{(sim.opening ?? 1) < 0.05 ? text.closed : text.open}</dd>
+          <dt>{text.flow}</dt><dd>{formatNum(sim.flowLph, 0)} L/h</dd>
         </>
       ) : kind === 'mixer' ? (
         <>
@@ -288,13 +353,13 @@ function NodeReadouts({
           <dt>{text.delta}</dt><dd>{formatNum(Math.abs(sim.dt), 1)} K</dd>
         </>
       )}
-      {kind === 'mixer' || kind === 'valve3' ? null : (
+      {kind === 'mixer' || kind === 'valve3' || kind === 'valve2' ? null : (
         <>
           <dt>{text.flow}</dt><dd>{formatNum(sim.flowLph, 0)} L/h</dd>
           <dt>{text.power}</dt><dd>{formatNum(sim.qKw, 1)} kW</dd>
         </>
       )}
-      {sim.opening != null && kind !== 'valve3' && kind !== 'mixer' ? (
+      {sim.opening != null && kind !== 'valve3' && kind !== 'valve2' && kind !== 'mixer' ? (
         <>
           <dt>{text.valveState}</dt>
           <dd>{kind === 'pump' || kind === 'source' ? ((sim.opening ?? 1) >= 0.5 ? text.pumpOn : text.pumpOff) : sim.opening < 0.05 ? text.closed : sim.opening > 0.95 ? text.open : `${Math.round(sim.opening * 100)}%`}</dd>

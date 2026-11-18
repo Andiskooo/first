@@ -105,7 +105,7 @@ function diagnose(ends: ConnectionEnd[]): string | null {
 
 export function portOccupied(edges: GraphEdge[], nodeId: string, portId: string, nodes: GraphNode[] = []): boolean {
   const node = nodes.find((item) => item.id === nodeId);
-  // One thermostat can command a three-way valve and a circulation pump together.
+  // One thermostat can command a two-way valve, a three-way valve, a pump, and a heat pump together.
   if (node?.componentId === 'thermostat' && portId === 'sig') return false;
   return edges.some((edge) =>
     (edge.source === nodeId && edge.sourceHandle === portId) ||
@@ -137,9 +137,10 @@ export function validateConnection(
     if (sourceDef?.id === 'mixer' || targetDef?.id === 'mixer') return { ok: false, code: 'mixer-manual' };
     const fromThermo = sourceDef?.id === 'thermostat' && sourcePort.id === 'sig';
     const toValve = targetDef?.id === 'valve-3way' && targetPort.id === 'ctl';
+    const toZone = targetDef?.id === 'valve' && targetPort.id === 'ctl';
     const toPump = targetDef?.id === 'pump' && targetPort.id === 'ctl';
     const toHeatPump = targetDef?.id === 'heat-pump' && targetPort.id === 'ctl';
-    if (!fromThermo || (!toValve && !toPump && !toHeatPump)) return { ok: false, code: 'signal-pair' };
+    if (!fromThermo || (!toValve && !toZone && !toPump && !toHeatPump)) return { ok: false, code: 'signal-pair' };
     return { ok: true };
   }
   const combined = [

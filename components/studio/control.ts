@@ -14,6 +14,13 @@
  * 3. No thermostat signal: the toggle decides, and Auto has nothing to follow.
  *
  * A mixer stores its hot share here (0 = all cold, 1 = all hot). It has no signal.
+ *
+ * Two-way precedence:
+ * 1. Thermostat connected and controlMode is Auto: ambient above the room
+ *    setpoint closes the valve. Otherwise it stays at its opening percentage.
+ * 2. controlMode is Manual: the Open/Closed toggle decides, even with a thermostat.
+ * 3. No thermostat: the toggle and the opening percentage both apply. The toggle
+ *    defaults to open, so an existing opening setting is unchanged.
  */
 import { getComponent } from '@/components/studio/registry';
 import { clamp } from '@/components/studio/temperature';
@@ -47,7 +54,19 @@ export function computeOpenings(input: ControlInput): Record<string, number> {
     const def = getComponent(node.componentId);
     if (!def) continue;
     if (def.id === 'valve') {
-      openings[node.id] = openingParam(node);
+      const fraction = openingParam(node);
+      const manualOpen = (node.params.manualOpen ?? 1) >= 0.5;
+      const wire = wires.find((edge) => edge.target === node.id && edge.targetHandle === 'ctl');
+      const thermo = wire ? byId.get(wire.source) : undefined;
+      const linked = Boolean(thermo && thermo.componentId === 'thermostat');
+      const auto = (node.params.controlMode ?? 0) < 0.5;
+      if (linked && auto) {
+        const ambient = thermo?.params.ambient ?? 16;
+        const setpoint = thermo?.params.roomSet ?? 21;
+        openings[node.id] = ambient > setpoint ? 0 : fraction;
+        continue;
+      }
+      openings[node.id] = manualOpen ? fraction : 0;
     } else if (def.id === 'valve-3way') {
       const manual = (node.params.manualPort ?? 0) >= 0.5 ? 1 : 0;
       const wire = wires.find((edge) => edge.target === node.id && edge.targetHandle === 'ctl');

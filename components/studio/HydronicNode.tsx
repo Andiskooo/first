@@ -47,8 +47,9 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
   const ports = resolvePorts(def, data.params);
   const drawn = { ...def, width: box.width, height: box.height, ports };
   const opening = sim?.opening;
-  const thermostatLinked = def.id === 'valve-3way' && graphEdges.some((edge) => edge.kind === 'signal' && edge.target === id && edge.targetHandle === 'ctl');
-  const manualMode = def.id === 'valve-3way' && (!thermostatLinked || (data.params?.controlMode ?? 0) >= 0.5);
+  const thermostatLinked = (def.id === 'valve-3way' || def.id === 'valve') && graphEdges.some((edge) => edge.kind === 'signal' && edge.target === id && edge.targetHandle === 'ctl');
+  const manualMode = (def.id === 'valve-3way' || def.id === 'valve') && (!thermostatLinked || (data.params?.controlMode ?? 0) >= 0.5);
+  const zoneOpen = def.id === 'valve' && (opening != null ? opening >= 0.05 : (data.params?.manualOpen ?? 1) >= 0.5);
   const livePortB = def.id === 'valve-3way' && (opening != null ? opening >= 0.5 : (data.params?.manualPort ?? 0) >= 0.5);
   const pumpLinked = (def.id === 'pump' || def.id === 'heat-pump') && graphEdges.some((edge) => edge.kind === 'signal' && edge.target === id && edge.targetHandle === 'ctl');
   const pumpOn = (opening ?? 1) >= 0.5;
@@ -77,6 +78,21 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
           }}
         >
           {livePortB ? 'B' : 'A'}
+        </button>
+      ) : null}
+      {def.id === 'valve' ? (
+        <button
+          type="button"
+          data-valve-toggle={zoneOpen ? 'open' : 'closed'}
+          aria-label={zoneOpen ? text.open : text.closed}
+          className="nodrag nopan absolute left-1/2 top-[62%] z-30 -translate-x-1/2 -translate-y-1/2 rounded-full border border-violet-300 bg-white px-1.5 py-0.5 text-[10px] font-semibold leading-none text-violet-800 shadow-sm"
+          onPointerDown={(event) => event.stopPropagation()}
+          onClick={(event) => {
+            event.stopPropagation();
+            view.toggleTwoWay(id);
+          }}
+        >
+          {zoneOpen ? text.open : text.closed}
         </button>
       ) : null}
       {ports.map((port) => {
@@ -118,6 +134,12 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
             {manualMode ? text.modeManual : text.modeAuto}
             {' · '}
             {livePortB ? text.portB : text.portA}
+          </span>
+        ) : def.id === 'valve' ? (
+          <span className={cn('ml-1 font-semibold', zoneOpen ? 'text-violet-700' : 'text-slate-400')}>
+            {thermostatLinked ? `${manualMode ? text.modeManual : text.modeAuto} · ` : ''}
+            {zoneOpen ? text.open : text.closed}
+            {opening != null && opening >= 0.05 && opening <= 0.95 ? ` · ${Math.round(opening * 100)}%` : ''}
           </span>
         ) : (def.id === 'pump' || def.id === 'heat-pump') && pumpLinked ? (
           <span className={cn('ml-1 font-semibold', pumpOn ? 'text-violet-700' : 'text-slate-400')}>

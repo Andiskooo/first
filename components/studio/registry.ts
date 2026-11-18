@@ -68,6 +68,11 @@ const manualPort: ParamDef = {
   id: 'manualPort', kind: 'boolean', min: 0, max: 1, step: 1, defaultValue: 0, unit: '',
 };
 
+/** 1 = two-way valve open, 0 = closed. Default open, so the opening percentage still applies. */
+const manualOpen: ParamDef = {
+  id: 'manualOpen', kind: 'boolean', min: 0, max: 1, step: 1, defaultValue: 1, unit: '',
+};
+
 /** Hot share of a mixer. 0 is all cold, 100 is all hot. */
 const mix: ParamDef = {
   id: 'mix', kind: 'number', min: 0, max: 100, step: 5, defaultValue: 50, unit: '%',
@@ -286,7 +291,11 @@ export const COMPONENTS: ComponentDef[] = [
     code: 'V',
     category: 'valve',
     name: text('Valvul 2-rrugëshe', 'Zweiwegeventil', 'Two-way valve'),
-    blurb: text('Hapje ose mbyllje e një dege. E mbyllur, e ndalon atë degë.', 'Auf oder zu für einen Strang. Geschlossen sperrt sie ihn.', 'On/off or modulating. Shut, it stops that branch.'),
+    blurb: text(
+      'Hapje ose mbyllje e një dege. Auto me termostat: mbi pikën e dhomës mbyllet. Manual përdor çelësin Hapur/Mbyllur. Pa termostat vlejnë çelësi dhe përqindja e hapjes.',
+      'Auf oder zu für einen Strang. Auto mit Thermostat: über dem Raumsoll zu. Hand nutzt Offen/Zu. Ohne Thermostat gelten Schalter und Öffnungsgrad.',
+      'On/off or modulating. Auto with a thermostat closes it above the room setpoint. Manual uses the Open/Closed toggle. With no thermostat, the toggle and the opening percentage both apply.',
+    ),
     width: 92,
     height: 72,
     symbol: 'valve',
@@ -296,7 +305,7 @@ export const COMPONENTS: ComponentDef[] = [
       { id: 'in', x: 0, y: 0.62, side: 'neutral', direction: 'in', terminal: 'passive', required: true },
       { id: 'out', x: 1, y: 0.62, side: 'neutral', direction: 'out', terminal: 'passive', required: true },
     ],
-    params: [behavior, motorized, opening],
+    params: [controlMode, manualOpen, behavior, motorized, opening],
   },
   {
     id: 'valve-3way',
@@ -395,9 +404,9 @@ export const COMPONENTS: ComponentDef[] = [
     category: 'control',
     name: text('Termostat dhome', 'Raumthermostat', 'Room thermostat'),
     blurb: text(
-      'Vetëm komandë për një valvul 3-rrugëshe në Auto. Nëse ambienti është mbi pikën e dhomës, gjithë uji shkon te porta B, përndryshe te A. Përzierësi nuk e pranon.',
-      'Nur ein Befehl für ein Dreiwegeventil auf Auto. Liegt die Umgebung über dem Soll, geht der ganze Strom nach B, sonst nach A. Ein Mischer nimmt das Signal nicht an.',
-      'A command only, for a three-way valve in Auto. If ambient is above the room setpoint, all the flow goes to port B, otherwise to A. A mixer will not take this signal.',
+      'Komandë për valvulën 2-rrugëshe, valvulën 3-rrugëshe, pompën ose pompën termike. Mbi pikën e dhomës mbyll valvulën 2-rrugëshe, e çon 3-rrugëshen te B dhe i fik pompat. Përzierësi nuk e pranon.',
+      'Befehl für Zweiwegeventil, Dreiwegeventil, Pumpe oder Wärmepumpe. Über dem Soll schließt es das Zweiwegeventil, legt das Dreiwegeventil auf B und schaltet die Pumpen aus. Ein Mischer nimmt es nicht an.',
+      'A command for a two-way valve, a three-way valve, a circulation pump, or a heat pump. Above the room setpoint it closes the two-way valve, sends the three-way valve to port B, and switches the pumps off. A mixer will not take this signal.',
     ),
     width: 88,
     height: 88,
