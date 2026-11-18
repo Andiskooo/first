@@ -18,12 +18,12 @@ Ports are drawn from the registry, so a new part does not need a change to the c
 
 ## Swap the heat pump image
 
-The heat pump node renders `public/studio/symbols/heat-pump.svg`. The path is `asset` on the `heat-pump` entry in `components/studio/registry.ts`.
+The heat pump node renders `public/studio/symbols/heat-pump.webp` (the ECOTEK outdoor unit, kept at its 800×616 aspect ratio). The path is `asset` on the `heat-pump` entry in `components/studio/registry.ts`.
 
-- Replace that SVG with another SVG or a product photo, keeping the same filename, or
-- change `asset` to a new public path, for example `/produktet/pompa-termike-vanguard.png`.
+- Replace that file with another photo of the same proportions, or
+- change `asset` to a new public path.
 
-The red supply outlet and blue return inlet stay on the right edge of the frame (`supply-out` at 33% height, `return-in` at 72%). They are handles, not part of the picture, so a photo does not have to include them.
+The red supply outlet and blue return inlet are handles on the right edge of the frame (`supply-out` at 58% height, `return-in` at 76%). They sit on top of the picture, so the photo does not have to include them.
 
 ## How the model works
 
@@ -55,9 +55,9 @@ The tool simulates one heat pump and one buffer. It is not a design calculation.
 
 ## Valves, thermostats, and manifolds
 
-Valves live in the palette beside the pump. A two-way valve stops a branch when it is shut, and a modulating one scales that branch’s share of the flow. A three-way valve either diverts (common port `ab` toward `a` or `b`) or mixes two branches into `ab`. A relief valve is the only part allowed to join supply to return; it stays shut until the water temperature passes its limit (this model has no pressure solver, so temperature stands in for the relief setting) and then bypasses some of the flow. A backflow preventer passes water only from its inlet to its outlet. An air vent is drawn on the pipe and does not change the flow.
+Valves live in the palette beside the pump. A two-way valve stops a branch when it is shut, and a modulating one scales that branch’s share of the flow. A three-way valve has a common port `ab` and two outlets, `a` (default) and `b`. It does not mix. Each of those three water ports may be tied to an inlet or an outlet line in any combination; the valve does not inherit a supply or return restriction from its other ports. A relief valve is the only part allowed to join supply to return; it stays shut until the water temperature passes its limit (this model has no pressure solver, so temperature stands in for the relief setting) and then bypasses some of the flow. A backflow preventer passes water only from its inlet to its outlet. An air vent is drawn on the pipe and does not change the flow.
 
-A room thermostat has no water ports. Its dashed purple link is a command, not a pipe, and it can land only on the control port of a two-way or three-way valve whose **Motorized** switch is on. The room starts at the ambient temperature, warms from the heat of the emitter downstream of that valve, and cools back toward ambient when the valve shuts. On/off valves open below the setpoint and close above it, with a small deadband so they do not chatter. Modulating valves move between 0% and 100%. The time scale is sped up (about 8 seconds per time constant) so the change is visible. The idea of a separate signal wire that carries a 0–1 command is adapted from [FluidLab](https://github.com/thepacket/fluidlab) (`src/model/control.ts`), which is MIT licensed, Copyright (c) 2026 Andre Paquette. The room balance and the hydraulic effect of each valve are original to this studio.
+A room thermostat has no water ports and does not simulate a warming room. It has two settings, ambient temperature and room setpoint. Its dashed purple link is a command, not a pipe, and it can land only on one three-way valve. If ambient is above the room setpoint, that valve sends 100% of the flow to port B. Otherwise it sends 100% to port A. The label on the valve shows which port is active, and the hydraulic result follows that branch only. The separate signal wire is adapted from [FluidLab](https://github.com/thepacket/fluidlab) (`src/model/control.ts`), which is MIT licensed, Copyright (c) 2026 Andre Paquette. The divert rule itself is original to this studio.
 
 The supply manifold is a hot header: one inlet on top and three or more outlets along the bottom (`branches`, 3–6). The return manifold is a cold header: the same number of inlets on top and one outlet below. Ports are supply-only or return-only, so a hot outlet cannot be tied to a cold return. A junction is a four-way cross; the tee remains the three-port branch.
 

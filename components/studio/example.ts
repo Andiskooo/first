@@ -86,33 +86,27 @@ function bufferExample(): { nodes: PlacedNode[]; edges: GraphEdge[] } {
   };
 }
 
-/** Manifold headers plus a thermostat on each motorized radiator valve. */
+/** One three-way valve. The thermostat sends all flow to A, or to B when ambient is above the setpoint. */
 function controlExample(): { nodes: PlacedNode[]; edges: GraphEdge[] } {
   return {
     nodes: [
-      place('hp', 'heat-pump', 20, 250, { capacity: 12, setpoint: 45, internalPump: 0, internalSpeed: 0 }),
-      place('p', 'pump', 250, 236, { speed: 70 }),
-      place('ms', 'manifold-supply', 400, 200, { branches: 3 }),
-      place('rt1', 'thermostat', 640, 0, { roomSet: 21, ambient: 16 }),
-      place('v1', 'valve', 640, 110, { motorized: 1, behavior: 0, opening: 100 }),
-      place('hk', 'radiator', 800, 100, { demand: 4 }),
-      place('rt2', 'thermostat', 640, 230, { roomSet: 30, ambient: 16 }),
-      place('v2', 'valve', 640, 340, { motorized: 1, behavior: 0, opening: 100 }),
-      place('fbh', 'underfloor', 800, 330, { demand: 3 }),
-      place('mr', 'manifold-return', 400, 480, { branches: 3 }),
+      place('hp', 'heat-pump', 20, 160, { capacity: 12, setpoint: 45, internalPump: 0, internalSpeed: 0 }),
+      place('p', 'pump', 280, 190, { speed: 70 }),
+      place('rt', 'thermostat', 430, 20, { roomSet: 21, ambient: 16 }),
+      place('v3', 'valve-3way', 460, 150),
+      place('hk', 'radiator', 700, 60, { demand: 4 }),
+      place('fbh', 'underfloor', 700, 300, { demand: 3 }),
+      place('tr', 'tee', 480, 430),
     ],
     edges: [
       edge('e-hp-p', 'hp', 'supply-out', 'p', 'in'),
-      edge('e-p-ms', 'p', 'out', 'ms', 'in'),
-      edge('e-ms-v1', 'ms', 'out-1', 'v1', 'in'),
-      edge('e-v1-hk', 'v1', 'out', 'hk', 'supply-in'),
-      edge('e-ms-v2', 'ms', 'out-2', 'v2', 'in'),
-      edge('e-v2-fbh', 'v2', 'out', 'fbh', 'supply-in'),
-      edge('e-hk-mr', 'hk', 'return-out', 'mr', 'in-1'),
-      edge('e-fbh-mr', 'fbh', 'return-out', 'mr', 'in-2'),
-      edge('e-mr-hp', 'mr', 'out', 'hp', 'return-in'),
-      edge('s-rt1', 'rt1', 'sig', 'v1', 'ctl', 'signal'),
-      edge('s-rt2', 'rt2', 'sig', 'v2', 'ctl', 'signal'),
+      edge('e-p-v3', 'p', 'out', 'v3', 'ab'),
+      edge('e-v3-hk', 'v3', 'a', 'hk', 'supply-in'),
+      edge('e-v3-fbh', 'v3', 'b', 'fbh', 'supply-in'),
+      edge('e-hk-tr', 'hk', 'return-out', 'tr', 'b'),
+      edge('e-fbh-tr', 'fbh', 'return-out', 'tr', 'c'),
+      edge('e-tr-hp', 'tr', 'a', 'hp', 'return-in'),
+      edge('s-rt', 'rt', 'sig', 'v3', 'ctl', 'signal'),
     ],
   };
 }

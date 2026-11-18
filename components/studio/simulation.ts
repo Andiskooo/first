@@ -176,17 +176,10 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     if (def.id === 'valve') return enterPort === 'in' ? [{ port: 'out', gain: gain * openingOf(nodeId) }] : [];
     if (def.id === 'relief') return enterPort === 'in' ? open('out', gain * openingOf(nodeId)) : [];
     if (def.id === 'valve-3way') {
-      const position = openingOf(nodeId);
-      const mix = (nodeById.get(nodeId)?.params.arrangement ?? 0) >= 0.5;
-      if (!mix) {
-        if (enterPort !== 'ab') return [];
-        return [
-          { port: 'a', gain: gain * (1 - position) },
-          { port: 'b', gain: gain * position },
-        ];
-      }
-      if (enterPort === 'a') return open('ab', gain * (1 - position));
-      if (enterPort === 'b') return open('ab', gain * position);
+      const diverted = openingOf(nodeId) >= 0.5;
+      const active = diverted ? 'b' : 'a';
+      if (enterPort === 'ab') return [{ port: active, gain }];
+      if (enterPort === active) return [{ port: 'ab', gain }];
       return [];
     }
     if (def.id === 'manifold-supply' || def.id === 'manifold-return') {

@@ -42,10 +42,6 @@ const behavior: ParamDef = {
   id: 'behavior', kind: 'select', min: 0, max: 1, step: 1, defaultValue: 0, unit: '', options: [0, 1],
 };
 
-const arrangement: ParamDef = {
-  id: 'arrangement', kind: 'select', min: 0, max: 1, step: 1, defaultValue: 0, unit: '', options: [0, 1],
-};
-
 const limitC: ParamDef = {
   id: 'limitC', kind: 'number', min: 40, max: 95, step: 1, defaultValue: 75, unit: '°C',
 };
@@ -71,10 +67,10 @@ function text(sq: string, de: string, en: string): Record<Locale, string> {
 }
 
 const hpSupply: PortDef = {
-  id: 'supply-out', x: 1, y: 0.33, side: 'supply', direction: 'out', terminal: 'hp-supply', required: true,
+  id: 'supply-out', x: 0.96, y: 0.58, side: 'supply', direction: 'out', terminal: 'hp-supply', required: true,
 };
 const hpReturn: PortDef = {
-  id: 'return-in', x: 1, y: 0.72, side: 'return', direction: 'in', terminal: 'hp-return', required: true,
+  id: 'return-in', x: 0.96, y: 0.76, side: 'return', direction: 'in', terminal: 'hp-return', required: true,
 };
 
 function consumerPorts(): PortDef[] {
@@ -95,9 +91,9 @@ export const COMPONENTS: ComponentDef[] = [
       'Wärmequelle. Roter Ausgang ist Vorlauf, blauer Eingang ist Rücklauf.',
       'Heat source. The red port is supply out, the blue port is return in.',
     ),
-    width: 180,
-    height: 104,
-    asset: '/studio/symbols/heat-pump.svg',
+    width: 200,
+    height: 154,
+    asset: '/studio/symbols/heat-pump.webp',
     symbol: 'heat-pump',
     rotatable: false,
     ports: [hpSupply, hpReturn],
@@ -283,18 +279,22 @@ export const COMPONENTS: ComponentDef[] = [
     code: 'V3',
     category: 'valve',
     name: text('Valvul 3-rrugëshe', 'Dreiwegeventil', 'Three-way valve'),
-    blurb: text('Ndane rrjedhën ose përzien dy degë në të njëjtin qark.', 'Teilt oder mischt zwei Stränge im selben Kreis.', 'Diverts or mixes two branches on the same circuit.'),
+    blurb: text(
+      'Porta AB është e përbashkët. Pa termostat uji del te A. Me ambient mbi pikën e dhomës, del 100% te B.',
+      'AB ist der gemeinsame Anschluss. Ohne Thermostat geht das Wasser nach A. Liegt die Umgebung über dem Soll, geht es zu 100 % nach B.',
+      'AB is the common port. With no thermostat, water leaves through A. If ambient is above the room setpoint, 100% leaves through B.',
+    ),
     width: 104,
     height: 96,
     symbol: 'valve-3way',
     rotatable: true,
     ports: [
       signalPort('ctl', 'in'),
-      { id: 'ab', x: 0, y: 0.46, side: 'neutral', direction: 'junction', terminal: 'passive', required: true },
-      { id: 'a', x: 1, y: 0.46, side: 'neutral', direction: 'junction', terminal: 'passive', required: true },
+      { id: 'ab', x: 0, y: 0.46, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },
+      { id: 'a', x: 1, y: 0.46, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },
       { id: 'b', x: 0.5, y: 1, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },
     ],
-    params: [arrangement, behavior, motorized, { ...opening, defaultValue: 0 }],
+    params: [],
   },
   {
     id: 'relief',
@@ -349,7 +349,11 @@ export const COMPONENTS: ComponentDef[] = [
     code: 'RT',
     category: 'control',
     name: text('Termostat dhome', 'Raumthermostat', 'Room thermostat'),
-    blurb: text('Dhoma ngrohet nga radiatori që shërben dhe ftohet ndaj ambientit. Sinjali i ndërprerë nuk është tub uji.', 'Der Raum wird vom Heizkörper erwärmt und kühlt zur Umgebung. Die gestrichelte Linie ist kein Rohr.', 'The room warms from the emitter it serves and cools toward ambient. The dashed link is not a water pipe.'),
+    blurb: text(
+      'Vetëm komandë. Nëse ambienti është mbi pikën e dhomës, valvula 3-rrugëshe e lidhur kthen gjithë ujin te porta tjetër.',
+      'Nur ein Befehl. Liegt die Umgebung über dem Raumsollwert, lenkt das verbundene Dreiwegeventil den ganzen Strom auf den anderen Ausgang.',
+      'A command only. If ambient is above the room setpoint, the connected three-way valve sends all the flow to the other outlet.',
+    ),
     width: 88,
     height: 88,
     symbol: 'thermostat',

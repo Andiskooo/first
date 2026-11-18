@@ -82,7 +82,9 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
               borderRadius: port.terminal === 'signal' ? 2 : 999,
               background: portColor(tint),
               transform: 'translate(-50%, -50%)',
-              boxShadow: !used && port.required ? '0 0 0 3px #fbbf24' : '0 0 0 1px rgba(15,23,42,0.28)',
+              boxShadow: def.id === 'valve-3way' && port.id === (opening != null && opening >= 0.5 ? 'b' : 'a')
+                ? '0 0 0 3px #7c3aed'
+                : !used && port.required ? '0 0 0 3px #fbbf24' : '0 0 0 1px rgba(15,23,42,0.28)',
               zIndex: 6,
             }}
           />
@@ -92,8 +94,10 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
         <span className="font-semibold text-slate-900">{def.code}</span>
         <span className="text-slate-500"> {def.name[locale]}</span>
         {opening != null ? (
-          <span className={cn('ml-1 font-semibold', opening < 0.05 ? 'text-slate-400' : 'text-violet-700')}>
-            {opening < 0.05 ? text.closed : opening > 0.95 ? text.open : `${Math.round(opening * 100)}%`}
+          <span className={cn('ml-1 font-semibold', def.id === 'valve-3way' ? 'text-violet-700' : opening < 0.05 ? 'text-slate-400' : 'text-violet-700')}>
+            {def.id === 'valve-3way'
+              ? (opening >= 0.5 ? text.portB : text.portA)
+              : opening < 0.05 ? text.closed : opening > 0.95 ? text.open : `${Math.round(opening * 100)}%`}
           </span>
         ) : null}
       </div>

@@ -107,7 +107,7 @@ function PartCard({
       aria-pressed={armed}
     >
       <span className="flex h-16 w-full items-center justify-center">
-        <span className="h-14 w-full">
+        <span className="relative block h-14 w-full">
           <ComponentArt def={item} />
         </span>
       </span>

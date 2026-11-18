@@ -153,14 +153,17 @@ function main() {
 
   const thermoNodes: GraphNode[] = [
     { id: 'rt', componentId: 'thermostat', params: { roomSet: 21, ambient: 16 } },
-    { id: 'v', componentId: 'valve', params: { motorized: 1, behavior: 0, opening: 100 } },
+    { id: 'v3', componentId: 'valve-3way', params: {} },
+    { id: 'v', componentId: 'valve', params: { behavior: 0, motorized: 1, opening: 100 } },
   ];
   const thermoEdges: GraphEdge[] = [
-    { id: 's', source: 'rt', target: 'v', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' },
+    { id: 's', source: 'rt', target: 'v3', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' },
   ];
-  assert.equal(computeOpenings({ nodes: thermoNodes, edges: thermoEdges, rooms: { rt: 16 }, held: {} }).v, 1);
-  assert.equal(computeOpenings({ nodes: thermoNodes, edges: thermoEdges, rooms: { rt: 23 }, held: { v: 1 } }).v, 0);
-  assert.equal(computeOpenings({ nodes: thermoNodes, edges: thermoEdges, rooms: { rt: 21 }, held: { v: 0 } }).v, 0);
+  assert.equal(computeOpenings({ nodes: thermoNodes, edges: thermoEdges, held: {} }).v3, 0);
+  thermoNodes[0] = { ...thermoNodes[0], params: { roomSet: 21, ambient: 24 } };
+  assert.equal(computeOpenings({ nodes: thermoNodes, edges: thermoEdges, held: {} }).v3, 1);
+  assert.equal(validateConnection(thermoNodes, [], 'rt', 'sig', 'v3', 'ctl').ok, true);
+  assert.equal(validateConnection(thermoNodes, [], 'rt', 'sig', 'v', 'ctl').ok, false);
 
   const header: GraphNode[] = [
     { id: 'ms', componentId: 'manifold-supply', params: { branches: 3 } },
@@ -172,8 +175,24 @@ function main() {
   assert.equal(validateConnection(header, [], 'ms', 'in', 'hk', 'return-out').ok, false);
   assert.equal(validateConnection(header, [], 'hk', 'return-out', 'mr', 'in-1').ok, true);
   assert.equal(validateConnection(header, [], 'mr', 'out', 'hp', 'return-in').ok, true);
-  assert.equal(validateConnection(thermoNodes, [], 'rt', 'sig', 'v', 'ctl').ok, true);
-  assert.equal(validateConnection(thermoNodes, [], 'rt', 'sig', 'v', 'in').ok, false);
+  assert.equal(validateConnection(thermoNodes, [], 'rt', 'sig', 'v3', 'ab').ok, false);
+  const bridged: GraphNode[] = [
+    { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45 } },
+    { id: 'v3', componentId: 'valve-3way', params: {} },
+    { id: 'hk', componentId: 'radiator', params: { demand: 3 } },
+  ];
+  const supplySide: GraphEdge[] = [{ id: 'w', source: 'hp', target: 'v3', sourceHandle: 'supply-out', targetHandle: 'ab' }];
+  assert.equal(validateConnection(bridged, supplySide, 'v3', 'a', 'hk', 'return-out').ok, true);
+  assert.equal(validateConnection(bridged, supplySide, 'v3', 'b', 'hk', 'supply-in').ok, true);
+
+  const diverted = buildExample('control');
+  const cold = simulate(diverted.nodes, diverted.edges, computeOpenings({ nodes: diverted.nodes, edges: diverted.edges, held: {} }));
+  assert.ok((cold.nodes.hk?.flowLph ?? 0) > 100, 'default port A feeds the radiator');
+  near(cold.nodes.fbh?.flowLph ?? 0, 0, 1, 'port B is idle below setpoint');
+  const warmNodes = diverted.nodes.map((node) => node.id === 'rt' ? { ...node, params: { ...node.params, ambient: 24 } } : node);
+  const warm = simulate(warmNodes, diverted.edges, computeOpenings({ nodes: warmNodes, edges: diverted.edges, held: {} }));
+  near(warm.nodes.hk?.flowLph ?? 0, 0, 1, 'port A is idle once ambient exceeds setpoint');
+  assert.ok((warm.nodes.fbh?.flowLph ?? 0) > 100, 'flow follows port B');
 
   const withCheckNodes = direct.nodes.concat([{ id: 'cv', componentId: 'check', params: {} }]);
   const withCheckEdges = direct.edges.flatMap((item) => item.id === 'e-p-ts'

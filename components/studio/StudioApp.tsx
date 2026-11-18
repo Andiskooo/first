@@ -22,7 +22,7 @@ import {
 import { Pause, Play, RotateCcw, Trash2 } from 'lucide-react';
 import '@xyflow/react/dist/style.css';
 
-import { computeOpenings, stepRooms } from '@/components/studio/control';
+import { computeOpenings } from '@/components/studio/control';
 import { buildExample, type ExampleKind } from '@/components/studio/example';
 import { componentBox, defaultParams, getComponent, resolvePorts } from '@/components/studio/registry';
 import { simulate } from '@/components/studio/simulation';
@@ -84,7 +84,6 @@ function StudioShell() {
   const rejectRef = useRef<string | null>(null);
   const heldRef = useRef<Record<string, number>>({});
   const resultRef = useRef<ReturnType<typeof simulate> | null>(null);
-  const [rooms, setRooms] = useState<Record<string, number>>({});
   const seq = useRef(1);
   const { screenToFlowPosition, fitView, deleteElements } = useReactFlow();
   const updateInternals = useUpdateNodeInternals();
@@ -92,26 +91,10 @@ function StudioShell() {
 
   const graph = useMemo(() => toGraph(nodes, edges), [nodes, edges]);
   const openings = useMemo(
-    () => computeOpenings({ nodes: graph.nodes, edges: graph.edges, rooms, held: heldRef.current, result: resultRef.current }),
-    [graph, rooms],
+    () => computeOpenings({ nodes: graph.nodes, edges: graph.edges, held: heldRef.current, result: resultRef.current }),
+    [graph],
   );
-  const result = useMemo(() => {
-    const solved = simulate(graph.nodes, graph.edges, openings);
-    const withRooms = { ...solved.nodes };
-    for (const node of graph.nodes) {
-      if (node.componentId !== 'thermostat') continue;
-      const ambient = node.params.ambient ?? 16;
-      withRooms[node.id] = {
-        tIn: rooms[node.id] ?? ambient,
-        tOut: rooms[node.id] ?? ambient,
-        flowLph: 0,
-        qKw: 0,
-        dt: 0,
-        roomC: rooms[node.id] ?? ambient,
-      };
-    }
-    return { ...solved, nodes: withRooms };
-  }, [graph, openings, rooms]);
+  const result = useMemo(() => simulate(graph.nodes, graph.edges, openings), [graph, openings]);
   const showThermo = phase !== 'idle';
   const running = phase === 'running';
   const view = useMemo(() => ({ showThermo, result }), [showThermo, result]);
@@ -134,36 +117,7 @@ function StudioShell() {
   }, [openings, result]);
 
   useEffect(() => {
-    if (phase !== 'running') return undefined;
-    let last = performance.now();
-    let carry = 0;
-    let frame = 0;
-    const tick = (now: number) => {
-      const dt = Math.min(0.25, (now - last) / 1000);
-      last = now;
-      carry += dt;
-      if (carry >= 0.25) {
-        const step = carry;
-        carry = 0;
-        setRooms((current) => stepRooms({
-          nodes: graph.nodes,
-          edges: graph.edges,
-          rooms: current,
-          held: heldRef.current,
-          result,
-        }, step));
-      }
-      frame = requestAnimationFrame(tick);
-    };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [phase, graph, result]);
-
-  useEffect(() => {
-    if (phase === 'idle') {
-      setRooms({});
-      heldRef.current = {};
-    }
+    if (phase === 'idle') heldRef.current = {};
   }, [phase]);
 
   useEffect(() => () => stopClock(), []);
@@ -262,7 +216,6 @@ function StudioShell() {
       };
     }));
     setEdges(example.edges.map((edge) => ({ ...edge, type: edge.kind === 'signal' ? 'signal' as const : 'hydronic' as const })));
-    setRooms({});
     heldRef.current = {};
     setPhase('idle');
     setHint(null);

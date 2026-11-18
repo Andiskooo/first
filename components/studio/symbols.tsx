@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useId } from 'react';
 import type { ComponentDef, PortDef } from '@/components/studio/types';
 import { temperatureColor } from '@/components/studio/temperature';
@@ -41,10 +42,16 @@ export function ComponentArt({
 }) {
   if (def.asset) {
     return (
-      // The heat pump artwork is a swappable file. next/image does not render SVG
-      // without extra config, and a photo dropped in later should keep its own size.
-      // eslint-disable-next-line @next/next/no-img-element
-      <img src={def.asset} alt="" draggable={false} className="pointer-events-none h-full w-full select-none object-contain" />
+      <div className="relative h-full w-full">
+        <Image
+          src={def.asset}
+          alt=""
+          fill
+          sizes="220px"
+          draggable={false}
+          className="pointer-events-none select-none object-contain"
+        />
+      </div>
     );
   }
   return <SymbolGraphic def={def} tIn={tIn} tOut={tOut} active={active} />;
@@ -88,7 +95,7 @@ function SymbolGraphic({
       {def.symbol === 'relief' ? <ReliefBody def={def} active={active} hot={hot} /> : null}
       {def.symbol === 'air-vent' ? <AirVentBody def={def} /> : null}
       {def.symbol === 'check' ? <CheckBody def={def} active={active} hot={hot} /> : null}
-      {def.symbol === 'thermostat' ? <ThermostatBody def={def} active={active} room={tIn} /> : null}
+      {def.symbol === 'thermostat' ? <ThermostatBody def={def} /> : null}
       {def.symbol === 'heat-pump' ? <HeatPumpFallback def={def} /> : null}
       {stubs(def)}
     </svg>
@@ -278,14 +285,14 @@ function CheckBody({ def, active, hot }: { def: ComponentDef; active: boolean; h
   );
 }
 
-function ThermostatBody({ def, active, room }: { def: ComponentDef; active: boolean; room?: number }) {
+function ThermostatBody({ def }: { def: ComponentDef }) {
   const c = def.width / 2;
   return (
     <>
       <rect x={8} y={6} width={def.width - 16} height={def.height - 20} rx={12} fill="#ffffff" stroke="#0f172a" strokeWidth={2} />
-      <circle cx={c} cy={36} r={16} fill={active ? '#ede9fe' : '#ffffff'} stroke="#0f172a" strokeWidth={1.8} />
-      <path d={`M ${c} 36 l 8 -6`} stroke="#7c3aed" strokeWidth={2} strokeLinecap="round" />
-      {room != null ? <text x={c} y={def.height - 28} textAnchor="middle" fontSize={11} fontFamily="Inter, sans-serif" fill="#0f172a">{room.toFixed(1)}°</text> : null}
+      <circle cx={c} cy={40} r={18} fill="#ffffff" stroke="#0f172a" strokeWidth={1.8} />
+      <path d={`M ${c} 40 l 10 -8`} stroke="#7c3aed" strokeWidth={2} strokeLinecap="round" />
+      <circle cx={c} cy={40} r={2.2} fill="#7c3aed" />
     </>
   );
 }

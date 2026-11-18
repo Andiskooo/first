@@ -64,7 +64,12 @@ export function floodTerminals(nodes: GraphNode[], edges: GraphEdge[], origin: E
     const def = node ? getComponent(node.componentId) : undefined;
     const port = def && node ? resolvePorts(def, node.params).find((item) => item.id === current.portId) : undefined;
     if (!node || !def || !port) continue;
-    if (port.terminal !== 'passive') {
+    if (port.terminal !== 'passive' || (def.id === 'valve-3way' && port.terminal === 'passive')) {
+      if (def.id === 'valve-3way' && port.id !== 'ctl') {
+        const link = links.get(key);
+        if (link) queue.push({ nodeId: link.nodeId, portId: link.portId });
+        continue;
+      }
       hits.push({ nodeId: current.nodeId, portId: current.portId, terminal: port.terminal });
       continue;
     }
@@ -125,7 +130,7 @@ export function validateConnection(
   if (!sourcePort || !targetPort) return { ok: false, code: 'missing-port' };
   if (sourcePort.terminal === 'signal' || targetPort.terminal === 'signal') {
     const fromThermo = sourceDef?.id === 'thermostat' && sourcePort.id === 'sig';
-    const toValve = (targetDef?.id === 'valve' || targetDef?.id === 'valve-3way') && targetPort.id === 'ctl';
+    const toValve = targetDef?.id === 'valve-3way' && targetPort.id === 'ctl';
     if (!fromThermo || !toValve) return { ok: false, code: 'signal-pair' };
     return { ok: true };
   }
