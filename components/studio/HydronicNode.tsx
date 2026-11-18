@@ -110,11 +110,9 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
             position={place.position}
             title={title}
             isConnectable
-            className="!border-2 !border-white"
+            className={port.terminal === 'signal' ? 'studio-port studio-port-signal !border-2 !border-white' : 'studio-port !border-2 !border-white'}
             style={{
               ...place.style,
-              width: port.terminal === 'signal' ? 11 : 14,
-              height: port.terminal === 'signal' ? 11 : 14,
               borderRadius: port.terminal === 'signal' ? 2 : 999,
               background: portColor(tint),
               transform: 'translate(-50%, -50%)',

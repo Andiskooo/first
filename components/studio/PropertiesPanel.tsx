@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+import { Minus, X } from 'lucide-react';
 import { useLanguage } from '@/components/LanguageProvider';
 import { getComponent } from '@/components/studio/registry';
 import { useStudioCopy, type StudioCopy } from '@/components/studio/copy';
@@ -19,6 +21,7 @@ export function PropertiesPanel({
   onReversePump,
   onRemove,
   onRemoveEdge,
+  onClose,
 }: {
   selected: HydronicFlowNode | null;
   selectedEdge: Edge | null;
@@ -31,41 +34,30 @@ export function PropertiesPanel({
   onReversePump: (id: string) => void;
   onRemove: (id: string) => void;
   onRemoveEdge: (id: string) => void;
+  onClose: () => void;
 }) {
   const text = useStudioCopy();
   const { locale } = useLanguage();
   const def = selected ? getComponent(selected.data.componentId) : undefined;
   const live = selected ? result.nodes[selected.id] : undefined;
   const sim = selected && showThermo ? live : undefined;
-  const buffered = result.mode === 'buffered' || result.tankC != null;
+  const heading = selectedEdge
+    ? (selectedEdge.type === 'signal' ? text.signal : text.pipe)
+    : text.component;
 
   return (
-    <aside className="studio-inspector flex h-full min-h-0 w-full flex-col bg-white lg:w-[320px] lg:border-l lg:border-slate-200">
-      <div className="min-h-0 flex-1 overflow-y-auto p-4">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">{text.globals}</h2>
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <Readout label={text.supply} value={showThermo ? `${formatNum(result.supplyC, 1)} °C` : '—'} />
-          <Readout label={text.returnT} value={showThermo ? `${formatNum(result.returnC, 1)} °C` : '—'} />
-          <Readout label={text.delta} value={showThermo ? `${formatNum(result.dtC, 1)} K` : '—'} />
-          <Readout label={text.power} value={showThermo ? `${formatNum(result.deliveredKw, 1)} / ${formatNum(result.demandKw, 1)} kW` : '—'} />
-          {buffered ? (
-            <>
-              <Readout label={text.tank} value={showThermo ? `${formatNum(result.tankC, 1)} °C` : '—'} />
-              <Readout label={text.primaryFlow} value={showThermo ? `${formatNum(result.primaryFlowLph, 0)} L/h` : '—'} />
-              <Readout label={text.secondaryFlow} value={showThermo ? `${formatNum(result.secondaryFlowLph, 0)} L/h` : '—'} />
-            </>
-          ) : (
-            <Readout label={text.flow} value={showThermo ? `${formatNum(result.primaryFlowLph, 0)} L/h` : '—'} />
-          )}
-        </div>
-        {!showThermo ? <p className="mt-3 text-xs leading-5 text-slate-500">{text.startHint}</p> : null}
-
-        <div className="mt-6 border-t border-slate-200 pt-4">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">{text.component}</h2>
+    <aside className="studio-inspector flex h-full min-h-0 w-full flex-col bg-white lg:w-[248px] lg:border-l lg:border-slate-200">
+      <div className="flex shrink-0 items-center justify-between border-b border-slate-200 px-3 py-1.5">
+        <h2 className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{heading}</h2>
+        <button type="button" aria-label={text.closePanel} onClick={onClose} className="grid h-7 w-7 place-items-center rounded-md text-slate-500 hover:bg-slate-100">
+          <X className="h-3.5 w-3.5" aria-hidden />
+        </button>
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
           {selectedEdge ? (
             <PipeInspector text={text} edge={selectedEdge} result={result} showThermo={showThermo} onRemove={() => onRemoveEdge(selectedEdge.id)} />
           ) : selected && def ? (
-            <div className="mt-3">
+            <div>
               <p className="text-sm font-semibold text-slate-900">{def.name[locale]} <span className="font-medium text-slate-400">{def.code}</span></p>
               <p className="mt-1 text-xs leading-5 text-slate-500">{def.blurb[locale]}</p>
               {sim ? (
@@ -136,7 +128,6 @@ export function PropertiesPanel({
           ) : (
             <p className="mt-3 text-sm leading-6 text-slate-500">{text.noSelection}</p>
           )}
-        </div>
 
         <details className="mt-6 border-t border-slate-200 pt-4 text-xs leading-5 text-slate-500">
           <summary className="cursor-pointer font-medium text-slate-700">{text.assumptionsTitle}</summary>
@@ -147,11 +138,47 @@ export function PropertiesPanel({
   );
 }
 
-function Readout({ label, value }: { label: string; value: string }) {
+export function SimChip({ result, showThermo }: { result: SimResult; showThermo: boolean }) {
+  const text = useStudioCopy();
+  const [open, setOpen] = useState(true);
+  const buffered = result.mode === 'buffered' || result.tankC != null;
+  const dash = '—';
+  const cell = (label: string, value: string) => (
+    <div key={label} className="min-w-0">
+      <div className="text-[9px] font-medium uppercase tracking-wide text-slate-500">{label}</div>
+      <div className="text-xs font-semibold tabular-nums leading-4 text-slate-900">{value}</div>
+    </div>
+  );
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="studio-sim pointer-events-auto absolute left-2 top-2 z-10 rounded-full border border-slate-200 bg-white/95 px-2.5 py-1 text-[11px] font-medium text-slate-700 shadow-sm"
+      >
+        {text.globals}{showThermo ? ` · ${formatNum(result.supplyC, 0)} °C` : ''}
+      </button>
+    );
+  }
   return (
-    <div className="rounded-xl bg-slate-50 px-3 py-2">
-      <div className="text-[10px] font-medium uppercase tracking-wide text-slate-500">{label}</div>
-      <div className="mt-0.5 text-sm font-semibold tabular-nums text-slate-900">{value}</div>
+    <div className="studio-sim pointer-events-none absolute left-2 top-2 z-10 w-[210px] rounded-lg border border-slate-200 bg-white/95 p-2 shadow-sm">
+      <div className="mb-1 flex items-center justify-between gap-2">
+        <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">{text.globals}</span>
+        <button type="button" aria-label={text.simHide} onClick={() => setOpen(false)} className="pointer-events-auto grid h-5 w-5 place-items-center rounded text-slate-500 hover:bg-slate-100">
+          <Minus className="h-3 w-3" aria-hidden />
+        </button>
+      </div>
+      <div className="grid grid-cols-2 gap-x-2 gap-y-1">
+        {cell(text.supply, showThermo ? `${formatNum(result.supplyC, 1)} °C` : dash)}
+        {cell(text.returnT, showThermo ? `${formatNum(result.returnC, 1)} °C` : dash)}
+        {cell(text.delta, showThermo ? `${formatNum(result.dtC, 1)} K` : dash)}
+        {cell(text.power, showThermo ? `${formatNum(result.deliveredKw, 1)} / ${formatNum(result.demandKw, 1)} kW` : dash)}
+        {buffered ? cell(text.tank, showThermo ? `${formatNum(result.tankC, 1)} °C` : dash) : null}
+        {buffered
+          ? cell(text.primaryFlow, showThermo ? `${formatNum(result.primaryFlowLph, 0)} L/h` : dash)
+          : cell(text.flow, showThermo ? `${formatNum(result.primaryFlowLph, 0)} L/h` : dash)}
+        {buffered ? cell(text.secondaryFlow, showThermo ? `${formatNum(result.secondaryFlowLph, 0)} L/h` : dash) : null}
+      </div>
     </div>
   );
 }

@@ -84,3 +84,5 @@ The mixer can also recirculate the return of the heat user it is feeding. Buffer
 The supply manifold is a hot header: one inlet on top and three or more outlets along the bottom (`branches`, 3–6). The return manifold is a cold header: the same number of inlets on top and one outlet below. Ports are supply-only or return-only, so a hot outlet cannot be tied to a cold return. A junction is a four-way cross; the tee remains the three-port branch.
 
 Click a pipe or a signal to select it. The inspector then offers Delete, the same action as for a part.
+
+The inspector stays closed until a part, a pipe, or a signal is selected. A close button, or a click on empty canvas, puts it away, and the canvas uses the full width. Supply, return, heat, and flow stay in a small readout on the canvas, including while Run is on. The part library is a narrow column and can be hidden. Large display does not enlarge the type or the panels, and it does not turn itself on. It only keeps touch targets and port hit areas comfortable. Pinch-zoom, two-finger pan, finger drag from the library, and fullscreen stay available.

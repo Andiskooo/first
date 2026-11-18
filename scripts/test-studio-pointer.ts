@@ -96,12 +96,18 @@ async function nodeCount(page: Page): Promise<number> {
   return page.locator('.react-flow__node').count();
 }
 
+async function openExample(page: Page, name: string) {
+  await page.getByRole('button', { name: 'Examples', exact: true }).click();
+  await page.getByRole('menuitem', { name }).click();
+}
+
 async function runPanel(browser: Browser) {
   const sizes = [
-    { width: 3840, height: 2160, scale: 1, present: true, shot: true },
-    { width: 3840, height: 2160, scale: 2, present: true, shot: false },
-    { width: 1920, height: 1080, scale: 1, present: true, shot: false },
-    { width: 390, height: 844, scale: 2, present: false, shot: false },
+    { width: 3840, height: 2160, scale: 1, phone: false, shot: false },
+    { width: 3840, height: 2160, scale: 2, phone: false, shot: false },
+    { width: 1920, height: 1080, scale: 1, phone: false, shot: true },
+    { width: 1920, height: 1080, scale: 2, phone: false, shot: false },
+    { width: 390, height: 844, scale: 2, phone: true, shot: false },
   ] as const;
   for (const size of sizes) {
     const page = await browser.newPage({
@@ -119,31 +125,66 @@ async function runPanel(browser: Browser) {
         width: window.innerWidth,
         present: document.querySelector('.studio-root')?.getAttribute('data-present'),
         display: style?.display,
+        libraryWidth: library?.getBoundingClientRect().width,
         libraryHeight: library?.getBoundingClientRect().height,
       };
     });
-    if (size.present) {
-      await page.locator('[data-part-card="heat-pump"]').waitFor({ state: 'visible', timeout: 8000 });
-    }
-    console.log('layout', size.width, layout);
+    console.log('layout', size.width, size.scale, layout);
     const flag = await page.locator('.studio-root').getAttribute('data-present');
-    if ((flag === 'true') !== size.present) throw new Error(`${size.width}x${size.height} present=${flag}`);
+    if (flag !== 'false') throw new Error(`${size.width}x${size.height} auto-enabled large display (${flag})`);
     const canvas = await page.locator('[data-studio-canvas]').boundingBox();
-    if (!canvas || canvas.width < size.width * 0.45 || canvas.height < size.height * 0.35) {
+    const minWidth = size.phone ? size.width * 0.8 : size.width * 0.72;
+    const minHeight = size.height * (size.phone ? 0.4 : 0.55);
+    if (!canvas || canvas.width < minWidth || canvas.height < minHeight) {
       throw new Error(`${size.width} canvas ${canvas?.width}x${canvas?.height}`);
     }
-    if (size.present) {
-      const run = await page.getByRole('button', { name: 'Run', exact: true }).boundingBox();
-      if (!run || run.height < 48) throw new Error(`${size.width} run button height ${run?.height}`);
+    if (await page.locator('.studio-inspector').count() !== 0) {
+      throw new Error(`${size.width} inspector is open before a selection`);
+    }
+    const run = await page.getByRole('button', { name: 'Run', exact: true }).boundingBox();
+    if (!run || run.height < 28 || run.height > 46) throw new Error(`${size.width} run button height ${run?.height}`);
+    if (!size.phone) {
+      await page.locator('[data-part-card="heat-pump"]').waitFor({ state: 'visible', timeout: 8000 });
+      if (!layout.libraryWidth || layout.libraryWidth > 220) {
+        throw new Error(`${size.width} library width ${layout.libraryWidth}`);
+      }
+      await page.getByRole('button', { name: 'Hide library' }).click();
+      const wide = await page.locator('[data-studio-canvas]').boundingBox();
+      if (!wide || wide.width < size.width * 0.9) throw new Error(`${size.width} collapsed canvas ${wide?.width}`);
+      await page.getByRole('button', { name: 'Show library' }).click();
+      await page.getByRole('button', { name: 'Large display' }).click();
+      const enlarged = await page.locator('.studio-root').getAttribute('data-present');
+      const runLarge = await page.getByRole('button', { name: 'Run', exact: true }).boundingBox();
+      if (enlarged !== 'true' || !runLarge || runLarge.height > 46) {
+        throw new Error(`${size.width} large display inflated the toolbar (${runLarge?.height})`);
+      }
+      await page.getByRole('button', { name: 'Large display' }).click();
     }
     if (size.shot) {
-      await page.getByRole('button', { name: 'Mixer example' }).click();
-      await page.waitForTimeout(600);
+      await openExample(page, 'Direct example');
+      await page.waitForTimeout(500);
+      await page.getByRole('button', { name: 'Run', exact: true }).click();
+      await page.waitForTimeout(700);
+      if (await page.locator('.studio-inspector').count() !== 0) throw new Error('inspector opened on Run');
+      if (await page.locator('.studio-sim').count() !== 1) throw new Error('simulation readout is missing');
+      await page.screenshot({ path: '/opt/cursor/artifacts/studio-run-1920.png' });
+      const pump = page.locator('.react-flow__node').filter({ hasText: 'WP' }).first();
+      const box = await pump.boundingBox();
+      if (!box) throw new Error('heat pump is not on the canvas');
+      await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+      await page.locator('.studio-inspector').waitFor({ state: 'visible' });
+      await page.waitForTimeout(250);
+      await page.screenshot({ path: '/opt/cursor/artifacts/studio-part-1920.png' });
+      await page.getByRole('button', { name: 'Close', exact: true }).click();
+      if (await page.locator('.studio-inspector').count() !== 0) throw new Error('close did not hide the inspector');
+    }
+    if (size.width === 3840 && size.scale === 1) {
+      await openExample(page, 'Mixer example');
+      await page.waitForTimeout(500);
       const before = await nodeCount(page);
-      await cdpDrag(page, await cardCenter(page, 'radiator'), await canvasPoint(page, 0.62, 0.62), 'touch');
+      await cdpDrag(page, await cardCenter(page, 'radiator'), await canvasPoint(page, 0.72, 0.62), 'touch');
       await page.waitForTimeout(400);
       if (await nodeCount(page) !== before + 1) throw new Error('4k touch drag did not add a part');
-      await page.screenshot({ path: '/opt/cursor/artifacts/studio-panel-3840.png' });
     }
     await page.close();
   }

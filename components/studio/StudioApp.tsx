@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
+import { createPortal } from 'react-dom';
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -19,7 +20,7 @@ import {
   type Node,
   type OnConnectEnd,
 } from '@xyflow/react';
-import { Pause, Play, RotateCcw, Trash2 } from 'lucide-react';
+import { ChevronDown, PanelLeft, Pause, Play, RotateCcw, Trash2 } from 'lucide-react';
 import '@xyflow/react/dist/style.css';
 
 import { computeOpenings } from '@/components/studio/control';
@@ -34,14 +35,85 @@ import { messageOf, useStudioCopy } from '@/components/studio/copy';
 import { hydronicNodeTypes, type HydronicFlowNode } from '@/components/studio/HydronicNode';
 import { hydronicEdgeTypes } from '@/components/studio/HydronicEdge';
 import { Library } from '@/components/studio/Library';
-import { PropertiesPanel } from '@/components/studio/PropertiesPanel';
+import { PropertiesPanel, SimChip } from '@/components/studio/PropertiesPanel';
 import { StudioViewContext } from '@/components/studio/viewContext';
 import type { StudioNodeData } from '@/components/studio/flowTypes';
 import type { GraphEdge, GraphNode } from '@/components/studio/types';
 import { cn } from '@/lib/utils';
 
+const fitPadding = { top: '132px', right: 0.05, bottom: '72px', left: 0.04 } as const;
+
 type Phase = 'idle' | 'running' | 'paused';
 type MobilePanel = 'library' | 'canvas' | 'props';
+
+function ExamplesMenu({ onPick }: { onPick: (kind: ExampleKind) => void }) {
+  const text = useStudioCopy();
+  const [open, setOpen] = useState(false);
+  const [box, setBox] = useState<{ x: number; y: number } | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = (event: PointerEvent) => {
+      const target = event.target;
+      if (target instanceof Element && (ref.current?.contains(target) || menuRef.current?.contains(target))) return;
+      setOpen(false);
+    };
+    const id = window.setTimeout(() => window.addEventListener('pointerdown', close), 0);
+    return () => {
+      window.clearTimeout(id);
+      window.removeEventListener('pointerdown', close);
+    };
+  }, [open]);
+  const items: { kind: ExampleKind; label: string }[] = [
+    { kind: 'direct', label: text.exampleDirect },
+    { kind: 'buffer', label: text.exampleBuffer },
+    { kind: 'control', label: text.exampleControl },
+    { kind: 'mix', label: text.exampleMix },
+  ];
+  return (
+    <div ref={ref} className="relative shrink-0">
+      <button
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => {
+          const rect = ref.current?.getBoundingClientRect();
+          if (rect) setBox({ x: rect.left, y: rect.bottom });
+          setOpen((current) => !current);
+        }}
+        className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white font-medium hover:bg-slate-50"
+      >
+        {text.examples}
+        <ChevronDown className="h-3.5 w-3.5" aria-hidden />
+      </button>
+      {open && box && typeof document !== 'undefined' ? createPortal(
+        <div
+          ref={menuRef}
+          role="menu"
+          className="fixed z-50 min-w-44 rounded-md border border-slate-200 bg-white py-1 shadow-md"
+          style={{ left: box.x, top: box.y + 4 }}
+        >
+          {items.map((item) => (
+            <button
+              key={item.kind}
+              type="button"
+              role="menuitem"
+              onClick={() => {
+                setOpen(false);
+                onPick(item.kind);
+              }}
+              className="block w-full px-3 py-1.5 text-left text-xs font-medium text-slate-800 hover:bg-slate-50"
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>,
+        document.body,
+      ) : null}
+    </div>
+  );
+}
 
 function toGraph(nodes: Node[], edges: Edge[]): { nodes: GraphNode[]; edges: GraphEdge[] } {
   return {
@@ -82,14 +154,17 @@ function StudioShell() {
   const [hint, setHint] = useState<string | null>(null);
   const [tankC, setTankC] = useState<number | null>(null);
   const [present, setPresent] = useState(false);
-  const presentLock = useRef(false);
+  const [libraryOpen, setLibraryOpen] = useState(true);
+  const [coarse, setCoarse] = useState(false);
   const shellRef = useRef<HTMLDivElement>(null);
   const graphRef = useRef({ nodes, edges });
   const rejectRef = useRef<string | null>(null);
   const heldRef = useRef<Record<string, number>>({});
   const resultRef = useRef<ReturnType<typeof simulate> | null>(null);
   const seq = useRef(1);
-  const { screenToFlowPosition, fitView, deleteElements } = useReactFlow();
+  const placedCount = useRef(0);
+  placedCount.current = nodes.length;
+  const { screenToFlowPosition, fitView, deleteElements, setViewport } = useReactFlow();
   const updateInternals = useUpdateNodeInternals();
   graphRef.current = { nodes, edges };
 
@@ -196,19 +271,21 @@ function StudioShell() {
   }, [phase, result.primaryIdle]);
 
   useEffect(() => {
-    const apply = () => {
-      if (presentLock.current) return;
-      const wide = window.innerWidth >= 1600;
-      const coarse = window.matchMedia('(pointer: coarse)').matches && window.innerWidth >= 1200;
-      setPresent(wide || coarse);
-    };
+    const query = window.matchMedia('(pointer: coarse)');
+    const apply = () => setCoarse(query.matches);
     apply();
-    window.addEventListener('resize', apply);
-    return () => window.removeEventListener('resize', apply);
+    query.addEventListener('change', apply);
+    return () => query.removeEventListener('change', apply);
   }, []);
 
   useEffect(() => {
-    const onFull = () => requestAnimationFrame(() => fitView({ padding: 0.12, duration: 180 }));
+    const width = window.innerWidth;
+    const zoom = width < 800 ? 1 : Math.min(1.65, Math.max(1.25, width / 1200));
+    void setViewport({ x: 40, y: 24, zoom });
+  }, [setViewport]);
+
+  useEffect(() => {
+    const onFull = () => requestAnimationFrame(() => fitView({ padding: fitPadding, duration: 180 }));
     document.addEventListener('fullscreenchange', onFull);
     return () => document.removeEventListener('fullscreenchange', onFull);
   }, [fitView]);
@@ -312,7 +389,7 @@ function StudioShell() {
     setHint(null);
     setArmed(null);
     resetDistances();
-    requestAnimationFrame(() => fitView({ padding: 0.16, duration: 280 }));
+    requestAnimationFrame(() => fitView({ padding: fitPadding, duration: 280 }));
   }, [fitView, setEdges, setNodes]);
 
   const rotate = useCallback((id: string) => {
@@ -354,6 +431,16 @@ function StudioShell() {
     return () => window.removeEventListener('keydown', onKey);
   }, [rotate, selected]);
 
+  const clearSelection = useCallback(() => {
+    setNodes((current) => current.map((node) => (node.selected ? { ...node, selected: false } : node)));
+    setEdges((current) => current.map((edge) => (edge.selected ? { ...edge, selected: false } : edge)));
+    if (window.matchMedia('(max-width: 1023px)').matches) setPanel('canvas');
+  }, [setEdges, setNodes]);
+
+  const showPropsOnPhone = useCallback(() => {
+    if (window.matchMedia('(max-width: 1023px)').matches) setPanel('props');
+  }, []);
+
   const issue = result.issues.find((item) => item.level === 'warn' || item.level === 'error')
     ?? result.issues.find((item) => item.level === 'info');
   const status = nodes.length === 0
@@ -365,38 +452,45 @@ function StudioShell() {
         : result.ok && showThermo
           ? null
           : text.startHint;
+  const inspectorOpen = Boolean(selected || selectedEdge);
+  useEffect(() => {
+    if (placedCount.current === 0) return;
+    const frame = requestAnimationFrame(() => fitView({ padding: fitPadding, duration: 0 }));
+    return () => cancelAnimationFrame(frame);
+  }, [inspectorOpen, libraryOpen, fitView]);
 
   return (
     <StudioViewContext.Provider value={view}>
       <div ref={shellRef} data-present={present ? 'true' : 'false'} className="studio-root flex h-full min-h-0 flex-col bg-[#f4f1ec] text-slate-900">
-        <div className="studio-toolbar flex shrink-0 flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-3 py-2">
-          <p className="mr-1 text-sm font-semibold">{text.title}</p>
-          <button type="button" onClick={() => setPhase('running')} aria-pressed={running} className={cn('inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-white', running ? 'bg-blue-700' : 'bg-blue-600 hover:bg-blue-700')}>
-            <Play className="h-4 w-4" aria-hidden /> {text.run}
+        <div className="studio-toolbar flex shrink-0 items-center gap-1 overflow-x-auto border-b border-slate-200 bg-white px-2 py-1">
+          <button
+            type="button"
+            aria-pressed={libraryOpen}
+            aria-label={libraryOpen ? text.hideLibrary : text.showLibrary}
+            onClick={() => setLibraryOpen((current) => !current)}
+            className="hidden shrink-0 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 lg:inline-flex"
+          >
+            <PanelLeft className="h-3.5 w-3.5" aria-hidden />
           </button>
-          <button type="button" onClick={() => setPhase((current) => (current === 'running' ? 'paused' : current))} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">
-            <Pause className="h-4 w-4" aria-hidden /> {text.pause}
+          <p className="mr-1 hidden shrink-0 text-xs font-semibold sm:block">{text.title}</p>
+          <button type="button" onClick={() => setPhase('running')} aria-pressed={running} className={cn('inline-flex shrink-0 items-center gap-1 rounded-md font-medium text-white', running ? 'bg-blue-700' : 'bg-blue-600 hover:bg-blue-700')}>
+            <Play className="h-3.5 w-3.5" aria-hidden /> {text.run}
           </button>
-          <button type="button" onClick={() => { setPhase('idle'); resetDistances(); }} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">
-            <RotateCcw className="h-4 w-4" aria-hidden /> {text.reset}
+          <button type="button" onClick={() => setPhase((current) => (current === 'running' ? 'paused' : current))} className="inline-flex shrink-0 items-center gap-1 rounded-md border border-slate-200 bg-white font-medium hover:bg-slate-50">
+            <Pause className="h-3.5 w-3.5" aria-hidden /> {text.pause}
           </button>
-          <span className="mx-1 hidden h-6 w-px bg-slate-200 sm:block" />
-          <button type="button" onClick={() => loadExample('direct')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">{text.exampleDirect}</button>
-          <button type="button" onClick={() => loadExample('buffer')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">{text.exampleBuffer}</button>
-          <button type="button" onClick={() => loadExample('control')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">{text.exampleControl}</button>
-          <button type="button" onClick={() => loadExample('mix')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">{text.exampleMix}</button>
-          <button type="button" onClick={() => { setNodes([]); setEdges([]); setPhase('idle'); setHint(null); resetDistances(); }} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">
-            <Trash2 className="h-4 w-4" aria-hidden /> {text.clear}
+          <button type="button" onClick={() => { setPhase('idle'); resetDistances(); }} className="inline-flex shrink-0 items-center gap-1 rounded-md border border-slate-200 bg-white font-medium hover:bg-slate-50">
+            <RotateCcw className="h-3.5 w-3.5" aria-hidden /> {text.reset}
+          </button>
+          <ExamplesMenu onPick={loadExample} />
+          <button type="button" onClick={() => { setNodes([]); setEdges([]); setPhase('idle'); setHint(null); resetDistances(); }} className="inline-flex shrink-0 items-center gap-1 rounded-md border border-slate-200 bg-white font-medium hover:bg-slate-50">
+            <Trash2 className="h-3.5 w-3.5" aria-hidden /> {text.clear}
           </button>
           <button
             type="button"
             aria-pressed={present}
-            onClick={() => {
-              presentLock.current = true;
-              setPresent((current) => !current);
-              requestAnimationFrame(() => fitView({ padding: 0.12, duration: 180 }));
-            }}
-            className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50"
+            onClick={() => setPresent((current) => !current)}
+            className="shrink-0 rounded-md border border-slate-200 bg-white font-medium hover:bg-slate-50"
           >{text.present}</button>
           <button
             type="button"
@@ -406,13 +500,13 @@ function StudioShell() {
               if (document.fullscreenElement) void document.exitFullscreen();
               else void shell.requestFullscreen();
             }}
-            className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50"
+            className="shrink-0 rounded-md border border-slate-200 bg-white font-medium hover:bg-slate-50"
           >{text.fullscreen}</button>
-          <p className="ml-auto hidden text-xs text-slate-500 xl:block">{text.disclaimer}</p>
+          <p className="ml-auto hidden shrink-0 text-[11px] text-slate-400 xl:block">{text.disclaimer}</p>
         </div>
 
         <div className="flex min-h-0 flex-1">
-          <div className={cn('min-h-0', panel === 'library' ? 'flex w-full' : 'hidden', 'lg:flex lg:w-auto')}>
+          <div className={cn('min-h-0', panel === 'library' ? 'flex w-full' : 'hidden', libraryOpen ? 'lg:flex lg:w-auto' : 'lg:hidden')}>
             <Library
               armedId={armed}
               onArm={(id) => {
@@ -446,12 +540,13 @@ function StudioShell() {
               edgeTypes={hydronicEdgeTypes}
               connectionMode={ConnectionMode.Loose}
               connectionLineType={ConnectionLineType.SmoothStep}
-              connectionRadius={present ? 48 : 28}
+              connectionRadius={present || coarse ? 44 : 32}
               snapToGrid
               snapGrid={[SNAP, SNAP]}
               fitView={false}
-              minZoom={0.2}
-              maxZoom={2.5}
+              defaultViewport={{ x: 40, y: 24, zoom: 1.25 }}
+              minZoom={0.25}
+              maxZoom={2.2}
               panOnScroll
               panOnDrag
               zoomOnPinch
@@ -462,44 +557,52 @@ function StudioShell() {
               colorMode="light"
               className="studio-flow"
               onPaneClick={(event) => {
-                if (!armed) return;
-                const point = screenToFlowPosition({ x: event.clientX, y: event.clientY });
-                addPart(armed, point.x, point.y);
-                setArmed(null);
+                if (armed) {
+                  const point = screenToFlowPosition({ x: event.clientX, y: event.clientY });
+                  addPart(armed, point.x, point.y);
+                  setArmed(null);
+                  return;
+                }
+                if (window.matchMedia('(max-width: 1023px)').matches) setPanel('canvas');
               }}
+              onNodeClick={showPropsOnPhone}
+              onEdgeClick={showPropsOnPhone}
             >
-              <Background variant={BackgroundVariant.Dots} gap={20} size={1.5} color="#d6d3d1" />
+              <Background variant={BackgroundVariant.Dots} gap={SNAP} size={1.2} color="#d6d3d1" />
               <Controls showInteractive={false} position="bottom-left" />
             </ReactFlow>
 
             {nodes.length === 0 ? (
-              <div className="pointer-events-none absolute inset-0 grid place-items-center p-6">
-                <div className="max-w-sm rounded-2xl border border-slate-200 bg-white/95 px-6 py-5 text-center shadow-sm">
-                  <p className="font-semibold">{text.emptyTitle}</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">{text.emptyBody}</p>
+              <div className="pointer-events-none absolute inset-0 grid place-items-center p-4">
+                <div className="max-w-xs rounded-lg border border-slate-200 bg-white/95 px-4 py-3 text-center shadow-sm">
+                  <p className="text-sm font-semibold">{text.emptyTitle}</p>
+                  <p className="mt-1 text-xs leading-5 text-slate-600">{text.emptyBody}</p>
                 </div>
               </div>
-            ) : null}
+            ) : (
+              <SimChip result={result} showThermo={showThermo} />
+            )}
 
             {armed ? (
-              <div className="absolute left-1/2 top-3 z-20 flex -translate-x-1/2 items-center gap-3 rounded-full border border-blue-200 bg-white px-4 py-2 text-sm shadow-sm">
+              <div className="absolute left-1/2 top-2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full border border-blue-200 bg-white px-3 py-1 text-xs shadow-sm">
                 <span>{text.armed}</span>
                 <button type="button" onClick={() => setArmed(null)} className="font-medium text-blue-700">{text.cancel}</button>
               </div>
             ) : null}
 
             {status ? (
-              <div className="pointer-events-none absolute inset-x-3 top-3 z-10 flex justify-center" aria-live="polite">
+              <div className="pointer-events-none absolute inset-x-3 top-2 z-10 flex justify-center" aria-live="polite">
                 <p className={cn(
-                  'pointer-events-auto max-w-xl rounded-xl border px-3 py-2 text-sm shadow-sm',
+                  'pointer-events-auto max-w-md rounded-md border px-2.5 py-1 text-xs leading-4 shadow-sm',
                   hint || issue ? 'border-amber-200 bg-amber-50 text-amber-950' : 'border-slate-200 bg-white/95 text-slate-600',
-                  armed && 'mt-12',
+                  armed && 'mt-8',
                 )}>{status}</p>
               </div>
             ) : null}
           </div>
 
-          <div className={cn('min-h-0', panel === 'props' ? 'flex w-full' : 'hidden', 'lg:flex lg:w-auto')}>
+          {inspectorOpen || panel === 'props' ? (
+          <div className={cn('min-h-0', panel === 'props' ? 'flex w-full' : 'hidden', inspectorOpen ? 'lg:flex lg:w-auto' : 'lg:hidden')}>
             <PropertiesPanel
               selected={selected}
               selectedEdge={selectedEdge}
@@ -541,8 +644,10 @@ function StudioShell() {
               onReversePump={reversePump}
               onRemove={(id) => { void deleteElements({ nodes: [{ id }] }); }}
               onRemoveEdge={(id) => { void deleteElements({ edges: [{ id }] }); }}
+              onClose={clearSelection}
             />
           </div>
+          ) : null}
         </div>
 
         <div className="grid shrink-0 grid-cols-3 border-t border-slate-200 bg-white lg:hidden">
@@ -556,7 +661,7 @@ function StudioShell() {
               type="button"
               onClick={() => setPanel(id)}
               aria-pressed={panel === id}
-              className={cn('py-3 text-sm font-medium', panel === id ? 'text-blue-700' : 'text-slate-500')}
+              className={cn('py-2 text-xs font-medium', panel === id ? 'text-blue-700' : 'text-slate-500')}
             >
               {label}
             </button>
