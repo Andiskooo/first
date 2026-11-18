@@ -48,8 +48,8 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
   const drawn = { ...def, width: box.width, height: box.height, ports };
   const opening = sim?.opening;
   const thermostatLinked = def.id === 'valve-3way' && graphEdges.some((edge) => edge.kind === 'signal' && edge.target === id && edge.targetHandle === 'ctl');
-  const manualMode = def.id === 'valve-3way' && (!thermostatLinked || (data.params.controlMode ?? 0) >= 0.5);
-  const livePortB = def.id === 'valve-3way' && (opening != null ? opening >= 0.5 : (data.params.manualPort ?? 0) >= 0.5);
+  const manualMode = def.id === 'valve-3way' && (!thermostatLinked || (data.params?.controlMode ?? 0) >= 0.5);
+  const livePortB = def.id === 'valve-3way' && (opening != null ? opening >= 0.5 : (data.params?.manualPort ?? 0) >= 0.5);
 
   return (
     <div className="relative h-full w-full overflow-visible">
@@ -119,7 +119,7 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
           </span>
         ) : def.id === 'mixer' ? (
           <span className="ml-1 font-semibold text-orange-700">
-            {Math.round((data.params.mix ?? (opening != null ? opening * 100 : 50)))}% {text.hot}
+            {Math.round((data.params?.mix ?? (opening != null ? opening * 100 : 50)))}% {text.hot}
             {view.showThermo && sim && Number.isFinite(sim.tOut) ? ` · ${Math.round(sim.tOut)}°C` : ''}
           </span>
         ) : opening != null ? (

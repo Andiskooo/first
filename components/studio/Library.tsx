@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { Search } from 'lucide-react';
 import { useLanguage } from '@/components/LanguageProvider';
 import { CATEGORY_ORDER, componentsByCategory } from '@/components/studio/registry';
+import { consumeRecentDrop } from '@/components/studio/place';
 import { ComponentArt } from '@/components/studio/symbols';
 import { useStudioCopy } from '@/components/studio/copy';
 import type { ComponentDef } from '@/components/studio/types';
@@ -57,7 +58,7 @@ export function Library({
                     onClick={() => {
                       if (dragged.current) {
                         dragged.current = false;
-                        return;
+                        if (consumeRecentDrop()) return;
                       }
                       onArm(item.id);
                     }}
@@ -96,9 +97,9 @@ function PartCard({
       onClick={onClick}
       onDragStart={(event) => {
         onDragStart();
-        event.dataTransfer.setData('application/x-ecotek-part', item.id);
         event.dataTransfer.setData('text/plain', item.id);
-        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('application/x-ecotek-part', item.id);
+        event.dataTransfer.effectAllowed = 'copyMove';
       }}
       className={cn(
         'flex flex-col items-center rounded-xl border bg-white px-2 py-2 text-center transition hover:border-slate-400',
@@ -106,7 +107,7 @@ function PartCard({
       )}
       aria-pressed={armed}
     >
-      <span className="flex h-16 w-full items-center justify-center">
+      <span className="pointer-events-none flex h-16 w-full items-center justify-center">
         <span className="relative block h-14 w-full">
           <ComponentArt def={item} />
         </span>

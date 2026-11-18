@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { computeOpenings } from '../components/studio/control';
 import { buildExample } from '../components/studio/example';
+import { createPlacedPart, droppedPartId } from '../components/studio/place';
+import { COMPONENTS } from '../components/studio/registry';
 import { simulate } from '../components/studio/simulation';
 import { validateConnection } from '../components/studio/validation';
 import type { GraphEdge, GraphNode } from '../components/studio/types';
@@ -259,6 +261,37 @@ function main() {
     : [item]);
   const reversedCheck = simulate(withCheckNodes, withCheckEdges);
   near(reversedCheck.primaryFlowLph, 0, 1, 'check valve blocks reverse flow');
+
+  const seen = new Set<string>();
+  for (const [index, def] of COMPONENTS.entries()) {
+    const payload = {
+      types: ['text/plain', 'application/x-ecotek-part'],
+      getData: (type: string) => (type === 'application/x-ecotek-part' || type === 'text/plain' ? def.id : ''),
+    };
+    assert.equal(droppedPartId(payload), def.id, `${def.id} survives the drop payload`);
+    const placed = createPlacedPart(def.id, 240 + index * 15, 180, index + 1);
+    assert.ok(placed, `${def.id} can be placed`);
+    if (!placed) continue;
+    assert.equal(placed.componentId, def.id);
+    assert.equal(placed.id, `${def.code}-${index + 1}`);
+    assert.ok(placed.width > 0 && placed.height > 0, `${def.id} has a size`);
+    for (const param of def.params) {
+      assert.equal(placed.params[param.id], param.defaultValue, `${def.id} default ${param.id}`);
+    }
+    const lone: GraphNode = { id: placed.id, componentId: placed.componentId, params: placed.params };
+    const opened = computeOpenings({ nodes: [lone], edges: [], held: {} });
+    const solved = simulate([lone], [], opened);
+    assert.ok(solved, `${def.id} simulates after placement`);
+    assert.ok(!seen.has(def.id));
+    seen.add(def.id);
+  }
+  assert.equal(droppedPartId({ types: ['text/plain'], getData: () => 'https://example.com/symbol.svg' }), null);
+  assert.equal(droppedPartId({
+    types: ['text/uri-list'],
+    getData: (type) => (type === 'text/uri-list' ? 'heat-pump' : ''),
+  }), null);
+  assert.equal(droppedPartId(null), null);
+  assert.ok(seen.has('mixer') && seen.has('valve-3way') && seen.has('heat-pump'));
 
   console.log('PASS studio simulation and connection rules');
 }

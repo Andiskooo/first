@@ -24,7 +24,8 @@ import '@xyflow/react/dist/style.css';
 
 import { computeOpenings } from '@/components/studio/control';
 import { buildExample, type ExampleKind } from '@/components/studio/example';
-import { componentBox, defaultParams, getComponent, resolvePorts } from '@/components/studio/registry';
+import { componentBox, getComponent, resolvePorts } from '@/components/studio/registry';
+import { SNAP, createPlacedPart, droppedPartId, markPartDropped } from '@/components/studio/place';
 import { simulate } from '@/components/studio/simulation';
 import { validateConnection } from '@/components/studio/validation';
 import { resetDistances, setEdgeSpeeds, stopClock } from '@/components/studio/clock';
@@ -40,8 +41,6 @@ import { cn } from '@/lib/utils';
 
 type Phase = 'idle' | 'running' | 'paused';
 type MobilePanel = 'library' | 'canvas' | 'props';
-
-const SNAP = 20;
 
 function toGraph(nodes: Node[], edges: Edge[]): { nodes: GraphNode[]; edges: GraphEdge[] } {
   return {
@@ -144,37 +143,35 @@ function StudioShell() {
   useEffect(() => () => stopClock(), []);
 
   const addPart = useCallback((componentId: string, x: number, y: number) => {
-    const def = getComponent(componentId);
-    if (!def) return;
-    const params = defaultParams(def);
-    const box = componentBox(def, params);
-    const position = {
-      x: Math.round((x - box.width / 2) / SNAP) * SNAP,
-      y: Math.round((y - box.height / 2) / SNAP) * SNAP,
-    };
-    const id = `${def.code}-${seq.current++}`;
+    const placed = createPlacedPart(componentId, x, y, seq.current);
+    if (!placed) return;
+    seq.current += 1;
     const node: HydronicFlowNode = {
-      id,
+      id: placed.id,
       type: 'hydronic',
-      position,
-      data: { componentId, params, rotation: 0 },
-      style: { width: box.width, height: box.height },
+      position: { x: placed.x, y: placed.y },
+      data: { componentId: placed.componentId, params: placed.params, rotation: 0 },
+      style: { width: placed.width, height: placed.height },
       className: 'overflow-visible',
     };
     setNodes((current) => current.concat(node));
   }, [setNodes]);
 
-  const onDragOver = useCallback((event: DragEvent) => {
+  const allowPartDrop = useCallback((event: DragEvent) => {
+    const types = event.dataTransfer?.types;
+    const list = types ? Array.from(types) : [];
+    if (list.length && !list.includes('application/x-ecotek-part') && !list.includes('text/plain')) return;
     event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
+    if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
   }, []);
 
   const onDrop = useCallback((event: DragEvent) => {
     event.preventDefault();
-    const componentId = event.dataTransfer.getData('application/x-ecotek-part') || event.dataTransfer.getData('text/plain');
-    if (!componentId || !getComponent(componentId)) return;
+    const componentId = droppedPartId(event.dataTransfer);
+    if (!componentId) return;
     const point = screenToFlowPosition({ x: event.clientX, y: event.clientY });
     addPart(componentId, point.x, point.y);
+    markPartDropped();
     setArmed(null);
   }, [addPart, screenToFlowPosition]);
 
@@ -334,7 +331,8 @@ function StudioShell() {
 
           <div
             className={cn('relative min-h-0 min-w-0 flex-1', panel === 'canvas' ? 'flex' : 'hidden', 'lg:flex')}
-            onDragOver={onDragOver}
+            onDragEnter={allowPartDrop}
+            onDragOver={allowPartDrop}
             onDrop={onDrop}
           >
             <ReactFlow
