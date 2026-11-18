@@ -33,6 +33,7 @@ export default async function HeatPumpsPage() {
         <h2 className="text-2xl font-semibold text-slate-900">Çfarë kapaciteti i duhet objektit?</h2>
         <p>Sipërfaqja në m² është një pikënisje. Izolimi, humbjet e nxehtësisë, temperatura e kërkuar e ujit dhe përdorimi i radiatorëve apo ngrohjes nën dysheme ndikojnë në dimensionimin e pompës termike.</p>
         <p>Nëse po kërkoni një pompë termike 16 kW ose 20 kW, konsultoni ekipin tonë përpara përzgjedhjes. Një instalim në një objekt me sipërfaqe të ngjashme është shembull pune, jo llogaritje e kapacitetit për shtëpinë tuaj.</p>
+        <p><Link href="/studio" className="font-medium text-blue-600 hover:underline">Hapni studion hidraulike</Link> për të parë, në mënyrë mësimore, si një pompë termike ushqen radiatorët ose dyshemenë dhe si ndryshon temperatura e ujit.</p>
         <Link href="/contact-us" className="inline-block font-medium text-blue-600 hover:underline">Kërkoni këshillim për përzgjedhjen dhe instalimin</Link>
       </section>
       <section aria-labelledby="examples-heading">

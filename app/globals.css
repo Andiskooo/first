@@ -139,3 +139,25 @@
   width: min(100vw, 177.78dvh);
   aspect-ratio: 16 / 9;
 }
+
+.studio-flow {
+  background: #f4f1ec;
+}
+.studio-flow .react-flow__controls {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+.studio-flow .react-flow__controls-button {
+  border-bottom-color: #e2e8f0;
+  background: #fff;
+}
+.studio-flow .react-flow__attribution {
+  background: transparent;
+  color: #94a3b8;
+  font-size: 10px;
+}
+.studio-flow .react-flow__node {
+  overflow: visible;
+}

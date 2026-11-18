@@ -272,6 +272,21 @@ const Header = ({ installationLocations }: { installationLocations: Installation
                   </NavigationMenuLink>
                 </NavigationMenuItem>
 
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      href="/studio"
+                      aria-current={pathname === '/studio' ? 'page' : undefined}
+                      className={cn(
+                        "inline-flex h-9 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none aria-[current=page]:font-semibold",
+                        variant === 'transparent' ? "text-white hover:text-white/80" : "text-foreground hover:text-foreground/80"
+                      )}
+                    >
+                      Studio
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+
                 {/* Removed standalone Kontakto item as it's now in the Kompania dropdown */}
               </NavigationMenuList>
             </NavigationMenu>
@@ -383,6 +398,16 @@ const Header = ({ installationLocations }: { installationLocations: Installation
                     className="block p-4 text-lg font-semibold text-blue-600 hover:bg-accent aria-[current=page]:underline"
                   >
                     Asistenti
+                  </Link>
+                </div>
+                <div className="border-b border-border">
+                  <Link
+                    href="/studio"
+                    onClick={() => setIsOpen(false)}
+                    aria-current={pathname === '/studio' ? 'page' : undefined}
+                    className="block p-4 text-lg font-semibold text-blue-600 hover:bg-accent aria-[current=page]:underline"
+                  >
+                    Studio
                   </Link>
                 </div>
 
