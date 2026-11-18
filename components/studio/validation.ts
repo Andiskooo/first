@@ -1,4 +1,4 @@
-import { getComponent } from '@/components/studio/registry';
+import { getComponent, resolvePorts } from '@/components/studio/registry';
 import type { GraphEdge, GraphNode, PortTerminal } from '@/components/studio/types';
 
 export interface ConnectionEnd {
@@ -12,6 +12,8 @@ const SUPPLY = new Set<PortTerminal>([
   'buffer-primary-in',
   'buffer-secondary-out',
   'consumer-supply',
+  'header-supply',
+  'relief-in',
 ]);
 
 const RETURN = new Set<PortTerminal>([
@@ -19,6 +21,8 @@ const RETURN = new Set<PortTerminal>([
   'buffer-primary-out',
   'buffer-secondary-in',
   'consumer-return',
+  'header-return',
+  'relief-out',
 ]);
 
 export type CircuitTint = 'supply' | 'return' | 'neutral' | 'mixed';
@@ -35,6 +39,7 @@ function has(list: ConnectionEnd[], terminal: PortTerminal): boolean {
 function linkMap(edges: GraphEdge[]): Map<string, Endpoint & { edgeId: string }> {
   const map = new Map<string, Endpoint & { edgeId: string }>();
   for (const edge of edges) {
+    if (edge.kind === 'signal') continue;
     if (!edge.sourceHandle || !edge.targetHandle) continue;
     map.set(`${edge.source}:${edge.sourceHandle}`, { nodeId: edge.target, portId: edge.targetHandle, edgeId: edge.id });
     map.set(`${edge.target}:${edge.targetHandle}`, { nodeId: edge.source, portId: edge.sourceHandle, edgeId: edge.id });
@@ -57,13 +62,13 @@ export function floodTerminals(nodes: GraphNode[], edges: GraphEdge[], origin: E
     seen.add(key);
     const node = nodeById.get(current.nodeId);
     const def = node ? getComponent(node.componentId) : undefined;
-    const port = def?.ports.find((item) => item.id === current.portId);
-    if (!def || !port) continue;
+    const port = def && node ? resolvePorts(def, node.params).find((item) => item.id === current.portId) : undefined;
+    if (!node || !def || !port) continue;
     if (port.terminal !== 'passive') {
       hits.push({ nodeId: current.nodeId, portId: current.portId, terminal: port.terminal });
       continue;
     }
-    for (const other of def.ports) {
+    for (const other of resolvePorts(def, node.params)) {
       if (other.id !== current.portId) queue.push({ nodeId: current.nodeId, portId: other.id });
     }
     const link = links.get(key);
@@ -113,11 +118,16 @@ export function validateConnection(
   const sourceNode = nodes.find((node) => node.id === source);
   const targetNode = nodes.find((node) => node.id === target);
   if (!sourceNode || !targetNode) return { ok: false, code: 'missing-port' };
-  if (!getComponent(sourceNode.componentId)?.ports.some((port) => port.id === sourceHandle)) {
-    return { ok: false, code: 'missing-port' };
-  }
-  if (!getComponent(targetNode.componentId)?.ports.some((port) => port.id === targetHandle)) {
-    return { ok: false, code: 'missing-port' };
+  const sourceDef = getComponent(sourceNode.componentId);
+  const targetDef = getComponent(targetNode.componentId);
+  const sourcePort = sourceDef ? resolvePorts(sourceDef, sourceNode.params).find((port) => port.id === sourceHandle) : undefined;
+  const targetPort = targetDef ? resolvePorts(targetDef, targetNode.params).find((port) => port.id === targetHandle) : undefined;
+  if (!sourcePort || !targetPort) return { ok: false, code: 'missing-port' };
+  if (sourcePort.terminal === 'signal' || targetPort.terminal === 'signal') {
+    const fromThermo = sourceDef?.id === 'thermostat' && sourcePort.id === 'sig';
+    const toValve = (targetDef?.id === 'valve' || targetDef?.id === 'valve-3way') && targetPort.id === 'ctl';
+    if (!fromThermo || !toValve) return { ok: false, code: 'signal-pair' };
+    return { ok: true };
   }
   const combined = [
     ...floodTerminals(nodes, edges, { nodeId: source, portId: sourceHandle }),
@@ -130,7 +140,8 @@ export function validateConnection(
 
 export function portTint(nodes: GraphNode[], edges: GraphEdge[], nodeId: string, portId: string): CircuitTint {
   const node = nodes.find((item) => item.id === nodeId);
-  const port = node ? getComponent(node.componentId)?.ports.find((item) => item.id === portId) : undefined;
+  const def = node ? getComponent(node.componentId) : undefined;
+  const port = def && node ? resolvePorts(def, node.params).find((item) => item.id === portId) : undefined;
   if (!port) return 'neutral';
   if (port.side === 'supply') return 'supply';
   if (port.side === 'return') return 'return';

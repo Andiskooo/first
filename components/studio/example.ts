@@ -1,7 +1,7 @@
 import { defaultParams, getComponent } from '@/components/studio/registry';
 import type { GraphEdge, GraphNode } from '@/components/studio/types';
 
-export type ExampleKind = 'direct' | 'buffer';
+export type ExampleKind = 'direct' | 'buffer' | 'control';
 
 export interface PlacedNode extends GraphNode {
   x: number;
@@ -28,8 +28,8 @@ function place(
   };
 }
 
-function edge(id: string, source: string, sourceHandle: string, target: string, targetHandle: string): GraphEdge {
-  return { id, source, target, sourceHandle, targetHandle };
+function edge(id: string, source: string, sourceHandle: string, target: string, targetHandle: string, kind: GraphEdge['kind'] = 'pipe'): GraphEdge {
+  return { id, source, target, sourceHandle, targetHandle, kind };
 }
 
 /** Closed heat-pump → pump → two parallel consumers circuit. */
@@ -86,6 +86,39 @@ function bufferExample(): { nodes: PlacedNode[]; edges: GraphEdge[] } {
   };
 }
 
+/** Manifold headers plus a thermostat on each motorized radiator valve. */
+function controlExample(): { nodes: PlacedNode[]; edges: GraphEdge[] } {
+  return {
+    nodes: [
+      place('hp', 'heat-pump', 20, 250, { capacity: 12, setpoint: 45, internalPump: 0, internalSpeed: 0 }),
+      place('p', 'pump', 250, 236, { speed: 70 }),
+      place('ms', 'manifold-supply', 400, 200, { branches: 3 }),
+      place('rt1', 'thermostat', 640, 0, { roomSet: 21, ambient: 16 }),
+      place('v1', 'valve', 640, 110, { motorized: 1, behavior: 0, opening: 100 }),
+      place('hk', 'radiator', 800, 100, { demand: 4 }),
+      place('rt2', 'thermostat', 640, 230, { roomSet: 30, ambient: 16 }),
+      place('v2', 'valve', 640, 340, { motorized: 1, behavior: 0, opening: 100 }),
+      place('fbh', 'underfloor', 800, 330, { demand: 3 }),
+      place('mr', 'manifold-return', 400, 480, { branches: 3 }),
+    ],
+    edges: [
+      edge('e-hp-p', 'hp', 'supply-out', 'p', 'in'),
+      edge('e-p-ms', 'p', 'out', 'ms', 'in'),
+      edge('e-ms-v1', 'ms', 'out-1', 'v1', 'in'),
+      edge('e-v1-hk', 'v1', 'out', 'hk', 'supply-in'),
+      edge('e-ms-v2', 'ms', 'out-2', 'v2', 'in'),
+      edge('e-v2-fbh', 'v2', 'out', 'fbh', 'supply-in'),
+      edge('e-hk-mr', 'hk', 'return-out', 'mr', 'in-1'),
+      edge('e-fbh-mr', 'fbh', 'return-out', 'mr', 'in-2'),
+      edge('e-mr-hp', 'mr', 'out', 'hp', 'return-in'),
+      edge('s-rt1', 'rt1', 'sig', 'v1', 'ctl', 'signal'),
+      edge('s-rt2', 'rt2', 'sig', 'v2', 'ctl', 'signal'),
+    ],
+  };
+}
+
 export function buildExample(kind: ExampleKind): { nodes: PlacedNode[]; edges: GraphEdge[] } {
-  return kind === 'buffer' ? bufferExample() : directExample();
+  if (kind === 'buffer') return bufferExample();
+  if (kind === 'control') return controlExample();
+  return directExample();
 }

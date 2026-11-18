@@ -22,8 +22,9 @@ import {
 import { Pause, Play, RotateCcw, Trash2 } from 'lucide-react';
 import '@xyflow/react/dist/style.css';
 
+import { computeOpenings, stepRooms } from '@/components/studio/control';
 import { buildExample, type ExampleKind } from '@/components/studio/example';
-import { defaultParams, getComponent } from '@/components/studio/registry';
+import { componentBox, defaultParams, getComponent, resolvePorts } from '@/components/studio/registry';
 import { simulate } from '@/components/studio/simulation';
 import { validateConnection } from '@/components/studio/validation';
 import { resetDistances, setEdgeSpeeds, stopClock } from '@/components/studio/clock';
@@ -50,7 +51,14 @@ function toGraph(nodes: Node[], edges: Edge[]): { nodes: GraphNode[]; edges: Gra
     }),
     edges: edges.flatMap((edge) => (
       edge.sourceHandle && edge.targetHandle
-        ? [{ id: edge.id, source: edge.source, target: edge.target, sourceHandle: edge.sourceHandle, targetHandle: edge.targetHandle }]
+        ? [{
+          id: edge.id,
+          source: edge.source,
+          target: edge.target,
+          sourceHandle: edge.sourceHandle,
+          targetHandle: edge.targetHandle,
+          kind: edge.type === 'signal' ? 'signal' as const : 'pipe' as const,
+        }]
         : []
     )),
   };
@@ -74,19 +82,41 @@ function StudioShell() {
   const [hint, setHint] = useState<string | null>(null);
   const graphRef = useRef({ nodes, edges });
   const rejectRef = useRef<string | null>(null);
+  const heldRef = useRef<Record<string, number>>({});
+  const resultRef = useRef<ReturnType<typeof simulate> | null>(null);
+  const [rooms, setRooms] = useState<Record<string, number>>({});
   const seq = useRef(1);
   const { screenToFlowPosition, fitView, deleteElements } = useReactFlow();
   const updateInternals = useUpdateNodeInternals();
   graphRef.current = { nodes, edges };
 
-  const result = useMemo(
-    () => simulate(toGraph(nodes, edges).nodes, toGraph(nodes, edges).edges),
-    [nodes, edges],
+  const graph = useMemo(() => toGraph(nodes, edges), [nodes, edges]);
+  const openings = useMemo(
+    () => computeOpenings({ nodes: graph.nodes, edges: graph.edges, rooms, held: heldRef.current, result: resultRef.current }),
+    [graph, rooms],
   );
+  const result = useMemo(() => {
+    const solved = simulate(graph.nodes, graph.edges, openings);
+    const withRooms = { ...solved.nodes };
+    for (const node of graph.nodes) {
+      if (node.componentId !== 'thermostat') continue;
+      const ambient = node.params.ambient ?? 16;
+      withRooms[node.id] = {
+        tIn: rooms[node.id] ?? ambient,
+        tOut: rooms[node.id] ?? ambient,
+        flowLph: 0,
+        qKw: 0,
+        dt: 0,
+        roomC: rooms[node.id] ?? ambient,
+      };
+    }
+    return { ...solved, nodes: withRooms };
+  }, [graph, openings, rooms]);
   const showThermo = phase !== 'idle';
   const running = phase === 'running';
   const view = useMemo(() => ({ showThermo, result }), [showThermo, result]);
-  const selected = nodes.find((node) => node.selected) ?? null;
+  const selectedEdge = edges.find((edge) => edge.selected) ?? null;
+  const selected = selectedEdge ? null : (nodes.find((node) => node.selected) ?? null);
 
   useEffect(() => {
     const speeds = new Map<string, number>();
@@ -98,22 +128,62 @@ function StudioShell() {
     setEdgeSpeeds(speeds, running);
   }, [running, result]);
 
+  useEffect(() => {
+    heldRef.current = openings;
+    resultRef.current = result;
+  }, [openings, result]);
+
+  useEffect(() => {
+    if (phase !== 'running') return undefined;
+    let last = performance.now();
+    let carry = 0;
+    let frame = 0;
+    const tick = (now: number) => {
+      const dt = Math.min(0.25, (now - last) / 1000);
+      last = now;
+      carry += dt;
+      if (carry >= 0.25) {
+        const step = carry;
+        carry = 0;
+        setRooms((current) => stepRooms({
+          nodes: graph.nodes,
+          edges: graph.edges,
+          rooms: current,
+          held: heldRef.current,
+          result,
+        }, step));
+      }
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [phase, graph, result]);
+
+  useEffect(() => {
+    if (phase === 'idle') {
+      setRooms({});
+      heldRef.current = {};
+    }
+  }, [phase]);
+
   useEffect(() => () => stopClock(), []);
 
   const addPart = useCallback((componentId: string, x: number, y: number) => {
     const def = getComponent(componentId);
     if (!def) return;
+    const params = defaultParams(def);
+    const box = componentBox(def, params);
     const position = {
-      x: Math.round((x - def.width / 2) / SNAP) * SNAP,
-      y: Math.round((y - def.height / 2) / SNAP) * SNAP,
+      x: Math.round((x - box.width / 2) / SNAP) * SNAP,
+      y: Math.round((y - box.height / 2) / SNAP) * SNAP,
     };
     const id = `${def.code}-${seq.current++}`;
     const node: HydronicFlowNode = {
       id,
       type: 'hydronic',
       position,
-      data: { componentId, params: defaultParams(def), rotation: 0 },
-      style: { width: def.width, height: def.height },
+      data: { componentId, params, rotation: 0 },
+      style: { width: box.width, height: box.height },
       className: 'overflow-visible',
     };
     setNodes((current) => current.concat(node));
@@ -162,7 +232,11 @@ function StudioShell() {
       return;
     }
     setHint(null);
-    setEdges((current) => addEdge({ ...connection, id: `e-${crypto.randomUUID()}`, type: 'hydronic' }, current));
+    const sourceNode = graphRef.current.nodes.find((node) => node.id === connection.source);
+    const sourceDef = sourceNode ? getComponent(sourceNode.data.componentId) : undefined;
+    const sourcePort = sourceDef ? resolvePorts(sourceDef, sourceNode?.data.params).find((port) => port.id === connection.sourceHandle) : undefined;
+    const signal = sourcePort?.terminal === 'signal';
+    setEdges((current) => addEdge({ ...connection, id: `e-${crypto.randomUUID()}`, type: signal ? 'signal' : 'hydronic' }, current));
   }, [setEdges]);
 
   const onConnectEnd: OnConnectEnd = useCallback(() => {
@@ -177,16 +251,19 @@ function StudioShell() {
     seq.current = 40;
     setNodes(example.nodes.map((node) => {
       const def = getComponent(node.componentId)!;
+      const box = componentBox(def, node.params);
       return {
         id: node.id,
         type: 'hydronic' as const,
         position: { x: node.x, y: node.y },
         data: { componentId: node.componentId, params: node.params, rotation: 0 },
-        style: { width: def.width, height: def.height },
+        style: { width: box.width, height: box.height },
         className: 'overflow-visible',
       };
     }));
-    setEdges(example.edges.map((edge) => ({ ...edge, type: 'hydronic' as const })));
+    setEdges(example.edges.map((edge) => ({ ...edge, type: edge.kind === 'signal' ? 'signal' as const : 'hydronic' as const })));
+    setRooms({});
+    heldRef.current = {};
     setPhase('idle');
     setHint(null);
     setArmed(null);
@@ -262,6 +339,7 @@ function StudioShell() {
           <span className="mx-1 hidden h-6 w-px bg-slate-200 sm:block" />
           <button type="button" onClick={() => loadExample('direct')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">{text.exampleDirect}</button>
           <button type="button" onClick={() => loadExample('buffer')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">{text.exampleBuffer}</button>
+          <button type="button" onClick={() => loadExample('control')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">{text.exampleControl}</button>
           <button type="button" onClick={() => { setNodes([]); setEdges([]); setPhase('idle'); setHint(null); resetDistances(); }} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">
             <Trash2 className="h-4 w-4" aria-hidden /> {text.clear}
           </button>
@@ -349,18 +427,37 @@ function StudioShell() {
           <div className={cn('min-h-0', panel === 'props' ? 'flex w-full' : 'hidden', 'lg:flex lg:w-auto')}>
             <PropertiesPanel
               selected={selected}
+              selectedEdge={selectedEdge}
               result={result}
               showThermo={showThermo}
               onParam={(id, key, value) => {
-                setNodes((current) => current.map((node) => (
-                  node.id === id
-                    ? { ...node, data: { ...node.data, params: { ...node.data.params, [key]: value } } }
-                    : node
-                )));
+                setNodes((current) => current.map((node) => {
+                  if (node.id !== id) return node;
+                  const params = { ...node.data.params, [key]: value };
+                  const def = getComponent(node.data.componentId);
+                  const box = def ? componentBox(def, params) : null;
+                  return {
+                    ...node,
+                    data: { ...node.data, params },
+                    style: box ? { width: box.width, height: box.height } : node.style,
+                  };
+                }));
+                if (key === 'branches') {
+                  const node = nodes.find((item) => item.id === id);
+                  const def = node ? getComponent(node.data.componentId) : undefined;
+                  if (!node || !def) return;
+                  const ports = new Set(resolvePorts(def, { ...node.data.params, branches: value }).map((port) => port.id));
+                  setEdges((current) => current.filter((edge) => {
+                    if (edge.source === id && edge.sourceHandle && !ports.has(edge.sourceHandle)) return false;
+                    if (edge.target === id && edge.targetHandle && !ports.has(edge.targetHandle)) return false;
+                    return true;
+                  }));
+                }
               }}
               onRotate={rotate}
               onReversePump={reversePump}
               onRemove={(id) => { void deleteElements({ nodes: [{ id }] }); }}
+              onRemoveEdge={(id) => { void deleteElements({ edges: [{ id }] }); }}
             />
           </div>
         </div>

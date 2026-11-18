@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { computeOpenings } from '../components/studio/control';
 import { buildExample } from '../components/studio/example';
 import { simulate } from '../components/studio/simulation';
 import { validateConnection } from '../components/studio/validation';
@@ -137,6 +138,52 @@ function main() {
   const userTee: GraphEdge[] = [{ id: 'y', source: 'ts', target: 'hk', sourceHandle: 'b', targetHandle: 'supply-in' }];
   assert.equal(validateConnection(withTee, userTee, 'ts', 'a', 'ps', 'pri-in').ok, false);
   assert.equal(validateConnection(withTee, userTee, 'ts', 'a', 'ps', 'sec-out-2').ok, true);
+
+  const blocked = structuredClone(direct);
+  blocked.nodes.push({ id: 'v', componentId: 'valve', params: { behavior: 0, motorized: 0, opening: 0 } });
+  blocked.edges = blocked.edges
+    .filter((item) => item.id !== 'e-ts-hk')
+    .concat([
+      { id: 'e-ts-v', source: 'ts', target: 'v', sourceHandle: 'b', targetHandle: 'in' },
+      { id: 'e-v-hk', source: 'v', target: 'hk', sourceHandle: 'out', targetHandle: 'supply-in' },
+    ]);
+  const shut = simulate(blocked.nodes, blocked.edges);
+  near(shut.nodes.hk?.flowLph ?? 0, 0, 1, 'closed valve stops its branch');
+  near(shut.nodes.fbh?.flowLph ?? 0, 1440, 30, 'open branch takes the flow');
+
+  const thermoNodes: GraphNode[] = [
+    { id: 'rt', componentId: 'thermostat', params: { roomSet: 21, ambient: 16 } },
+    { id: 'v', componentId: 'valve', params: { motorized: 1, behavior: 0, opening: 100 } },
+  ];
+  const thermoEdges: GraphEdge[] = [
+    { id: 's', source: 'rt', target: 'v', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' },
+  ];
+  assert.equal(computeOpenings({ nodes: thermoNodes, edges: thermoEdges, rooms: { rt: 16 }, held: {} }).v, 1);
+  assert.equal(computeOpenings({ nodes: thermoNodes, edges: thermoEdges, rooms: { rt: 23 }, held: { v: 1 } }).v, 0);
+  assert.equal(computeOpenings({ nodes: thermoNodes, edges: thermoEdges, rooms: { rt: 21 }, held: { v: 0 } }).v, 0);
+
+  const header: GraphNode[] = [
+    { id: 'ms', componentId: 'manifold-supply', params: { branches: 3 } },
+    { id: 'mr', componentId: 'manifold-return', params: { branches: 3 } },
+    { id: 'hk', componentId: 'radiator', params: { demand: 2 } },
+    { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45 } },
+  ];
+  assert.equal(validateConnection(header, [], 'ms', 'out-1', 'hk', 'supply-in').ok, true);
+  assert.equal(validateConnection(header, [], 'ms', 'in', 'hk', 'return-out').ok, false);
+  assert.equal(validateConnection(header, [], 'hk', 'return-out', 'mr', 'in-1').ok, true);
+  assert.equal(validateConnection(header, [], 'mr', 'out', 'hp', 'return-in').ok, true);
+  assert.equal(validateConnection(thermoNodes, [], 'rt', 'sig', 'v', 'ctl').ok, true);
+  assert.equal(validateConnection(thermoNodes, [], 'rt', 'sig', 'v', 'in').ok, false);
+
+  const withCheckNodes = direct.nodes.concat([{ id: 'cv', componentId: 'check', params: {} }]);
+  const withCheckEdges = direct.edges.flatMap((item) => item.id === 'e-p-ts'
+    ? [
+      { id: 'e-p-cv', source: 'p', target: 'cv', sourceHandle: 'out', targetHandle: 'out' },
+      { id: 'e-cv-ts', source: 'cv', target: 'ts', sourceHandle: 'in', targetHandle: 'a' },
+    ]
+    : [item]);
+  const reversedCheck = simulate(withCheckNodes, withCheckEdges);
+  near(reversedCheck.primaryFlowLph, 0, 1, 'check valve blocks reverse flow');
 
   console.log('PASS studio simulation and connection rules');
 }

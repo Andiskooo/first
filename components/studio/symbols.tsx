@@ -81,6 +81,14 @@ function SymbolGraphic({
       {def.symbol === 'dhw' ? <DhwBody def={def} wash={wash} active={active} /> : null}
       {def.symbol === 'pump' ? <PumpBody def={def} active={active} hot={hot} /> : null}
       {def.symbol === 'tee' ? <TeeBody def={def} active={active} hot={hot} /> : null}
+      {def.symbol === 'junction' ? <JunctionBody def={def} active={active} hot={hot} /> : null}
+      {def.symbol === 'manifold-supply' || def.symbol === 'manifold-return' ? <ManifoldBody def={def} wash={wash} active={active} /> : null}
+      {def.symbol === 'valve' ? <ValveBody def={def} active={active} hot={hot} /> : null}
+      {def.symbol === 'valve-3way' ? <ThreeWayBody def={def} active={active} hot={hot} /> : null}
+      {def.symbol === 'relief' ? <ReliefBody def={def} active={active} hot={hot} /> : null}
+      {def.symbol === 'air-vent' ? <AirVentBody def={def} /> : null}
+      {def.symbol === 'check' ? <CheckBody def={def} active={active} hot={hot} /> : null}
+      {def.symbol === 'thermostat' ? <ThermostatBody def={def} active={active} room={tIn} /> : null}
       {def.symbol === 'heat-pump' ? <HeatPumpFallback def={def} /> : null}
       {stubs(def)}
     </svg>
@@ -190,9 +198,94 @@ function HeatPumpFallback({ def }: { def: ComponentDef }) {
   );
 }
 
-export function portColor(side: PortDef['side'] | 'mixed'): string {
+export function portColor(side: PortDef['side'] | 'mixed' | 'signal'): string {
   if (side === 'supply') return '#ef4444';
   if (side === 'return') return '#2563eb';
   if (side === 'mixed') return '#d97706';
+  if (side === 'signal') return '#7c3aed';
   return '#64748b';
+}
+
+function JunctionBody({ def, active, hot }: { def: ComponentDef; active: boolean; hot: string }) {
+  const c = def.width / 2;
+  return <circle cx={c} cy={c} r={8} fill={active ? hot : '#ffffff'} stroke="#0f172a" strokeWidth={2.2} />;
+}
+
+function ManifoldBody({ def, wash, active }: { def: ComponentDef; wash: string; active: boolean }) {
+  return (
+    <>
+      <rect x={10} y={18} width={def.width - 20} height={def.height - 36} rx={def.height / 2} fill="#ffffff" stroke="#0f172a" strokeWidth={2.2} />
+      {active ? <rect x={10} y={18} width={def.width - 20} height={def.height - 36} rx={def.height / 2} fill={wash} opacity={0.8} /> : null}
+    </>
+  );
+}
+
+function ValveBody({ def, active, hot }: { def: ComponentDef; active: boolean; hot: string }) {
+  const y = def.height * 0.62;
+  const mid = def.width / 2;
+  return (
+    <>
+      <path d={`M 16 ${y - 16} L ${mid} ${y} L 16 ${y + 16} Z`} fill={active ? hot : '#ffffff'} stroke="#0f172a" strokeWidth={2} />
+      <path d={`M ${def.width - 16} ${y - 16} L ${mid} ${y} L ${def.width - 16} ${y + 16} Z`} fill={active ? hot : '#ffffff'} stroke="#0f172a" strokeWidth={2} />
+    </>
+  );
+}
+
+function ThreeWayBody({ def, active, hot }: { def: ComponentDef; active: boolean; hot: string }) {
+  const y = def.height * 0.46;
+  const mid = def.width / 2;
+  return (
+    <>
+      <path d={`M 14 ${y - 14} L ${mid} ${y} L 14 ${y + 14} Z`} fill={active ? hot : '#ffffff'} stroke="#0f172a" strokeWidth={2} />
+      <path d={`M ${def.width - 14} ${y - 14} L ${mid} ${y} L ${def.width - 14} ${y + 14} Z`} fill={active ? hot : '#ffffff'} stroke="#0f172a" strokeWidth={2} />
+      <path d={`M ${mid - 14} ${def.height - 12} L ${mid} ${y} L ${mid + 14} ${def.height - 12} Z`} fill={active ? hot : '#ffffff'} stroke="#0f172a" strokeWidth={2} />
+    </>
+  );
+}
+
+function ReliefBody({ def, active, hot }: { def: ComponentDef; active: boolean; hot: string }) {
+  const y = def.height * 0.55;
+  const mid = def.width / 2;
+  return (
+    <>
+      <path d={`M 16 ${y - 14} L ${mid} ${y} L 16 ${y + 14} Z`} fill="#ffffff" stroke="#0f172a" strokeWidth={2} />
+      <path d={`M ${def.width - 16} ${y - 14} L ${mid} ${y} L ${def.width - 16} ${y + 14} Z`} fill={active ? hot : '#ffffff'} stroke="#0f172a" strokeWidth={2} />
+      <path d={`M ${mid} ${y} V 8`} stroke="#0f172a" strokeWidth={2} />
+      <path d={`M ${mid - 8} 14 H ${mid + 8}`} stroke="#0f172a" strokeWidth={2} strokeLinecap="round" />
+    </>
+  );
+}
+
+function AirVentBody({ def }: { def: ComponentDef }) {
+  const c = def.width / 2;
+  return (
+    <>
+      <circle cx={c} cy={28} r={14} fill="#ffffff" stroke="#0f172a" strokeWidth={2} />
+      <path d={`M ${c} 34 V 18 M ${c - 5} 24 l 5 -6 5 6`} fill="none" stroke="#0f172a" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+      <path d={`M 16 ${def.height * 0.72} H ${def.width - 16}`} stroke="#0f172a" strokeWidth={2.2} strokeLinecap="round" />
+    </>
+  );
+}
+
+function CheckBody({ def, active, hot }: { def: ComponentDef; active: boolean; hot: string }) {
+  const y = def.height / 2;
+  const mid = def.width / 2;
+  return (
+    <>
+      <circle cx={mid} cy={y} r={18} fill={active ? hot : '#ffffff'} stroke="#0f172a" strokeWidth={2} />
+      <path d={`M ${mid - 8} ${y - 7} L ${mid + 9} ${y} L ${mid - 8} ${y + 7} Z`} fill="#0f172a" />
+    </>
+  );
+}
+
+function ThermostatBody({ def, active, room }: { def: ComponentDef; active: boolean; room?: number }) {
+  const c = def.width / 2;
+  return (
+    <>
+      <rect x={8} y={6} width={def.width - 16} height={def.height - 20} rx={12} fill="#ffffff" stroke="#0f172a" strokeWidth={2} />
+      <circle cx={c} cy={36} r={16} fill={active ? '#ede9fe' : '#ffffff'} stroke="#0f172a" strokeWidth={1.8} />
+      <path d={`M ${c} 36 l 8 -6`} stroke="#7c3aed" strokeWidth={2} strokeLinecap="round" />
+      {room != null ? <text x={c} y={def.height - 28} textAnchor="middle" fontSize={11} fontFamily="Inter, sans-serif" fill="#0f172a">{room.toFixed(1)}°</text> : null}
+    </>
+  );
 }

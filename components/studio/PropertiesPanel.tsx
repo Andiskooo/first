@@ -5,24 +5,29 @@ import { getComponent } from '@/components/studio/registry';
 import { useStudioCopy, type StudioCopy } from '@/components/studio/copy';
 import { formatNum } from '@/components/studio/temperature';
 import type { HydronicFlowNode } from '@/components/studio/HydronicNode';
+import type { Edge } from '@xyflow/react';
 import type { NodeSim, SimResult } from '@/components/studio/types';
 
 export function PropertiesPanel({
   selected,
+  selectedEdge,
   result,
   showThermo,
   onParam,
   onRotate,
   onReversePump,
   onRemove,
+  onRemoveEdge,
 }: {
   selected: HydronicFlowNode | null;
+  selectedEdge: Edge | null;
   result: SimResult;
   showThermo: boolean;
   onParam: (id: string, key: string, value: number) => void;
   onRotate: (id: string) => void;
   onReversePump: (id: string) => void;
   onRemove: (id: string) => void;
+  onRemoveEdge: (id: string) => void;
 }) {
   const text = useStudioCopy();
   const { locale } = useLanguage();
@@ -53,7 +58,9 @@ export function PropertiesPanel({
 
         <div className="mt-6 border-t border-slate-200 pt-4">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">{text.component}</h2>
-          {selected && def ? (
+          {selectedEdge ? (
+            <PipeInspector text={text} edge={selectedEdge} result={result} showThermo={showThermo} onRemove={() => onRemoveEdge(selectedEdge.id)} />
+          ) : selected && def ? (
             <div className="mt-3">
               <p className="text-sm font-semibold text-slate-900">{def.name[locale]} <span className="font-medium text-slate-400">{def.code}</span></p>
               <p className="mt-1 text-xs leading-5 text-slate-500">{def.blurb[locale]}</p>
@@ -61,13 +68,15 @@ export function PropertiesPanel({
                 <NodeReadouts
                   text={text}
                   sim={sim}
-                  kind={def.id === 'buffer-tank' ? 'buffer' : def.category === 'source' ? 'source' : def.category === 'consumer' ? 'consumer' : 'other'}
+                  kind={def.id === 'buffer-tank' ? 'buffer' : def.id === 'thermostat' ? 'room' : def.category === 'source' ? 'source' : def.category === 'consumer' ? 'consumer' : 'other'}
                 />
               ) : null}
               <div className="mt-4 space-y-4">
                 {def.params.map((param) => (
                   <ParamControl
                     key={param.id}
+                    id={param.id}
+                    text={text}
                     label={text.params[param.id as keyof StudioCopy['params']] ?? param.id}
                     kind={param.kind}
                     unit={param.unit}
@@ -114,6 +123,39 @@ function Readout({ label, value }: { label: string; value: string }) {
   );
 }
 
+function PipeInspector({
+  text,
+  edge,
+  result,
+  showThermo,
+  onRemove,
+}: {
+  text: StudioCopy;
+  edge: Edge;
+  result: SimResult;
+  showThermo: boolean;
+  onRemove: () => void;
+}) {
+  const signal = edge.type === 'signal';
+  const sim = result.edges[edge.id];
+  return (
+    <div className="mt-3">
+      <p className="text-sm font-semibold text-slate-900">{signal ? text.signal : text.pipe}</p>
+      <p className="mt-1 text-xs leading-5 text-slate-500">{signal ? text.signalBody : text.pipeBody}</p>
+      {!signal && showThermo && sim ? (
+        <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-xs tabular-nums text-slate-700">
+          <dt>{text.flow}</dt><dd>{formatNum(sim.flowLph, 0)} L/h</dd>
+          <dt>{text.supply}</dt><dd>{formatNum(sim.flowFromSource ? sim.tSource : sim.tTarget, 1)} °C</dd>
+          <dt>{text.returnT}</dt><dd>{formatNum(sim.flowFromSource ? sim.tTarget : sim.tSource, 1)} °C</dd>
+        </dl>
+      ) : null}
+      <div className="mt-4">
+        <button type="button" onClick={onRemove} className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-50">{text.remove}</button>
+      </div>
+    </div>
+  );
+}
+
 function NodeReadouts({
   text,
   sim,
@@ -121,13 +163,17 @@ function NodeReadouts({
 }: {
   text: StudioCopy;
   sim: NodeSim;
-  kind: 'buffer' | 'source' | 'consumer' | 'other';
+  kind: 'buffer' | 'source' | 'consumer' | 'room' | 'other';
 }) {
   const supply = kind === 'source' ? sim.tOut : sim.tIn;
   const back = kind === 'source' ? sim.tIn : sim.tOut;
   return (
     <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-xs tabular-nums text-slate-700">
-      {kind === 'buffer' ? (
+      {kind === 'room' ? (
+        <>
+          <dt>{text.room}</dt><dd>{formatNum(sim.roomC, 1)} °C</dd>
+        </>
+      ) : kind === 'buffer' ? (
         <>
           <dt>{text.tank}</dt><dd>{formatNum(sim.tankC, 1)} °C</dd>
           <dt>{text.stored}</dt><dd>{formatNum(sim.storedKwh, 2)} kWh</dd>
@@ -141,11 +187,25 @@ function NodeReadouts({
       )}
       <dt>{text.flow}</dt><dd>{formatNum(sim.flowLph, 0)} L/h</dd>
       <dt>{text.power}</dt><dd>{formatNum(sim.qKw, 1)} kW</dd>
+      {sim.opening != null ? (
+        <>
+          <dt>{text.valveState}</dt>
+          <dd>{sim.opening < 0.05 ? text.closed : sim.opening > 0.95 ? text.open : `${Math.round(sim.opening * 100)}%`}</dd>
+        </>
+      ) : null}
     </dl>
   );
 }
 
+function choiceLabel(id: string, option: number, unit: string, text: StudioCopy): string {
+  if (id === 'behavior') return option < 0.5 ? text.onOff : text.modulating;
+  if (id === 'arrangement') return option < 0.5 ? text.divert : text.mix;
+  return `${option} ${unit}`.trim();
+}
+
 function ParamControl({
+  id,
+  text,
   label,
   kind,
   unit,
@@ -156,6 +216,8 @@ function ParamControl({
   value,
   onChange,
 }: {
+  id: string;
+  text: StudioCopy;
   label: string;
   kind: 'number' | 'select' | 'boolean';
   unit: string;
@@ -195,7 +257,7 @@ function ParamControl({
           className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-2 py-2 text-sm"
         >
           {options.map((option) => (
-            <option key={option} value={option}>{option} {unit}</option>
+            <option key={option} value={option}>{choiceLabel(id, option, unit, text)}</option>
           ))}
         </select>
       </label>

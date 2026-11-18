@@ -52,3 +52,13 @@ The tank separates two hydraulic loops and couples them only by heat:
 At steady state the tank temperature is below the heat-pump supply by the primary ΔT, and the heat users see that mixed temperature. Stored energy shown in the panel is `m · cp · (T_tank − 20 °C)` and does not change the steady temperatures; volume is there so a later product image or a larger tank still has a place to live.
 
 The tool simulates one heat pump and one buffer. It is not a design calculation.
+
+## Valves, thermostats, and manifolds
+
+Valves live in the palette beside the pump. A two-way valve stops a branch when it is shut, and a modulating one scales that branch’s share of the flow. A three-way valve either diverts (common port `ab` toward `a` or `b`) or mixes two branches into `ab`. A relief valve is the only part allowed to join supply to return; it stays shut until the water temperature passes its limit (this model has no pressure solver, so temperature stands in for the relief setting) and then bypasses some of the flow. A backflow preventer passes water only from its inlet to its outlet. An air vent is drawn on the pipe and does not change the flow.
+
+A room thermostat has no water ports. Its dashed purple link is a command, not a pipe, and it can land only on the control port of a two-way or three-way valve whose **Motorized** switch is on. The room starts at the ambient temperature, warms from the heat of the emitter downstream of that valve, and cools back toward ambient when the valve shuts. On/off valves open below the setpoint and close above it, with a small deadband so they do not chatter. Modulating valves move between 0% and 100%. The time scale is sped up (about 8 seconds per time constant) so the change is visible. The idea of a separate signal wire that carries a 0–1 command is adapted from [FluidLab](https://github.com/thepacket/fluidlab) (`src/model/control.ts`), which is MIT licensed, Copyright (c) 2026 Andre Paquette. The room balance and the hydraulic effect of each valve are original to this studio.
+
+The supply manifold is a hot header: one inlet on top and three or more outlets along the bottom (`branches`, 3–6). The return manifold is a cold header: the same number of inlets on top and one outlet below. Ports are supply-only or return-only, so a hot outlet cannot be tied to a cold return. A junction is a four-way cross; the tee remains the three-port branch.
+
+Click a pipe or a signal to select it. The inspector then offers Delete, the same action as for a part.

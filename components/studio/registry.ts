@@ -1,3 +1,4 @@
+import { clamp } from '@/components/studio/temperature';
 import type { CategoryId, ComponentDef, Locale, ParamDef, PortDef } from '@/components/studio/types';
 
 const capacity: ParamDef = {
@@ -28,6 +29,42 @@ const speed: ParamDef = {
 const volume: ParamDef = {
   id: 'volume', kind: 'number', min: 50, max: 1000, step: 10, defaultValue: 200, unit: 'L',
 };
+
+const opening: ParamDef = {
+  id: 'opening', kind: 'number', min: 0, max: 100, step: 5, defaultValue: 100, unit: '%',
+};
+
+const motorized: ParamDef = {
+  id: 'motorized', kind: 'boolean', min: 0, max: 1, step: 1, defaultValue: 0, unit: '',
+};
+
+const behavior: ParamDef = {
+  id: 'behavior', kind: 'select', min: 0, max: 1, step: 1, defaultValue: 0, unit: '', options: [0, 1],
+};
+
+const arrangement: ParamDef = {
+  id: 'arrangement', kind: 'select', min: 0, max: 1, step: 1, defaultValue: 0, unit: '', options: [0, 1],
+};
+
+const limitC: ParamDef = {
+  id: 'limitC', kind: 'number', min: 40, max: 95, step: 1, defaultValue: 75, unit: '°C',
+};
+
+const branches: ParamDef = {
+  id: 'branches', kind: 'number', min: 3, max: 6, step: 1, defaultValue: 3, unit: '',
+};
+
+const roomSet: ParamDef = {
+  id: 'roomSet', kind: 'number', min: 10, max: 28, step: 0.5, defaultValue: 21, unit: '°C',
+};
+
+const ambient: ParamDef = {
+  id: 'ambient', kind: 'number', min: 5, max: 25, step: 0.5, defaultValue: 16, unit: '°C',
+};
+
+const signalPort = (id: string, direction: 'in' | 'out'): PortDef => ({
+  id, x: 0.5, y: 0, side: 'neutral', direction, terminal: 'signal', required: false,
+});
 
 function text(sq: string, de: string, en: string): Record<Locale, string> {
   return { sq, de, en };
@@ -180,11 +217,206 @@ export const COMPONENTS: ComponentDef[] = [
     ],
     params: [],
   },
+  {
+    id: 'junction',
+    code: 'J',
+    category: 'connector',
+    name: text('Nyje', 'Kreuzstück', 'Junction'),
+    blurb: text('Kryq me katër porta. Uji kalon në çdo drejtim.', 'Vier Wege. Wasser kann in jede Richtung.', 'Four-way junction. Water can pass any direction.'),
+    width: 64,
+    height: 64,
+    symbol: 'junction',
+    rotatable: false,
+    ports: [
+      { id: 'n', x: 0.5, y: 0, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },
+      { id: 'e', x: 1, y: 0.5, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },
+      { id: 's', x: 0.5, y: 1, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },
+      { id: 'w', x: 0, y: 0.5, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },
+    ],
+    params: [],
+  },
+  {
+    id: 'manifold-supply',
+    code: 'MS',
+    category: 'connector',
+    name: text('Kolektor furnizimi', 'Vorlaufverteiler', 'Supply manifold'),
+    blurb: text('Kokë e nxehtë: një hyrje sipër dhe dalje të nxehta poshtë.', 'Warmer Verteiler: ein Eintritt oben, Auslässe unten.', 'Hot header: one inlet on top and hot outlets along the bottom.'),
+    width: 180,
+    height: 78,
+    symbol: 'manifold-supply',
+    rotatable: false,
+    ports: supplyManifoldPorts(3),
+    params: [branches],
+  },
+  {
+    id: 'manifold-return',
+    code: 'MR',
+    category: 'connector',
+    name: text('Kolektor kthimi', 'Rücklaufsammler', 'Return manifold'),
+    blurb: text('Kokë e ftohtë: hyrje kthimi sipër dhe një dalje poshtë.', 'Kalter Sammler: Rückläufe oben, ein Austritt unten.', 'Cold header: return inlets on top and one outlet below.'),
+    width: 180,
+    height: 78,
+    symbol: 'manifold-return',
+    rotatable: false,
+    ports: returnManifoldPorts(3),
+    params: [branches],
+  },
+  {
+    id: 'valve',
+    code: 'V',
+    category: 'valve',
+    name: text('Valvul 2-rrugëshe', 'Zweiwegeventil', 'Two-way valve'),
+    blurb: text('Hapje ose mbyllje. E motorizuara ndjek termostatin.', 'Auf oder zu. Motorisiert folgt sie dem Thermostat.', 'On/off or modulating. Motorized, it follows a thermostat.'),
+    width: 92,
+    height: 72,
+    symbol: 'valve',
+    rotatable: true,
+    ports: [
+      signalPort('ctl', 'in'),
+      { id: 'in', x: 0, y: 0.62, side: 'neutral', direction: 'in', terminal: 'passive', required: true },
+      { id: 'out', x: 1, y: 0.62, side: 'neutral', direction: 'out', terminal: 'passive', required: true },
+    ],
+    params: [behavior, motorized, opening],
+  },
+  {
+    id: 'valve-3way',
+    code: 'V3',
+    category: 'valve',
+    name: text('Valvul 3-rrugëshe', 'Dreiwegeventil', 'Three-way valve'),
+    blurb: text('Ndane rrjedhën ose përzien dy degë në të njëjtin qark.', 'Teilt oder mischt zwei Stränge im selben Kreis.', 'Diverts or mixes two branches on the same circuit.'),
+    width: 104,
+    height: 96,
+    symbol: 'valve-3way',
+    rotatable: true,
+    ports: [
+      signalPort('ctl', 'in'),
+      { id: 'ab', x: 0, y: 0.46, side: 'neutral', direction: 'junction', terminal: 'passive', required: true },
+      { id: 'a', x: 1, y: 0.46, side: 'neutral', direction: 'junction', terminal: 'passive', required: true },
+      { id: 'b', x: 0.5, y: 1, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },
+    ],
+    params: [arrangement, behavior, motorized, { ...opening, defaultValue: 0 }],
+  },
+  {
+    id: 'relief',
+    code: 'RV',
+    category: 'valve',
+    name: text('Valvul shkarkimi', 'Sicherheitsventil', 'Relief valve'),
+    blurb: text('Qëndron e mbyllur. Hapet kur uji kalon kufirin — modeli s’ka presion, përdor temperaturën.', 'Bleibt zu. Öffnet über dem Grenzwert. Das Modell nutzt Temperatur statt Druck.', 'Stays shut. Opens above its limit. This model uses temperature as the stand-in for pressure.'),
+    width: 92,
+    height: 72,
+    symbol: 'relief',
+    rotatable: true,
+    ports: [
+      { id: 'in', x: 0, y: 0.55, side: 'supply', direction: 'in', terminal: 'relief-in', required: true },
+      { id: 'out', x: 1, y: 0.55, side: 'return', direction: 'out', terminal: 'relief-out', required: true },
+    ],
+    params: [limitC],
+  },
+  {
+    id: 'air-vent',
+    code: 'AV',
+    category: 'valve',
+    name: text('Valvul ajrimi', 'Entlüfter', 'Air vent'),
+    blurb: text('Vetëm vizuale. Uji kalon pa u penguar.', 'Nur Darstellung. Das Wasser fließt ungehindert.', 'Visual only. Water passes straight through.'),
+    width: 72,
+    height: 78,
+    symbol: 'air-vent',
+    rotatable: false,
+    ports: [
+      { id: 'in', x: 0, y: 0.72, side: 'neutral', direction: 'in', terminal: 'passive', required: true },
+      { id: 'out', x: 1, y: 0.72, side: 'neutral', direction: 'out', terminal: 'passive', required: true },
+    ],
+    params: [],
+  },
+  {
+    id: 'check',
+    code: 'CV',
+    category: 'valve',
+    name: text('Valvul moskthimi', 'Rückflussverhinderer', 'Backflow preventer'),
+    blurb: text('Lë ujin vetëm përpara. Rrjedha mbrapsht bllokohet.', 'Wasser nur vorwärts. Rückfluss wird gesperrt.', 'Water only flows forward. Reverse flow is blocked.'),
+    width: 92,
+    height: 64,
+    symbol: 'check',
+    rotatable: true,
+    ports: [
+      { id: 'in', x: 0, y: 0.5, side: 'neutral', direction: 'in', terminal: 'passive', required: true },
+      { id: 'out', x: 1, y: 0.5, side: 'neutral', direction: 'out', terminal: 'passive', required: true },
+    ],
+    params: [],
+  },
+  {
+    id: 'thermostat',
+    code: 'RT',
+    category: 'control',
+    name: text('Termostat dhome', 'Raumthermostat', 'Room thermostat'),
+    blurb: text('Dhoma ngrohet nga radiatori që shërben dhe ftohet ndaj ambientit. Sinjali i ndërprerë nuk është tub uji.', 'Der Raum wird vom Heizkörper erwärmt und kühlt zur Umgebung. Die gestrichelte Linie ist kein Rohr.', 'The room warms from the emitter it serves and cools toward ambient. The dashed link is not a water pipe.'),
+    width: 88,
+    height: 88,
+    symbol: 'thermostat',
+    rotatable: false,
+    ports: [
+      { id: 'sig', x: 0.5, y: 1, side: 'neutral', direction: 'out', terminal: 'signal', required: false },
+    ],
+    params: [roomSet, ambient],
+  },
 ];
 
 const BY_ID = new Map(COMPONENTS.map((component) => [component.id, component]));
 
-export const CATEGORY_ORDER: CategoryId[] = ['source', 'storage', 'consumer', 'system', 'connector'];
+export const CATEGORY_ORDER: CategoryId[] = ['source', 'storage', 'consumer', 'system', 'valve', 'control', 'connector'];
+
+export function branchCount(params: Record<string, number> | undefined): number {
+  return clamp(Math.round(params?.branches ?? 3), 3, 6);
+}
+
+export function supplyManifoldPorts(count: number): PortDef[] {
+  const ports: PortDef[] = [
+    { id: 'in', x: 0.5, y: 0, side: 'supply', direction: 'in', terminal: 'header-supply', required: true },
+  ];
+  for (let i = 0; i < count; i++) {
+    ports.push({
+      id: `out-${i + 1}`,
+      x: (i + 0.5) / count,
+      y: 1,
+      side: 'supply',
+      direction: 'out',
+      terminal: 'header-supply',
+      required: false,
+    });
+  }
+  return ports;
+}
+
+export function returnManifoldPorts(count: number): PortDef[] {
+  const ports: PortDef[] = [];
+  for (let i = 0; i < count; i++) {
+    ports.push({
+      id: `in-${i + 1}`,
+      x: (i + 0.5) / count,
+      y: 0,
+      side: 'return',
+      direction: 'in',
+      terminal: 'header-return',
+      required: false,
+    });
+  }
+  ports.push({ id: 'out', x: 0.5, y: 1, side: 'return', direction: 'out', terminal: 'header-return', required: true });
+  return ports;
+}
+
+export function resolvePorts(def: ComponentDef, params: Record<string, number> | undefined): PortDef[] {
+  const count = branchCount(params);
+  if (def.id === 'manifold-supply') return supplyManifoldPorts(count);
+  if (def.id === 'manifold-return') return returnManifoldPorts(count);
+  return def.ports;
+}
+
+export function componentBox(def: ComponentDef, params?: Record<string, number>): { width: number; height: number } {
+  if (def.id === 'manifold-supply' || def.id === 'manifold-return') {
+    return { width: 36 + branchCount(params) * 48, height: def.height };
+  }
+  return { width: def.width, height: def.height };
+}
 
 export function getComponent(id: string): ComponentDef | undefined {
   return BY_ID.get(id);

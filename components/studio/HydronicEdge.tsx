@@ -41,7 +41,7 @@ export function HydronicEdge({
     setLength(pathRef.current?.getTotalLength() ?? 0);
   }, [d]);
 
-  const casing = selected ? 7.4 : 6.2;
+  const casing = selected ? 8 : 6.2;
   const bore = selected ? 3.6 : 3.2;
   const thermo = Boolean(sim);
   const particles = thermo && sim && sim.flowLph > 1 && length > 8 ? particlePoints(pathRef.current, length, distance, sim) : [];
@@ -49,6 +49,7 @@ export function HydronicEdge({
   return (
     <>
       <path ref={pathRef} d={d} fill="none" stroke="transparent" strokeWidth={18} />
+      {selected ? <path d={d} fill="none" stroke="#2563eb" strokeWidth={12} strokeLinecap="round" opacity={0.35} /> : null}
       <path d={d} fill="none" stroke="#0f172a" strokeWidth={casing} strokeLinecap="round" strokeLinejoin="round" />
       {thermo && sim && length > 0 ? (
         <ColoredBore d={d} length={length} path={pathRef.current} tSource={sim.tSource} tTarget={sim.tTarget} width={bore} />
@@ -112,4 +113,26 @@ function particlePoints(
   return points;
 }
 
-export const hydronicEdgeTypes = { hydronic: HydronicEdge };
+export function SignalEdge({
+  sourceX,
+  sourceY,
+  targetX,
+  targetY,
+  sourcePosition,
+  targetPosition,
+  selected,
+}: EdgeProps<HydronicFlowEdge>) {
+  const [d] = getSmoothStepPath({
+    sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, borderRadius: 10, offset: 24,
+  });
+  return (
+    <>
+      <path d={d} fill="none" stroke="transparent" strokeWidth={16} />
+      {selected ? <path d={d} fill="none" stroke="#7c3aed" strokeWidth={8} opacity={0.25} /> : null}
+      <path d={d} fill="none" stroke="#7c3aed" strokeWidth={2} strokeDasharray="6 5" strokeLinecap="round" />
+      <circle cx={targetX} cy={targetY} r={3.5} fill="#7c3aed" />
+    </>
+  );
+}
+
+export const hydronicEdgeTypes = { hydronic: HydronicEdge, signal: SignalEdge };

@@ -1,6 +1,6 @@
 export type Locale = 'sq' | 'de' | 'en';
 
-export type CategoryId = 'source' | 'storage' | 'consumer' | 'system' | 'connector';
+export type CategoryId = 'source' | 'storage' | 'consumer' | 'system' | 'valve' | 'control' | 'connector';
 
 export type SymbolId =
   | 'heat-pump'
@@ -10,7 +10,16 @@ export type SymbolId =
   | 'fancoil'
   | 'dhw'
   | 'pump'
-  | 'tee';
+  | 'tee'
+  | 'junction'
+  | 'manifold-supply'
+  | 'manifold-return'
+  | 'valve'
+  | 'valve-3way'
+  | 'relief'
+  | 'air-vent'
+  | 'check'
+  | 'thermostat';
 
 export type PortSide = 'supply' | 'return' | 'neutral';
 
@@ -23,6 +32,11 @@ export type PortTerminal =
   | 'buffer-primary-out'
   | 'buffer-secondary-out'
   | 'buffer-secondary-in'
+  | 'header-supply'
+  | 'header-return'
+  | 'relief-in'
+  | 'relief-out'
+  | 'signal'
   | 'passive';
 
 export interface PortDef {
@@ -83,6 +97,8 @@ export interface GraphEdge {
   target: string;
   sourceHandle: string;
   targetHandle: string;
+  /** Water pipe, or a dashed thermostat command. Omitted edges are pipes. */
+  kind?: 'pipe' | 'signal';
 }
 
 export interface EdgeSim {
@@ -100,6 +116,10 @@ export interface NodeSim {
   dt: number;
   tankC?: number;
   storedKwh?: number;
+  /** 0 closed … 1 open. Set on valves. */
+  opening?: number;
+  /** Simulated room temperature for a thermostat. */
+  roomC?: number;
 }
 
 export interface SimIssue {

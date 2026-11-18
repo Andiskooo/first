@@ -1,4 +1,4 @@
-import { getComponent } from '@/components/studio/registry';
+import { getComponent, resolvePorts } from '@/components/studio/registry';
 import { clamp } from '@/components/studio/temperature';
 import type {
   ComponentDef,
@@ -47,6 +47,9 @@ interface TracedPath {
   consumers: string[];
   buffers: { nodeId: string; via: 'primary' | 'secondary' }[];
   flowLph: number;
+  /** 0 blocks the branch. 1 is fully open. */
+  gain: number;
+  relief: boolean;
 }
 
 interface DEdge extends Pipe {
@@ -107,7 +110,7 @@ function pumpLph(node: GraphNode | undefined): number {
   return PUMP_NOMINAL_LPH * clamp(node.params.speed ?? 0, 0, 100) / 100;
 }
 
-export function simulate(nodes: GraphNode[], edges: GraphEdge[]): SimResult {
+export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Record<string, number> = {}): SimResult {
   const result = emptyResult();
   const issues: SimIssue[] = [];
   const add = (level: SimIssue['level'], code: string) => {
@@ -133,6 +136,7 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[]): SimResult {
 
   const links = new Map<string, { edgeId: string; nodeId: string; portId: string }>();
   for (const edge of edges) {
+    if (edge.kind === 'signal') continue;
     if (!edge.sourceHandle || !edge.targetHandle) continue;
     const forward = { edgeId: edge.id, nodeId: edge.target, portId: edge.targetHandle };
     const back = { edgeId: edge.id, nodeId: edge.source, portId: edge.sourceHandle };
@@ -145,17 +149,59 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[]): SimResult {
     return node ? getComponent(node.componentId) : undefined;
   };
 
-  function internalLeaves(nodeId: string, enterPort: string): string[] {
+  function openingOf(nodeId: string): number {
+    if (openings[nodeId] !== undefined) return clamp(openings[nodeId], 0, 1);
+    const node = nodeById.get(nodeId);
+    if (!node) return 1;
+    if (node.componentId === 'valve' || node.componentId === 'valve-3way') {
+      const fallback = node.componentId === 'valve-3way' ? 0 : 100;
+      return clamp((node.params.opening ?? fallback) / 100, 0, 1);
+    }
+    if (node.componentId === 'relief') return 0;
+    return 1;
+  }
+
+  /** Where water may leave, and the gain applied to that branch. */
+  function leaveOptions(nodeId: string, enterPort: string, gain: number): { port: string; gain: number }[] {
     const def = defOf(nodeId);
     if (!def) return [];
+    const open = (port: string, nextGain: number) => (nextGain > 0.02 ? [{ port, gain: nextGain }] : []);
     if (def.id === 'heat-pump') return [];
-    if (def.id === 'buffer-tank') return enterPort === 'pri-in' ? ['pri-out'] : [];
-    if (def.category === 'consumer') return enterPort === 'supply-in' ? ['return-out'] : [];
-    if (def.id === 'pump') return def.ports.map((port) => port.id).filter((id) => id !== enterPort);
-    if (def.id === 'tee') {
-      return def.ports
+    if (def.id === 'buffer-tank') return enterPort === 'pri-in' ? [{ port: 'pri-out', gain }] : [];
+    if (def.category === 'consumer') return enterPort === 'supply-in' ? [{ port: 'return-out', gain }] : [];
+    if (def.id === 'pump' || def.id === 'air-vent') {
+      return def.ports.filter((port) => port.id !== enterPort && port.terminal !== 'signal').map((port) => ({ port: port.id, gain }));
+    }
+    if (def.id === 'check') return enterPort === 'in' ? [{ port: 'out', gain }] : [];
+    if (def.id === 'valve') return enterPort === 'in' ? [{ port: 'out', gain: gain * openingOf(nodeId) }] : [];
+    if (def.id === 'relief') return enterPort === 'in' ? open('out', gain * openingOf(nodeId)) : [];
+    if (def.id === 'valve-3way') {
+      const position = openingOf(nodeId);
+      const mix = (nodeById.get(nodeId)?.params.arrangement ?? 0) >= 0.5;
+      if (!mix) {
+        if (enterPort !== 'ab') return [];
+        return [
+          { port: 'a', gain: gain * (1 - position) },
+          { port: 'b', gain: gain * position },
+        ];
+      }
+      if (enterPort === 'a') return open('ab', gain * (1 - position));
+      if (enterPort === 'b') return open('ab', gain * position);
+      return [];
+    }
+    if (def.id === 'manifold-supply' || def.id === 'manifold-return') {
+      const node = nodeById.get(nodeId);
+      return resolvePorts(def, node?.params)
         .map((port) => port.id)
-        .filter((id) => id !== enterPort && links.has(`${nodeId}:${id}`));
+        .filter((id) => id !== enterPort && links.has(`${nodeId}:${id}`))
+        .map((port) => ({ port, gain }));
+    }
+    if (def.id === 'tee' || def.id === 'junction') {
+      const node = nodeById.get(nodeId);
+      return resolvePorts(def, node?.params)
+        .map((port) => port.id)
+        .filter((id) => id !== enterPort && links.has(`${nodeId}:${id}`))
+        .map((port) => ({ port, gain }));
     }
     return [];
   }
@@ -171,6 +217,8 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[]): SimResult {
       buffers: TracedPath['buffers'];
       usedEdges: Set<string>;
       usedNodes: Set<string>;
+      gain: number;
+      relief: boolean;
     }
     const stack: Frame[] = [{
       nodeId: startNode,
@@ -181,9 +229,11 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[]): SimResult {
       buffers: [],
       usedEdges: new Set(),
       usedNodes: new Set([startNode]),
+      gain: 1,
+      relief: false,
     }];
 
-    while (stack.length && results.length < 8) {
+    while (stack.length && results.length < 16) {
       const frame = stack.pop()!;
       if (frame.pipes.length > 18) continue;
       const link = links.get(`${frame.nodeId}:${frame.portId}`);
@@ -204,6 +254,8 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[]): SimResult {
           consumers: frame.consumers,
           buffers: frame.buffers,
           flowLph: 0,
+          gain: frame.gain,
+          relief: frame.relief,
         });
         continue;
       }
@@ -213,27 +265,45 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[]): SimResult {
       const pumps = frame.pumps.slice();
       const consumers = frame.consumers.slice();
       const buffers = frame.buffers.slice();
+      let relief = frame.relief;
       if (def.id === 'pump') pumps.push({ nodeId: link.nodeId, reversed: link.portId === 'out' });
       else if (def.category === 'consumer') consumers.push(link.nodeId);
       else if (def.id === 'buffer-tank') {
         buffers.push({ nodeId: link.nodeId, via: link.portId.startsWith('pri') ? 'primary' : 'secondary' });
-      }
+      } else if (def.id === 'relief') relief = true;
       const usedNodes = new Set(frame.usedNodes);
       usedNodes.add(link.nodeId);
-      for (const leave of internalLeaves(link.nodeId, link.portId)) {
+      for (const leave of leaveOptions(link.nodeId, link.portId, frame.gain)) {
         stack.push({
           nodeId: link.nodeId,
-          portId: leave,
+          portId: leave.port,
           pipes,
           pumps: pumps.slice(),
           consumers: consumers.slice(),
           buffers: buffers.slice(),
           usedEdges: new Set(usedEdges),
           usedNodes: new Set(usedNodes),
+          gain: leave.gain,
+          relief,
         });
       }
     }
     return results;
+  }
+
+  function shareFlow(paths: TracedPath[], total: number, codes: string[], emptyCode: string) {
+    if (total <= 0) {
+      for (const path of paths) path.flowLph = 0;
+      codes.push(emptyCode);
+      return;
+    }
+    const sumGain = paths.reduce((sum, path) => sum + path.gain, 0);
+    if (sumGain <= 1e-6) {
+      for (const path of paths) path.flowLph = 0;
+      codes.push('valves-closed');
+      return;
+    }
+    for (const path of paths) path.flowLph = total * (path.gain / sumGain);
   }
 
   function assignFlows(paths: TracedPath[], fallbackLph: number, emptyCode: string): string[] {
@@ -260,16 +330,12 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[]): SimResult {
         return codes;
       }
       const total = Math.min(...pumps.map((pump) => pump.lph));
-      const share = total / n;
-      for (const path of paths) path.flowLph = share;
-      if (total <= 0) codes.push(emptyCode);
+      shareFlow(paths, total, codes, emptyCode);
       return codes;
     }
 
     if (pumpIds.size === 0) {
-      if (fallbackLph <= 0) codes.push(emptyCode);
-      const share = fallbackLph / n;
-      for (const path of paths) path.flowLph = share;
+      shareFlow(paths, fallbackLph, codes, emptyCode);
       return codes;
     }
 
@@ -279,7 +345,7 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[]): SimResult {
         codes.push('reversed-pump');
         return 0;
       }
-      return Math.min(...path.pumps.map((pump) => pumpLph(nodeById.get(pump.nodeId))));
+      return Math.min(...path.pumps.map((pump) => pumpLph(nodeById.get(pump.nodeId)))) * path.gain;
     });
     for (let iter = 0; iter < 6; iter++) {
       for (const id of pumpIds) {
@@ -303,7 +369,7 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[]): SimResult {
 
   const fromHp = trace(hp.id, 'supply-out', (nodeId, portId) => nodeId === hp.id && portId === 'return-in');
   for (const path of fromHp) {
-    if (!path.consumers.length && !path.buffers.length) add('warn', 'short');
+    if (!path.consumers.length && !path.buffers.length && !path.relief) add('warn', 'short');
   }
 
   const primaryPaths = buffer
@@ -334,20 +400,25 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[]): SimResult {
 
   const activePrimary = buffer && primaryPaths.length ? primaryPaths : [];
   const activeDirect = useDirect ? directPaths : [];
+  const reliefPaths = fromHp.filter((path) => path.relief && path.consumers.length === 0 && path.buffers.length === 0);
+  const directBundle = [...activeDirect, ...(useDirect ? reliefPaths : [])];
   const internalLph = internalFlow(hp);
   for (const code of assignFlows(activePrimary, internalLph, 'no-flow')) add('warn', code);
-  for (const code of assignFlows(activeDirect, internalLph, 'no-flow')) add('warn', code);
+  for (const code of assignFlows(directBundle, internalLph, 'no-flow')) add('warn', code);
   for (const code of assignFlows(secondaryPaths, 0, 'need-secondary-pump')) add('warn', code);
 
   const primaryFlow = activePrimary.reduce((sum, path) => sum + path.flowLph, 0);
-  const directFlow = activeDirect.reduce((sum, path) => sum + path.flowLph, 0);
+  const directFlow = directBundle.reduce((sum, path) => sum + path.flowLph, 0);
   const secondaryFlow = secondaryPaths.reduce((sum, path) => sum + path.flowLph, 0);
-  const sourcePaths = activePrimary.length ? activePrimary : activeDirect;
+  const sourcePaths = activePrimary.length ? activePrimary : directBundle;
   const sourceFlow = activePrimary.length ? primaryFlow : directFlow;
 
   const served = new Set<string>();
   const consumerPaths = activePrimary.length ? secondaryPaths : activeDirect;
-  for (const path of consumerPaths) for (const id of path.consumers) served.add(id);
+  for (const path of consumerPaths) {
+    if (path.gain <= 1e-6) continue;
+    for (const id of path.consumers) served.add(id);
+  }
   let demandKw = 0;
   for (const id of served) demandKw += nodeById.get(id)?.params.demand ?? 0;
 
@@ -425,6 +496,15 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[]): SimResult {
 
   const ok = served.size > 0 && delivered >= 0 && sourceFlow > 1 && Object.keys(prop.consumer).length > 0
     && (buffer ? secondaryFlow > 1 && primaryPaths.length > 0 : directPaths.length > 0);
+
+  for (const node of nodes) {
+    if (node.componentId !== 'valve' && node.componentId !== 'valve-3way' && node.componentId !== 'relief') continue;
+    const position = openingOf(node.id);
+    const prior = nodeSims[node.id];
+    nodeSims[node.id] = prior
+      ? { ...prior, opening: position }
+      : { tIn: 0, tOut: 0, flowLph: 0, qKw: 0, dt: 0, opening: position };
+  }
 
   return {
     ok,
