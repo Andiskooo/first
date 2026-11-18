@@ -2,6 +2,21 @@ import { componentBox, defaultParams, getComponent } from '@/components/studio/r
 
 export const SNAP = 20;
 
+/** Movement below this is a tap (arm the part). At or above it, the pointer is dragging. */
+export const PLACE_DRAG_THRESHOLD = 8;
+
+export function pointerGesture(dx: number, dy: number, threshold = PLACE_DRAG_THRESHOLD): 'tap' | 'drag' {
+  return Math.hypot(dx, dy) >= threshold ? 'drag' : 'tap';
+}
+
+export function pointInRect(
+  x: number,
+  y: number,
+  rect: { left: number; top: number; right: number; bottom: number },
+): boolean {
+  return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+}
+
 /** What the library writes onto a drag, and what the canvas reads back. */
 export interface DropPayload {
   types?: ArrayLike<string>;

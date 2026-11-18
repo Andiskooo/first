@@ -12,7 +12,8 @@
     "test:seo": "tsx scripts/test-seo.ts",
     "build:chat-index": "node scripts/build-chat-index.mjs",
     "test:chatbot": "tsx scripts/test-chatbot.ts",
-    "test:studio": "tsx scripts/test-studio.ts"
+    "test:studio": "tsx scripts/test-studio.ts",
+    "test:studio:pointer": "tsx scripts/test-studio-pointer.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
@@ -53,6 +54,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "^15.5.10",
+    "playwright-core": "1.49.1",
     "tailwindcss": "^4",
     "tsx": "^4.20.3",
     "typescript": "^5"

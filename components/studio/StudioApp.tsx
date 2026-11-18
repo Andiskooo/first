@@ -326,10 +326,16 @@ function StudioShell() {
                 setArmed((current) => (current === id ? null : id));
                 if (window.matchMedia('(max-width: 1023px)').matches) setPanel('canvas');
               }}
+              onPlace={(id, clientX, clientY) => {
+                const point = screenToFlowPosition({ x: clientX, y: clientY });
+                addPart(id, point.x, point.y);
+                setArmed(null);
+              }}
             />
           </div>
 
           <div
+            data-studio-canvas
             className={cn('relative min-h-0 min-w-0 flex-1', panel === 'canvas' ? 'flex' : 'hidden', 'lg:flex')}
             onDragEnter={allowPartDrop}
             onDragOver={allowPartDrop}

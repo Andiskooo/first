@@ -1,10 +1,11 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Search } from 'lucide-react';
 import { useLanguage } from '@/components/LanguageProvider';
 import { CATEGORY_ORDER, componentsByCategory } from '@/components/studio/registry';
-import { consumeRecentDrop } from '@/components/studio/place';
+import { pointerGesture } from '@/components/studio/place';
 import { ComponentArt } from '@/components/studio/symbols';
 import { useStudioCopy } from '@/components/studio/copy';
 import type { ComponentDef } from '@/components/studio/types';
@@ -13,14 +14,17 @@ import { cn } from '@/lib/utils';
 export function Library({
   armedId,
   onArm,
+  onPlace,
 }: {
   armedId: string | null;
   onArm: (componentId: string) => void;
+  /** Client coordinates. The canvas converts them with screenToFlowPosition. */
+  onPlace: (componentId: string, clientX: number, clientY: number) => void;
 }) {
   const text = useStudioCopy();
   const { locale } = useLanguage();
   const [query, setQuery] = useState('');
-  const dragged = useRef(false);
+  const [ghost, setGhost] = useState<{ name: string; code: string; x: number; y: number } | null>(null);
   const needle = query.trim().toLowerCase();
 
   return (
@@ -54,14 +58,9 @@ export function Library({
                     item={item}
                     name={item.name[locale]}
                     armed={armedId === item.id}
-                    onDragStart={() => { dragged.current = true; }}
-                    onClick={() => {
-                      if (dragged.current) {
-                        dragged.current = false;
-                        if (consumeRecentDrop()) return;
-                      }
-                      onArm(item.id);
-                    }}
+                    onArm={() => onArm(item.id)}
+                    onPlace={(x, y) => onPlace(item.id, x, y)}
+                    onGhost={(point) => setGhost(point ? { name: item.name[locale], code: item.code, ...point } : null)}
                   />
                 ))}
               </div>
@@ -73,39 +72,91 @@ export function Library({
         <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-red-500" />{text.legendSupply}</span>
         <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-blue-600" />{text.legendReturn}</span>
       </div>
+      {ghost && typeof document !== 'undefined' ? createPortal(
+        <div
+          data-part-ghost
+          className="pointer-events-none fixed z-[80] flex items-center gap-2 rounded-xl border border-slate-300 bg-white/95 px-3 py-2 text-xs font-medium text-slate-800 shadow-lg"
+          style={{ left: ghost.x + 14, top: ghost.y + 14 }}
+        >
+          <span className="font-semibold tracking-wide text-slate-400">{ghost.code}</span>
+          {ghost.name}
+        </div>,
+        document.body,
+      ) : null}
     </aside>
   );
+}
+
+function releaseOverCanvas(x: number, y: number): boolean {
+  const canvas = document.querySelector('[data-studio-canvas]');
+  if (!canvas) return false;
+  const rect = canvas.getBoundingClientRect();
+  return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
 }
 
 function PartCard({
   item,
   name,
   armed,
-  onClick,
-  onDragStart,
+  onArm,
+  onPlace,
+  onGhost,
 }: {
   item: ComponentDef;
   name: string;
   armed: boolean;
-  onClick: () => void;
-  onDragStart: () => void;
+  onArm: () => void;
+  onPlace: (clientX: number, clientY: number) => void;
+  onGhost: (point: { x: number; y: number } | null) => void;
 }) {
+  const gesture = useRef<{ pointerId: number; x: number; y: number; moved: boolean } | null>(null);
+  const swallowClick = useRef(false);
+
   return (
     <button
       type="button"
-      draggable
-      onClick={onClick}
-      onDragStart={(event) => {
-        onDragStart();
-        event.dataTransfer.setData('text/plain', item.id);
-        event.dataTransfer.setData('application/x-ecotek-part', item.id);
-        event.dataTransfer.effectAllowed = 'copyMove';
+      data-part-card={item.id}
+      aria-pressed={armed}
+      style={{ touchAction: 'none' }}
+      onPointerDown={(event) => {
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+        event.currentTarget.setPointerCapture(event.pointerId);
+        gesture.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
+      }}
+      onPointerMove={(event) => {
+        const current = gesture.current;
+        if (!current || event.pointerId !== current.pointerId) return;
+        if (!current.moved && pointerGesture(event.clientX - current.x, event.clientY - current.y) === 'tap') return;
+        current.moved = true;
+        onGhost({ x: event.clientX, y: event.clientY });
+      }}
+      onPointerUp={(event) => {
+        const current = gesture.current;
+        gesture.current = null;
+        onGhost(null);
+        if (!current || event.pointerId !== current.pointerId) return;
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+          event.currentTarget.releasePointerCapture(event.pointerId);
+        }
+        if (!current.moved) return;
+        swallowClick.current = true;
+        if (releaseOverCanvas(event.clientX, event.clientY)) onPlace(event.clientX, event.clientY);
+      }}
+      onPointerCancel={() => {
+        gesture.current = null;
+        onGhost(null);
+      }}
+      onClick={() => {
+        if (swallowClick.current) {
+          swallowClick.current = false;
+          return;
+        }
+        onArm();
       }}
       className={cn(
-        'flex flex-col items-center rounded-xl border bg-white px-2 py-2 text-center transition hover:border-slate-400',
+        'flex touch-none select-none flex-col items-center rounded-xl border bg-white px-2 py-2 text-center transition hover:border-slate-400',
         armed ? 'border-blue-600 ring-2 ring-blue-600' : 'border-slate-200',
       )}
-      aria-pressed={armed}
     >
       <span className="pointer-events-none flex h-16 w-full items-center justify-center">
         <span className="relative block h-14 w-full">

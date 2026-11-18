@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { computeOpenings } from '../components/studio/control';
 import { buildExample } from '../components/studio/example';
-import { createPlacedPart, droppedPartId } from '../components/studio/place';
+import { createPlacedPart, droppedPartId, pointerGesture, pointInRect } from '../components/studio/place';
 import { COMPONENTS } from '../components/studio/registry';
 import { simulate } from '../components/studio/simulation';
 import { validateConnection } from '../components/studio/validation';
@@ -292,6 +292,11 @@ function main() {
   }), null);
   assert.equal(droppedPartId(null), null);
   assert.ok(seen.has('mixer') && seen.has('valve-3way') && seen.has('heat-pump'));
+  assert.equal(pointerGesture(2, 3), 'tap');
+  assert.equal(pointerGesture(8, 0), 'drag');
+  assert.equal(pointerGesture(0, 7), 'tap');
+  assert.equal(pointInRect(10, 10, { left: 0, top: 0, right: 20, bottom: 20 }), true);
+  assert.equal(pointInRect(21, 10, { left: 0, top: 0, right: 20, bottom: 20 }), false);
 
   console.log('PASS studio simulation and connection rules');
 }
