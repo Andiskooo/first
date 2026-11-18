@@ -7,7 +7,7 @@ import { siteUrl } from '@/lib/seo';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const collections = await getInstallations();
-  const paths = ['/', '/pompa-termike', '/instalimet', '/contact-us', '/blog',
+  const paths = ['/', '/pompa-termike', '/studio', '/instalimet', '/contact-us', '/blog',
     ...categories.map(c => `/categories/${c.id}`),
     ...getAllProducts().map(p => `/products/${p.id}`),
     ...blogPosts.map(p => `/blog/${p.id}`),

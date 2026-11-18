@@ -139,3 +139,90 @@
   width: min(100vw, 177.78dvh);
   aspect-ratio: 16 / 9;
 }
+
+.studio-flow {
+  background: #f4f1ec;
+}
+.studio-flow .react-flow__controls {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+.studio-flow .react-flow__controls-button {
+  border-bottom-color: #e2e8f0;
+  background: #fff;
+}
+.studio-flow .react-flow__attribution {
+  background: transparent;
+  color: #94a3b8;
+  font-size: 10px;
+}
+.studio-flow .react-flow__node {
+  overflow: visible;
+}
+.studio-canvas,
+.studio-flow {
+  touch-action: none;
+}
+.studio-root[data-present='true'] .studio-toolbar button,
+.studio-root[data-present='true'] .studio-toolbar p {
+  font-size: 1.15rem;
+  min-height: 52px;
+}
+.studio-root[data-present='true'] .studio-toolbar button {
+  padding: 0.75rem 1.05rem;
+}
+.studio-root[data-present='true'] .studio-library {
+  width: 22rem;
+}
+.studio-root[data-present='true'] .studio-inspector {
+  width: 26rem;
+}
+.studio-root[data-present='true'] [data-part-card] {
+  min-height: 8.5rem;
+  padding: 0.85rem 0.7rem;
+}
+.studio-root[data-present='true'] [data-part-card] .text-xs {
+  font-size: 1rem;
+  line-height: 1.25rem;
+}
+.studio-root[data-present='true'] [data-part-card] .relative.block {
+  height: 5.5rem;
+}
+.studio-root[data-present='true'] .studio-inspector {
+  font-size: 1.05rem;
+}
+.studio-root[data-present='true'] .studio-inspector h2,
+.studio-root[data-present='true'] .studio-node-label {
+  font-size: 1rem;
+}
+.studio-root[data-present='true'] .react-flow__handle {
+  width: 28px !important;
+  height: 28px !important;
+}
+.studio-root[data-present='true'] .react-flow__controls-button {
+  width: 36px;
+  height: 36px;
+}
+@media (min-width: 2500px) {
+  .studio-root[data-present='true'] .studio-toolbar button,
+  .studio-root[data-present='true'] .studio-toolbar p {
+    font-size: 1.45rem;
+    min-height: 64px;
+  }
+  .studio-root[data-present='true'] .studio-library {
+    width: 28rem;
+  }
+  .studio-root[data-present='true'] .studio-inspector {
+    width: 32rem;
+    font-size: 1.25rem;
+  }
+  .studio-root[data-present='true'] .studio-node-label {
+    font-size: 1.2rem;
+  }
+  .studio-root[data-present='true'] .react-flow__handle {
+    width: 36px !important;
+    height: 36px !important;
+  }
+}

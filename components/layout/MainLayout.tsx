@@ -16,11 +16,17 @@ export default function MainLayout({ children, installationLocations }: MainLayo
   // Fullscreen app-like chat route: hide site chrome on mobile so only the
   // chatbot is visible; desktop keeps the normal header/footer.
   const isChatPage = pathname === '/asistenti';
+  const isStudioPage = pathname === '/studio';
 
   return (
     <>
       <LanguageProvider>
-        {isChatPage ? (
+        {isStudioPage ? (
+          <div className="flex h-dvh flex-col">
+            <Header installationLocations={installationLocations} />
+            <main className="flex min-h-0 flex-1 flex-col overflow-hidden">{children}</main>
+          </div>
+        ) : isChatPage ? (
           <>
             <div className="hidden md:block">
               <Header installationLocations={installationLocations} />
