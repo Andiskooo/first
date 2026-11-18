@@ -145,4 +145,6 @@ export interface SimResult {
   demandKw: number;
   limited: boolean;
   tankC: number | null;
+  /** Heat pump and buffer only: the primary loop is closed and no heat user is drawing water. */
+  primaryIdle?: boolean;
 }

@@ -40,7 +40,7 @@ export function PropertiesPanel({
   const buffered = result.mode === 'buffered' || result.tankC != null;
 
   return (
-    <aside className="flex h-full min-h-0 w-full flex-col bg-white lg:w-[320px] lg:border-l lg:border-slate-200">
+    <aside className="studio-inspector flex h-full min-h-0 w-full flex-col bg-white lg:w-[320px] lg:border-l lg:border-slate-200">
       <div className="min-h-0 flex-1 overflow-y-auto p-4">
         <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">{text.globals}</h2>
         <div className="mt-3 grid grid-cols-2 gap-2">
@@ -86,7 +86,7 @@ export function PropertiesPanel({
                 />
               ) : null}
               {def.id === 'mixer' ? <p className="mt-3 text-xs leading-5 text-slate-500">{text.mixHint}</p> : null}
-              {def.id === 'pump' && signalLinked ? (
+              {(def.id === 'pump' || def.id === 'heat-pump') && signalLinked ? (
                 <p className="mt-3 rounded-lg bg-violet-50 px-3 py-2 text-xs font-semibold text-violet-950">
                   {(live?.opening ?? 1) >= 0.5 ? text.pumpOn : text.pumpOff}
                 </p>
@@ -297,7 +297,7 @@ function NodeReadouts({
       {sim.opening != null && kind !== 'valve3' && kind !== 'mixer' ? (
         <>
           <dt>{text.valveState}</dt>
-          <dd>{kind === 'pump' ? ((sim.opening ?? 1) >= 0.5 ? text.pumpOn : text.pumpOff) : sim.opening < 0.05 ? text.closed : sim.opening > 0.95 ? text.open : `${Math.round(sim.opening * 100)}%`}</dd>
+          <dd>{kind === 'pump' || kind === 'source' ? ((sim.opening ?? 1) >= 0.5 ? text.pumpOn : text.pumpOff) : sim.opening < 0.05 ? text.closed : sim.opening > 0.95 ? text.open : `${Math.round(sim.opening * 100)}%`}</dd>
         </>
       ) : null}
     </dl>

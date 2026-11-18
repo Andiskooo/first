@@ -26,6 +26,7 @@ import { computeOpenings } from '@/components/studio/control';
 import { buildExample, type ExampleKind } from '@/components/studio/example';
 import { componentBox, getComponent, resolvePorts } from '@/components/studio/registry';
 import { SNAP, createPlacedPart, droppedPartId, markPartDropped } from '@/components/studio/place';
+import { T_ROOM, chargeBuffer } from '@/components/studio/simulation';
 import { simulate } from '@/components/studio/simulation';
 import { validateConnection } from '@/components/studio/validation';
 import { resetDistances, setEdgeSpeeds, stopClock } from '@/components/studio/clock';
@@ -79,6 +80,10 @@ function StudioShell() {
   const [panel, setPanel] = useState<MobilePanel>('canvas');
   const [armed, setArmed] = useState<string | null>(null);
   const [hint, setHint] = useState<string | null>(null);
+  const [tankC, setTankC] = useState<number | null>(null);
+  const [present, setPresent] = useState(false);
+  const presentLock = useRef(false);
+  const shellRef = useRef<HTMLDivElement>(null);
   const graphRef = useRef({ nodes, edges });
   const rejectRef = useRef<string | null>(null);
   const heldRef = useRef<Record<string, number>>({});
@@ -93,7 +98,10 @@ function StudioShell() {
     () => computeOpenings({ nodes: graph.nodes, edges: graph.edges, held: heldRef.current, result: resultRef.current }),
     [graph],
   );
-  const result = useMemo(() => simulate(graph.nodes, graph.edges, openings), [graph, openings]);
+  const result = useMemo(
+    () => simulate(graph.nodes, graph.edges, openings, tankC == null ? {} : { tankC }),
+    [graph, openings, tankC],
+  );
   const showThermo = phase !== 'idle';
   const running = phase === 'running';
   const toggleThreeWay = useCallback((id: string) => {
@@ -137,8 +145,52 @@ function StudioShell() {
   }, [openings, result]);
 
   useEffect(() => {
-    if (phase === 'idle') heldRef.current = {};
+    if (phase === 'idle') {
+      heldRef.current = {};
+      setTankC(null);
+    }
   }, [phase]);
+
+  useEffect(() => {
+    if (phase !== 'running' || !result.primaryIdle) return;
+    let last = performance.now();
+    let frame = 0;
+    const tick = (now: number) => {
+      const dt = Math.min(0.2, (now - last) / 1000);
+      last = now;
+      const hp = graphRef.current.nodes.find((node) => node.data.componentId === 'heat-pump');
+      const tank = graphRef.current.nodes.find((node) => node.data.componentId === 'buffer-tank');
+      setTankC((current) => chargeBuffer(
+        current ?? T_ROOM,
+        hp?.data.params.setpoint ?? 45,
+        resultRef.current?.primaryFlowLph ?? 0,
+        hp?.data.params.capacity ?? 12,
+        tank?.data.params.volume ?? 200,
+        dt,
+      ));
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [phase, result.primaryIdle]);
+
+  useEffect(() => {
+    const apply = () => {
+      if (presentLock.current) return;
+      const wide = window.innerWidth >= 1600;
+      const coarse = window.matchMedia('(pointer: coarse)').matches && window.innerWidth >= 1200;
+      setPresent(wide || coarse);
+    };
+    apply();
+    window.addEventListener('resize', apply);
+    return () => window.removeEventListener('resize', apply);
+  }, []);
+
+  useEffect(() => {
+    const onFull = () => requestAnimationFrame(() => fitView({ padding: 0.12, duration: 180 }));
+    document.addEventListener('fullscreenchange', onFull);
+    return () => document.removeEventListener('fullscreenchange', onFull);
+  }, [fitView]);
 
   useEffect(() => () => stopClock(), []);
 
@@ -295,8 +347,8 @@ function StudioShell() {
 
   return (
     <StudioViewContext.Provider value={view}>
-      <div className="flex h-full min-h-0 flex-col bg-[#f4f1ec] text-slate-900">
-        <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-3 py-2">
+      <div ref={shellRef} data-present={present ? 'true' : 'false'} className="studio-root flex h-full min-h-0 flex-col bg-[#f4f1ec] text-slate-900">
+        <div className="studio-toolbar flex shrink-0 flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-3 py-2">
           <p className="mr-1 text-sm font-semibold">{text.title}</p>
           <button type="button" onClick={() => setPhase('running')} aria-pressed={running} className={cn('inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-white', running ? 'bg-blue-700' : 'bg-blue-600 hover:bg-blue-700')}>
             <Play className="h-4 w-4" aria-hidden /> {text.run}
@@ -315,6 +367,26 @@ function StudioShell() {
           <button type="button" onClick={() => { setNodes([]); setEdges([]); setPhase('idle'); setHint(null); resetDistances(); }} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">
             <Trash2 className="h-4 w-4" aria-hidden /> {text.clear}
           </button>
+          <button
+            type="button"
+            aria-pressed={present}
+            onClick={() => {
+              presentLock.current = true;
+              setPresent((current) => !current);
+              requestAnimationFrame(() => fitView({ padding: 0.12, duration: 180 }));
+            }}
+            className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50"
+          >{text.present}</button>
+          <button
+            type="button"
+            onClick={() => {
+              const shell = shellRef.current;
+              if (!shell) return;
+              if (document.fullscreenElement) void document.exitFullscreen();
+              else void shell.requestFullscreen();
+            }}
+            className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50"
+          >{text.fullscreen}</button>
           <p className="ml-auto hidden text-xs text-slate-500 xl:block">{text.disclaimer}</p>
         </div>
 
@@ -336,7 +408,7 @@ function StudioShell() {
 
           <div
             data-studio-canvas
-            className={cn('relative min-h-0 min-w-0 flex-1', panel === 'canvas' ? 'flex' : 'hidden', 'lg:flex')}
+            className={cn('studio-canvas relative min-h-0 min-w-0 flex-1 touch-none', panel === 'canvas' ? 'flex' : 'hidden', 'lg:flex')}
             onDragEnter={allowPartDrop}
             onDragOver={allowPartDrop}
             onDrop={onDrop}
@@ -353,13 +425,16 @@ function StudioShell() {
               edgeTypes={hydronicEdgeTypes}
               connectionMode={ConnectionMode.Loose}
               connectionLineType={ConnectionLineType.SmoothStep}
-              connectionRadius={28}
+              connectionRadius={present ? 48 : 28}
               snapToGrid
               snapGrid={[SNAP, SNAP]}
               fitView={false}
-              minZoom={0.25}
-              maxZoom={2}
+              minZoom={0.2}
+              maxZoom={2.5}
               panOnScroll
+              panOnDrag
+              zoomOnPinch
+              preventScrolling
               selectionOnDrag={false}
               deleteKeyCode={['Backspace', 'Delete']}
               proOptions={{ hideAttribution: false }}

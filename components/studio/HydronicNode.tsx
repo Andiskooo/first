@@ -50,7 +50,7 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
   const thermostatLinked = def.id === 'valve-3way' && graphEdges.some((edge) => edge.kind === 'signal' && edge.target === id && edge.targetHandle === 'ctl');
   const manualMode = def.id === 'valve-3way' && (!thermostatLinked || (data.params?.controlMode ?? 0) >= 0.5);
   const livePortB = def.id === 'valve-3way' && (opening != null ? opening >= 0.5 : (data.params?.manualPort ?? 0) >= 0.5);
-  const pumpLinked = def.id === 'pump' && graphEdges.some((edge) => edge.kind === 'signal' && edge.target === id && edge.targetHandle === 'ctl');
+  const pumpLinked = (def.id === 'pump' || def.id === 'heat-pump') && graphEdges.some((edge) => edge.kind === 'signal' && edge.target === id && edge.targetHandle === 'ctl');
   const pumpOn = (opening ?? 1) >= 0.5;
 
   return (
@@ -110,7 +110,7 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
           />
         );
       })}
-      <div className="pointer-events-none absolute left-1/2 top-full z-10 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] leading-4 shadow-sm">
+      <div className="studio-node-label pointer-events-none absolute left-1/2 top-full z-10 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] leading-4 shadow-sm">
         <span className="font-semibold text-slate-900">{def.code}</span>
         <span className="text-slate-500"> {def.name[locale]}</span>
         {def.id === 'valve-3way' ? (
@@ -119,7 +119,7 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
             {' · '}
             {livePortB ? text.portB : text.portA}
           </span>
-        ) : def.id === 'pump' && pumpLinked ? (
+        ) : (def.id === 'pump' || def.id === 'heat-pump') && pumpLinked ? (
           <span className={cn('ml-1 font-semibold', pumpOn ? 'text-violet-700' : 'text-slate-400')}>
             {pumpOn ? text.pumpOn : text.pumpOff}
           </span>

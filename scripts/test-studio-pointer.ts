@@ -96,6 +96,60 @@ async function nodeCount(page: Page): Promise<number> {
   return page.locator('.react-flow__node').count();
 }
 
+async function runPanel(browser: Browser) {
+  const sizes = [
+    { width: 3840, height: 2160, scale: 1, present: true, shot: true },
+    { width: 3840, height: 2160, scale: 2, present: true, shot: false },
+    { width: 1920, height: 1080, scale: 1, present: true, shot: false },
+    { width: 390, height: 844, scale: 2, present: false, shot: false },
+  ] as const;
+  for (const size of sizes) {
+    const page = await browser.newPage({
+      viewport: { width: size.width, height: size.height },
+      deviceScaleFactor: size.scale,
+      hasTouch: true,
+    });
+    await page.addInitScript(() => localStorage.setItem('ecotek_locale', 'en'));
+    await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(400);
+    const layout = await page.evaluate(() => {
+      const library = document.querySelector('.studio-library');
+      const style = library ? getComputedStyle(library) : null;
+      return {
+        width: window.innerWidth,
+        present: document.querySelector('.studio-root')?.getAttribute('data-present'),
+        display: style?.display,
+        libraryHeight: library?.getBoundingClientRect().height,
+      };
+    });
+    if (size.present) {
+      await page.locator('[data-part-card="heat-pump"]').waitFor({ state: 'visible', timeout: 8000 });
+    }
+    console.log('layout', size.width, layout);
+    const flag = await page.locator('.studio-root').getAttribute('data-present');
+    if ((flag === 'true') !== size.present) throw new Error(`${size.width}x${size.height} present=${flag}`);
+    const canvas = await page.locator('[data-studio-canvas]').boundingBox();
+    if (!canvas || canvas.width < size.width * 0.45 || canvas.height < size.height * 0.35) {
+      throw new Error(`${size.width} canvas ${canvas?.width}x${canvas?.height}`);
+    }
+    if (size.present) {
+      const run = await page.getByRole('button', { name: 'Run', exact: true }).boundingBox();
+      if (!run || run.height < 48) throw new Error(`${size.width} run button height ${run?.height}`);
+    }
+    if (size.shot) {
+      await page.getByRole('button', { name: 'Mixer example' }).click();
+      await page.waitForTimeout(600);
+      const before = await nodeCount(page);
+      await cdpDrag(page, await cardCenter(page, 'radiator'), await canvasPoint(page, 0.62, 0.62), 'touch');
+      await page.waitForTimeout(400);
+      if (await nodeCount(page) !== before + 1) throw new Error('4k touch drag did not add a part');
+      await page.screenshot({ path: '/opt/cursor/artifacts/studio-panel-3840.png' });
+    }
+    await page.close();
+  }
+  console.log('PASS 3840, 1920, and mobile touch layouts');
+}
+
 async function runChromium() {
   const browser = await chromium.launch({
     executablePath: '/usr/bin/google-chrome',
@@ -146,6 +200,7 @@ async function runChromium() {
     await touchPage.screenshot({ path: '/opt/cursor/artifacts/studio-touch-drag.png' });
     await touchPage.close();
     console.log('PASS chromium mouse, touch, and pen');
+    await runPanel(browser);
   } finally {
     await browser.close();
   }

@@ -3,7 +3,7 @@ import { computeOpenings } from '../components/studio/control';
 import { buildExample } from '../components/studio/example';
 import { createPlacedPart, droppedPartId, pointerGesture, pointInRect } from '../components/studio/place';
 import { COMPONENTS } from '../components/studio/registry';
-import { simulate } from '../components/studio/simulation';
+import { chargeBuffer, simulate } from '../components/studio/simulation';
 import { validateConnection } from '../components/studio/validation';
 import type { GraphEdge, GraphNode } from '../components/studio/types';
 
@@ -341,6 +341,52 @@ function main() {
   const bothWarm = computeOpenings({ nodes: bothWarmNodes, edges: bothEdges, held: {} });
   assert.equal(bothWarm.v3, 1, 'the valve still diverts when the same thermostat also commands the pump');
   assert.equal(bothWarm.p, 0);
+
+  const primaryNodes: GraphNode[] = [
+    { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45, internalPump: 1, internalSpeed: 100 } },
+    { id: 'ps', componentId: 'buffer-tank', params: { volume: 200 } },
+    { id: 'rt', componentId: 'thermostat', params: { roomSet: 21, ambient: 16 } },
+  ];
+  const primaryEdges: GraphEdge[] = [
+    { id: 'e-out', source: 'hp', target: 'ps', sourceHandle: 'supply-out', targetHandle: 'pri-in' },
+    { id: 'e-back', source: 'ps', target: 'hp', sourceHandle: 'pri-out', targetHandle: 'return-in' },
+  ];
+  assert.equal(validateConnection(primaryNodes, [], 'hp', 'supply-out', 'ps', 'pri-in').ok, true);
+  assert.equal(validateConnection(primaryNodes, [primaryEdges[0]], 'ps', 'pri-out', 'hp', 'return-in').ok, true);
+  const charging = simulate(primaryNodes, primaryEdges);
+  assert.ok(charging.ok, charging.issues.map((issue) => issue.code).join(','));
+  assert.ok(!charging.issues.some((issue) => issue.level === 'warn' || issue.level === 'error'), 'a primary-only loop is not an error');
+  assert.ok(charging.issues.some((issue) => issue.code === 'no-consumer'));
+  assert.ok(charging.primaryFlowLph > 500, 'the internal circulator moves the primary loop');
+  near(charging.secondaryFlowLph, 0, 1, 'the secondary side stays idle');
+  assert.ok((charging.dtC ?? 0) > 4, 'a cold buffer still has a supply-return gradient');
+  assert.ok((charging.edges['e-out']?.flowLph ?? 0) > 500, 'supply pipe shows flow');
+  assert.ok((charging.edges['e-back']?.flowLph ?? 0) > 500, 'return pipe shows flow');
+  const held = simulate(primaryNodes, primaryEdges, {}, { tankC: 44 });
+  assert.ok((held.dtC ?? 99) < (charging.dtC ?? 0), 'the gradient narrows as the buffer warms');
+  assert.ok((held.supplyC ?? 0) > 43 && (held.tankC ?? 0) > 43, 'with no load the heat pump holds near the setpoint');
+  let warmed = 20;
+  for (let step = 0; step < 240; step += 1) warmed = chargeBuffer(warmed, 45, 1500, 12, 200, 0.5);
+  assert.ok(warmed > 40, 'the unloaded buffer charges toward the setpoint');
+  const hpOffNodes = primaryNodes.map((node) => node.id === 'rt' ? { ...node, params: { roomSet: 21, ambient: 24 } } : node);
+  const hpOffEdges = primaryEdges.concat([{ id: 's-hp', source: 'rt', target: 'hp', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' }]);
+  assert.equal(validateConnection(hpOffNodes, primaryEdges, 'rt', 'sig', 'hp', 'ctl').ok, true);
+  assert.equal(computeOpenings({ nodes: hpOffNodes, edges: hpOffEdges, held: {} }).hp, 0);
+  const hpStopped = simulate(hpOffNodes, hpOffEdges, computeOpenings({ nodes: hpOffNodes, edges: hpOffEdges, held: {} }));
+  near(hpStopped.primaryFlowLph, 0, 1, 'a stopped heat pump does not circulate the primary loop');
+  near(hpStopped.deliveredKw, 0, 0.05, 'a stopped heat pump adds no heat');
+  const hpOnNodes = primaryNodes.map((node) => node.id === 'rt' ? { ...node, params: { roomSet: 21, ambient: 16 } } : node);
+  assert.equal(computeOpenings({ nodes: hpOnNodes, edges: hpOffEdges, held: {} }).hp, 1);
+  const shared = bothEdges.concat([{ id: 's-hp', source: 'rt', target: 'hp', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' }]);
+  assert.equal(validateConnection(diverted.nodes, bothEdges, 'rt', 'sig', 'hp', 'ctl').ok, true);
+  const sharedWarm = computeOpenings({
+    nodes: diverted.nodes.map((node) => node.id === 'rt' ? { ...node, params: { ...node.params, ambient: 24 } } : node),
+    edges: shared,
+    held: {},
+  });
+  assert.equal(sharedWarm.v3, 1);
+  assert.equal(sharedWarm.p, 0);
+  assert.equal(sharedWarm.hp, 0);
 
   const withCheckNodes = direct.nodes.concat([{ id: 'cv', componentId: 'check', params: {} }]);
   const withCheckEdges = direct.edges.flatMap((item) => item.id === 'e-p-ts'

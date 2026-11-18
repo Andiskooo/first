@@ -84,6 +84,7 @@ function emptyResult(): SimResult {
     demandKw: 0,
     limited: false,
     tankC: null,
+    primaryIdle: false,
   };
 }
 
@@ -111,7 +112,23 @@ function pumpLph(node: GraphNode | undefined, gates: Record<string, number> = {}
   return PUMP_NOMINAL_LPH * clamp(node.params.speed ?? 0, 0, 100) / 100;
 }
 
-export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Record<string, number> = {}): SimResult {
+export interface SimOptions {
+  /** Buffer temperature while a primary-only loop is charging, °C. */
+  tankC?: number;
+}
+
+/** Classroom clock: a 200 L tank on a 12 kW heat pump approaches the setpoint in well under a minute. */
+export const TEACHING_TIME = 48;
+
+export function chargeBuffer(tankC: number, setpoint: number, flowLph: number, capacityKw: number, volumeL: number, dtSec: number): number {
+  const flow = lphToKgs(flowLph);
+  const heat = Math.min(Math.max(capacityKw, 0), flow * WATER_CP * Math.max(setpoint - tankC, 0));
+  const mass = Math.max(volumeL, 1) * WATER_RHO;
+  const rise = mass * WATER_CP > 0 ? (heat * TEACHING_TIME * Math.max(dtSec, 0)) / (mass * WATER_CP) : 0;
+  return clamp(tankC + rise, T_ROOM, setpoint);
+}
+
+export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Record<string, number> = {}, options: SimOptions = {}): SimResult {
   const result = emptyResult();
   const issues: SimIssue[] = [];
   const add = (level: SimIssue['level'], code: string) => {
@@ -395,9 +412,12 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     }
   }
 
+  const secondaryAttached = buffer
+    ? [...SEC_OUT, 'sec-in-1', 'sec-in-2'].some((port) => links.has(`${buffer.id}:${port}`))
+    : false;
   if (buffer) {
     if (!primaryPaths.length) add('warn', 'open-primary');
-    if (!secondaryPaths.length) add('warn', 'open-secondary');
+    if (secondaryAttached && !secondaryPaths.length) add('warn', 'open-secondary');
   } else if (!directPaths.length) {
     add('warn', 'open-circuit');
   }
@@ -406,7 +426,7 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
   const activeDirect = useDirect ? directPaths : [];
   const reliefPaths = fromHp.filter((path) => path.relief && path.consumers.length === 0 && path.buffers.length === 0);
   const directBundle = [...activeDirect, ...(useDirect ? reliefPaths : [])];
-  const internalLph = internalFlow(hp);
+  const internalLph = internalFlow(hp, openings);
   for (const code of assignFlows(activePrimary, internalLph, 'no-flow')) add('warn', code);
   for (const code of assignFlows(directBundle, internalLph, 'no-flow')) add('warn', code);
   for (const code of assignFlows(secondaryPaths, 0, 'need-secondary-pump')) add('warn', code);
@@ -438,12 +458,20 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
   let qHp = 0;
   let prop = emptyProp();
 
-  if (sourceFlow > 1 && (activeDirect.length || (activePrimary.length && secondaryFlow > 1))) {
-    if (buffer && activePrimary.length) {
+  const primaryIdle = Boolean(buffer && activePrimary.length && secondaryFlow <= 1 && sourceFlow > 1);
+  if (sourceFlow > 1 && (activeDirect.length || (activePrimary.length && (secondaryFlow > 1 || primaryIdle)))) {
+    if (buffer && activePrimary.length && secondaryFlow > 1) {
       const solved = solveBuffer();
       tTank = solved.tTank;
       tSup = solved.tSup;
       tRet = solved.tTank;
+      qHp = solved.qHp;
+      prop = solved.prop;
+    } else if (primaryIdle && buffer) {
+      const solved = solvePrimaryIdle(options.tankC ?? T_ROOM);
+      tTank = solved.tTank;
+      tSup = solved.tSup;
+      tRet = solved.tRet;
       qHp = solved.qHp;
       prop = solved.prop;
     } else if (activeDirect.length) {
@@ -454,6 +482,13 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
       prop = solved.prop;
     }
   }
+  if (openings[hp.id] !== undefined && openings[hp.id] < 0.5) {
+    qHp = 0;
+    const coast = buffer && tTank != null ? tTank : tRet;
+    tSup = coast;
+    tRet = coast;
+    if (sourceFlow > 1) prop = propagate(coast, buffer ? coast : null, 'nominal');
+  }
 
   const delivered = prop.qOut;
   const limited = qCap + 0.2 < demandKw && delivered >= qCap - 0.25 && delivered + 0.3 < demandKw;
@@ -463,11 +498,11 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
 
   Object.assign(nodeSims, prop.consumer, prop.pass);
   nodeSims[hp.id] = {
-    tIn: tRet,
-    tOut: tSup,
+    tIn: sourceFlow > 1 ? tRet : 0,
+    tOut: sourceFlow > 1 ? tSup : 0,
     flowLph: sourceFlow,
-    qKw: qHp,
-    dt: tSup - tRet,
+    qKw: sourceFlow > 1 ? qHp : 0,
+    dt: sourceFlow > 1 ? tSup - tRet : 0,
   };
   if (buffer && tTank != null) {
     const priIn = prop.inlets[buffer.id]?.find((inlet) => inlet.port === 'pri-in');
@@ -498,11 +533,12 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     };
   }
 
-  const ok = served.size > 0 && delivered >= 0 && sourceFlow > 1 && Object.keys(prop.consumer).length > 0
+  const usersRunning = served.size > 0 && Object.keys(prop.consumer).length > 0
     && (buffer ? secondaryFlow > 1 && primaryPaths.length > 0 : directPaths.length > 0);
+  const ok = sourceFlow > 1 && (usersRunning || primaryIdle);
 
   for (const node of nodes) {
-    const commanded = node.componentId === 'pump' ? openings[node.id] : undefined;
+    const commanded = node.componentId === 'pump' || node.componentId === 'heat-pump' ? openings[node.id] : undefined;
     const isValve = node.componentId === 'valve' || node.componentId === 'valve-3way' || node.componentId === 'relief' || node.componentId === 'mixer';
     if (commanded === undefined && !isValve) continue;
     const position = commanded ?? openingOf(node.id);
@@ -527,7 +563,15 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     demandKw,
     limited,
     tankC: tTank,
+    primaryIdle,
   };
+
+  function solvePrimaryIdle(tankC: number): { tTank: number; tSup: number; tRet: number; qHp: number; prop: PropResult } {
+    const tank = clamp(tankC, T_ROOM, tSet);
+    const heat = Math.min(qCap, mSource * WATER_CP * Math.max(tSet - tank, 0));
+    const supply = mSource > 1e-6 ? tank + heat / (mSource * WATER_CP) : tank;
+    return { tTank: tank, tSup: supply, tRet: tank, qHp: heat, prop: propagate(supply, tank, 'nominal') };
+  }
 
   function solveDirect(): { tSup: number; tRet: number; qHp: number; prop: PropResult } {
     const nominal = propagate(tSet, null, 'nominal');
@@ -701,7 +745,8 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
   }
 }
 
-function internalFlow(hp: GraphNode): number {
+function internalFlow(hp: GraphNode, gates: Record<string, number> = {}): number {
+  if (gates[hp.id] !== undefined && gates[hp.id] < 0.5) return 0;
   if ((hp.params.internalPump ?? 1) < 0.5) return 0;
   return INTERNAL_NOMINAL_LPH * clamp(hp.params.internalSpeed ?? 100, 0, 100) / 100;
 }

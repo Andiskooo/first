@@ -28,7 +28,7 @@ export function Library({
   const needle = query.trim().toLowerCase();
 
   return (
-    <aside className="flex h-full min-h-0 w-full flex-col bg-white lg:w-[272px] lg:border-r lg:border-slate-200">
+    <aside className="studio-library flex h-full min-h-0 w-full flex-col bg-white lg:w-[272px] lg:border-r lg:border-slate-200">
       <div className="border-b border-slate-200 p-3">
         <label className="relative block">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden />

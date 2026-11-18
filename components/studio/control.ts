@@ -63,7 +63,7 @@ export function computeOpenings(input: ControlInput): Record<string, number> {
       openings[node.id] = ambient > setpoint ? 1 : 0;
     } else if (def.id === 'mixer') {
       openings[node.id] = clamp((node.params.mix ?? 50) / 100, 0, 1);
-    } else if (def.id === 'pump') {
+    } else if (def.id === 'pump' || def.id === 'heat-pump') {
       const wire = wires.find((edge) => edge.target === node.id && edge.targetHandle === 'ctl');
       const thermo = wire ? byId.get(wire.source) : undefined;
       if (!thermo || thermo.componentId !== 'thermostat') continue;

@@ -138,7 +138,8 @@ export function validateConnection(
     const fromThermo = sourceDef?.id === 'thermostat' && sourcePort.id === 'sig';
     const toValve = targetDef?.id === 'valve-3way' && targetPort.id === 'ctl';
     const toPump = targetDef?.id === 'pump' && targetPort.id === 'ctl';
-    if (!fromThermo || (!toValve && !toPump)) return { ok: false, code: 'signal-pair' };
+    const toHeatPump = targetDef?.id === 'heat-pump' && targetPort.id === 'ctl';
+    if (!fromThermo || (!toValve && !toPump && !toHeatPump)) return { ok: false, code: 'signal-pair' };
     return { ok: true };
   }
   const combined = [
