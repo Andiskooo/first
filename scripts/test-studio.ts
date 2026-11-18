@@ -388,6 +388,93 @@ function main() {
   assert.equal(sharedWarm.p, 0);
   assert.equal(sharedWarm.hp, 0);
 
+  function injectionCircuit(kind: 'tee' | 'junction' | 'manifold' | 'return-pump') {
+    const nodes: GraphNode[] = [
+      { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45, internalPump: 1, internalSpeed: 100 } },
+      { id: 'ps', componentId: 'buffer-tank', params: { volume: 200 } },
+      { id: 'mv', componentId: 'mixer', params: { mix: 50 } },
+      { id: 'p', componentId: 'pump', params: { speed: 60 } },
+      { id: 'hk', componentId: 'radiator', params: { demand: 6 } },
+      { id: 't', componentId: 'tee', params: {} },
+    ];
+    const edges: GraphEdge[] = [
+      { id: 'e-hp-ps', source: 'hp', target: 'ps', sourceHandle: 'supply-out', targetHandle: 'pri-in' },
+      { id: 'e-ps-hp', source: 'ps', target: 'hp', sourceHandle: 'pri-out', targetHandle: 'return-in' },
+      { id: 'e-hot', source: 'ps', target: 'mv', sourceHandle: 'sec-out-1', targetHandle: 'h' },
+      { id: 'e-back', source: 't', target: 'ps', sourceHandle: 'c', targetHandle: 'sec-in-1' },
+    ];
+    if (kind === 'return-pump') {
+      edges.push(
+        { id: 'e-loop', source: 'mv', target: 'hk', sourceHandle: 'out', targetHandle: 'supply-in' },
+        { id: 'e-hk-p', source: 'hk', target: 'p', sourceHandle: 'return-out', targetHandle: 'in' },
+        { id: 'e-p-t', source: 'p', target: 't', sourceHandle: 'out', targetHandle: 'a' },
+        { id: 'e-recirc', source: 't', target: 'mv', sourceHandle: 'b', targetHandle: 'c' },
+      );
+    } else if (kind === 'junction') {
+      nodes.push({ id: 'j', componentId: 'junction', params: {} });
+      edges.push(
+        { id: 'e-loop', source: 'mv', target: 'p', sourceHandle: 'out', targetHandle: 'in' },
+        { id: 'e-p-hk', source: 'p', target: 'hk', sourceHandle: 'out', targetHandle: 'supply-in' },
+        { id: 'e-hk-t', source: 'hk', target: 't', sourceHandle: 'return-out', targetHandle: 'a' },
+        { id: 'e-t-j', source: 't', target: 'j', sourceHandle: 'b', targetHandle: 'w' },
+        { id: 'e-recirc', source: 'j', target: 'mv', sourceHandle: 'e', targetHandle: 'c' },
+      );
+    } else if (kind === 'manifold') {
+      nodes.push({ id: 'mr', componentId: 'manifold-return', params: { branches: 3 } });
+      edges.push(
+        { id: 'e-loop', source: 'mv', target: 'p', sourceHandle: 'out', targetHandle: 'in' },
+        { id: 'e-p-hk', source: 'p', target: 'hk', sourceHandle: 'out', targetHandle: 'supply-in' },
+        { id: 'e-hk-mr', source: 'hk', target: 'mr', sourceHandle: 'return-out', targetHandle: 'in-1' },
+        { id: 'e-recirc', source: 'mr', target: 'mv', sourceHandle: 'in-2', targetHandle: 'c' },
+        { id: 'e-mr-ps', source: 'mr', target: 'ps', sourceHandle: 'out', targetHandle: 'sec-in-1' },
+      );
+      const back = edges.findIndex((edge) => edge.id === 'e-back');
+      edges.splice(back, 1);
+    } else {
+      edges.push(
+        { id: 'e-loop', source: 'mv', target: 'p', sourceHandle: 'out', targetHandle: 'in' },
+        { id: 'e-p-hk', source: 'p', target: 'hk', sourceHandle: 'out', targetHandle: 'supply-in' },
+        { id: 'e-hk-t', source: 'hk', target: 't', sourceHandle: 'return-out', targetHandle: 'a' },
+        { id: 'e-recirc', source: 't', target: 'mv', sourceHandle: 'b', targetHandle: 'c' },
+      );
+    }
+    return { nodes, edges };
+  }
+
+  function assertInjection(kind: 'tee' | 'junction' | 'manifold' | 'return-pump') {
+    const circuit = injectionCircuit(kind);
+    let built: GraphEdge[] = [];
+    for (const edge of circuit.edges) {
+      const verdict = validateConnection(circuit.nodes, built, edge.source, edge.sourceHandle, edge.target, edge.targetHandle);
+      assert.equal(verdict.ok, true, `${kind} ${edge.id} ${verdict.ok ? '' : verdict.code}`);
+      built = built.concat(edge);
+    }
+    const sim = simulate(circuit.nodes, circuit.edges, computeOpenings({ nodes: circuit.nodes, edges: circuit.edges, held: {} }));
+    assert.ok(!sim.issues.some((issue) => issue.level === 'warn' || issue.level === 'error'), `${kind} warnings ${sim.issues.map((issue) => issue.code).join(',')}`);
+    const pumpFlow = sim.nodes.p?.flowLph ?? 0;
+    const recirc = sim.edges['e-recirc']?.flowLph ?? 0;
+    const drawn = sim.edges['e-hot']?.flowLph ?? 0;
+    const returned = sim.edges[kind === 'manifold' ? 'e-mr-ps' : 'e-back']?.flowLph ?? 0;
+    assert.ok(pumpFlow > 500, `${kind} pump flow ${pumpFlow}`);
+    assert.ok(recirc > 50, `${kind} recirculation leg is idle (${recirc})`);
+    near(recirc, pumpFlow * 0.5, 8, `${kind} recirculated flow`);
+    near(drawn, pumpFlow * 0.5, 8, `${kind} buffer draw`);
+    near(returned, drawn, 8, `${kind} buffer mass balance`);
+    near(sim.secondaryFlowLph, drawn, 8, `${kind} secondary flow is the buffer exchange`);
+    near(sim.nodes.hk?.flowLph ?? 0, pumpFlow, 8, `${kind} radiator sees the pump flow`);
+    const hotEdge = sim.edges['e-hot'];
+    const tHot = hotEdge ? (hotEdge.flowFromSource ? hotEdge.tSource : hotEdge.tTarget) : 0;
+    const tMix = sim.nodes.mv?.tOut ?? 0;
+    const tRad = sim.nodes.hk?.tOut ?? 0;
+    assert.ok(tRad + 0.4 < tMix && tMix + 0.4 < tHot, `${kind} mix ${tMix} should sit between return ${tRad} and buffer ${tHot}`);
+    assert.ok(Number.isFinite(sim.edges['e-recirc']?.tSource), `${kind} cold line has a temperature`);
+    assert.ok((sim.deliveredKw ?? 0) > 1, `${kind} delivers heat`);
+  }
+  assertInjection('tee');
+  assertInjection('junction');
+  assertInjection('manifold');
+  assertInjection('return-pump');
+
   const withCheckNodes = direct.nodes.concat([{ id: 'cv', componentId: 'check', params: {} }]);
   const withCheckEdges = direct.edges.flatMap((item) => item.id === 'e-p-ts'
     ? [

@@ -433,7 +433,7 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
 
   const primaryFlow = activePrimary.reduce((sum, path) => sum + path.flowLph, 0);
   const directFlow = directBundle.reduce((sum, path) => sum + path.flowLph, 0);
-  const secondaryFlow = secondaryPaths.reduce((sum, path) => sum + path.flowLph, 0);
+  let secondaryFlow = secondaryPaths.reduce((sum, path) => sum + path.flowLph, 0);
   const sourcePaths = activePrimary.length ? activePrimary : directBundle;
   const sourceFlow = activePrimary.length ? primaryFlow : directFlow;
 
@@ -447,6 +447,13 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
   for (const id of served) demandKw += nodeById.get(id)?.params.demand ?? 0;
 
   const dEdges = mergeEdges([...sourcePaths, ...(activePrimary.length ? secondaryPaths : [])]);
+  applyInjection(dEdges);
+  if (buffer) {
+    const leaving = dEdges
+      .filter((edge) => edge.fromNode === buffer.id && edge.fromPort.startsWith('sec-out'))
+      .reduce((sum, edge) => sum + edge.flowLph, 0);
+    if (leaving > 1 && leaving + 1 < secondaryFlow) secondaryFlow = leaving;
+  }
   const qCap = hp.params.capacity ?? 12;
   const tSet = hp.params.setpoint ?? 45;
   const mSource = lphToKgs(sourceFlow);
@@ -566,6 +573,139 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     primaryIdle,
   };
 
+  /**
+   * Classic mixing loop: the mixer feeds a pump and a heat user, and that
+   * user's return splits. One branch comes back to the cold inlet; the other
+   * returns to the buffer (or the heat pump). The pump drives the whole loop.
+   * Hot share s draws s·Q from the source and recirculates (1-s)·Q.
+   */
+  function applyInjection(edges: DEdge[]) {
+    for (const node of nodes) {
+      if (node.componentId !== 'mixer') continue;
+      const share = openingOf(node.id);
+      const cycles = trace(node.id, 'out', (id, port) => id === node.id && port === 'c')
+        .filter((path) => path.consumers.length > 0 && path.pipes.length > 1);
+      for (const cycle of cycles) {
+        const loop = describeInjection(node.id, cycle);
+        if (!loop) continue;
+        const injectFlow = loop.pumpFlow * share;
+        const recircFlow = loop.pumpFlow * (1 - share);
+        setLoopFlow(edges, loop.injectEdges, injectFlow);
+        setLoopFlow(edges, loop.returnEdges, injectFlow);
+        setLoopFlow(edges, loop.fullEdges, loop.pumpFlow);
+        setLoopFlow(edges, loop.recircEdges, recircFlow);
+        break;
+      }
+    }
+  }
+
+  function describeInjection(mixerId: string, cycle: TracedPath): {
+    pumpFlow: number;
+    fullEdges: Pipe[];
+    recircEdges: Pipe[];
+    injectEdges: Pipe[];
+    returnEdges: Pipe[];
+  } | null {
+    const pipes = cycle.pipes;
+    let splitAt = -1;
+    let returnPath: TracedPath | null = null;
+    for (let i = 0; i < pipes.length - 1; i += 1) {
+      const nodeId = pipes[i].toNode;
+      const def = defOf(nodeId);
+      if (!def) continue;
+      const fitting = def.id === 'tee' || def.id === 'junction' || def.id === 'manifold-supply' || def.id === 'manifold-return';
+      if (!fitting || pipes[i + 1].fromNode !== nodeId) continue;
+      const entry = pipes[i].toPort;
+      const exit = pipes[i + 1].fromPort;
+      const ports = resolvePorts(def, nodeById.get(nodeId)?.params).map((port) => port.id);
+      for (const port of ports) {
+        if (port === entry || port === exit || !links.has(`${nodeId}:${port}`)) continue;
+        const side = trace(nodeId, port, (id, portId) =>
+          (buffer != null && id === buffer.id && portId.startsWith('sec-in'))
+          || (id === hpId && portId === 'return-in'),
+        ).find((path) =>
+          path.pipes.length > 0
+          && !path.consumers.some((id) => cycle.consumers.includes(id))
+          && !path.pipes.some((pipe) => pipe.fromNode === mixerId || pipe.toNode === mixerId));
+        if (side) {
+          splitAt = i;
+          returnPath = side;
+          break;
+        }
+      }
+      if (splitAt >= 0) break;
+    }
+    if (splitAt < 0 || !returnPath) return null;
+
+    const dest = returnPath.pipes[returnPath.pipes.length - 1];
+    const sourceIsBuffer = Boolean(buffer && dest.toNode === buffer.id && dest.toPort.startsWith('sec-in'));
+    const sourceIsHp = dest.toNode === hpId && dest.toPort === 'return-in';
+    if (!sourceIsBuffer && !sourceIsHp) return null;
+
+    let inject: TracedPath | undefined;
+    if (sourceIsBuffer && buffer) {
+      for (const port of SEC_OUT) {
+        if (!links.has(`${buffer.id}:${port}`)) continue;
+        inject = trace(buffer.id, port, (id, portId) => id === mixerId && portId === 'h')
+          .find((path) => !path.pipes.some((pipe) => pipe.fromNode === mixerId && pipe.fromPort === 'out'));
+        if (inject) break;
+      }
+    } else {
+      inject = trace(hpId, 'supply-out', (id, portId) => id === mixerId && portId === 'h')
+        .find((path) => !path.pipes.some((pipe) => pipe.fromNode === mixerId && pipe.fromPort === 'out'));
+    }
+    if (!inject) return null;
+
+    const outEdge = pipes[0]?.edgeId;
+    const sources: { node: string; port: string }[] = [{ node: hpId, port: 'supply-out' }];
+    if (buffer) {
+      for (const port of SEC_OUT) {
+        if (links.has(`${buffer.id}:${port}`)) sources.push({ node: buffer.id, port });
+      }
+    }
+    for (const source of sources) {
+      const leak = trace(source.node, source.port, (id, portId) => id === mixerId && portId === 'c')
+        .some((path) => !path.pipes.some((pipe) => pipe.edgeId === outEdge));
+      if (leak) return null;
+    }
+
+    const fullEdges = pipes.slice(0, splitAt + 1);
+    const fullNodes = new Set(fullEdges.map((pipe) => pipe.toNode));
+    const pumpIds = cycle.pumps
+      .filter((pump) => !pump.reversed && fullNodes.has(pump.nodeId))
+      .map((pump) => pump.nodeId);
+    if (!pumpIds.length) return null;
+    const pumpFlow = Math.min(...pumpIds.map((id) => pumpLph(nodeById.get(id), openings)));
+    if (pumpFlow <= 1) return null;
+
+    return {
+      pumpFlow,
+      fullEdges,
+      recircEdges: pipes.slice(splitAt + 1),
+      injectEdges: inject.pipes,
+      returnEdges: returnPath.pipes,
+    };
+  }
+
+  function setLoopFlow(edges: DEdge[], pipes: Pipe[], flow: number) {
+    for (const pipe of pipes) {
+      const existing = edges.find((edge) => edge.edgeId === pipe.edgeId);
+      if (flow <= 1) {
+        if (existing) existing.flowLph = 0;
+        continue;
+      }
+      if (existing) {
+        existing.flowLph = flow;
+        existing.fromNode = pipe.fromNode;
+        existing.fromPort = pipe.fromPort;
+        existing.toNode = pipe.toNode;
+        existing.toPort = pipe.toPort;
+      } else {
+        edges.push({ ...pipe, flowLph: flow, temp: Number.NaN });
+      }
+    }
+  }
+
   function solvePrimaryIdle(tankC: number): { tTank: number; tSup: number; tRet: number; qHp: number; prop: PropResult } {
     const tank = clamp(tankC, T_ROOM, tSet);
     const heat = Math.min(qCap, mSource * WATER_CP * Math.max(tSet - tank, 0));
@@ -680,9 +820,11 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     }
 
     // A fitting can feed the mixer and also receive the mixer's downstream return.
-    // Temperatures are relaxed until that loop settles instead of waiting for
-    // every inlet, which would never arrive.
-    for (let pass = 0; pass < 24; pass += 1) {
+    // An injection loop is the same kind of cycle: the cold inlet is the
+    // radiator return, which depends on the mixed outlet. Temperatures are
+    // relaxed, with the mixer outlet damped, until that fixed point settles.
+    const mixerHold = new Map<string, number>();
+    for (let pass = 0; pass < 48; pass += 1) {
       let changed = false;
       prop.qOut = 0;
       prop.consumer = {};
@@ -713,13 +855,24 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
           continue;
         }
         const mixed = mix(incoming);
+        let leaving = mixed.t;
+        if (def.id === 'mixer') {
+          const prev = mixerHold.get(node.id);
+          if (prev !== undefined && Number.isFinite(prev)) leaving = prev + 0.6 * (mixed.t - prev);
+          mixerHold.set(node.id, leaving);
+        }
         prop.pass[node.id] = {
-          tIn: mixed.t, tOut: mixed.t, flowLph: mixed.flow, qKw: 0, dt: 0,
+          tIn: def.id === 'mixer' ? leaving : mixed.t,
+          tOut: def.id === 'mixer' ? leaving : mixed.t,
+          flowLph: mixed.flow,
+          qKw: 0,
+          dt: 0,
         };
         const ports = new Set(dEdges.filter((edge) => edge.fromNode === node.id).map((edge) => edge.fromPort));
         for (const port of ports) {
-          if (writePort(node.id, port, mixed.t)) changed = true;
+          if (writePort(node.id, port, leaving)) changed = true;
         }
+        if (def.id === 'mixer' && Math.abs(mixed.t - leaving) > 0.04) changed = true;
       }
       if (!changed) break;
     }
