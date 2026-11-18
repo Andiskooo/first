@@ -113,7 +113,7 @@ function controlExample(): { nodes: PlacedNode[]; edges: GraphEdge[] } {
 
 /**
  * Hot supply and a cooled radiator return meet in a mixer at 50% hot.
- * The pipe leaving the mixer carries the mixed temperature to the floor circuit.
+ * The cold return passes a tee and a junction before the mixer.
  */
 function mixExample(): { nodes: PlacedNode[]; edges: GraphEdge[] } {
   return {
@@ -122,16 +122,20 @@ function mixExample(): { nodes: PlacedNode[]; edges: GraphEdge[] } {
       place('p', 'pump', 280, 214, { speed: 30 }),
       place('ts', 'tee', 430, 228),
       place('hk', 'radiator', 430, 360, { demand: 6 }),
-      place('mv', 'mixer', 680, 170, { mix: 50 }),
-      place('fbh', 'underfloor', 920, 190, { demand: 1 }),
-      place('tr', 'tee', 700, 470),
+      place('tc', 'tee', 620, 430),
+      place('j', 'junction', 780, 300),
+      place('mv', 'mixer', 680, 150, { mix: 50 }),
+      place('fbh', 'underfloor', 960, 170, { demand: 1 }),
+      place('tr', 'tee', 780, 500),
     ],
     edges: [
       edge('e-hp-p', 'hp', 'supply-out', 'p', 'in'),
       edge('e-p-ts', 'p', 'out', 'ts', 'a'),
       edge('e-ts-mv', 'ts', 'b', 'mv', 'h'),
       edge('e-ts-hk', 'ts', 'c', 'hk', 'supply-in'),
-      edge('e-hk-mv', 'hk', 'return-out', 'mv', 'c'),
+      edge('e-hk-tc', 'hk', 'return-out', 'tc', 'a'),
+      edge('e-tc-j', 'tc', 'b', 'j', 'w'),
+      edge('e-j-mv', 'j', 'e', 'mv', 'c'),
       edge('e-mv-fbh', 'mv', 'out', 'fbh', 'supply-in'),
       edge('e-fbh-tr', 'fbh', 'return-out', 'tr', 'b'),
       edge('e-tr-hp', 'tr', 'a', 'hp', 'return-in'),

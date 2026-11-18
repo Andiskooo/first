@@ -200,12 +200,17 @@ export const COMPONENTS: ComponentDef[] = [
     code: 'P',
     category: 'system',
     name: text('Pompë qarkullimi', 'Umwälzpumpe', 'Circulation pump'),
-    blurb: text('Shpejtësia cakton rrjedhën e qarkut ku është montuar.', 'Die Drehzahl setzt den Volumenstrom ihres Kreises.', 'Speed sets the flow of the loop it sits on.'),
+    blurb: text(
+      'Shpejtësia cakton rrjedhën. Nëse një termostat është lidhur dhe ambienti është mbi pikën e dhomës, pompa fiket.',
+      'Die Drehzahl setzt den Volumenstrom. Liegt ein Thermostat an und die Umgebung über dem Soll, schaltet die Pumpe ab.',
+      'Speed sets the flow. With a thermostat connected, the pump switches off when ambient is above the room setpoint.',
+    ),
     width: 84,
     height: 84,
     symbol: 'pump',
     rotatable: true,
     ports: [
+      signalPort('ctl', 'in'),
       { id: 'in', x: 0, y: 0.5, side: 'neutral', direction: 'in', terminal: 'passive', required: true },
       { id: 'out', x: 1, y: 0.5, side: 'neutral', direction: 'out', terminal: 'passive', required: true },
     ],

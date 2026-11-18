@@ -72,7 +72,7 @@ export function PropertiesPanel({
                 <NodeReadouts
                   text={text}
                   sim={sim}
-                  kind={def.id === 'buffer-tank' ? 'buffer' : def.id === 'thermostat' ? 'room' : def.id === 'valve-3way' ? 'valve3' : def.id === 'mixer' ? 'mixer' : def.category === 'source' ? 'source' : def.category === 'consumer' ? 'consumer' : 'other'}
+                  kind={def.id === 'buffer-tank' ? 'buffer' : def.id === 'thermostat' ? 'room' : def.id === 'valve-3way' ? 'valve3' : def.id === 'mixer' ? 'mixer' : def.id === 'pump' ? 'pump' : def.category === 'source' ? 'source' : def.category === 'consumer' ? 'consumer' : 'other'}
                   modeText={def.id === 'valve-3way' ? (signalLinked && (selected.data.params.controlMode ?? 0) < 0.5 ? text.modeAuto : text.modeManual) : undefined}
                 />
               ) : null}
@@ -86,6 +86,11 @@ export function PropertiesPanel({
                 />
               ) : null}
               {def.id === 'mixer' ? <p className="mt-3 text-xs leading-5 text-slate-500">{text.mixHint}</p> : null}
+              {def.id === 'pump' && signalLinked ? (
+                <p className="mt-3 rounded-lg bg-violet-50 px-3 py-2 text-xs font-semibold text-violet-950">
+                  {(live?.opening ?? 1) >= 0.5 ? text.pumpOn : text.pumpOff}
+                </p>
+              ) : null}
               <div className="mt-4 space-y-4">
                 {def.params.filter((param) => def.id !== 'valve-3way' || (param.id !== 'controlMode' && param.id !== 'manualPort')).map((param) => (
                   <ParamControl
@@ -249,7 +254,7 @@ function NodeReadouts({
 }: {
   text: StudioCopy;
   sim: NodeSim;
-  kind: 'buffer' | 'source' | 'consumer' | 'room' | 'valve3' | 'mixer' | 'other';
+  kind: 'buffer' | 'source' | 'consumer' | 'room' | 'valve3' | 'mixer' | 'pump' | 'other';
   modeText?: string;
 }) {
   const supply = kind === 'source' ? sim.tOut : sim.tIn;
@@ -292,7 +297,7 @@ function NodeReadouts({
       {sim.opening != null && kind !== 'valve3' && kind !== 'mixer' ? (
         <>
           <dt>{text.valveState}</dt>
-          <dd>{sim.opening < 0.05 ? text.closed : sim.opening > 0.95 ? text.open : `${Math.round(sim.opening * 100)}%`}</dd>
+          <dd>{kind === 'pump' ? ((sim.opening ?? 1) >= 0.5 ? text.pumpOn : text.pumpOff) : sim.opening < 0.05 ? text.closed : sim.opening > 0.95 ? text.open : `${Math.round(sim.opening * 100)}%`}</dd>
         </>
       ) : null}
     </dl>

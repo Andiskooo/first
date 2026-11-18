@@ -105,8 +105,9 @@ function extractHeat(qNom: number, tIn: number, flowLph: number, mode: ExtractMo
   return { q, tOut: tIn - dt, dt };
 }
 
-function pumpLph(node: GraphNode | undefined): number {
+function pumpLph(node: GraphNode | undefined, gates: Record<string, number> = {}): number {
   if (!node) return 0;
+  if (gates[node.id] !== undefined && gates[node.id] < 0.5) return 0;
   return PUMP_NOMINAL_LPH * clamp(node.params.speed ?? 0, 0, 100) / 100;
 }
 
@@ -257,9 +258,14 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
         });
         continue;
       }
-      if (frame.usedNodes.has(link.nodeId) || pipes.length > 18) continue;
+      if (pipes.length > 18) continue;
       const def = defOf(link.nodeId);
       if (!def) continue;
+      // A tee, junction, manifold, or air vent is only a fitting. The same
+      // body may carry cold water into a mixer and, later on that path, carry
+      // the mixed return onward. Devices still cannot be revisited.
+      const fitting = def.id === 'tee' || def.id === 'junction' || def.id === 'manifold-supply' || def.id === 'manifold-return' || def.id === 'air-vent';
+      if (!fitting && frame.usedNodes.has(link.nodeId)) continue;
       const pumps = frame.pumps.slice();
       const consumers = frame.consumers.slice();
       const buffers = frame.buffers.slice();
@@ -270,7 +276,7 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
         buffers.push({ nodeId: link.nodeId, via: link.portId.startsWith('pri') ? 'primary' : 'secondary' });
       } else if (def.id === 'relief') relief = true;
       const usedNodes = new Set(frame.usedNodes);
-      usedNodes.add(link.nodeId);
+      if (!fitting) usedNodes.add(link.nodeId);
       for (const leave of leaveOptions(link.nodeId, link.portId, frame.gain)) {
         stack.push({
           nodeId: link.nodeId,
@@ -317,7 +323,7 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
         const found = path.pumps.find((pump) => pump.nodeId === id);
         if (found?.reversed) reversed = true;
       }
-      return { reversed, lph: pumpLph(nodeById.get(id)) };
+      return { reversed, lph: pumpLph(nodeById.get(id), openings) };
     };
 
     const trunk = [...pumpIds].filter((id) => paths.every((path) => path.pumps.some((pump) => pump.nodeId === id)));
@@ -343,7 +349,7 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
         codes.push('reversed-pump');
         return 0;
       }
-      return Math.min(...path.pumps.map((pump) => pumpLph(nodeById.get(pump.nodeId)))) * path.gain;
+      return Math.min(...path.pumps.map((pump) => pumpLph(nodeById.get(pump.nodeId), openings))) * path.gain;
     });
     for (let iter = 0; iter < 6; iter++) {
       for (const id of pumpIds) {
@@ -351,7 +357,7 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
           .map((path, index) => (path.pumps.some((pump) => pump.nodeId === id) ? index : -1))
           .filter((index) => index >= 0);
         const sum = idxs.reduce((total, index) => total + flows[index], 0);
-        const limit = pumpLph(nodeById.get(id));
+        const limit = pumpLph(nodeById.get(id), openings);
         if (sum > limit + 1e-6 && sum > 0) {
           const scale = limit / sum;
           for (const index of idxs) flows[index] *= scale;
@@ -496,8 +502,10 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     && (buffer ? secondaryFlow > 1 && primaryPaths.length > 0 : directPaths.length > 0);
 
   for (const node of nodes) {
-    if (node.componentId !== 'valve' && node.componentId !== 'valve-3way' && node.componentId !== 'relief' && node.componentId !== 'mixer') continue;
-    const position = openingOf(node.id);
+    const commanded = node.componentId === 'pump' ? openings[node.id] : undefined;
+    const isValve = node.componentId === 'valve' || node.componentId === 'valve-3way' || node.componentId === 'relief' || node.componentId === 'mixer';
+    if (commanded === undefined && !isValve) continue;
+    const position = commanded ?? openingOf(node.id);
     const prior = nodeSims[node.id];
     nodeSims[node.id] = prior
       ? { ...prior, opening: position }
@@ -595,25 +603,7 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
 
   function propagate(tSup: number, tTankValue: number | null, mode: ExtractMode): PropResult {
     const prop: PropResult = { edgeTemp: {}, consumer: {}, pass: {}, inlets: {}, hpReturn: null, qOut: 0 };
-    const temps = new Map<string, number>();
-    const sent = new Set<string>();
-    const expected: Record<string, number> = {};
-    const got: Record<string, number> = {};
-    for (const edge of dEdges) expected[edge.toNode] = (expected[edge.toNode] ?? 0) + 1;
-
-    const emit = (nodeId: string, portId: string, temp: number) => {
-      const key = `${nodeId}:${portId}`;
-      if (temps.has(key)) return;
-      temps.set(key, temp);
-      for (const edge of dEdges) {
-        if (edge.fromNode !== nodeId || edge.fromPort !== portId || sent.has(edge.edgeId)) continue;
-        sent.add(edge.edgeId);
-        edge.temp = temp;
-        prop.edgeTemp[edge.edgeId] = temp;
-        got[edge.toNode] = (got[edge.toNode] ?? 0) + 1;
-        if (got[edge.toNode] === expected[edge.toNode]) resolve(edge.toNode);
-      }
-    };
+    for (const edge of dEdges) edge.temp = Number.NaN;
 
     const mix = (incoming: DEdge[]) => {
       let mass = 0;
@@ -628,39 +618,70 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
       return { t: mass > 0 ? heat / mass : incoming[0]?.temp ?? tSup, flow };
     };
 
-    function resolve(nodeId: string) {
-      const node = nodeById.get(nodeId);
-      const def = node ? getComponent(node.componentId) : undefined;
-      if (!node || !def) return;
-      const incoming = dEdges.filter((edge) => edge.toNode === nodeId && Number.isFinite(edge.temp));
-      prop.inlets[nodeId] = incoming.map((edge) => ({ port: edge.toPort, t: edge.temp, flowLph: edge.flowLph }));
-      if (def.id === 'heat-pump') {
-        prop.hpReturn = mix(incoming).t;
-        return;
+    const writePort = (nodeId: string, portId: string, temp: number): boolean => {
+      let changed = false;
+      for (const edge of dEdges) {
+        if (edge.fromNode !== nodeId || edge.fromPort !== portId) continue;
+        if (!Number.isFinite(edge.temp) || Math.abs(edge.temp - temp) > 0.02) {
+          edge.temp = temp;
+          changed = true;
+        }
       }
-      if (def.id === 'buffer-tank') return;
-      if (def.category === 'consumer') {
-        const inlet = incoming.filter((edge) => edge.toPort === 'supply-in');
-        const mixed = inlet.length ? mix(inlet) : { t: tTankValue ?? tSup, flow: 0 };
-        const heat = extractHeat(node.params.demand ?? 0, mixed.t, mixed.flow, mode, tSet);
-        prop.qOut += heat.q;
-        prop.consumer[nodeId] = {
-          tIn: mixed.t, tOut: heat.tOut, flowLph: mixed.flow, qKw: heat.q, dt: heat.dt,
-        };
-        emit(nodeId, 'return-out', heat.tOut);
-        return;
-      }
-      const mixed = incoming.length ? mix(incoming) : { t: tSup, flow: 0 };
-      prop.pass[nodeId] = {
-        tIn: mixed.t, tOut: mixed.t, flowLph: mixed.flow, qKw: 0, dt: 0,
-      };
-      const ports = new Set(dEdges.filter((edge) => edge.fromNode === nodeId).map((edge) => edge.fromPort));
-      for (const port of ports) emit(nodeId, port, mixed.t);
+      return changed;
+    };
+
+    if (Number.isFinite(tSup)) writePort(hpId, 'supply-out', tSup);
+    if (buffer && tTankValue != null) {
+      for (const port of ['pri-out', ...SEC_OUT]) writePort(buffer.id, port, tTankValue);
     }
 
-    if (Number.isFinite(tSup)) emit(hpId, 'supply-out', tSup);
-    if (buffer && tTankValue != null) {
-      for (const port of ['pri-out', ...SEC_OUT]) emit(buffer.id, port, tTankValue);
+    // A fitting can feed the mixer and also receive the mixer's downstream return.
+    // Temperatures are relaxed until that loop settles instead of waiting for
+    // every inlet, which would never arrive.
+    for (let pass = 0; pass < 24; pass += 1) {
+      let changed = false;
+      prop.qOut = 0;
+      prop.consumer = {};
+      prop.pass = {};
+      prop.inlets = {};
+      prop.hpReturn = null;
+      for (const node of nodes) {
+        const def = getComponent(node.componentId);
+        if (!def) continue;
+        const incoming = dEdges.filter((edge) => edge.toNode === node.id && Number.isFinite(edge.temp));
+        if (!incoming.length) continue;
+        prop.inlets[node.id] = incoming.map((edge) => ({ port: edge.toPort, t: edge.temp, flowLph: edge.flowLph }));
+        if (def.id === 'heat-pump') {
+          prop.hpReturn = mix(incoming).t;
+          continue;
+        }
+        if (def.id === 'buffer-tank') continue;
+        if (def.category === 'consumer') {
+          const inlet = incoming.filter((edge) => edge.toPort === 'supply-in');
+          if (!inlet.length) continue;
+          const mixed = mix(inlet);
+          const heat = extractHeat(node.params.demand ?? 0, mixed.t, mixed.flow, mode, tSet);
+          prop.qOut += heat.q;
+          prop.consumer[node.id] = {
+            tIn: mixed.t, tOut: heat.tOut, flowLph: mixed.flow, qKw: heat.q, dt: heat.dt,
+          };
+          if (writePort(node.id, 'return-out', heat.tOut)) changed = true;
+          continue;
+        }
+        const mixed = mix(incoming);
+        prop.pass[node.id] = {
+          tIn: mixed.t, tOut: mixed.t, flowLph: mixed.flow, qKw: 0, dt: 0,
+        };
+        const ports = new Set(dEdges.filter((edge) => edge.fromNode === node.id).map((edge) => edge.fromPort));
+        for (const port of ports) {
+          if (writePort(node.id, port, mixed.t)) changed = true;
+        }
+      }
+      if (!changed) break;
+    }
+
+    for (const edge of dEdges) {
+      if (Number.isFinite(edge.temp)) prop.edgeTemp[edge.edgeId] = edge.temp;
     }
     return prop;
   }

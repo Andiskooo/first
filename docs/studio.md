@@ -65,7 +65,7 @@ A three-way valve has two ways to choose the port, and this is the precedence:
 
 The canvas toggle always takes manual control when a thermostat is connected, then flips the port, so a click changes the valve immediately. Choosing Auto again hands the valve back to the thermostat. The label and the inspector show the mode and the active port.
 
-A room thermostat has no water ports and does not simulate a warming room. It has two settings, ambient temperature and room setpoint. Its dashed purple link is a command, not a pipe, and it can land only on the control port of a three-way valve. The label on the valve shows which port is active, and the hydraulic result follows that branch only. The separate signal wire is adapted from [FluidLab](https://github.com/thepacket/fluidlab) (`src/model/control.ts`), which is MIT licensed, Copyright (c) 2026 Andre Paquette. The divert rule itself is original to this studio.
+A room thermostat has no water ports and does not simulate a warming room. It has two settings, ambient temperature and room setpoint. Its dashed purple link is a command, not a pipe. It can land on the control port of a three-way valve, on the control port of a circulation pump, or on both from the same thermostat. The label on the valve shows which port is active, and the hydraulic result follows that branch only. The pump runs at its speed slider until ambient is above the room setpoint, and then it stops, so that loop has no flow. With no thermostat connected, the pump is only the speed slider. The separate signal wire is adapted from [FluidLab](https://github.com/thepacket/fluidlab) (`src/model/control.ts`), which is MIT licensed, Copyright (c) 2026 Andre Paquette. The divert rule itself is original to this studio.
 
 ### Mixer (MV)
 
@@ -74,6 +74,8 @@ The mixer is manual only. It uses the same drawing style as the three-way valve,
 Ports `h` (hot), `c` (cold) and `out` may each connect to a hot or a cold line. Like the three-way valve, the body does not bridge those ports, so hot and cold can arrive together. The inspector slider is the hot share, 0–100%. At 0% the hot inlet is shut and the outlet is the cold stream. At 100% the cold inlet is shut and the outlet is the hot stream. In between, each inlet is let through in that proportion.
 
 The outlet temperature is the flow-weighted mix of the streams that get through, `Σ(m · T) / Σm`. The outlet flow is the sum of those inlet flows. The pipe that leaves `out` is coloured with that mixed temperature on the same scale as the rest of the studio (blue, through a dusty mid tone, to orange and red).
+
+Either inlet can be fed directly or through tees, junctions, manifolds, and other fittings. Those fittings are not endpoints: a return line can branch through a tee into the cold inlet and still carry the mixed water onward through that same fitting.
 
 The supply manifold is a hot header: one inlet on top and three or more outlets along the bottom (`branches`, 3–6). The return manifold is a cold header: the same number of inlets on top and one outlet below. Ports are supply-only or return-only, so a hot outlet cannot be tied to a cold return. A junction is a four-way cross; the tee remains the three-port branch.
 

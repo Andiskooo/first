@@ -103,7 +103,10 @@ function diagnose(ends: ConnectionEnd[]): string | null {
   return null;
 }
 
-export function portOccupied(edges: GraphEdge[], nodeId: string, portId: string): boolean {
+export function portOccupied(edges: GraphEdge[], nodeId: string, portId: string, nodes: GraphNode[] = []): boolean {
+  const node = nodes.find((item) => item.id === nodeId);
+  // One thermostat can command a three-way valve and a circulation pump together.
+  if (node?.componentId === 'thermostat' && portId === 'sig') return false;
   return edges.some((edge) =>
     (edge.source === nodeId && edge.sourceHandle === portId) ||
     (edge.target === nodeId && edge.targetHandle === portId));
@@ -119,7 +122,7 @@ export function validateConnection(
 ): { ok: true } | { ok: false; code: string } {
   if (!sourceHandle || !targetHandle) return { ok: false, code: 'missing-port' };
   if (source === target) return { ok: false, code: 'same-node' };
-  if (portOccupied(edges, source, sourceHandle) || portOccupied(edges, target, targetHandle)) {
+  if (portOccupied(edges, source, sourceHandle, nodes) || portOccupied(edges, target, targetHandle, nodes)) {
     return { ok: false, code: 'port-used' };
   }
   const sourceNode = nodes.find((node) => node.id === source);
@@ -134,7 +137,8 @@ export function validateConnection(
     if (sourceDef?.id === 'mixer' || targetDef?.id === 'mixer') return { ok: false, code: 'mixer-manual' };
     const fromThermo = sourceDef?.id === 'thermostat' && sourcePort.id === 'sig';
     const toValve = targetDef?.id === 'valve-3way' && targetPort.id === 'ctl';
-    if (!fromThermo || !toValve) return { ok: false, code: 'signal-pair' };
+    const toPump = targetDef?.id === 'pump' && targetPort.id === 'ctl';
+    if (!fromThermo || (!toValve && !toPump)) return { ok: false, code: 'signal-pair' };
     return { ok: true };
   }
   const combined = [

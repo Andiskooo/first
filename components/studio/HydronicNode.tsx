@@ -50,6 +50,8 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
   const thermostatLinked = def.id === 'valve-3way' && graphEdges.some((edge) => edge.kind === 'signal' && edge.target === id && edge.targetHandle === 'ctl');
   const manualMode = def.id === 'valve-3way' && (!thermostatLinked || (data.params?.controlMode ?? 0) >= 0.5);
   const livePortB = def.id === 'valve-3way' && (opening != null ? opening >= 0.5 : (data.params?.manualPort ?? 0) >= 0.5);
+  const pumpLinked = def.id === 'pump' && graphEdges.some((edge) => edge.kind === 'signal' && edge.target === id && edge.targetHandle === 'ctl');
+  const pumpOn = (opening ?? 1) >= 0.5;
 
   return (
     <div className="relative h-full w-full overflow-visible">
@@ -116,6 +118,10 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
             {manualMode ? text.modeManual : text.modeAuto}
             {' · '}
             {livePortB ? text.portB : text.portA}
+          </span>
+        ) : def.id === 'pump' && pumpLinked ? (
+          <span className={cn('ml-1 font-semibold', pumpOn ? 'text-violet-700' : 'text-slate-400')}>
+            {pumpOn ? text.pumpOn : text.pumpOff}
           </span>
         ) : def.id === 'mixer' ? (
           <span className="ml-1 font-semibold text-orange-700">

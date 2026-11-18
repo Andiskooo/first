@@ -63,6 +63,14 @@ export function computeOpenings(input: ControlInput): Record<string, number> {
       openings[node.id] = ambient > setpoint ? 1 : 0;
     } else if (def.id === 'mixer') {
       openings[node.id] = clamp((node.params.mix ?? 50) / 100, 0, 1);
+    } else if (def.id === 'pump') {
+      const wire = wires.find((edge) => edge.target === node.id && edge.targetHandle === 'ctl');
+      const thermo = wire ? byId.get(wire.source) : undefined;
+      if (!thermo || thermo.componentId !== 'thermostat') continue;
+      const ambient = thermo.params.ambient ?? 16;
+      const setpoint = thermo.params.roomSet ?? 21;
+      // Same comparison as the three-way valve. Above the setpoint the pump stops.
+      openings[node.id] = ambient > setpoint ? 0 : 1;
     } else if (def.id === 'relief') {
       const inlet = result?.nodes[node.id]?.tIn ?? result?.supplyC ?? 0;
       const limit = node.params.limitC ?? 75;

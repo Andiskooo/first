@@ -230,8 +230,14 @@ function main() {
   }
   const half = mixedAt(50);
   assert.equal(half.ok, true, half.issues.map((issue) => issue.code).join(','));
-  const hotEdge = half.edges['e-ts-mv'];
-  const coldEdge = half.edges['e-hk-mv'];
+  const mixEdges = buildExample('mix').edges;
+  const edgeAt = (sim: ReturnType<typeof simulate>, nodeId: string, portId: string) => {
+    const found = mixEdges.find((edge) =>
+      (edge.target === nodeId && edge.targetHandle === portId) || (edge.source === nodeId && edge.sourceHandle === portId));
+    return found ? sim.edges[found.id] : undefined;
+  };
+  const hotEdge = edgeAt(half, 'mv', 'h');
+  const coldEdge = edgeAt(half, 'mv', 'c');
   const outEdge = half.edges['e-mv-fbh'];
   assert.ok(hotEdge && coldEdge && outEdge, 'mixer edges are solved');
   assert.ok(hotEdge.flowLph > 50 && coldEdge.flowLph > 50, 'both inlets carry flow at mid ratio');
@@ -246,11 +252,95 @@ function main() {
   assert.ok(expected > 33 && expected < 38, `mixed temperature ${expected} should sit in the orange band`);
 
   const allCold = mixedAt(0);
-  assert.ok((allCold.edges['e-ts-mv']?.flowLph ?? 0) < 1, '0% hot shuts the hot inlet');
+  assert.ok((edgeAt(allCold, 'mv', 'h')?.flowLph ?? 0) < 1, '0% hot shuts the hot inlet');
   near(allCold.nodes.mv?.tOut ?? 0, allCold.nodes.hk?.tOut ?? 0, 0.8, '0% hot leaves the cold stream');
   const allHot = mixedAt(100);
   assert.ok((allHot.nodes.hk?.flowLph ?? 0) < 1, '100% hot shuts the cold inlet');
   near(allHot.nodes.mv?.tOut ?? 0, allHot.supplyC ?? 45, 1.5, '100% hot is the supply temperature');
+
+  function solveMix(nodes: GraphNode[], edges: GraphEdge[]) {
+    return simulate(nodes, edges, computeOpenings({ nodes, edges, held: {} }));
+  }
+  const fitted = buildExample('mix');
+  const directColdNodes = fitted.nodes.filter((node) => node.id !== 'tc' && node.id !== 'j');
+  const directColdEdges = fitted.edges
+    .filter((edge) => edge.id !== 'e-hk-tc' && edge.id !== 'e-tc-j' && edge.id !== 'e-j-mv')
+    .concat([{ id: 'e-hk-mv', source: 'hk', target: 'mv', sourceHandle: 'return-out', targetHandle: 'c' }]);
+  const directCold = solveMix(directColdNodes, directColdEdges);
+  const teeOnlyNodes = fitted.nodes.filter((node) => node.id !== 'j');
+  const teeOnlyEdges = fitted.edges
+    .filter((edge) => edge.id !== 'e-tc-j' && edge.id !== 'e-j-mv')
+    .concat([{ id: 'e-tc-mv', source: 'tc', target: 'mv', sourceHandle: 'b', targetHandle: 'c' }]);
+  const teeOnly = solveMix(teeOnlyNodes, teeOnlyEdges);
+  const manifoldNodes: GraphNode[] = [...directColdNodes, { id: 'mr', componentId: 'manifold-return', params: { branches: 3 } }];
+  const manifoldEdges = directColdEdges
+    .filter((edge) => edge.id !== 'e-hk-mv')
+    .concat([
+      { id: 'e-hk-mr', source: 'hk', target: 'mr', sourceHandle: 'return-out', targetHandle: 'in-1' },
+      { id: 'e-mr-mv', source: 'mr', target: 'mv', sourceHandle: 'out', targetHandle: 'c' },
+    ]);
+  const viaManifold = solveMix(manifoldNodes, manifoldEdges);
+  const hotTeeNodes: GraphNode[] = [...directColdNodes, { id: 'th', componentId: 'tee', params: {} }];
+  const hotTeeEdges = directColdEdges
+    .filter((edge) => edge.id !== 'e-ts-mv')
+    .concat([
+      { id: 'e-ts-th', source: 'ts', target: 'th', sourceHandle: 'b', targetHandle: 'a' },
+      { id: 'e-th-mv', source: 'th', target: 'mv', sourceHandle: 'b', targetHandle: 'h' },
+    ]);
+  const viaHotTee = solveMix(hotTeeNodes, hotTeeEdges);
+  for (const [label, sample] of [['tee', teeOnly], ['tee+junction', half], ['manifold', viaManifold], ['hot tee', viaHotTee]] as const) {
+    near(sample.nodes.mv?.tOut ?? 0, directCold.nodes.mv?.tOut ?? 0, 0.8, `${label} outlet temperature matches the direct mixer`);
+    near(sample.nodes.mv?.flowLph ?? 0, directCold.nodes.mv?.flowLph ?? 0, 5, `${label} outlet flow matches the direct mixer`);
+  }
+  const rejoinedNodes: GraphNode[] = [...directColdNodes, { id: 'jc', componentId: 'junction', params: {} }];
+  const rejoinedEdges = directColdEdges
+    .filter((edge) => edge.id !== 'e-hk-mv' && edge.id !== 'e-fbh-tr' && edge.id !== 'e-tr-hp')
+    .concat([
+      { id: 'e-hk-jc', source: 'hk', target: 'jc', sourceHandle: 'return-out', targetHandle: 'w' },
+      { id: 'e-jc-mv', source: 'jc', target: 'mv', sourceHandle: 'e', targetHandle: 'c' },
+      { id: 'e-fbh-jc', source: 'fbh', target: 'jc', sourceHandle: 'return-out', targetHandle: 's' },
+      { id: 'e-jc-hp', source: 'jc', target: 'hp', sourceHandle: 'n', targetHandle: 'return-in' },
+    ]);
+  const rejoined = solveMix(rejoinedNodes, rejoinedEdges);
+  const rejoinCold = rejoined.edges['e-jc-mv'];
+  assert.ok((rejoinCold?.flowLph ?? 0) > 50, 'cold water still reaches the mixer through a junction that the return also uses');
+  const rejoinHot = rejoined.edges['e-ts-mv'];
+  assert.ok(rejoinCold && rejoinHot);
+  const rejoinColdT = rejoinCold.flowFromSource ? rejoinCold.tTarget : rejoinCold.tSource;
+  const rejoinHotT = rejoinHot.flowFromSource ? rejoinHot.tTarget : rejoinHot.tSource;
+  const rejoinOut = rejoined.nodes.mv?.tOut ?? 0;
+  assert.ok(rejoinOut > Math.min(rejoinColdT, rejoinHotT) - 0.5 && rejoinOut < Math.max(rejoinColdT, rejoinHotT) + 0.5, 'rejoined mixer outlet is the mix of its inlets');
+
+  const pumped = buildExample('direct');
+  const thermoOn: GraphNode[] = [...pumped.nodes, { id: 'rt', componentId: 'thermostat', params: { roomSet: 21, ambient: 16 } }];
+  const pumpSignalEdges: GraphEdge[] = pumped.edges.concat([{ id: 's-rt', source: 'rt', target: 'p', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' }]);
+  assert.equal(validateConnection(thermoOn, pumped.edges, 'rt', 'sig', 'p', 'ctl').ok, true);
+  const mixerReject = validateConnection(
+    [...thermoOn, { id: 'mv', componentId: 'mixer', params: { mix: 50 } }],
+    pumpSignalEdges,
+    'rt', 'sig', 'mv', 'c',
+  );
+  assert.equal(mixerReject.ok, false);
+  if (!mixerReject.ok) assert.equal(mixerReject.code, 'mixer-manual');
+  const pumpRunning = solveMix(thermoOn, pumpSignalEdges);
+  assert.equal(computeOpenings({ nodes: thermoOn, edges: pumpSignalEdges, held: {} }).p, 1);
+  assert.ok((pumpRunning.primaryFlowLph ?? 0) > 100, 'pump stays on at or below the room setpoint');
+  const thermoOff = thermoOn.map((node) => node.id === 'rt' ? { ...node, params: { roomSet: 21, ambient: 24 } } : node);
+  assert.equal(computeOpenings({ nodes: thermoOff, edges: pumpSignalEdges, held: {} }).p, 0);
+  const pumpStopped = solveMix(thermoOff, pumpSignalEdges);
+  near(pumpStopped.primaryFlowLph, 0, 1, 'pump stops when ambient is above the room setpoint');
+  near(pumpStopped.nodes.hk?.flowLph ?? 0, 0, 1, 'the stopped pump puts no flow through its loop');
+  const barePump = solveMix(pumped.nodes, pumped.edges);
+  assert.ok((barePump.primaryFlowLph ?? 0) > 100, 'without a thermostat the pump still follows its speed');
+  const bothEdges = diverted.edges.concat([{ id: 's-pump', source: 'rt', target: 'p', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' }]);
+  assert.equal(validateConnection(diverted.nodes, diverted.edges, 'rt', 'sig', 'p', 'ctl').ok, true);
+  const bothCold = computeOpenings({ nodes: diverted.nodes, edges: bothEdges, held: {} });
+  assert.equal(bothCold.v3, 0);
+  assert.equal(bothCold.p, 1);
+  const bothWarmNodes = diverted.nodes.map((node) => node.id === 'rt' ? { ...node, params: { ...node.params, ambient: 24 } } : node);
+  const bothWarm = computeOpenings({ nodes: bothWarmNodes, edges: bothEdges, held: {} });
+  assert.equal(bothWarm.v3, 1, 'the valve still diverts when the same thermostat also commands the pump');
+  assert.equal(bothWarm.p, 0);
 
   const withCheckNodes = direct.nodes.concat([{ id: 'cv', componentId: 'check', params: {} }]);
   const withCheckEdges = direct.edges.flatMap((item) => item.id === 'e-p-ts'
