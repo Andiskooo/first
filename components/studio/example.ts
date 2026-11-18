@@ -1,7 +1,7 @@
 import { defaultParams, getComponent } from '@/components/studio/registry';
 import type { GraphEdge, GraphNode } from '@/components/studio/types';
 
-export type ExampleKind = 'direct' | 'buffer' | 'control';
+export type ExampleKind = 'direct' | 'buffer' | 'control' | 'mix';
 
 export interface PlacedNode extends GraphNode {
   x: number;
@@ -111,8 +111,37 @@ function controlExample(): { nodes: PlacedNode[]; edges: GraphEdge[] } {
   };
 }
 
+/**
+ * Hot supply and a cooled radiator return meet in a mixer at 50% hot.
+ * The pipe leaving the mixer carries the mixed temperature to the floor circuit.
+ */
+function mixExample(): { nodes: PlacedNode[]; edges: GraphEdge[] } {
+  return {
+    nodes: [
+      place('hp', 'heat-pump', 20, 180, { capacity: 12, setpoint: 45, internalPump: 0, internalSpeed: 0 }),
+      place('p', 'pump', 280, 214, { speed: 30 }),
+      place('ts', 'tee', 430, 228),
+      place('hk', 'radiator', 430, 360, { demand: 6 }),
+      place('mv', 'mixer', 680, 170, { mix: 50 }),
+      place('fbh', 'underfloor', 920, 190, { demand: 1 }),
+      place('tr', 'tee', 700, 470),
+    ],
+    edges: [
+      edge('e-hp-p', 'hp', 'supply-out', 'p', 'in'),
+      edge('e-p-ts', 'p', 'out', 'ts', 'a'),
+      edge('e-ts-mv', 'ts', 'b', 'mv', 'h'),
+      edge('e-ts-hk', 'ts', 'c', 'hk', 'supply-in'),
+      edge('e-hk-mv', 'hk', 'return-out', 'mv', 'c'),
+      edge('e-mv-fbh', 'mv', 'out', 'fbh', 'supply-in'),
+      edge('e-fbh-tr', 'fbh', 'return-out', 'tr', 'b'),
+      edge('e-tr-hp', 'tr', 'a', 'hp', 'return-in'),
+    ],
+  };
+}
+
 export function buildExample(kind: ExampleKind): { nodes: PlacedNode[]; edges: GraphEdge[] } {
   if (kind === 'buffer') return bufferExample();
   if (kind === 'control') return controlExample();
+  if (kind === 'mix') return mixExample();
   return directExample();
 }

@@ -194,6 +194,62 @@ function main() {
   near(warm.nodes.hk?.flowLph ?? 0, 0, 1, 'port A is idle once ambient exceeds setpoint');
   assert.ok((warm.nodes.fbh?.flowLph ?? 0) > 100, 'flow follows port B');
 
+  const manualNodes = warmNodes.map((node) => node.id === 'v3'
+    ? { ...node, params: { ...node.params, controlMode: 1, manualPort: 0 } }
+    : node);
+  assert.equal(computeOpenings({ nodes: manualNodes, edges: diverted.edges, held: {} }).v3, 0);
+  const heldManual = simulate(manualNodes, diverted.edges, computeOpenings({ nodes: manualNodes, edges: diverted.edges, held: {} }));
+  assert.ok((heldManual.nodes.hk?.flowLph ?? 0) > 100, 'manual port A overrides a warm thermostat');
+  near(heldManual.nodes.fbh?.flowLph ?? 0, 0, 1, 'manual port A leaves port B idle');
+
+  const unlinkedNodes = diverted.nodes.map((node) => node.id === 'v3'
+    ? { ...node, params: { ...node.params, controlMode: 0, manualPort: 1 } }
+    : node);
+  const unlinkedEdges = diverted.edges.filter((edge) => edge.kind !== 'signal');
+  assert.equal(computeOpenings({ nodes: unlinkedNodes, edges: unlinkedEdges, held: {} }).v3, 1, 'without a thermostat the toggle wins');
+
+  const mixerNodes: GraphNode[] = [
+    { id: 'rt', componentId: 'thermostat', params: { roomSet: 21, ambient: 18 } },
+    { id: 'mv', componentId: 'mixer', params: { mix: 50 } },
+    { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45 } },
+    { id: 'hk', componentId: 'radiator', params: { demand: 4 } },
+  ];
+  const mixerSignal = validateConnection(mixerNodes, [], 'rt', 'sig', 'mv', 'h');
+  assert.equal(mixerSignal.ok, false);
+  if (!mixerSignal.ok) assert.equal(mixerSignal.code, 'mixer-manual');
+  const hotSide: GraphEdge[] = [{ id: 'w', source: 'hp', target: 'mv', sourceHandle: 'supply-out', targetHandle: 'h' }];
+  assert.equal(validateConnection(mixerNodes, hotSide, 'mv', 'c', 'hk', 'return-out').ok, true);
+  assert.equal(validateConnection(mixerNodes, hotSide, 'mv', 'out', 'hk', 'supply-in').ok, true);
+
+  function mixedAt(percent: number) {
+    const example = buildExample('mix');
+    const nodes = example.nodes.map((node) => node.id === 'mv' ? { ...node, params: { ...node.params, mix: percent } } : node);
+    return simulate(nodes, example.edges, computeOpenings({ nodes, edges: example.edges, held: {} }));
+  }
+  const half = mixedAt(50);
+  assert.equal(half.ok, true, half.issues.map((issue) => issue.code).join(','));
+  const hotEdge = half.edges['e-ts-mv'];
+  const coldEdge = half.edges['e-hk-mv'];
+  const outEdge = half.edges['e-mv-fbh'];
+  assert.ok(hotEdge && coldEdge && outEdge, 'mixer edges are solved');
+  assert.ok(hotEdge.flowLph > 50 && coldEdge.flowLph > 50, 'both inlets carry flow at mid ratio');
+  const hotT = hotEdge.flowFromSource ? hotEdge.tTarget : hotEdge.tSource;
+  const coldT = coldEdge.flowFromSource ? coldEdge.tTarget : coldEdge.tSource;
+  assert.ok(hotT > coldT + 8, `inlets should differ, hot ${hotT} cold ${coldT}`);
+  const expected = (hotEdge.flowLph * hotT + coldEdge.flowLph * coldT) / (hotEdge.flowLph + coldEdge.flowLph);
+  near(half.nodes.mv?.tOut ?? 0, expected, 0.8, 'mixer outlet is the flow-weighted mix');
+  near(half.nodes.mv?.flowLph ?? 0, hotEdge.flowLph + coldEdge.flowLph, 5, 'mixer outlet flow is the sum');
+  const outT = outEdge.flowFromSource ? outEdge.tSource : outEdge.tTarget;
+  near(outT, expected, 0.8, 'outlet pipe starts at the mixed temperature');
+  assert.ok(expected > 33 && expected < 38, `mixed temperature ${expected} should sit in the orange band`);
+
+  const allCold = mixedAt(0);
+  assert.ok((allCold.edges['e-ts-mv']?.flowLph ?? 0) < 1, '0% hot shuts the hot inlet');
+  near(allCold.nodes.mv?.tOut ?? 0, allCold.nodes.hk?.tOut ?? 0, 0.8, '0% hot leaves the cold stream');
+  const allHot = mixedAt(100);
+  assert.ok((allHot.nodes.hk?.flowLph ?? 0) < 1, '100% hot shuts the cold inlet');
+  near(allHot.nodes.mv?.tOut ?? 0, allHot.supplyC ?? 45, 1.5, '100% hot is the supply temperature');
+
   const withCheckNodes = direct.nodes.concat([{ id: 'cv', componentId: 'check', params: {} }]);
   const withCheckEdges = direct.edges.flatMap((item) => item.id === 'e-p-ts'
     ? [

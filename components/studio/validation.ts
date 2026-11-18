@@ -64,12 +64,14 @@ export function floodTerminals(nodes: GraphNode[], edges: GraphEdge[], origin: E
     const def = node ? getComponent(node.componentId) : undefined;
     const port = def && node ? resolvePorts(def, node.params).find((item) => item.id === current.portId) : undefined;
     if (!node || !def || !port) continue;
-    if (port.terminal !== 'passive' || (def.id === 'valve-3way' && port.terminal === 'passive')) {
-      if (def.id === 'valve-3way' && port.id !== 'ctl') {
-        const link = links.get(key);
-        if (link) queue.push({ nodeId: link.nodeId, portId: link.portId });
-        continue;
-      }
+    // A three-way valve and a mixer keep each water port on its own circuit,
+    // so hot and cold (or supply and return) can land on the same body.
+    if (def.id === 'mixer' || (def.id === 'valve-3way' && port.id !== 'ctl')) {
+      const link = links.get(key);
+      if (link) queue.push({ nodeId: link.nodeId, portId: link.portId });
+      continue;
+    }
+    if (port.terminal !== 'passive') {
       hits.push({ nodeId: current.nodeId, portId: current.portId, terminal: port.terminal });
       continue;
     }
@@ -129,6 +131,7 @@ export function validateConnection(
   const targetPort = targetDef ? resolvePorts(targetDef, targetNode.params).find((port) => port.id === targetHandle) : undefined;
   if (!sourcePort || !targetPort) return { ok: false, code: 'missing-port' };
   if (sourcePort.terminal === 'signal' || targetPort.terminal === 'signal') {
+    if (sourceDef?.id === 'mixer' || targetDef?.id === 'mixer') return { ok: false, code: 'mixer-manual' };
     const fromThermo = sourceDef?.id === 'thermostat' && sourcePort.id === 'sig';
     const toValve = targetDef?.id === 'valve-3way' && targetPort.id === 'ctl';
     if (!fromThermo || !toValve) return { ok: false, code: 'signal-pair' };

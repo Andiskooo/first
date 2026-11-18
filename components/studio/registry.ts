@@ -58,6 +58,21 @@ const ambient: ParamDef = {
   id: 'ambient', kind: 'number', min: 5, max: 25, step: 0.5, defaultValue: 16, unit: '°C',
 };
 
+/** 0 = Auto (thermostat), 1 = Manual (the A/B toggle). */
+const controlMode: ParamDef = {
+  id: 'controlMode', kind: 'select', min: 0, max: 1, step: 1, defaultValue: 0, unit: '', options: [0, 1],
+};
+
+/** 0 = port A, 1 = port B. Used in Manual, and whenever no thermostat is connected. */
+const manualPort: ParamDef = {
+  id: 'manualPort', kind: 'boolean', min: 0, max: 1, step: 1, defaultValue: 0, unit: '',
+};
+
+/** Hot share of a mixer. 0 is all cold, 100 is all hot. */
+const mix: ParamDef = {
+  id: 'mix', kind: 'number', min: 0, max: 100, step: 5, defaultValue: 50, unit: '%',
+};
+
 const signalPort = (id: string, direction: 'in' | 'out'): PortDef => ({
   id, x: 0.5, y: 0, side: 'neutral', direction, terminal: 'signal', required: false,
 });
@@ -262,7 +277,7 @@ export const COMPONENTS: ComponentDef[] = [
     code: 'V',
     category: 'valve',
     name: text('Valvul 2-rrugëshe', 'Zweiwegeventil', 'Two-way valve'),
-    blurb: text('Hapje ose mbyllje. E motorizuara ndjek termostatin.', 'Auf oder zu. Motorisiert folgt sie dem Thermostat.', 'On/off or modulating. Motorized, it follows a thermostat.'),
+    blurb: text('Hapje ose mbyllje e një dege. E mbyllur, e ndalon atë degë.', 'Auf oder zu für einen Strang. Geschlossen sperrt sie ihn.', 'On/off or modulating. Shut, it stops that branch.'),
     width: 92,
     height: 72,
     symbol: 'valve',
@@ -280,9 +295,9 @@ export const COMPONENTS: ComponentDef[] = [
     category: 'valve',
     name: text('Valvul 3-rrugëshe', 'Dreiwegeventil', 'Three-way valve'),
     blurb: text(
-      'Porta AB është e përbashkët. Pa termostat uji del te A. Me ambient mbi pikën e dhomës, del 100% te B.',
-      'AB ist der gemeinsame Anschluss. Ohne Thermostat geht das Wasser nach A. Liegt die Umgebung über dem Soll, geht es zu 100 % nach B.',
-      'AB is the common port. With no thermostat, water leaves through A. If ambient is above the room setpoint, 100% leaves through B.',
+      'Porta AB është e përbashkët dhe nuk përzien. Auto ndjek termostatin: mbi pikën e dhomës, 100% te B, përndryshe 100% te A. Manual përdor çelësin A/B. Pa termostat, çelësi vendos gjithmonë.',
+      'AB ist der gemeinsame Anschluss und mischt nicht. Auto folgt dem Thermostat: über dem Soll 100 % nach B, sonst 100 % nach A. Hand nutzt den Schalter A/B. Ohne Thermostat gilt immer der Schalter.',
+      'AB is the common port and it never mixes. Auto follows a thermostat: above the room setpoint, 100% goes to B, otherwise 100% to A. Manual uses the A/B toggle. With no thermostat, the toggle is always in charge.',
     ),
     width: 104,
     height: 96,
@@ -294,7 +309,28 @@ export const COMPONENTS: ComponentDef[] = [
       { id: 'a', x: 1, y: 0.46, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },
       { id: 'b', x: 0.5, y: 1, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },
     ],
-    params: [],
+    params: [controlMode, manualPort],
+  },
+  {
+    id: 'mixer',
+    code: 'MV',
+    category: 'valve',
+    name: text('Përzierës', 'Mischer', 'Mixer'),
+    blurb: text(
+      'Vetëm manual. Uji i nxehtë dhe i ftohtë hyjnë njëkohësisht. Rrëshqitësi është pjesa e nxehtë: temperatura e daljes është përzierja sipas rrjedhës, dhe rrjedha e daljes është shuma. Nuk pranon termostat.',
+      'Nur von Hand. Warm und kalt dürfen gleichzeitig anliegen. Der Regler ist der Warmanteil: die Austrittstemperatur ist die strömungsgewichtete Mischung, der Austrittsstrom die Summe. Kein Thermostat.',
+      'Manual only. Hot and cold can connect at the same time. The slider is the hot share: outlet temperature is the flow-weighted mix, and outlet flow is the sum. It does not take a thermostat.',
+    ),
+    width: 104,
+    height: 96,
+    symbol: 'mixer',
+    rotatable: true,
+    ports: [
+      { id: 'h', x: 0, y: 0.32, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },
+      { id: 'c', x: 0, y: 0.68, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },
+      { id: 'out', x: 1, y: 0.5, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },
+    ],
+    params: [mix],
   },
   {
     id: 'relief',
@@ -350,9 +386,9 @@ export const COMPONENTS: ComponentDef[] = [
     category: 'control',
     name: text('Termostat dhome', 'Raumthermostat', 'Room thermostat'),
     blurb: text(
-      'Vetëm komandë. Nëse ambienti është mbi pikën e dhomës, valvula 3-rrugëshe e lidhur kthen gjithë ujin te porta tjetër.',
-      'Nur ein Befehl. Liegt die Umgebung über dem Raumsollwert, lenkt das verbundene Dreiwegeventil den ganzen Strom auf den anderen Ausgang.',
-      'A command only. If ambient is above the room setpoint, the connected three-way valve sends all the flow to the other outlet.',
+      'Vetëm komandë për një valvul 3-rrugëshe në Auto. Nëse ambienti është mbi pikën e dhomës, gjithë uji shkon te porta B, përndryshe te A. Përzierësi nuk e pranon.',
+      'Nur ein Befehl für ein Dreiwegeventil auf Auto. Liegt die Umgebung über dem Soll, geht der ganze Strom nach B, sonst nach A. Ein Mischer nimmt das Signal nicht an.',
+      'A command only, for a three-way valve in Auto. If ambient is above the room setpoint, all the flow goes to port B, otherwise to A. A mixer will not take this signal.',
     ),
     width: 88,
     height: 88,

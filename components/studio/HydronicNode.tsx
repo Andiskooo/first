@@ -47,6 +47,9 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
   const ports = resolvePorts(def, data.params);
   const drawn = { ...def, width: box.width, height: box.height, ports };
   const opening = sim?.opening;
+  const thermostatLinked = def.id === 'valve-3way' && graphEdges.some((edge) => edge.kind === 'signal' && edge.target === id && edge.targetHandle === 'ctl');
+  const manualMode = def.id === 'valve-3way' && (!thermostatLinked || (data.params.controlMode ?? 0) >= 0.5);
+  const livePortB = def.id === 'valve-3way' && (opening != null ? opening >= 0.5 : (data.params.manualPort ?? 0) >= 0.5);
 
   return (
     <div className="relative h-full w-full overflow-visible">
@@ -59,6 +62,21 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
       >
         <ComponentArt def={drawn} tIn={sim?.roomC ?? sim?.tIn} tOut={sim?.tOut} active={Boolean(showState && sim)} />
       </div>
+      {def.id === 'valve-3way' ? (
+        <button
+          type="button"
+          data-valve-toggle={livePortB ? 'B' : 'A'}
+          aria-label={text.togglePort}
+          className="nodrag nopan absolute left-1/2 top-[46%] z-30 -translate-x-1/2 -translate-y-1/2 rounded-full border border-violet-300 bg-white px-1.5 py-0.5 text-[10px] font-semibold leading-none text-violet-800 shadow-sm"
+          onPointerDown={(event) => event.stopPropagation()}
+          onClick={(event) => {
+            event.stopPropagation();
+            view.toggleThreeWay(id);
+          }}
+        >
+          {livePortB ? 'B' : 'A'}
+        </button>
+      ) : null}
       {ports.map((port) => {
         const place = portPlacement(box.width, box.height, port.x, port.y, rotation);
         const tint = port.terminal === 'signal' ? 'signal' as const : portTint(graphNodes, graphEdges, id, port.id);
@@ -93,11 +111,20 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
       <div className="pointer-events-none absolute left-1/2 top-full z-10 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] leading-4 shadow-sm">
         <span className="font-semibold text-slate-900">{def.code}</span>
         <span className="text-slate-500"> {def.name[locale]}</span>
-        {opening != null ? (
-          <span className={cn('ml-1 font-semibold', def.id === 'valve-3way' ? 'text-violet-700' : opening < 0.05 ? 'text-slate-400' : 'text-violet-700')}>
-            {def.id === 'valve-3way'
-              ? (opening >= 0.5 ? text.portB : text.portA)
-              : opening < 0.05 ? text.closed : opening > 0.95 ? text.open : `${Math.round(opening * 100)}%`}
+        {def.id === 'valve-3way' ? (
+          <span className="ml-1 font-semibold text-violet-700">
+            {manualMode ? text.modeManual : text.modeAuto}
+            {' · '}
+            {livePortB ? text.portB : text.portA}
+          </span>
+        ) : def.id === 'mixer' ? (
+          <span className="ml-1 font-semibold text-orange-700">
+            {Math.round((data.params.mix ?? (opening != null ? opening * 100 : 50)))}% {text.hot}
+            {view.showThermo && sim && Number.isFinite(sim.tOut) ? ` · ${Math.round(sim.tOut)}°C` : ''}
+          </span>
+        ) : opening != null ? (
+          <span className={cn('ml-1 font-semibold', opening < 0.05 ? 'text-slate-400' : 'text-violet-700')}>
+            {opening < 0.05 ? text.closed : opening > 0.95 ? text.open : `${Math.round(opening * 100)}%`}
           </span>
         ) : null}
       </div>

@@ -97,7 +97,28 @@ function StudioShell() {
   const result = useMemo(() => simulate(graph.nodes, graph.edges, openings), [graph, openings]);
   const showThermo = phase !== 'idle';
   const running = phase === 'running';
-  const view = useMemo(() => ({ showThermo, result }), [showThermo, result]);
+  const toggleThreeWay = useCallback((id: string) => {
+    setNodes((current) => current.map((node) => {
+      const selected = node.id === id;
+      if (!selected) return node.selected ? { ...node, selected: false } : node;
+      if (node.data.componentId !== 'valve-3way') return { ...node, selected: true };
+      const linked = edges.some((edge) => edge.type === 'signal' && edge.target === id);
+      const live = (resultRef.current?.nodes[id]?.opening ?? 0) >= 0.5 ? 1 : 0;
+      return {
+        ...node,
+        selected: true,
+        data: {
+          ...node.data,
+          params: {
+            ...node.data.params,
+            manualPort: live === 1 ? 0 : 1,
+            controlMode: linked ? 1 : (node.data.params.controlMode ?? 0),
+          },
+        },
+      };
+    }));
+  }, [edges, setNodes]);
+  const view = useMemo(() => ({ showThermo, result, toggleThreeWay }), [showThermo, result, toggleThreeWay]);
   const selectedEdge = edges.find((edge) => edge.selected) ?? null;
   const selected = selectedEdge ? null : (nodes.find((node) => node.selected) ?? null);
 
@@ -293,6 +314,7 @@ function StudioShell() {
           <button type="button" onClick={() => loadExample('direct')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">{text.exampleDirect}</button>
           <button type="button" onClick={() => loadExample('buffer')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">{text.exampleBuffer}</button>
           <button type="button" onClick={() => loadExample('control')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">{text.exampleControl}</button>
+          <button type="button" onClick={() => loadExample('mix')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">{text.exampleMix}</button>
           <button type="button" onClick={() => { setNodes([]); setEdges([]); setPhase('idle'); setHint(null); resetDistances(); }} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">
             <Trash2 className="h-4 w-4" aria-hidden /> {text.clear}
           </button>
@@ -383,10 +405,14 @@ function StudioShell() {
               selectedEdge={selectedEdge}
               result={result}
               showThermo={showThermo}
+              signalLinked={Boolean(selected && edges.some((edge) => edge.type === 'signal' && edge.target === selected.id))}
               onParam={(id, key, value) => {
                 setNodes((current) => current.map((node) => {
                   if (node.id !== id) return node;
                   const params = { ...node.data.params, [key]: value };
+                  if (key === 'manualPort' && node.data.componentId === 'valve-3way' && edges.some((edge) => edge.type === 'signal' && edge.target === id)) {
+                    params.controlMode = 1;
+                  }
                   const def = getComponent(node.data.componentId);
                   const box = def ? componentBox(def, params) : null;
                   return {

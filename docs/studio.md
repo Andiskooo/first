@@ -55,9 +55,25 @@ The tool simulates one heat pump and one buffer. It is not a design calculation.
 
 ## Valves, thermostats, and manifolds
 
-Valves live in the palette beside the pump. A two-way valve stops a branch when it is shut, and a modulating one scales that branch’s share of the flow. A three-way valve has a common port `ab` and two outlets, `a` (default) and `b`. It does not mix. Each of those three water ports may be tied to an inlet or an outlet line in any combination; the valve does not inherit a supply or return restriction from its other ports. A relief valve is the only part allowed to join supply to return; it stays shut until the water temperature passes its limit (this model has no pressure solver, so temperature stands in for the relief setting) and then bypasses some of the flow. A backflow preventer passes water only from its inlet to its outlet. An air vent is drawn on the pipe and does not change the flow.
+Valves live in the palette beside the pump. A two-way valve stops a branch when it is shut, and a modulating one scales that branch’s share of the flow. A three-way valve has a common port `ab` and two outlets, `a` (default) and `b`. It does not mix: one port gets 100% of the flow and the other gets none. Each of those three water ports may be tied to an inlet or an outlet line in any combination; the valve does not inherit a supply or return restriction from its other ports. A relief valve is the only part allowed to join supply to return; it stays shut until the water temperature passes its limit (this model has no pressure solver, so temperature stands in for the relief setting) and then bypasses some of the flow. A backflow preventer passes water only from its inlet to its outlet. An air vent is drawn on the pipe and does not change the flow.
 
-A room thermostat has no water ports and does not simulate a warming room. It has two settings, ambient temperature and room setpoint. Its dashed purple link is a command, not a pipe, and it can land only on one three-way valve. If ambient is above the room setpoint, that valve sends 100% of the flow to port B. Otherwise it sends 100% to port A. The label on the valve shows which port is active, and the hydraulic result follows that branch only. The separate signal wire is adapted from [FluidLab](https://github.com/thepacket/fluidlab) (`src/model/control.ts`), which is MIT licensed, Copyright (c) 2026 Andre Paquette. The divert rule itself is original to this studio.
+A three-way valve has two ways to choose the port, and this is the precedence:
+
+1. **Auto**, and a thermostat signal is connected. If ambient is above the room setpoint, 100% of the flow goes to port B. Otherwise 100% goes to port A.
+2. **Manual**. The A/B toggle in the inspector, and the same toggle drawn on the symbol, choose the port. Manual wins even when a thermostat is still connected.
+3. **No thermostat**. The toggle is in charge whether the selector says Auto or Manual. Auto has nothing to follow.
+
+The canvas toggle always takes manual control when a thermostat is connected, then flips the port, so a click changes the valve immediately. Choosing Auto again hands the valve back to the thermostat. The label and the inspector show the mode and the active port.
+
+A room thermostat has no water ports and does not simulate a warming room. It has two settings, ambient temperature and room setpoint. Its dashed purple link is a command, not a pipe, and it can land only on the control port of a three-way valve. The label on the valve shows which port is active, and the hydraulic result follows that branch only. The separate signal wire is adapted from [FluidLab](https://github.com/thepacket/fluidlab) (`src/model/control.ts`), which is MIT licensed, Copyright (c) 2026 Andre Paquette. The divert rule itself is original to this studio.
+
+### Mixer (MV)
+
+The mixer is manual only. It uses the same drawing style as the three-way valve, with an **M** in the middle, and it has no signal port. A thermostat wire aimed at it is rejected with the hint that the mixer does not take a thermostat signal.
+
+Ports `h` (hot), `c` (cold) and `out` may each connect to a hot or a cold line. Like the three-way valve, the body does not bridge those ports, so hot and cold can arrive together. The inspector slider is the hot share, 0–100%. At 0% the hot inlet is shut and the outlet is the cold stream. At 100% the cold inlet is shut and the outlet is the hot stream. In between, each inlet is let through in that proportion.
+
+The outlet temperature is the flow-weighted mix of the streams that get through, `Σ(m · T) / Σm`. The outlet flow is the sum of those inlet flows. The pipe that leaves `out` is coloured with that mixed temperature on the same scale as the rest of the studio (blue, through a dusty mid tone, to orange and red).
 
 The supply manifold is a hot header: one inlet on top and three or more outlets along the bottom (`branches`, 3–6). The return manifold is a cold header: the same number of inlets on top and one outlet below. Ports are supply-only or return-only, so a hot outlet cannot be tied to a cold return. A junction is a four-way cross; the tee remains the three-port branch.
 

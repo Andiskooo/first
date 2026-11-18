@@ -92,6 +92,7 @@ function SymbolGraphic({
       {def.symbol === 'manifold-supply' || def.symbol === 'manifold-return' ? <ManifoldBody def={def} wash={wash} active={active} /> : null}
       {def.symbol === 'valve' ? <ValveBody def={def} active={active} hot={hot} /> : null}
       {def.symbol === 'valve-3way' ? <ThreeWayBody def={def} active={active} hot={hot} /> : null}
+      {def.symbol === 'mixer' ? <MixerBody def={def} active={active} hot={hot} /> : null}
       {def.symbol === 'relief' ? <ReliefBody def={def} active={active} hot={hot} /> : null}
       {def.symbol === 'air-vent' ? <AirVentBody def={def} /> : null}
       {def.symbol === 'check' ? <CheckBody def={def} active={active} hot={hot} /> : null}
@@ -246,6 +247,21 @@ function ThreeWayBody({ def, active, hot }: { def: ComponentDef; active: boolean
       <path d={`M 14 ${y - 14} L ${mid} ${y} L 14 ${y + 14} Z`} fill={active ? hot : '#ffffff'} stroke="#0f172a" strokeWidth={2} />
       <path d={`M ${def.width - 14} ${y - 14} L ${mid} ${y} L ${def.width - 14} ${y + 14} Z`} fill={active ? hot : '#ffffff'} stroke="#0f172a" strokeWidth={2} />
       <path d={`M ${mid - 14} ${def.height - 12} L ${mid} ${y} L ${mid + 14} ${def.height - 12} Z`} fill={active ? hot : '#ffffff'} stroke="#0f172a" strokeWidth={2} />
+    </>
+  );
+}
+
+function MixerBody({ def, active, hot }: { def: ComponentDef; active: boolean; hot: string }) {
+  const mid = def.width / 2;
+  const cy = def.height / 2;
+  const fill = active ? hot : '#ffffff';
+  return (
+    <>
+      <path d={`M 18 ${cy - 30} L ${mid - 2} ${cy - 2} L 18 ${cy - 8} Z`} fill={fill} stroke="#b91c1c" strokeWidth={2} />
+      <path d={`M 18 ${cy + 8} L ${mid - 2} ${cy + 2} L 18 ${cy + 30} Z`} fill="#ffffff" stroke="#1d4ed8" strokeWidth={2} />
+      <path d={`M ${def.width - 16} ${cy - 16} L ${mid + 4} ${cy} L ${def.width - 16} ${cy + 16} Z`} fill={fill} stroke="#0f172a" strokeWidth={2} />
+      <circle cx={mid} cy={cy} r={11} fill="#ffffff" stroke="#0f172a" strokeWidth={1.6} />
+      <text x={mid} y={cy + 4} textAnchor="middle" fontSize="12" fontWeight="700" fill="#0f172a" fontFamily="ui-sans-serif, system-ui, sans-serif">M</text>
     </>
   );
 }

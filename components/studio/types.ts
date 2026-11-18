@@ -16,6 +16,7 @@ export type SymbolId =
   | 'manifold-return'
   | 'valve'
   | 'valve-3way'
+  | 'mixer'
   | 'relief'
   | 'air-vent'
   | 'check'

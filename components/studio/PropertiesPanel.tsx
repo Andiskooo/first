@@ -13,6 +13,7 @@ export function PropertiesPanel({
   selectedEdge,
   result,
   showThermo,
+  signalLinked,
   onParam,
   onRotate,
   onReversePump,
@@ -23,6 +24,8 @@ export function PropertiesPanel({
   selectedEdge: Edge | null;
   result: SimResult;
   showThermo: boolean;
+  /** A thermostat signal currently lands on the selected three-way valve. */
+  signalLinked: boolean;
   onParam: (id: string, key: string, value: number) => void;
   onRotate: (id: string) => void;
   onReversePump: (id: string) => void;
@@ -32,7 +35,8 @@ export function PropertiesPanel({
   const text = useStudioCopy();
   const { locale } = useLanguage();
   const def = selected ? getComponent(selected.data.componentId) : undefined;
-  const sim = selected && showThermo ? result.nodes[selected.id] : undefined;
+  const live = selected ? result.nodes[selected.id] : undefined;
+  const sim = selected && showThermo ? live : undefined;
   const buffered = result.mode === 'buffered' || result.tankC != null;
 
   return (
@@ -68,11 +72,22 @@ export function PropertiesPanel({
                 <NodeReadouts
                   text={text}
                   sim={sim}
-                  kind={def.id === 'buffer-tank' ? 'buffer' : def.id === 'thermostat' ? 'room' : def.category === 'source' ? 'source' : def.category === 'consumer' ? 'consumer' : 'other'}
+                  kind={def.id === 'buffer-tank' ? 'buffer' : def.id === 'thermostat' ? 'room' : def.id === 'valve-3way' ? 'valve3' : def.id === 'mixer' ? 'mixer' : def.category === 'source' ? 'source' : def.category === 'consumer' ? 'consumer' : 'other'}
+                  modeText={def.id === 'valve-3way' ? (signalLinked && (selected.data.params.controlMode ?? 0) < 0.5 ? text.modeAuto : text.modeManual) : undefined}
                 />
               ) : null}
+              {def.id === 'valve-3way' && selected ? (
+                <ThreeWayControls
+                  text={text}
+                  params={selected.data.params}
+                  opening={live?.opening}
+                  signalLinked={signalLinked}
+                  onParam={(key, value) => onParam(selected.id, key, value)}
+                />
+              ) : null}
+              {def.id === 'mixer' ? <p className="mt-3 text-xs leading-5 text-slate-500">{text.mixHint}</p> : null}
               <div className="mt-4 space-y-4">
-                {def.params.map((param) => (
+                {def.params.filter((param) => def.id !== 'valve-3way' || (param.id !== 'controlMode' && param.id !== 'manualPort')).map((param) => (
                   <ParamControl
                     key={param.id}
                     id={param.id}
@@ -156,14 +171,86 @@ function PipeInspector({
   );
 }
 
+function ThreeWayControls({
+  text,
+  params,
+  opening,
+  signalLinked,
+  onParam,
+}: {
+  text: StudioCopy;
+  params: Record<string, number>;
+  opening: number | undefined;
+  signalLinked: boolean;
+  onParam: (key: string, value: number) => void;
+}) {
+  const manual = !signalLinked || (params.controlMode ?? 0) >= 0.5;
+  const portB = opening != null ? opening >= 0.5 : (params.manualPort ?? 0) >= 0.5;
+  const storedB = (params.manualPort ?? 0) >= 0.5;
+  return (
+    <div className="mt-4 space-y-3">
+      <p className="rounded-lg bg-violet-50 px-3 py-2 text-xs leading-5 text-violet-950">
+        <span className="font-semibold">{manual ? text.modeManual : text.modeAuto}</span>
+        {' · '}
+        {portB ? text.portB : text.portA}
+        <span className="mt-0.5 block text-violet-800">
+          {signalLinked
+            ? (manual ? text.manualInCharge : text.autoInCharge)
+            : text.manualAlways}
+        </span>
+      </p>
+      <div>
+        <span className="text-sm text-slate-700">{text.params.controlMode}</span>
+        <div className="mt-1 grid grid-cols-2 gap-2">
+          <ModeButton label={text.modeAuto} pressed={signalLinked && !manual} disabled={!signalLinked} onClick={() => onParam('controlMode', 0)} />
+          <ModeButton label={text.modeManual} pressed={manual} onClick={() => onParam('controlMode', 1)} />
+        </div>
+      </div>
+      <div>
+        <span className="text-sm text-slate-700">{text.params.manualPort}</span>
+        <div className="mt-1 grid grid-cols-2 gap-2">
+          <ModeButton label={text.portA} pressed={!storedB} onClick={() => onParam('manualPort', 0)} />
+          <ModeButton label={text.portB} pressed={storedB} onClick={() => onParam('manualPort', 1)} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ModeButton({
+  label,
+  pressed,
+  disabled,
+  onClick,
+}: {
+  label: string;
+  pressed: boolean;
+  disabled?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={pressed}
+      disabled={disabled}
+      onClick={onClick}
+      className={`rounded-lg border px-2 py-1.5 text-xs font-medium ${pressed ? 'border-violet-400 bg-violet-50 text-violet-900' : 'border-slate-200 text-slate-700 hover:bg-slate-50'} disabled:cursor-not-allowed disabled:opacity-50`}
+    >
+      {label}
+    </button>
+  );
+}
+
 function NodeReadouts({
   text,
   sim,
   kind,
+  modeText,
 }: {
   text: StudioCopy;
   sim: NodeSim;
-  kind: 'buffer' | 'source' | 'consumer' | 'room' | 'other';
+  kind: 'buffer' | 'source' | 'consumer' | 'room' | 'valve3' | 'mixer' | 'other';
+  modeText?: string;
 }) {
   const supply = kind === 'source' ? sim.tOut : sim.tIn;
   const back = kind === 'source' ? sim.tIn : sim.tOut;
@@ -172,6 +259,17 @@ function NodeReadouts({
       {kind === 'room' ? (
         <>
           <dt>{text.room}</dt><dd>{formatNum(sim.roomC, 1)} °C</dd>
+        </>
+      ) : kind === 'valve3' ? (
+        <>
+          <dt>{text.params.controlMode}</dt><dd>{modeText}</dd>
+          <dt>{text.valveState}</dt><dd>{(sim.opening ?? 0) >= 0.5 ? text.portB : text.portA}</dd>
+        </>
+      ) : kind === 'mixer' ? (
+        <>
+          <dt>{text.outlet}</dt><dd>{formatNum(sim.tOut, 1)} °C</dd>
+          <dt>{text.flow}</dt><dd>{formatNum(sim.flowLph, 0)} L/h</dd>
+          <dt>{text.params.mix}</dt><dd>{Math.round((sim.opening ?? 0.5) * 100)}% {text.hot}</dd>
         </>
       ) : kind === 'buffer' ? (
         <>
@@ -185,9 +283,13 @@ function NodeReadouts({
           <dt>{text.delta}</dt><dd>{formatNum(Math.abs(sim.dt), 1)} K</dd>
         </>
       )}
-      <dt>{text.flow}</dt><dd>{formatNum(sim.flowLph, 0)} L/h</dd>
-      <dt>{text.power}</dt><dd>{formatNum(sim.qKw, 1)} kW</dd>
-      {sim.opening != null ? (
+      {kind === 'mixer' || kind === 'valve3' ? null : (
+        <>
+          <dt>{text.flow}</dt><dd>{formatNum(sim.flowLph, 0)} L/h</dd>
+          <dt>{text.power}</dt><dd>{formatNum(sim.qKw, 1)} kW</dd>
+        </>
+      )}
+      {sim.opening != null && kind !== 'valve3' && kind !== 'mixer' ? (
         <>
           <dt>{text.valveState}</dt>
           <dd>{sim.opening < 0.05 ? text.closed : sim.opening > 0.95 ? text.open : `${Math.round(sim.opening * 100)}%`}</dd>
@@ -200,6 +302,7 @@ function NodeReadouts({
 function choiceLabel(id: string, option: number, unit: string, text: StudioCopy): string {
   if (id === 'behavior') return option < 0.5 ? text.onOff : text.modulating;
   if (id === 'arrangement') return option < 0.5 ? text.divert : text.mix;
+  if (id === 'controlMode') return option < 0.5 ? text.modeAuto : text.modeManual;
   return `${option} ${unit}`.trim();
 }
 

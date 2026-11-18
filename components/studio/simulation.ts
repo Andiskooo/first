@@ -153,10 +153,9 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     if (openings[nodeId] !== undefined) return clamp(openings[nodeId], 0, 1);
     const node = nodeById.get(nodeId);
     if (!node) return 1;
-    if (node.componentId === 'valve' || node.componentId === 'valve-3way') {
-      const fallback = node.componentId === 'valve-3way' ? 0 : 100;
-      return clamp((node.params.opening ?? fallback) / 100, 0, 1);
-    }
+    if (node.componentId === 'mixer') return clamp((node.params.mix ?? 50) / 100, 0, 1);
+    if (node.componentId === 'valve-3way') return (node.params.manualPort ?? 0) >= 0.5 ? 1 : 0;
+    if (node.componentId === 'valve') return clamp((node.params.opening ?? 100) / 100, 0, 1);
     if (node.componentId === 'relief') return 0;
     return 1;
   }
@@ -180,6 +179,12 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
       const active = diverted ? 'b' : 'a';
       if (enterPort === 'ab') return [{ port: active, gain }];
       if (enterPort === active) return [{ port: 'ab', gain }];
+      return [];
+    }
+    if (def.id === 'mixer') {
+      const hot = openingOf(nodeId);
+      if (enterPort === 'h') return open('out', gain * hot);
+      if (enterPort === 'c') return open('out', gain * (1 - hot));
       return [];
     }
     if (def.id === 'manifold-supply' || def.id === 'manifold-return') {
@@ -491,7 +496,7 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     && (buffer ? secondaryFlow > 1 && primaryPaths.length > 0 : directPaths.length > 0);
 
   for (const node of nodes) {
-    if (node.componentId !== 'valve' && node.componentId !== 'valve-3way' && node.componentId !== 'relief') continue;
+    if (node.componentId !== 'valve' && node.componentId !== 'valve-3way' && node.componentId !== 'relief' && node.componentId !== 'mixer') continue;
     const position = openingOf(node.id);
     const prior = nodeSims[node.id];
     nodeSims[node.id] = prior
