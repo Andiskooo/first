@@ -5,8 +5,6 @@ import { createPortal } from 'react-dom';
 import {
   ReactFlow,
   ReactFlowProvider,
-  Background,
-  BackgroundVariant,
   Controls,
   ConnectionLineType,
   ConnectionMode,
@@ -33,6 +31,7 @@ import { validateConnection } from '@/components/studio/validation';
 import { resetDistances, setEdgeSpeeds, stopClock } from '@/components/studio/clock';
 import { messageOf, useStudioCopy } from '@/components/studio/copy';
 import { hydronicNodeTypes, type HydronicFlowNode } from '@/components/studio/HydronicNode';
+import { StudioBackground } from '@/components/studio/StudioBackground';
 import { hydronicEdgeTypes } from '@/components/studio/HydronicEdge';
 import { Library } from '@/components/studio/Library';
 import { PropertiesPanel, SimChip } from '@/components/studio/PropertiesPanel';
@@ -457,7 +456,7 @@ function StudioShell() {
 
   return (
     <StudioViewContext.Provider value={view}>
-      <div ref={shellRef} data-present={present ? 'true' : 'false'} className="studio-root flex h-full min-h-0 flex-col bg-[#f4f1ec] text-slate-900">
+      <div ref={shellRef} data-present={present ? 'true' : 'false'} className="studio-root flex h-full min-h-0 flex-col bg-white text-slate-900">
         <div className="studio-toolbar flex shrink-0 items-center gap-1 overflow-x-auto border-b border-slate-200 bg-white px-2 py-1">
           <button
             type="button"
@@ -564,7 +563,7 @@ function StudioShell() {
               onNodeClick={showPropsOnPhone}
               onEdgeClick={showPropsOnPhone}
             >
-              <Background variant={BackgroundVariant.Dots} gap={SNAP} size={1.2} color="#d6d3d1" />
+              <StudioBackground />
               <Controls showInteractive={false} position="bottom-left" />
             </ReactFlow>
 
