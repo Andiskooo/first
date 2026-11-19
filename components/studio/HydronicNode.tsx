@@ -1,10 +1,10 @@
 'use client';
 
-import { useContext } from 'react';
-import { Handle, useStore, type Node, type NodeProps } from '@xyflow/react';
+import { useContext, useRef } from 'react';
+import { Handle, useReactFlow, useStore, useUpdateNodeInternals, type Node, type NodeProps } from '@xyflow/react';
 import { useLanguage } from '@/components/LanguageProvider';
-import { componentBox, getComponent, resolvePorts } from '@/components/studio/registry';
-import { portPlacement } from '@/components/studio/geometry';
+import { componentBox, getComponent, isHeatPumpId, resolvePorts } from '@/components/studio/registry';
+import { portPlacement, resizeProportional, type ResizeCorner } from '@/components/studio/geometry';
 import { ComponentArt, portColor } from '@/components/studio/symbols';
 import { useStudioCopy } from '@/components/studio/copy';
 import { portTint } from '@/components/studio/validation';
@@ -16,12 +16,18 @@ import { cn } from '@/lib/utils';
 export type HydronicFlowNode = Node<StudioNodeData, 'hydronic'>;
 
 export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>) {
-  const def = getComponent(data.componentId);
   const { locale } = useLanguage();
   const text = useStudioCopy();
   const view = useContext(StudioViewContext);
   const rfNodes = useStore((state) => state.nodes);
   const rfEdges = useStore((state) => state.edges);
+  const flow = useReactFlow();
+  const updateInternals = useUpdateNodeInternals();
+  const gesture = useRef<{
+    corner: ResizeCorner; flowX: number; flowY: number;
+    x: number; y: number; w: number; h: number;
+  } | null>(null);
+  const def = getComponent(data.componentId);
   if (!def) return null;
 
   const graphNodes: GraphNode[] = rfNodes.map((node) => {
@@ -43,7 +49,10 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
   const sim = view.result?.nodes[id];
   const showState = view.showThermo || def.id === 'thermostat' || def.category === 'valve';
   const rotation = data.rotation ?? 0;
-  const box = componentBox(def, data.params);
+  const defaults = componentBox(def, data.params);
+  // Direct-resize overrides live in data.size; absent means registry default,
+  // so pre-resize diagrams render exactly as before. Simulation never reads it.
+  const box = data.size ?? defaults;
   const ports = resolvePorts(def, data.params);
   const drawn = { ...def, width: box.width, height: box.height, ports };
   const opening = sim?.opening;
@@ -51,8 +60,50 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
   const manualMode = (def.id === 'valve-3way' || def.id === 'valve') && (!thermostatLinked || (data.params?.controlMode ?? 0) >= 0.5);
   const zoneOpen = def.id === 'valve' && (opening != null ? opening >= 0.05 : (data.params?.manualOpen ?? 1) >= 0.5);
   const livePortB = def.id === 'valve-3way' && (opening != null ? opening >= 0.5 : (data.params?.manualPort ?? 0) >= 0.5);
-  const pumpLinked = (def.id === 'pump' || def.id === 'heat-pump') && graphEdges.some((edge) => edge.kind === 'signal' && edge.target === id && edge.targetHandle === 'ctl');
+  const pumpLinked = (def.id === 'pump' || isHeatPumpId(def.id)) && graphEdges.some((edge) => edge.kind === 'signal' && edge.target === id && edge.targetHandle === 'ctl');
   const pumpOn = (opening ?? 1) >= 0.5;
+
+  const beginResize = (corner: ResizeCorner) => (event: React.PointerEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+    const node = flow.getNode(id);
+    if (!node) return;
+    const point = flow.screenToFlowPosition({ x: event.clientX, y: event.clientY });
+    gesture.current = {
+      corner, flowX: point.x, flowY: point.y,
+      x: node.position.x, y: node.position.y, w: box.width, h: box.height,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+  const moveResize = (event: React.PointerEvent<HTMLButtonElement>) => {
+    const start = gesture.current;
+    if (!start) return;
+    event.stopPropagation();
+    const point = flow.screenToFlowPosition({ x: event.clientX, y: event.clientY });
+    const next = resizeProportional({
+      corner: start.corner,
+      startX: start.x, startY: start.y, startW: start.w, startH: start.h,
+      defW: defaults.width, defH: defaults.height,
+      dx: point.x - start.flowX, dy: point.y - start.flowY,
+    });
+    flow.setNodes((current) => current.map((node) => (
+      node.id === id
+        ? {
+          ...node,
+          position: { x: next.x, y: next.y },
+          style: { ...(node.style ?? {}), width: next.width, height: next.height },
+          data: { ...node.data, size: { width: next.width, height: next.height } },
+        }
+        : node
+    )));
+    updateInternals(id);
+  };
+  const endResize = () => {
+    if (gesture.current) {
+      gesture.current = null;
+      updateInternals(id);
+    }
+  };
 
   return (
     <div className="relative h-full w-full overflow-visible">
@@ -124,6 +175,27 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
           />
         );
       })}
+      {selected ? (['nw', 'ne', 'sw', 'se'] as const).map((corner) => (
+        <button
+          key={corner}
+          type="button"
+          data-resize-corner={corner}
+          aria-label={`Resize ${corner === 'nw' ? 'top left' : corner === 'ne' ? 'top right' : corner === 'sw' ? 'bottom left' : 'bottom right'}`}
+          className="studio-resize nodrag nopan absolute z-20 rounded-[3px] border-2 border-blue-600 bg-white shadow-sm"
+          style={{
+            left: corner === 'nw' || corner === 'sw' ? '0%' : '100%',
+            top: corner === 'nw' || corner === 'ne' ? '0%' : '100%',
+            transform: 'translate(-50%, -50%)',
+            cursor: corner === 'nw' || corner === 'se' ? 'nwse-resize' : 'nesw-resize',
+            touchAction: 'none',
+          }}
+          onPointerDown={beginResize(corner)}
+          onPointerMove={moveResize}
+          onPointerUp={endResize}
+          onPointerCancel={endResize}
+          onClick={(event) => event.stopPropagation()}
+        />
+      )) : null}
       <div className="studio-node-label pointer-events-none absolute left-1/2 top-full z-10 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] leading-4 shadow-sm">
         <span className="font-semibold text-slate-900">{def.code}</span>
         <span className="text-slate-500"> {def.name[locale]}</span>
@@ -139,7 +211,7 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
             {zoneOpen ? text.open : text.closed}
             {opening != null && opening >= 0.05 && opening <= 0.95 ? ` · ${Math.round(opening * 100)}%` : ''}
           </span>
-        ) : (def.id === 'pump' || def.id === 'heat-pump') && pumpLinked ? (
+        ) : (def.id === 'pump' || isHeatPumpId(def.id)) && pumpLinked ? (
           <span className={cn('ml-1 font-semibold', pumpOn ? 'text-violet-700' : 'text-slate-400')}>
             {pumpOn ? text.pumpOn : text.pumpOff}
           </span>

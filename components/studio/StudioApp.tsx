@@ -25,7 +25,7 @@ import '@xyflow/react/dist/style.css';
 
 import { computeOpenings } from '@/components/studio/control';
 import { buildExample, type ExampleKind } from '@/components/studio/example';
-import { componentBox, getComponent, resolvePorts } from '@/components/studio/registry';
+import { componentBox, getComponent, isBufferId, isHeatPumpId, resolvePorts } from '@/components/studio/registry';
 import { SNAP, createPlacedPart, droppedPartId, markPartDropped } from '@/components/studio/place';
 import { T_ROOM, chargeBuffer } from '@/components/studio/simulation';
 import { simulate } from '@/components/studio/simulation';
@@ -162,8 +162,6 @@ function StudioShell() {
   const heldRef = useRef<Record<string, number>>({});
   const resultRef = useRef<ReturnType<typeof simulate> | null>(null);
   const seq = useRef(1);
-  const placedCount = useRef(0);
-  placedCount.current = nodes.length;
   const { screenToFlowPosition, fitView, deleteElements, setViewport } = useReactFlow();
   const updateInternals = useUpdateNodeInternals();
   graphRef.current = { nodes, edges };
@@ -254,8 +252,8 @@ function StudioShell() {
     const tick = (now: number) => {
       const dt = Math.min(0.2, (now - last) / 1000);
       last = now;
-      const hp = graphRef.current.nodes.find((node) => node.data.componentId === 'heat-pump');
-      const tank = graphRef.current.nodes.find((node) => node.data.componentId === 'buffer-tank');
+      const hp = graphRef.current.nodes.find((node) => isHeatPumpId(node.data.componentId));
+      const tank = graphRef.current.nodes.find((node) => isBufferId(node.data.componentId));
       setTankC((current) => chargeBuffer(
         current ?? T_ROOM,
         hp?.data.params.setpoint ?? 45,
@@ -300,7 +298,7 @@ function StudioShell() {
       id: placed.id,
       type: 'hydronic',
       position: { x: placed.x, y: placed.y },
-      data: { componentId: placed.componentId, params: placed.params, rotation: 0 },
+      data: { componentId: placed.componentId, params: placed.params, rotation: 0, size: { width: placed.width, height: placed.height } },
       style: { width: placed.width, height: placed.height },
       className: 'overflow-visible',
     };
@@ -378,7 +376,7 @@ function StudioShell() {
         id: node.id,
         type: 'hydronic' as const,
         position: { x: node.x, y: node.y },
-        data: { componentId: node.componentId, params: node.params, rotation: 0 },
+        data: { componentId: node.componentId, params: node.params, rotation: 0, size: { width: box.width, height: box.height } },
         style: { width: box.width, height: box.height },
         className: 'overflow-visible',
       };
@@ -399,10 +397,11 @@ function StudioShell() {
       if (!def?.rotatable) return node;
       const rotation = (node.data.rotation + 90) % 360;
       const turned = rotation === 90 || rotation === 270;
+      const canonical = node.data.size ?? { width: def.width, height: def.height };
       return {
         ...node,
         data: { ...node.data, rotation },
-        style: { width: turned ? def.height : def.width, height: turned ? def.width : def.height },
+        style: { width: turned ? canonical.height : canonical.width, height: turned ? canonical.width : canonical.height },
       };
     }));
     requestAnimationFrame(() => updateInternals(id));
@@ -453,11 +452,8 @@ function StudioShell() {
           ? null
           : text.startHint;
   const inspectorOpen = Boolean(selected || selectedEdge);
-  useEffect(() => {
-    if (placedCount.current === 0) return;
-    const frame = requestAnimationFrame(() => fitView({ padding: fitPadding, duration: 0 }));
-    return () => cancelAnimationFrame(frame);
-  }, [inspectorOpen, libraryOpen, fitView]);
+  // Selection and library toggles must not move the viewport. fitView stays
+  // explicit (loading an example, entering fullscreen), never automatic.
 
   return (
     <StudioViewContext.Provider value={view}>
@@ -620,11 +616,13 @@ function StudioShell() {
                   if (key === 'manualOpen' && node.data.componentId === 'valve' && linked) {
                     params.controlMode = 1;
                   }
+                  // Only a branch-count change alters geometry; every other param
+                  // leaves the visual size (including direct-resize overrides) alone.
                   const def = getComponent(node.data.componentId);
-                  const box = def ? componentBox(def, params) : null;
+                  const box = key === 'branches' && def ? componentBox(def, params) : null;
                   return {
                     ...node,
-                    data: { ...node.data, params },
+                    data: box ? { ...node.data, params, size: { width: box.width, height: box.height } } : { ...node.data, params },
                     style: box ? { width: box.width, height: box.height } : node.style,
                   };
                 }));

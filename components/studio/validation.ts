@@ -1,4 +1,4 @@
-import { getComponent, resolvePorts } from '@/components/studio/registry';
+import { getComponent, isHeatPumpId, resolvePorts } from '@/components/studio/registry';
 import type { GraphEdge, GraphNode, PortTerminal } from '@/components/studio/types';
 
 export interface ConnectionEnd {
@@ -88,9 +88,11 @@ function diagnose(ends: ConnectionEnd[]): string | null {
   const primary = has(ends, 'buffer-primary-in') || has(ends, 'buffer-primary-out');
   const secondary = has(ends, 'buffer-secondary-out') || has(ends, 'buffer-secondary-in');
   const heatPump = has(ends, 'hp-supply') || has(ends, 'hp-return');
-  const consumer = has(ends, 'consumer-supply') || has(ends, 'consumer-return');
 
-  if (primary && (consumer || secondary)) return 'user-on-source-side';
+  // The buffer's left side is no longer fenced to the heat source: it may join
+  // shared supply/return headers with heat users (e.g. a buffer in parallel
+  // with floor heating). A direct primary-to-secondary short stays rejected.
+  if (primary && secondary) return 'user-on-source-side';
   if (secondary && (heatPump || primary)) return 'source-on-user-side';
   if (has(ends, 'buffer-primary-in') && has(ends, 'hp-return')) return 'buffer-inlet-hp-supply';
   if (has(ends, 'buffer-primary-out') && has(ends, 'hp-supply')) return 'buffer-outlet-hp-return';
@@ -139,7 +141,7 @@ export function validateConnection(
     const toValve = targetDef?.id === 'valve-3way' && targetPort.id === 'ctl';
     const toZone = targetDef?.id === 'valve' && targetPort.id === 'ctl';
     const toPump = targetDef?.id === 'pump' && targetPort.id === 'ctl';
-    const toHeatPump = targetDef?.id === 'heat-pump' && targetPort.id === 'ctl';
+    const toHeatPump = Boolean(targetDef && isHeatPumpId(targetDef.id)) && targetPort.id === 'ctl';
     if (!fromThermo || (!toValve && !toZone && !toPump && !toHeatPump)) return { ok: false, code: 'signal-pair' };
     return { ok: true };
   }

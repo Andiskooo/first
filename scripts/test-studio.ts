@@ -4,6 +4,7 @@ import { buildExample } from '../components/studio/example';
 import { createPlacedPart, droppedPartId, pointerGesture, pointInRect } from '../components/studio/place';
 import { COMPONENTS } from '../components/studio/registry';
 import { chargeBuffer, simulate } from '../components/studio/simulation';
+import { temperatureColor } from '../components/studio/temperature';
 import { validateConnection } from '../components/studio/validation';
 import type { GraphEdge, GraphNode } from '../components/studio/types';
 
@@ -125,7 +126,7 @@ function main() {
   assert.equal(validateConnection(bare, none, 'ps', 'sec-out-1', 'hk', 'supply-in').ok, true);
   assert.equal(validateConnection(bare, none, 'hk', 'return-out', 'ps', 'sec-in-1').ok, true);
   assert.equal(validateConnection(bare, none, 'hp', 'supply-out', 'ps', 'sec-out-1').ok, false);
-  assert.equal(validateConnection(bare, none, 'hk', 'supply-in', 'ps', 'pri-in').ok, false);
+  assert.equal(validateConnection(bare, none, 'hk', 'supply-in', 'ps', 'pri-in').ok, true);
   assert.equal(validateConnection(bare, none, 'hp', 'return-in', 'ps', 'pri-in').ok, false);
   assert.equal(validateConnection(bare, none, 'ps', 'sec-out-1', 'hk', 'return-out').ok, false);
   assert.equal(validateConnection(bare, none, 'ps', 'pri-out', 'hp', 'supply-out').ok, false);
@@ -138,7 +139,7 @@ function main() {
   const pumpIn: GraphEdge[] = [{ id: 'x', source: 'hp', target: 'p1', sourceHandle: 'supply-out', targetHandle: 'in' }];
   assert.equal(validateConnection(withTee, pumpIn, 'p1', 'out', 'ps', 'pri-in').ok, true);
   const userTee: GraphEdge[] = [{ id: 'y', source: 'ts', target: 'hk', sourceHandle: 'b', targetHandle: 'supply-in' }];
-  assert.equal(validateConnection(withTee, userTee, 'ts', 'a', 'ps', 'pri-in').ok, false);
+  assert.equal(validateConnection(withTee, userTee, 'ts', 'a', 'ps', 'pri-in').ok, true);
   assert.equal(validateConnection(withTee, userTee, 'ts', 'a', 'ps', 'sec-out-2').ok, true);
 
   const blocked = structuredClone(direct);
@@ -525,6 +526,123 @@ function main() {
   assertInjection('manifold');
   assertInjection('return-pump');
 
+  function parallelBufferFloor(): { nodes: GraphNode[]; edges: GraphEdge[] } {
+    return {
+      nodes: [
+        { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45, internalPump: 1, internalSpeed: 100 } },
+        { id: 't1', componentId: 'tee', params: {} },
+        { id: 'ps', componentId: 'buffer-tank', params: { volume: 200 } },
+        { id: 'fbh', componentId: 'underfloor', params: { demand: 3 } },
+        { id: 't2', componentId: 'tee', params: {} },
+      ],
+      edges: [
+        { id: 'e-hp-t1', source: 'hp', target: 't1', sourceHandle: 'supply-out', targetHandle: 'a' },
+        { id: 'e-t1-ps', source: 't1', target: 'ps', sourceHandle: 'b', targetHandle: 'pri-in' },
+        { id: 'e-t1-fbh', source: 't1', target: 'fbh', sourceHandle: 'c', targetHandle: 'supply-in' },
+        { id: 'e-ps-t2', source: 'ps', target: 't2', sourceHandle: 'pri-out', targetHandle: 'a' },
+        { id: 'e-fbh-t2', source: 'fbh', target: 't2', sourceHandle: 'return-out', targetHandle: 'b' },
+        { id: 'e-t2-hp', source: 't2', target: 'hp', sourceHandle: 'c', targetHandle: 'return-in' },
+      ],
+    };
+  }
+  {
+    const circuit = parallelBufferFloor();
+    let built: GraphEdge[] = [];
+    for (const edge of circuit.edges) {
+      const verdict = validateConnection(circuit.nodes, built, edge.source, edge.sourceHandle, edge.target, edge.targetHandle);
+      assert.equal(verdict.ok, true, `parallel ${edge.id} ${verdict.ok ? '' : verdict.code}`);
+      built = built.concat(edge);
+    }
+    const sim = simulate(circuit.nodes, circuit.edges, computeOpenings({ nodes: circuit.nodes, edges: circuit.edges, held: {} }));
+    assert.ok(!sim.issues.some((issue) => issue.level === 'warn' || issue.level === 'error'), `parallel warnings ${sim.issues.map((issue) => issue.code).join(',')}`);
+    assert.equal(sim.mode, 'buffered');
+    assert.equal(sim.ok, true);
+    const branchPs = sim.edges['e-t1-ps']?.flowLph ?? 0;
+    const branchFbh = sim.edges['e-t1-fbh']?.flowLph ?? 0;
+    assert.ok(branchPs > 500, `buffer branch flows ${branchPs}`);
+    assert.ok(branchFbh > 500, `floor branch flows ${branchFbh}`);
+    near(branchPs, branchFbh, 5, 'parallel branches share the circulator equally');
+    near(sim.nodes.fbh?.flowLph ?? 0, branchFbh, 5, 'floor heating sees its branch flow');
+    near(sim.nodes.fbh?.qKw ?? 0, 3, 0.4, 'floor heating delivers its demand');
+    assert.ok((sim.tankC ?? 0) > 35, `tank holds heat ${sim.tankC}`);
+    near(sim.nodes.hp?.flowLph ?? 0, branchPs + branchFbh, 5, 'heat-pump mass balance');
+    const tRet = sim.edges['e-t2-hp'] ? (sim.edges['e-t2-hp'].flowFromSource ? sim.edges['e-t2-hp'].tTarget : sim.edges['e-t2-hp'].tSource) : 0;
+    near(tRet, sim.returnC ?? 0, 0.6, 'return shows the mixed temperature');
+  }
+
+  function valveLoop(opening: number, flip: boolean): ReturnType<typeof simulate> {
+    const nodes: GraphNode[] = [
+      { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45, internalPump: 1, internalSpeed: 100 } },
+      { id: 'p', componentId: 'pump', params: { speed: 70 } },
+      { id: 'v', componentId: 'valve', params: { behavior: 0, motorized: 0, opening } },
+      { id: 'hk', componentId: 'radiator', params: { demand: 4 } },
+    ];
+    const edges: GraphEdge[] = flip ? [
+      { id: 'a', source: 'hp', target: 'p', sourceHandle: 'supply-out', targetHandle: 'in' },
+      { id: 'b', source: 'p', target: 'v', sourceHandle: 'out', targetHandle: 'out' },
+      { id: 'c', source: 'v', target: 'hk', sourceHandle: 'in', targetHandle: 'supply-in' },
+      { id: 'd', source: 'hk', target: 'hp', sourceHandle: 'return-out', targetHandle: 'return-in' },
+    ] : [
+      { id: 'a', source: 'hp', target: 'p', sourceHandle: 'supply-out', targetHandle: 'in' },
+      { id: 'b', source: 'p', target: 'v', sourceHandle: 'out', targetHandle: 'in' },
+      { id: 'c', source: 'v', target: 'hk', sourceHandle: 'out', targetHandle: 'supply-in' },
+      { id: 'd', source: 'hk', target: 'hp', sourceHandle: 'return-out', targetHandle: 'return-in' },
+    ];
+    for (const edge of edges) {
+      assert.equal(validateConnection(nodes, [], edge.source, edge.sourceHandle, edge.target, edge.targetHandle).ok, true, `valve ${edge.id}`);
+    }
+    return simulate(nodes, edges, computeOpenings({ nodes, edges, held: {} }));
+  }
+  near(valveLoop(100, false).nodes.hk?.flowLph ?? 0, 1260, 5, 'valve passes flow when open');
+  near(valveLoop(100, true).nodes.hk?.flowLph ?? 0, 1260, 5, 'reversed valve passes flow when open');
+  near(valveLoop(0, false).nodes.hk?.flowLph ?? 0, 0, 1, 'valve still shuts its branch');
+  near(valveLoop(0, true).nodes.hk?.flowLph ?? 0, 0, 1, 'reversed valve still shuts its branch');
+
+  function tapCircuit(mix: number): { nodes: GraphNode[]; edges: GraphEdge[] } {
+    return {
+      nodes: [
+        { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45, internalPump: 1, internalSpeed: 100 } },
+        { id: 'ps', componentId: 'buffer-tank', params: { volume: 200 } },
+        { id: 'mv', componentId: 'mixer', params: { mix } },
+        { id: 'p2', componentId: 'pump', params: { speed: 60 } },
+        { id: 'hk', componentId: 'radiator', params: { demand: 6 } },
+      ],
+      edges: [
+        { id: 'e-hp-ps', source: 'hp', target: 'ps', sourceHandle: 'supply-out', targetHandle: 'pri-in' },
+        { id: 'e-ps-hp', source: 'ps', target: 'hp', sourceHandle: 'pri-out', targetHandle: 'return-in' },
+        { id: 'e-hot', source: 'ps', target: 'mv', sourceHandle: 'sec-out-1', targetHandle: 'h' },
+        { id: 'e-loop', source: 'mv', target: 'p2', sourceHandle: 'out', targetHandle: 'in' },
+        { id: 'e-p-hk', source: 'p2', target: 'hk', sourceHandle: 'out', targetHandle: 'supply-in' },
+        { id: 'e-hk-ps', source: 'hk', target: 'ps', sourceHandle: 'return-out', targetHandle: 'sec-in-1' },
+        { id: 'e-tap', source: 'ps', target: 'mv', sourceHandle: 'sec-in-2', targetHandle: 'c' },
+      ],
+    };
+  }
+  function assertTap(mix: number, hotShare: number, coldShare: number) {
+    const circuit = tapCircuit(mix);
+    let built: GraphEdge[] = [];
+    for (const edge of circuit.edges) {
+      const verdict = validateConnection(circuit.nodes, built, edge.source, edge.sourceHandle, edge.target, edge.targetHandle);
+      assert.equal(verdict.ok, true, `tap mix=${mix} ${edge.id} ${verdict.ok ? '' : verdict.code}`);
+      built = built.concat(edge);
+    }
+    const sim = simulate(circuit.nodes, circuit.edges, computeOpenings({ nodes: circuit.nodes, edges: circuit.edges, held: {} }));
+    assert.equal(sim.mode, 'buffered');
+    const pumpFlow = sim.nodes.p2?.flowLph ?? 0;
+    assert.ok(pumpFlow > 500, `tap mix=${mix} pump flow ${pumpFlow}`);
+    near(sim.edges['e-hot']?.flowLph ?? 0, pumpFlow * hotShare, 8, `tap mix=${mix} hot draw`);
+    near(sim.edges['e-tap']?.flowLph ?? 0, pumpFlow * coldShare, 8, `tap mix=${mix} cold draw`);
+    near(sim.edges['e-loop']?.flowLph ?? 0, pumpFlow, 8, `tap mix=${mix} loop flow`);
+    near(sim.edges['e-hk-ps']?.flowLph ?? 0, pumpFlow, 8, `tap mix=${mix} loop return`);
+    if (coldShare > 0) {
+      assert.ok(Number.isFinite(sim.edges['e-tap']?.tSource), `tap mix=${mix} cold line has a temperature`);
+      const tTap = sim.edges['e-tap']!.flowFromSource ? sim.edges['e-tap']!.tSource : sim.edges['e-tap']!.tTarget;
+      near(tTap, sim.tankC ?? 0, 0.8, `tap mix=${mix} cold line is tank water`);
+    }
+  }
+  assertTap(50, 0.5, 0.5);
+  assertTap(100, 1, 0);
+
   const withCheckNodes = direct.nodes.concat([{ id: 'cv', componentId: 'check', params: {} }]);
   const withCheckEdges = direct.edges.flatMap((item) => item.id === 'e-p-ts'
     ? [
@@ -570,6 +688,38 @@ function main() {
   assert.equal(pointerGesture(0, 7), 'tap');
   assert.equal(pointInRect(10, 10, { left: 0, top: 0, right: 20, bottom: 20 }), true);
   assert.equal(pointInRect(21, 10, { left: 0, top: 0, right: 20, bottom: 20 }), false);
+
+  const channel = (temp: number): [number, number, number] => {
+    const match = temperatureColor(temp).match(/rgb\((\d+) (\d+) (\d+)\)/)!;
+    return [Number(match[1]), Number(match[2]), Number(match[3])];
+  };
+  let c = channel(25);
+  assert.ok(c[2] > 180 && c[2] > c[0] + 60, `25C blue, got ${temperatureColor(25)}`);
+  c = channel(30);
+  assert.ok(c[2] > 180 && c[1] > 150, `30C light blue, got ${temperatureColor(30)}`);
+  c = channel(35);
+  assert.ok(c[1] > 150 && c[0] > 100 && c[2] < 200, `35C toward yellow, got ${temperatureColor(35)}`);
+  c = channel(40);
+  assert.ok(c[0] > 200 && c[1] > 120 && c[1] < 200 && c[2] < 100, `40C yellowish-orange, got ${temperatureColor(40)}`);
+  c = channel(45);
+  assert.ok(c[0] > 200 && c[1] >= 80 && c[1] <= 160 && c[2] < 80, `45C orange, got ${temperatureColor(45)}`);
+  c = channel(50);
+  assert.ok(c[0] > 200 && c[1] < 110 && c[2] < 60, `50C orange-red, got ${temperatureColor(50)}`);
+  c = channel(55);
+  assert.ok(c[0] > 190 && c[1] < 90 && c[2] < 60, `55C reddish, got ${temperatureColor(55)}`);
+  c = channel(65);
+  assert.ok(c[0] > 170 && c[1] < 70 && c[2] < 60, `65C intense red, got ${temperatureColor(65)}`);
+  assert.equal(temperatureColor(75), 'rgb(153 27 27)', '75C dark red');
+  assert.equal(temperatureColor(90), 'rgb(153 27 27)', 'above 75 clamps');
+  assert.equal(temperatureColor(10), 'rgb(37 99 235)', 'below 25 clamps');
+  let maxStep = 0;
+  let prev = channel(20);
+  for (let t = 20.5; t <= 80; t += 0.5) {
+    const cur = channel(t);
+    maxStep = Math.max(maxStep, ...cur.map((v, i) => Math.abs(v - prev[i])));
+    prev = cur;
+  }
+  assert.ok(maxStep <= 16, `gradient step ${maxStep} is gradual`);
 
   console.log('PASS studio simulation and connection rules');
 }

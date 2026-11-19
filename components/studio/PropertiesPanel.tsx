@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Minus, X } from 'lucide-react';
 import { useLanguage } from '@/components/LanguageProvider';
-import { getComponent } from '@/components/studio/registry';
+import { getComponent, isBufferId, isHeatPumpId } from '@/components/studio/registry';
 import { useStudioCopy, type StudioCopy } from '@/components/studio/copy';
 import { formatNum } from '@/components/studio/temperature';
 import type { HydronicFlowNode } from '@/components/studio/HydronicNode';
@@ -64,7 +64,7 @@ export function PropertiesPanel({
                 <NodeReadouts
                   text={text}
                   sim={sim}
-                  kind={def.id === 'buffer-tank' ? 'buffer' : def.id === 'thermostat' ? 'room' : def.id === 'valve-3way' ? 'valve3' : def.id === 'valve' ? 'valve2' : def.id === 'mixer' ? 'mixer' : def.id === 'pump' ? 'pump' : def.category === 'source' ? 'source' : def.category === 'consumer' ? 'consumer' : 'other'}
+                  kind={isBufferId(def.id) ? 'buffer' : def.id === 'thermostat' ? 'room' : def.id === 'valve-3way' ? 'valve3' : def.id === 'valve' ? 'valve2' : def.id === 'mixer' ? 'mixer' : def.id === 'pump' ? 'pump' : def.category === 'source' ? 'source' : def.category === 'consumer' ? 'consumer' : 'other'}
                   modeText={def.id === 'valve-3way' || def.id === 'valve' ? (signalLinked && (selected.data.params.controlMode ?? 0) < 0.5 ? text.modeAuto : text.modeManual) : undefined}
                 />
               ) : null}
@@ -87,7 +87,7 @@ export function PropertiesPanel({
                 />
               ) : null}
               {def.id === 'mixer' ? <p className="mt-3 text-xs leading-5 text-slate-500">{text.mixHint}</p> : null}
-              {(def.id === 'pump' || def.id === 'heat-pump') && signalLinked ? (
+              {(def.id === 'pump' || isHeatPumpId(def.id)) && signalLinked ? (
                 <p className="mt-3 rounded-lg bg-violet-50 px-3 py-2 text-xs font-semibold text-violet-950">
                   {(live?.opening ?? 1) >= 0.5 ? text.pumpOn : text.pumpOff}
                 </p>

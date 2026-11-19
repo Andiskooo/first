@@ -1,10 +1,18 @@
-/** Illustrative water colour. Cool is blue, warm is amber, hot is red. */
+/**
+ * Illustrative water colour. 25 °C is blue, grading through light blue and a
+ * yellow transition into orange, orange-red and finally a dark red at 75 °C.
+ * Outside 25–75 °C the ends clamp.
+ */
 const STOPS: { t: number; rgb: [number, number, number] }[] = [
-  { t: 16, rgb: [37, 99, 235] },
-  { t: 27, rgb: [14, 165, 233] },
-  { t: 35, rgb: [251, 146, 60] },
-  { t: 45, rgb: [239, 68, 68] },
-  { t: 62, rgb: [153, 27, 27] },
+  { t: 25, rgb: [37, 99, 235] },
+  { t: 30, rgb: [56, 189, 248] },
+  { t: 35, rgb: [190, 220, 140] },
+  { t: 40, rgb: [250, 170, 45] },
+  { t: 45, rgb: [249, 115, 22] },
+  { t: 50, rgb: [234, 88, 12] },
+  { t: 55, rgb: [225, 55, 25] },
+  { t: 65, rgb: [205, 35, 28] },
+  { t: 75, rgb: [153, 27, 27] },
 ];
 
 export function clamp(n: number, min: number, max: number): number {

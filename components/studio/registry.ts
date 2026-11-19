@@ -23,7 +23,7 @@ function demand(defaultValue: number): ParamDef {
 }
 
 const speed: ParamDef = {
-  id: 'speed', kind: 'number', min: 0, max: 100, step: 5, defaultValue: 70, unit: '%',
+  id: 'speed', kind: 'number', min: 0, max: 100, step: 5, defaultValue: 50, unit: '%',
 };
 
 const volume: ParamDef = {
@@ -124,17 +124,40 @@ export const COMPONENTS: ComponentDef[] = [
     params: [capacity, setpoint, internalPump, internalSpeed],
   },
   {
+    id: 'heat-pump-large',
+    code: 'WPL',
+    category: 'source',
+    name: text('Pompë termike e madhe ajër-ujë', 'Große Luft-Wasser-Wärmepumpe', 'Large air-to-water heat pump'),
+    blurb: text(
+      'Burimi i madh i nxehtësisë. Njësoj si pompa e vogël: dalja e kuqe është furnizimi, hyrja blu është kthimi.',
+      'Große Wärmequelle. Wie die kleine Pumpe: roter Ausgang ist Vorlauf, blauer Eingang ist Rücklauf.',
+      'Large heat source. Same as the small pump: the red port is supply out, the blue port is return in.',
+    ),
+    width: 240,
+    height: 258,
+    asset: '/studio/symbols/Big heat-pump.png',
+    symbol: 'heat-pump',
+    rotatable: false,
+    ports: [
+      { id: 'ctl', x: 0.18, y: 0.1, side: 'neutral', direction: 'in', terminal: 'signal', required: false },
+      hpSupply,
+      hpReturn,
+    ],
+    params: [capacity, setpoint, internalPump, internalSpeed],
+  },
+  {
     id: 'buffer-tank',
     code: 'PS',
     category: 'storage',
-    name: text('Depozitë akumuluese', 'Pufferspeicher', 'Buffer tank'),
+    name: text('Depozitë akumuluese – 4 dalje', 'Pufferspeicher – 4 Abgänge', 'Buffer tank – 4 outlets'),
     blurb: text(
       'Një vëllim i vetëm i përzier. Majtas pompa termike, djathtas konsumatorët. Pa spirale.',
       'Ein gemischtes Volumen. Links die Wärmepumpe, rechts die Verbraucher. Keine Schlange.',
       'One mixed volume. Heat pump on the left, heat users on the right. No coil.',
     ),
     width: 136,
-    height: 228,
+    height: 272,
+    asset: '/studio/symbols/buffertank.png',
     symbol: 'buffer',
     rotatable: false,
     ports: [
@@ -150,13 +173,65 @@ export const COMPONENTS: ComponentDef[] = [
     params: [volume],
   },
   {
+    id: 'buffer-tank-3',
+    code: 'PS3',
+    category: 'storage',
+    name: text('Depozitë akumuluese – 3 dalje', 'Pufferspeicher – 3 Abgänge', 'Buffer tank – 3 outlets'),
+    blurb: text(
+      'Një vëllim i vetëm i përzier me tri dalje djathtas. Majtas pompa termike, djathtas konsumatorët. Pa spirale.',
+      'Ein gemischtes Volumen mit drei Abgängen rechts. Links die Wärmepumpe, rechts die Verbraucher. Keine Schlange.',
+      'One mixed volume with three outlets on the right. Heat pump on the left, heat users on the right. No coil.',
+    ),
+    width: 136,
+    height: 272,
+    asset: '/studio/symbols/buffertank.png',
+    symbol: 'buffer',
+    rotatable: false,
+    ports: [
+      { id: 'pri-in', x: 0, y: 0.30, side: 'supply', direction: 'in', terminal: 'buffer-primary-in', required: false },
+      { id: 'pri-out', x: 0, y: 0.70, side: 'return', direction: 'out', terminal: 'buffer-primary-out', required: false },
+      { id: 'sec-out-1', x: 1, y: 0.14, side: 'supply', direction: 'out', terminal: 'buffer-secondary-out', required: false },
+      { id: 'sec-out-2', x: 1, y: 0.28, side: 'supply', direction: 'out', terminal: 'buffer-secondary-out', required: false },
+      { id: 'sec-out-3', x: 1, y: 0.42, side: 'supply', direction: 'out', terminal: 'buffer-secondary-out', required: false },
+      { id: 'sec-in-1', x: 1, y: 0.74, side: 'return', direction: 'in', terminal: 'buffer-secondary-in', required: false },
+      { id: 'sec-in-2', x: 1, y: 0.88, side: 'return', direction: 'in', terminal: 'buffer-secondary-in', required: false },
+    ],
+    params: [volume],
+  },
+  {
+    id: 'buffer-tank-2',
+    code: 'PS2',
+    category: 'storage',
+    name: text('Depozitë akumuluese – 2 dalje', 'Pufferspeicher – 2 Abgänge', 'Buffer tank – 2 outlets'),
+    blurb: text(
+      'Një vëllim i vetëm i përzier me dy dalje djathtas. Majtas pompa termike, djathtas konsumatorët. Pa spirale.',
+      'Ein gemischtes Volumen mit zwei Abgängen rechts. Links die Wärmepumpe, rechts die Verbraucher. Keine Schlange.',
+      'One mixed volume with two outlets on the right. Heat pump on the left, heat users on the right. No coil.',
+    ),
+    width: 136,
+    height: 272,
+    asset: '/studio/symbols/buffertank.png',
+    symbol: 'buffer',
+    rotatable: false,
+    ports: [
+      { id: 'pri-in', x: 0, y: 0.30, side: 'supply', direction: 'in', terminal: 'buffer-primary-in', required: false },
+      { id: 'pri-out', x: 0, y: 0.70, side: 'return', direction: 'out', terminal: 'buffer-primary-out', required: false },
+      { id: 'sec-out-1', x: 1, y: 0.14, side: 'supply', direction: 'out', terminal: 'buffer-secondary-out', required: false },
+      { id: 'sec-out-2', x: 1, y: 0.28, side: 'supply', direction: 'out', terminal: 'buffer-secondary-out', required: false },
+      { id: 'sec-in-1', x: 1, y: 0.74, side: 'return', direction: 'in', terminal: 'buffer-secondary-in', required: false },
+      { id: 'sec-in-2', x: 1, y: 0.88, side: 'return', direction: 'in', terminal: 'buffer-secondary-in', required: false },
+    ],
+    params: [volume],
+  },
+  {
     id: 'radiator',
     code: 'HK',
     category: 'consumer',
     name: text('Radiator', 'Heizkörper', 'Radiator'),
     blurb: text('Konsumator. Furnizimi hyn sipër, kthimi del poshtë.', 'Verbraucher. Vorlauf oben, Rücklauf unten.', 'Heat user. Supply enters above, return leaves below.'),
     width: 144,
-    height: 90,
+    height: 108,
+    asset: '/studio/symbols/Radiator.png',
     symbol: 'radiator',
     rotatable: true,
     ports: consumerPorts(),
@@ -169,7 +244,8 @@ export const COMPONENTS: ComponentDef[] = [
     name: text('Ngrohje dyshemeje', 'Fußbodenheizung', 'Underfloor heating'),
     blurb: text('Qark nën dysheme me kërkesë të vet.', 'Flächenheizung mit eigener Leistung.', 'Floor circuit with its own heat demand.'),
     width: 144,
-    height: 90,
+    height: 84,
+    asset: '/studio/symbols/Floor Heating.webp',
     symbol: 'underfloor',
     rotatable: true,
     ports: consumerPorts(),
@@ -181,8 +257,9 @@ export const COMPONENTS: ComponentDef[] = [
     category: 'consumer',
     name: text('Fan coil', 'Gebläsekonvektor', 'Fan coil'),
     blurb: text('Konvektor me ventilator dhe bateri.', 'Konvektor mit Ventilator und Register.', 'Convector with a fan and a coil.'),
-    width: 144,
-    height: 90,
+    width: 120,
+    height: 118,
+    asset: '/studio/symbols/Fan Coilera 1 PNG.png',
     symbol: 'fancoil',
     rotatable: true,
     ports: consumerPorts(),
@@ -195,7 +272,8 @@ export const COMPONENTS: ComponentDef[] = [
     name: text('Bolier me spirale', 'Warmwasserspeicher mit Schlange', 'DHW tank with coil'),
     blurb: text('Ujë sanitar. Spiralja e brendshme është konsumatori.', 'Brauchwasser. Die innere Schlange ist der Verbraucher.', 'Domestic hot water. The internal coil is the heat user.'),
     width: 100,
-    height: 148,
+    height: 164,
+    asset: '/studio/symbols/DHWtank.webp',
     symbol: 'dhw',
     rotatable: false,
     ports: [
@@ -214,8 +292,9 @@ export const COMPONENTS: ComponentDef[] = [
       'Die Drehzahl setzt den Volumenstrom. Liegt ein Thermostat an und die Umgebung über dem Soll, schaltet die Pumpe ab.',
       'Speed sets the flow. With a thermostat connected, the pump switches off when ambient is above the room setpoint.',
     ),
-    width: 84,
+    width: 92,
     height: 84,
+    asset: '/studio/symbols/circulationpump.webp',
     symbol: 'pump',
     rotatable: true,
     ports: [
@@ -267,7 +346,8 @@ export const COMPONENTS: ComponentDef[] = [
     name: text('Kolektor furnizimi', 'Vorlaufverteiler', 'Supply manifold'),
     blurb: text('Kokë e nxehtë: një hyrje sipër dhe dalje të nxehta poshtë.', 'Warmer Verteiler: ein Eintritt oben, Auslässe unten.', 'Hot header: one inlet on top and hot outlets along the bottom.'),
     width: 180,
-    height: 78,
+    height: 96,
+    asset: '/studio/symbols/Hot water manifold.webp',
     symbol: 'manifold-supply',
     rotatable: false,
     ports: supplyManifoldPorts(3),
@@ -280,7 +360,8 @@ export const COMPONENTS: ComponentDef[] = [
     name: text('Kolektor kthimi', 'Rücklaufsammler', 'Return manifold'),
     blurb: text('Kokë e ftohtë: hyrje kthimi sipër dhe një dalje poshtë.', 'Kalter Sammler: Rückläufe oben, ein Austritt unten.', 'Cold header: return inlets on top and one outlet below.'),
     width: 180,
-    height: 78,
+    height: 86,
+    asset: '/studio/symbols/Cold water manifold.webp',
     symbol: 'manifold-return',
     rotatable: false,
     ports: returnManifoldPorts(3),
@@ -297,7 +378,8 @@ export const COMPONENTS: ComponentDef[] = [
       'On/off or modulating. Auto with a thermostat closes it above the room setpoint. Manual uses the Open/Closed toggle. With no thermostat, the toggle and the opening percentage both apply.',
     ),
     width: 92,
-    height: 72,
+    height: 84,
+    asset: '/studio/symbols/Two way valve.webp',
     symbol: 'valve',
     rotatable: true,
     ports: [
@@ -317,8 +399,9 @@ export const COMPONENTS: ComponentDef[] = [
       'AB ist der gemeinsame Anschluss und mischt nicht. Auto folgt dem Thermostat: über dem Soll 100 % nach B, sonst 100 % nach A. Hand nutzt den Schalter A/B. Ohne Thermostat gilt immer der Schalter.',
       'AB is the common port and it never mixes. Auto follows a thermostat: above the room setpoint, 100% goes to B, otherwise 100% to A. Manual uses the A/B toggle. With no thermostat, the toggle is always in charge.',
     ),
-    width: 104,
+    width: 120,
     height: 96,
+    asset: '/studio/symbols/Three-Way Valve.webp',
     symbol: 'valve-3way',
     rotatable: true,
     ports: [
@@ -339,8 +422,9 @@ export const COMPONENTS: ComponentDef[] = [
       'Nur von Hand. Warm und kalt dürfen gleichzeitig anliegen. Der Regler ist der Warmanteil: die Austrittstemperatur ist die strömungsgewichtete Mischung, der Austrittsstrom die Summe. Kein Thermostat.',
       'Manual only. Hot and cold can connect at the same time. The slider is the hot share: outlet temperature is the flow-weighted mix, and outlet flow is the sum. It does not take a thermostat.',
     ),
-    width: 104,
-    height: 96,
+    width: 84,
+    height: 112,
+    asset: '/studio/symbols/Mixer.webp',
     symbol: 'mixer',
     rotatable: true,
     ports: [
@@ -410,6 +494,7 @@ export const COMPONENTS: ComponentDef[] = [
     ),
     width: 88,
     height: 88,
+    asset: '/studio/symbols/Termostati.png',
     symbol: 'thermostat',
     rotatable: false,
     ports: [
@@ -478,6 +563,16 @@ export function componentBox(def: ComponentDef, params?: Record<string, number>)
 
 export function getComponent(id: string): ComponentDef | undefined {
   return BY_ID.get(id);
+}
+
+/** Both heat pump sizes share ports, params, and simulation behavior. */
+export function isHeatPumpId(id: string): boolean {
+  return id === 'heat-pump' || id === 'heat-pump-large';
+}
+
+/** All buffer tank variants share the two left-side heat-source ports. */
+export function isBufferId(id: string): boolean {
+  return id === 'buffer-tank' || id === 'buffer-tank-3' || id === 'buffer-tank-2';
 }
 
 export function defaultParams(def: ComponentDef): Record<string, number> {

@@ -180,13 +180,18 @@
   width: 13px !important;
   height: 13px !important;
 }
+.studio-flow .studio-resize {
+  width: 14px !important;
+  height: 14px !important;
+}
 @media (pointer: coarse) {
   .studio-toolbar button {
     height: 40px;
     min-height: 40px;
   }
   .studio-flow .studio-port,
-  .studio-flow .studio-port-signal {
+  .studio-flow .studio-port-signal,
+  .studio-flow .studio-resize {
     width: 22px !important;
     height: 22px !important;
   }
@@ -201,7 +206,8 @@
   font-size: 12px;
 }
 .studio-root[data-present='true'] .studio-flow .studio-port,
-.studio-root[data-present='true'] .studio-flow .studio-port-signal {
+.studio-root[data-present='true'] .studio-flow .studio-port-signal,
+.studio-root[data-present='true'] .studio-flow .studio-resize {
   width: 22px !important;
   height: 22px !important;
 }

@@ -42,7 +42,7 @@ The buffer is **one mixed tank**, not two tanks and not a coil. Eight ports:
 | Left | 1 red inlet, 1 blue outlet | Heat pump supply outlet and heat pump return inlet |
 | Right | 4 red outlets, 2 blue inlets | Heat users only |
 
-Pumps and tees may sit between those devices. A heat user on the left, or the heat pump on the right, is rejected.
+Pumps and tees may sit between those devices. The left side is no longer restricted to the heat source: it may join shared supply/return headers with heat users (for example a buffer branch in parallel with a floor-heating branch), and those parallel loops run together off the same circulator. A direct primary-to-secondary short, or the heat pump on the right-hand user side, is still rejected.
 
 The tank separates two hydraulic loops and couples them only by heat:
 
@@ -80,6 +80,8 @@ The outlet temperature is the flow-weighted mix of the streams that get through,
 Either inlet can be fed directly or through tees, junctions, manifolds, and other fittings. Those fittings are not endpoints: a return line can branch through a tee into the cold inlet and still carry the mixed water onward through that same fitting.
 
 The mixer can also recirculate the return of the heat user it is feeding. Buffer supply enters `h`, the outlet feeds the circulation pump and then the radiator, and the radiator return meets a tee (or a junction or a return manifold). One branch comes back to `c`. The other returns to the buffer. The pump, whether it sits on the mixer outlet or on the return before that split, sets the loop flow. The hot share is the fraction drawn from the buffer, and the rest is the recirculated return, so the flow into the buffer matches the flow back out of it. The outlet temperature is settled by repeating the mix, with damping, until it stops changing. It lies between the radiator return and the buffer supply. The cold branch shows flow. The arrangement is not reported as an error.
+
+The cold inlet may instead be tapped straight from a buffer cold inlet: buffer supply still enters `h`, the outlet drives the pump and the heat user, and the user return goes back to the buffer. The tap then carries the cold share of tank water, the hot share comes from the buffer supply, and the full loop flow returns to the buffer, so the buffer stays balanced. The tap shows flow like any other cold feed.
 
 The supply manifold is a hot header: one inlet on top and three or more outlets along the bottom (`branches`, 3–6). The return manifold is a cold header: the same number of inlets on top and one outlet below. Ports are supply-only or return-only, so a hot outlet cannot be tied to a cold return. A junction is a four-way cross; the tee remains the three-port branch.
 

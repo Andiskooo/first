@@ -1,4 +1,4 @@
-import { getComponent, resolvePorts } from '@/components/studio/registry';
+import { getComponent, isBufferId, isHeatPumpId, resolvePorts } from '@/components/studio/registry';
 import { clamp } from '@/components/studio/temperature';
 import type {
   ComponentDef,
@@ -137,11 +137,11 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
 
   const nodeById = new Map(nodes.map((node) => [node.id, node]));
   const edgeById = new Map(edges.map((edge) => [edge.id, edge]));
-  const hp = nodes.find((node) => node.componentId === 'heat-pump');
-  const buffer = nodes.find((node) => node.componentId === 'buffer-tank');
+  const hp = nodes.find((node) => isHeatPumpId(node.componentId));
+  const buffer = nodes.find((node) => isBufferId(node.componentId));
 
-  if (nodes.filter((node) => node.componentId === 'heat-pump').length > 1) add('info', 'one-heat-pump');
-  if (nodes.filter((node) => node.componentId === 'buffer-tank').length > 1) add('info', 'one-buffer');
+  if (nodes.filter((node) => isHeatPumpId(node.componentId)).length > 1) add('info', 'one-heat-pump');
+  if (nodes.filter((node) => isBufferId(node.componentId)).length > 1) add('info', 'one-buffer');
   if (!nodes.some((node) => getComponent(node.componentId)?.category === 'consumer')) add('info', 'no-consumer');
 
   if (!hp) {
@@ -183,14 +183,22 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     const def = defOf(nodeId);
     if (!def) return [];
     const open = (port: string, nextGain: number) => (nextGain > 0.02 ? [{ port, gain: nextGain }] : []);
-    if (def.id === 'heat-pump') return [];
-    if (def.id === 'buffer-tank') return enterPort === 'pri-in' ? [{ port: 'pri-out', gain }] : [];
+    if (isHeatPumpId(def.id)) return [];
+    if (isBufferId(def.id)) return enterPort === 'pri-in' ? [{ port: 'pri-out', gain }] : [];
     if (def.category === 'consumer') return enterPort === 'supply-in' ? [{ port: 'return-out', gain }] : [];
     if (def.id === 'pump' || def.id === 'air-vent') {
       return def.ports.filter((port) => port.id !== enterPort && port.terminal !== 'signal').map((port) => ({ port: port.id, gain }));
     }
     if (def.id === 'check') return enterPort === 'in' ? [{ port: 'out', gain }] : [];
-    if (def.id === 'valve') return enterPort === 'in' ? [{ port: 'out', gain: gain * openingOf(nodeId) }] : [];
+    // A two-way valve is an inline gate: water may enter at either side and
+    // leaves at the other with the opening applied. Closed blocks both
+    // directions; open passes through normally.
+    if (def.id === 'valve') {
+      const gate = gain * openingOf(nodeId);
+      if (enterPort === 'in') return [{ port: 'out', gain: gate }];
+      if (enterPort === 'out') return [{ port: 'in', gain: gate }];
+      return [];
+    }
     if (def.id === 'relief') return enterPort === 'in' ? open('out', gain * openingOf(nodeId)) : [];
     if (def.id === 'valve-3way') {
       const diverted = openingOf(nodeId) >= 0.5;
@@ -289,7 +297,7 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
       let relief = frame.relief;
       if (def.id === 'pump') pumps.push({ nodeId: link.nodeId, reversed: link.portId === 'out' });
       else if (def.category === 'consumer') consumers.push(link.nodeId);
-      else if (def.id === 'buffer-tank') {
+      else if (isBufferId(def.id)) {
         buffers.push({ nodeId: link.nodeId, via: link.portId.startsWith('pri') ? 'primary' : 'secondary' });
       } else if (def.id === 'relief') relief = true;
       const usedNodes = new Set(frame.usedNodes);
@@ -397,8 +405,6 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     ? fromHp.filter((path) => path.buffers.some((item) => item.nodeId === buffer.id && item.via === 'primary'))
     : [];
   const directPaths = fromHp.filter((path) => path.consumers.length > 0 && path.buffers.length === 0);
-  const useDirect = !buffer || primaryPaths.length === 0;
-  if (buffer && primaryPaths.length && directPaths.length) add('warn', 'bypass');
 
   const secondaryPaths: TracedPath[] = [];
   if (buffer) {
@@ -422,23 +428,43 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     add('warn', 'open-circuit');
   }
 
+  // A buffer primary loop no longer suppresses direct consumer loops: both may
+  // run in parallel (e.g. a buffer branch beside a floor-heating branch on a
+  // shared supply/return header). Relief bypasses ride with direct loops.
   const activePrimary = buffer && primaryPaths.length ? primaryPaths : [];
-  const activeDirect = useDirect ? directPaths : [];
+  const activeDirect = directPaths;
   const reliefPaths = fromHp.filter((path) => path.relief && path.consumers.length === 0 && path.buffers.length === 0);
-  const directBundle = [...activeDirect, ...(useDirect ? reliefPaths : [])];
+  const directBundle = [...activeDirect, ...(!buffer || activeDirect.length ? reliefPaths : [])];
   const internalLph = internalFlow(hp, openings);
   for (const code of assignFlows(activePrimary, internalLph, 'no-flow')) add('warn', code);
   for (const code of assignFlows(directBundle, internalLph, 'no-flow')) add('warn', code);
   for (const code of assignFlows(secondaryPaths, 0, 'need-secondary-pump')) add('warn', code);
 
+  // Parallel primary + direct loops share one circulator. When no dedicated
+  // pump drives either loop, both were assigned the full internal flow;
+  // rescale to the circulator capacity so branches share it equally.
+  // Dedicated-pump loops keep their assigned flows (existing semantics).
+  if (activePrimary.length > 0 && directBundle.length > 0 && internalLph > 0
+    && [...activePrimary, ...directBundle].every((path) => path.pumps.length === 0)) {
+    const total = activePrimary.reduce((sum, path) => sum + path.flowLph, 0)
+      + directBundle.reduce((sum, path) => sum + path.flowLph, 0);
+    if (total > 0) {
+      const k = internalLph / total;
+      for (const path of [...activePrimary, ...directBundle]) path.flowLph *= k;
+    }
+  }
+
   const primaryFlow = activePrimary.reduce((sum, path) => sum + path.flowLph, 0);
   const directFlow = directBundle.reduce((sum, path) => sum + path.flowLph, 0);
   let secondaryFlow = secondaryPaths.reduce((sum, path) => sum + path.flowLph, 0);
-  const sourcePaths = activePrimary.length ? activePrimary : directBundle;
-  const sourceFlow = activePrimary.length ? primaryFlow : directFlow;
+  const sourcePaths = [...activePrimary, ...directBundle];
+  const sourceFlow = primaryFlow + directFlow;
 
   const served = new Set<string>();
-  const consumerPaths = activePrimary.length ? secondaryPaths : activeDirect;
+  // Consumers riding the primary loop (only possible since the left side was
+  // opened) are served like any other consumer.
+  const primaryConsumers = activePrimary.filter((path) => path.consumers.length > 0);
+  const consumerPaths = [...(activePrimary.length ? secondaryPaths : []), ...activeDirect, ...primaryConsumers];
   for (const path of consumerPaths) {
     if (path.gain <= 1e-6) continue;
     for (const id of path.consumers) served.add(id);
@@ -449,8 +475,10 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
   const dEdges = mergeEdges([...sourcePaths, ...(activePrimary.length ? secondaryPaths : [])]);
   applyInjection(dEdges);
   if (buffer) {
+    // A direct mixer tap leaves the buffer through a cold inlet; no existing
+    // topology does that, so counting it only affects the tap case.
     const leaving = dEdges
-      .filter((edge) => edge.fromNode === buffer.id && edge.fromPort.startsWith('sec-out'))
+      .filter((edge) => edge.fromNode === buffer.id && (edge.fromPort.startsWith('sec-out') || edge.fromPort.startsWith('sec-in')))
       .reduce((sum, edge) => sum + edge.flowLph, 0);
     if (leaving > 1 && leaving + 1 < secondaryFlow) secondaryFlow = leaving;
   }
@@ -465,13 +493,20 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
   let qHp = 0;
   let prop = emptyProp();
 
-  const primaryIdle = Boolean(buffer && activePrimary.length && secondaryFlow <= 1 && sourceFlow > 1);
-  if (sourceFlow > 1 && (activeDirect.length || (activePrimary.length && (secondaryFlow > 1 || primaryIdle)))) {
-    if (buffer && activePrimary.length && secondaryFlow > 1) {
+  // Direct consumer loops beside a buffer primary loop share the supply and
+  // their returns join the heat-pump return; consumers riding the primary
+  // loop itself are served the same way. The heat-pump return is the mixed
+  // return in those cases, not the tank temperature.
+  const parallelDirect = Boolean(buffer && activePrimary.length && activeDirect.length);
+  const primaryUsers = activePrimary.some((path) => path.consumers.length > 0);
+  const mixedReturn = parallelDirect || primaryUsers;
+  const primaryIdle = Boolean(buffer && activePrimary.length && secondaryFlow <= 1 && sourceFlow > 1 && !parallelDirect);
+  if (sourceFlow > 1 && (activeDirect.length || (activePrimary.length && (secondaryFlow > 1 || primaryIdle || parallelDirect || primaryUsers)))) {
+    if (buffer && activePrimary.length && (secondaryFlow > 1 || parallelDirect || primaryUsers)) {
       const solved = solveBuffer();
       tTank = solved.tTank;
       tSup = solved.tSup;
-      tRet = solved.tTank;
+      tRet = mixedReturn ? (solved.prop.hpReturn ?? solved.tTank) : solved.tTank;
       qHp = solved.qHp;
       prop = solved.prop;
     } else if (primaryIdle && buffer) {
@@ -495,6 +530,19 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     tSup = coast;
     tRet = coast;
     if (sourceFlow > 1) prop = propagate(coast, buffer ? coast : null, 'nominal');
+  }
+  // The buffer hydraulically separates the two loops: the secondary (user)
+  // side has its own pump and must keep circulating tank water even when the
+  // primary (source) side is blocked. Without this, a closed primary valve or
+  // a stopped primary pump leaves sourceFlow at 0, so no propagation runs and
+  // the healthy secondary loop wrongly shows no flow or temperature.
+  if (buffer && activePrimary.length && secondaryFlow > 1 && primaryFlow <= 1) {
+    const tank = clamp(options.tankC ?? T_ROOM, T_ROOM, tSet);
+    tTank = tank;
+    tSup = tank;
+    tRet = tank;
+    qHp = 0;
+    prop = propagate(tank, tank, 'nominal');
   }
 
   const delivered = prop.qOut;
@@ -541,11 +589,16 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
   }
 
   const usersRunning = served.size > 0 && Object.keys(prop.consumer).length > 0
-    && (buffer ? secondaryFlow > 1 && primaryPaths.length > 0 : directPaths.length > 0);
-  const ok = sourceFlow > 1 && (usersRunning || primaryIdle);
+    && (buffer
+      ? (secondaryFlow > 1 && primaryPaths.length > 0) || parallelDirect || primaryUsers
+      : directPaths.length > 0);
+  // Secondary-only circulation (primary blocked, secondary flowing) is a valid
+  // running state even though the heat-pump source flow is 0.
+  const secondaryOnly = Boolean(buffer && secondaryFlow > 1 && primaryFlow <= 1 && Object.keys(prop.consumer).length > 0);
+  const ok = (sourceFlow > 1 && (usersRunning || primaryIdle)) || secondaryOnly;
 
   for (const node of nodes) {
-    const commanded = node.componentId === 'pump' || node.componentId === 'heat-pump' ? openings[node.id] : undefined;
+    const commanded = node.componentId === 'pump' || isHeatPumpId(node.componentId) ? openings[node.id] : undefined;
     const isValve = node.componentId === 'valve' || node.componentId === 'valve-3way' || node.componentId === 'relief' || node.componentId === 'mixer';
     if (commanded === undefined && !isValve) continue;
     const position = commanded ?? openingOf(node.id);
@@ -561,9 +614,9 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     issues,
     edges: edgeSims,
     nodes: nodeSims,
-    supplyC: sourceFlow > 1 ? tSup : null,
-    returnC: sourceFlow > 1 ? tRet : null,
-    dtC: sourceFlow > 1 ? tSup - tRet : null,
+    supplyC: sourceFlow > 1 || secondaryOnly ? tSup : null,
+    returnC: sourceFlow > 1 || secondaryOnly ? tRet : null,
+    dtC: sourceFlow > 1 || secondaryOnly ? tSup - tRet : null,
     primaryFlowLph: buffer ? primaryFlow : directFlow,
     secondaryFlowLph: secondaryFlow,
     deliveredKw: delivered,
@@ -578,6 +631,12 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
    * user's return splits. One branch comes back to the cold inlet; the other
    * returns to the buffer (or the heat pump). The pump drives the whole loop.
    * Hot share s draws s·Q from the source and recirculates (1-s)·Q.
+   *
+   * The same loop also works when the cold inlet is tapped straight from a
+   * buffer cold inlet instead of the recirculated return: the hot header
+   * supplies s·Q, the tap supplies (1-s)·Q of tank water, and the full loop
+   * flow Q returns to the buffer. Without this, that valid tap edge is never
+   * traversed and shows no flow. See directBufferTap.
    */
   function applyInjection(edges: DEdge[]) {
     for (const node of nodes) {
@@ -596,7 +655,62 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
         setLoopFlow(edges, loop.recircEdges, recircFlow);
         break;
       }
+      const tapLoop = directBufferTap(node.id);
+      if (!tapLoop) continue;
+      setLoopFlow(edges, tapLoop.inject, tapLoop.pumpFlow * share);
+      setLoopFlow(edges, [tapLoop.tap], tapLoop.pumpFlow * (1 - share));
+      setLoopFlow(edges, tapLoop.loop, tapLoop.pumpFlow);
     }
+  }
+
+  /**
+   * Mixer cold inlet tapped directly from a buffer cold inlet. The tap edge
+   * can never be traversed by the source/secondary traces (a trace may arrive
+   * at a buffer port but only leaves it via pri-in → pri-out), so without
+   * this the connection validates yet carries no flow. Returns null for any
+   * ambiguous feed (e.g. a second route into the cold inlet), leaving the
+   * existing behavior untouched.
+   */
+  function directBufferTap(mixerId: string): {
+    inject: Pipe[];
+    tap: Pipe;
+    loop: Pipe[];
+    pumpFlow: number;
+  } | null {
+    if (!buffer) return null;
+    let tap: Pipe | null = null;
+    for (const port of ['sec-in-1', 'sec-in-2']) {
+      const peer = links.get(`${buffer.id}:${port}`);
+      if (peer && peer.nodeId === mixerId && peer.portId === 'c') {
+        tap = { edgeId: peer.edgeId, fromNode: buffer.id, fromPort: port, toNode: mixerId, toPort: 'c' };
+        break;
+      }
+    }
+    if (!tap) return null;
+    let inject: TracedPath | undefined;
+    for (const port of SEC_OUT) {
+      if (!links.has(`${buffer.id}:${port}`)) continue;
+      inject = trace(buffer.id, port, (id, portId) => id === mixerId && portId === 'h')
+        .find((path) => !path.pipes.some((pipe) => pipe.fromNode === mixerId && pipe.fromPort === 'out'));
+      if (inject) break;
+    }
+    if (!inject) return null;
+    const loop = trace(mixerId, 'out', (id, portId) => id === buffer.id && portId.startsWith('sec-in'))
+      .filter((path) => path.consumers.length > 0 && path.pipes.length > 0)
+      .find((path) => {
+        if (path.pumps.length === 0 || path.pumps.some((pump) => pump.reversed)) return false;
+        return Math.min(...path.pumps.map((pump) => pumpLph(nodeById.get(pump.nodeId), openings))) > 1;
+      });
+    if (!loop) return null;
+    const sources: { node: string; port: string }[] = [{ node: hpId, port: 'supply-out' }];
+    for (const port of SEC_OUT) {
+      if (links.has(`${buffer.id}:${port}`)) sources.push({ node: buffer.id, port });
+    }
+    for (const source of sources) {
+      if (trace(source.node, source.port, (id, portId) => id === mixerId && portId === 'c').length > 0) return null;
+    }
+    const pumpFlow = Math.min(...loop.pumps.map((pump) => pumpLph(nodeById.get(pump.nodeId), openings)));
+    return { inject: inject.pipes, tap, loop: loop.pipes, pumpFlow };
   }
 
   function describeInjection(mixerId: string, cycle: TracedPath): {
@@ -817,6 +931,14 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     if (Number.isFinite(tSup)) writePort(hpId, 'supply-out', tSup);
     if (buffer && tTankValue != null) {
       for (const port of ['pri-out', ...SEC_OUT]) writePort(buffer.id, port, tTankValue);
+      // A mixer cold inlet tapped straight from a buffer cold inlet draws
+      // tank water. No existing topology leaves the buffer through a cold
+      // inlet, so this is a no-op unless directBufferTap assigned such flow.
+      for (const edge of dEdges) {
+        if (edge.fromNode === buffer.id && edge.fromPort.startsWith('sec-in')) {
+          writePort(buffer.id, edge.fromPort, tTankValue);
+        }
+      }
     }
 
     // A fitting can feed the mixer and also receive the mixer's downstream return.
@@ -837,11 +959,11 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
         const incoming = dEdges.filter((edge) => edge.toNode === node.id && Number.isFinite(edge.temp));
         if (!incoming.length) continue;
         prop.inlets[node.id] = incoming.map((edge) => ({ port: edge.toPort, t: edge.temp, flowLph: edge.flowLph }));
-        if (def.id === 'heat-pump') {
+        if (isHeatPumpId(def.id)) {
           prop.hpReturn = mix(incoming).t;
           continue;
         }
-        if (def.id === 'buffer-tank') continue;
+        if (isBufferId(def.id)) continue;
         if (def.category === 'consumer') {
           const inlet = incoming.filter((edge) => edge.toPort === 'supply-in');
           if (!inlet.length) continue;
@@ -887,11 +1009,14 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     const target = sims[edge.toNode];
     const def = defOf(edge.toNode);
     if (!target || !def) return edge.temp;
-    if (def.category === 'consumer') return edge.temp - 0.62 * target.dt;
-    if (def.id === 'buffer-tank' && edge.toPort === 'pri-in' && target.tankC != null) {
+    // The inlet pipe keeps the supply temperature: demand cools only the water
+    // leaving the user (return-out already carries tOut). Cooling the inlet
+    // edge here made higher demand wrongly turn the inlet bluer.
+    if (def.category === 'consumer') return edge.temp;
+    if (isBufferId(def.id) && edge.toPort === 'pri-in' && target.tankC != null) {
       return edge.temp + (target.tankC - edge.temp) * 0.55;
     }
-    if (def.id === 'buffer-tank' && edge.toPort.startsWith('sec-in') && target.tankC != null) {
+    if (isBufferId(def.id) && edge.toPort.startsWith('sec-in') && target.tankC != null) {
       return edge.temp + (target.tankC - edge.temp) * 0.3;
     }
     return edge.temp;
