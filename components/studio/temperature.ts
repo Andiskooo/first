@@ -1,4 +1,11 @@
 /**
+ * Central user-configurable supply-temperature limits. The heat-pump setpoint
+ * and the tank-sonde target both clamp to this range.
+ */
+export const MAX_SUPPLY_C = 75;
+export const MIN_SUPPLY_C = 30;
+
+/**
  * Illustrative water colour. 25 °C is blue, grading through light blue and a
  * yellow transition into orange, orange-red and finally a dark red at 75 °C.
  * Outside 25–75 °C the ends clamp.

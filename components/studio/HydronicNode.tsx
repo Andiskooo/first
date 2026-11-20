@@ -42,7 +42,7 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
         target: edge.target,
         sourceHandle: edge.sourceHandle,
         targetHandle: edge.targetHandle,
-        kind: edge.type === 'signal' ? 'signal' as const : 'pipe' as const,
+        kind: edge.type === 'signal' ? 'signal' as const : edge.type === 'sense' ? 'sense' as const : 'pipe' as const,
       }]
       : []
   ));
@@ -148,7 +148,8 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
       ) : null}
       {ports.map((port) => {
         const place = portPlacement(box.width, box.height, port.x, port.y, rotation);
-        const tint = port.terminal === 'signal' ? 'signal' as const : portTint(graphNodes, graphEdges, id, port.id);
+        const tint = port.terminal === 'signal' ? 'signal' as const : port.terminal === 'sense' ? 'sense' as const : portTint(graphNodes, graphEdges, id, port.id);
+        const square = port.terminal === 'signal' || port.terminal === 'sense';
         const used = graphEdges.some((edge) =>
           (edge.source === id && edge.sourceHandle === port.id) ||
           (edge.target === id && edge.targetHandle === port.id));
@@ -157,14 +158,22 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
           <Handle
             key={port.id}
             id={port.id}
-            type={port.direction === 'in' ? 'target' : 'source'}
+            // Every handle registers as `source`: ReactFlow resolves an
+            // edge's SOURCE handle only against source-type handles (Loose
+            // mode widens just the target lookup), so a pipe dragged from an
+            // inlet — e.g. valve `in` to heat-pump `return-in` — would
+            // otherwise exist in state and simulate yet never paint (error
+            // 008, positions null, EdgeWrapper returns null). Loose mode
+            // keeps each handle a valid drag start and drop target, and the
+            // studio's own validateConnection still gates every connection.
+            type="source"
             position={place.position}
             title={title}
             isConnectable
-            className={port.terminal === 'signal' ? 'studio-port studio-port-signal !border-2 !border-white' : 'studio-port !border-2 !border-white'}
+            className={square ? 'studio-port studio-port-signal !border-2 !border-white' : 'studio-port !border-2 !border-white'}
             style={{
               ...place.style,
-              borderRadius: port.terminal === 'signal' ? 2 : 999,
+              borderRadius: square ? 2 : 999,
               background: portColor(tint),
               transform: 'translate(-50%, -50%)',
               boxShadow: def.id === 'valve-3way' && port.id === (opening != null && opening >= 0.5 ? 'b' : 'a')
@@ -199,7 +208,12 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
       <div className="studio-node-label pointer-events-none absolute left-1/2 top-full z-10 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] leading-4 shadow-sm">
         <span className="font-semibold text-slate-900">{def.code}</span>
         <span className="text-slate-500"> {def.name[locale]}</span>
-        {def.id === 'valve-3way' ? (
+        {def.id === 'tank-sonde' ? (
+          <span className="ml-1 font-semibold text-green-700">
+            {Math.round(data.params?.tankSet ?? 45)}°C
+            {sim && Number.isFinite(sim.tIn) ? ` · ${Math.round(sim.tIn)}°C → ${(sim.opening ?? 0) >= 0.5 ? text.portB : text.portA}` : ''}
+          </span>
+        ) : def.id === 'valve-3way' ? (
           <span className="ml-1 font-semibold text-violet-700">
             {manualMode ? text.modeManual : text.modeAuto}
             {' · '}

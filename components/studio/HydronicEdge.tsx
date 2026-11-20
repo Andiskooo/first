@@ -52,7 +52,7 @@ export function HydronicEdge({
       {selected ? <path d={d} fill="none" stroke="#2563eb" strokeWidth={12} strokeLinecap="round" opacity={0.35} /> : null}
       <path d={d} fill="none" stroke="#0f172a" strokeWidth={casing} strokeLinecap="round" strokeLinejoin="round" />
       {thermo && sim && length > 0 ? (
-        <ColoredBore d={d} length={length} path={pathRef.current} tSource={sim.tSource} tTarget={sim.tTarget} width={bore} />
+        <ColoredBore d={d} length={length} tSource={sim.tSource} tTarget={sim.tTarget} width={bore} />
       ) : (
         <path d={d} fill="none" stroke="#94a3b8" strokeWidth={bore} strokeLinecap="round" strokeLinejoin="round" />
       )}
@@ -66,32 +66,43 @@ export function HydronicEdge({
 function ColoredBore({
   d,
   length,
-  path,
   tSource,
   tTarget,
   width,
 }: {
   d: string;
   length: number;
-  path: SVGPathElement | null;
   tSource: number;
   tTarget: number;
   width: number;
 }) {
-  if (!path || Math.abs(tSource - tTarget) < 0.4) {
+  if (Math.abs(tSource - tTarget) < 0.4) {
     return <path d={d} fill="none" stroke={temperatureColor((tSource + tTarget) / 2)} strokeWidth={width} strokeLinecap="round" />;
   }
-  const steps = 12;
-  const lines = [];
+  // The temperature gradient reuses the exact rendered pipe path `d`: every
+  // slice is a dash window onto the same geometry, so the coloured bore (and
+  // the particles, which ride getPointAtLength on this path) follow every
+  // 90-degree bend instead of cutting chords across corners. Slice count
+  // scales with path length so long multi-bend pipes keep smooth gradients.
+  const steps = Math.max(12, Math.min(72, Math.ceil(length / 16)));
+  const seg = length / steps;
+  const slices = [];
   for (let i = 0; i < steps; i++) {
-    const a = path.getPointAtLength((length * i) / steps);
-    const b = path.getPointAtLength((length * (i + 1)) / steps);
     const temp = tSource + ((tTarget - tSource) * (i + 0.5)) / steps;
-    lines.push(
-      <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={temperatureColor(temp)} strokeWidth={width} strokeLinecap="round" />,
+    slices.push(
+      <path
+        key={i}
+        d={d}
+        fill="none"
+        stroke={temperatureColor(temp)}
+        strokeWidth={width}
+        strokeLinecap="butt"
+        strokeDasharray={`${seg + 0.75} ${length}`}
+        strokeDashoffset={-(i * seg)}
+      />,
     );
   }
-  return <>{lines}</>;
+  return <>{slices}</>;
 }
 
 function particlePoints(
@@ -135,4 +146,30 @@ export function SignalEdge({
   );
 }
 
-export const hydronicEdgeTypes = { hydronic: HydronicEdge, signal: SignalEdge };
+/**
+ * Green tank-measurement link. Same dashed command style as the purple
+ * signal, in measurement green, so the two never read as water pipes.
+ */
+export function SenseEdge({
+  sourceX,
+  sourceY,
+  targetX,
+  targetY,
+  sourcePosition,
+  targetPosition,
+  selected,
+}: EdgeProps<HydronicFlowEdge>) {
+  const [d] = getSmoothStepPath({
+    sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, borderRadius: 10, offset: 24,
+  });
+  return (
+    <>
+      <path d={d} fill="none" stroke="transparent" strokeWidth={16} />
+      {selected ? <path d={d} fill="none" stroke="#16a34a" strokeWidth={8} opacity={0.25} /> : null}
+      <path d={d} fill="none" stroke="#16a34a" strokeWidth={2} strokeDasharray="6 5" strokeLinecap="round" />
+      <circle cx={targetX} cy={targetY} r={3.5} fill="#16a34a" />
+    </>
+  );
+}
+
+export const hydronicEdgeTypes = { hydronic: HydronicEdge, signal: SignalEdge, sense: SenseEdge };

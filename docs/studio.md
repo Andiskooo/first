@@ -69,6 +69,12 @@ A room thermostat has no water ports and does not simulate a warming room. It ha
 
 A heat pump tied only to the buffer (supply into the left inlet, left outlet back to the heat pump) is a closed primary loop. It circulates on Run with no heat users. The buffer warms toward the setpoint; with nothing drawing heat, the supply and return temperatures meet and the heat pump holds. The right-hand side stays idle. The only message is the note that no heat users are connected.
 
+### Tank sonde (TS)
+
+A tank sonde reads a DHW or buffer tank through the green measurement port on top of the tank and drives a three-way valve, a two-way valve, or a circulation pump over its purple control output. The green link is a measurement, not a pipe: it carries no water, and only a tank and a sonde can join it. When the measured tank temperature reaches the sonde target (30–75 °C), a three-way valve takes its alternative port B, a two-way valve closes, and a pump stops; below the target the branch stays open (or on port A) and the pump runs, and the simulation and the water animation follow. A disconnected sonde leaves the actuator on its manual behavior, and Manual still wins over the sonde.
+
+While water actively circulates through a tank or heating consumer, its body/zone temperature rises at 3 °C per simulated second, up to the heat-pump setpoint, and holds still when the flow stops. The tank and consumer tables show this live temperature, and the sonde reads the same value. A room thermostat works the same way: its green top port reads a radiator, fan coil, or floor-heating zone, and while that zone sits below the room setpoint it keeps calling for heat; at or above the setpoint it diverts, closes, or stops the connected valve or pump. Without a green link the thermostat keeps comparing its two set numbers, exactly as before.
+
 ### Mixer (MV)
 
 The mixer is manual only. It uses the same drawing style as the three-way valve, with an **M** in the middle, and it has no signal port. A thermostat wire aimed at it is rejected with the hint that the mixer does not take a thermostat signal.

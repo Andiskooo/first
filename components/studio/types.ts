@@ -20,7 +20,8 @@ export type SymbolId =
   | 'relief'
   | 'air-vent'
   | 'check'
-  | 'thermostat';
+  | 'thermostat'
+  | 'tank-sonde';
 
 export type PortSide = 'supply' | 'return' | 'neutral';
 
@@ -38,6 +39,7 @@ export type PortTerminal =
   | 'relief-in'
   | 'relief-out'
   | 'signal'
+  | 'sense'
   | 'passive';
 
 export interface PortDef {
@@ -98,8 +100,11 @@ export interface GraphEdge {
   target: string;
   sourceHandle: string;
   targetHandle: string;
-  /** Water pipe, or a dashed thermostat command. Omitted edges are pipes. */
-  kind?: 'pipe' | 'signal';
+  /**
+   * Water pipe, a dashed thermostat/sonde command, or a green tank-measurement
+   * link. Omitted edges are pipes. Neither signal nor sense carries water.
+   */
+  kind?: 'pipe' | 'signal' | 'sense';
 }
 
 export interface EdgeSim {
@@ -117,7 +122,7 @@ export interface NodeSim {
   dt: number;
   tankC?: number;
   storedKwh?: number;
-  /** 0 closed … 1 open. Set on valves. */
+  /** 0 closed … 1 open. Set on valves; on a tank sonde it mirrors the commanded three-way port (0 = A, 1 = B). */
   opening?: number;
   /** Simulated room temperature for a thermostat. */
   roomC?: number;

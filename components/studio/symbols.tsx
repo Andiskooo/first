@@ -206,11 +206,12 @@ function HeatPumpFallback({ def }: { def: ComponentDef }) {
   );
 }
 
-export function portColor(side: PortDef['side'] | 'mixed' | 'signal'): string {
+export function portColor(side: PortDef['side'] | 'mixed' | 'signal' | 'sense'): string {
   if (side === 'supply') return '#ef4444';
   if (side === 'return') return '#2563eb';
   if (side === 'mixed') return '#d97706';
   if (side === 'signal') return '#7c3aed';
+  if (side === 'sense') return '#16a34a';
   return '#64748b';
 }
 

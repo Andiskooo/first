@@ -3,6 +3,7 @@ import { computeOpenings } from '../components/studio/control';
 import { buildExample } from '../components/studio/example';
 import { createPlacedPart, droppedPartId, pointerGesture, pointInRect } from '../components/studio/place';
 import { COMPONENTS } from '../components/studio/registry';
+import { FLOW_ACTIVE_LPH, THERMAL_HEAT_RATE, advanceThermal, isThermalNode } from '../components/studio/thermal';
 import { chargeBuffer, simulate } from '../components/studio/simulation';
 import { temperatureColor } from '../components/studio/temperature';
 import { validateConnection } from '../components/studio/validation';
@@ -720,6 +721,284 @@ function main() {
     prev = cur;
   }
   assert.ok(maxStep <= 16, `gradient step ${maxStep} is gradual`);
+
+  // ---- Configurable heat up to 75 C through one shared limit. ----
+  const setpoint = COMPONENTS.flatMap((def) => def.params).find((param) => param.id === 'setpoint');
+  assert.ok(setpoint, 'heat pump setpoint exists');
+  assert.equal(setpoint!.max, 75, 'setpoint accepts 75 C');
+  assert.equal(setpoint!.min, 30, 'setpoint keeps its lower bound');
+  const hot = structuredClone(direct);
+  hot.nodes.find((node) => node.id === 'hp')!.params = { capacity: 12, setpoint: 75, internalPump: 1, internalSpeed: 100 };
+  const boiled = simulate(hot.nodes, hot.edges);
+  near(boiled.supplyC ?? 0, 75, 1.2, 'simulation holds a 75 C setpoint');
+
+  // ---- Two-way valve: both hydraulic ports reachable without rotation. ----
+  const valveDef = COMPONENTS.find((def) => def.id === 'valve');
+  assert.ok(valveDef, 'two-way valve registered');
+  const valveIn = valveDef!.ports.find((port) => port.id === 'in');
+  const valveOut = valveDef!.ports.find((port) => port.id === 'out');
+  assert.ok(valveIn && valveOut, 'valve has both hydraulic ports');
+  assert.equal(valveIn!.x, 0, 'left port sits on the left edge');
+  assert.equal(valveOut!.x, 1, 'right port sits on the right edge');
+  assert.equal(valveIn!.y, valveOut!.y, 'ports share one pipe axis');
+  const valveNodes: GraphNode[] = [
+    { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45, internalPump: 1, internalSpeed: 100 } },
+    { id: 'v', componentId: 'valve', params: { behavior: 0, motorized: 0, opening: 100, controlMode: 1, manualOpen: 1 } },
+    { id: 'ps', componentId: 'buffer-tank', params: { volume: 200 } },
+  ];
+  assert.equal(validateConnection(valveNodes, [], 'hp', 'supply-out', 'v', 'in').ok, true, 'left port connects without rotation');
+  assert.equal(validateConnection(valveNodes, [], 'v', 'out', 'ps', 'pri-in').ok, true, 'right port connects onward');
+
+  // ---- Tank sonde registry, validation, and divert control. ----
+  const sondeDef = COMPONENTS.find((def) => def.id === 'tank-sonde');
+  assert.ok(sondeDef, 'tank sonde registered');
+  assert.equal(sondeDef!.asset, '/studio/symbols/tank sonde.png', 'sonde reuses the shipped image');
+  const senseIn = sondeDef!.ports.find((port) => port.id === 'sense');
+  const sigOut = sondeDef!.ports.find((port) => port.id === 'sig');
+  assert.ok(senseIn && senseIn.terminal === 'sense', 'sonde has a green measurement input');
+  assert.ok(sigOut && sigOut.terminal === 'signal', 'sonde has a purple control output');
+  for (const tank of ['buffer-tank', 'buffer-tank-3', 'buffer-tank-2', 'dhw-tank']) {
+    const def = COMPONENTS.find((item) => item.id === tank);
+    assert.ok(def && def.ports.some((port) => port.terminal === 'sense'), `${tank} exposes a measurement port`);
+  }
+  const sondeNodes: GraphNode[] = [
+    { id: 'ps', componentId: 'buffer-tank', params: { volume: 200 } },
+    { id: 'tws', componentId: 'dhw-tank', params: { demand: 3 } },
+    { id: 'sn', componentId: 'tank-sonde', params: { tankSet: 45 } },
+    { id: 'v3', componentId: 'valve-3way', params: { controlMode: 0, manualPort: 0 } },
+    { id: 'p', componentId: 'pump', params: { speed: 60 } },
+    { id: 'hk', componentId: 'radiator', params: { demand: 3 } },
+  ];
+  assert.equal(validateConnection(sondeNodes, [], 'ps', 'sense', 'sn', 'sense').ok, true, 'buffer measurement reaches the sonde');
+  assert.equal(validateConnection(sondeNodes, [], 'sn', 'sense', 'tws', 'sense').ok, true, 'either drag direction lands the measurement');
+  assert.equal(validateConnection(sondeNodes, [], 'sn', 'sig', 'v3', 'ctl').ok, true, 'sonde drives the three-way valve');
+  assert.equal(validateConnection(sondeNodes, [], 'sn', 'sig', 'p', 'ctl').ok, true, 'sonde drives the circulation pump');
+  assert.equal(validateConnection(sondeNodes, [], 'hk', 'supply-in', 'sn', 'sense').ok, false, 'pipes cannot land on the measurement port');
+  assert.equal(validateConnection(sondeNodes, [], 'ps', 'sense', 'hk', 'supply-in').ok, false, 'tanks cannot sense a heat user');
+
+  function sondeCircuit(tankSet: number): { nodes: GraphNode[]; edges: GraphEdge[] } {
+    return {
+      nodes: [
+        { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45, internalPump: 1, internalSpeed: 100 } },
+        { id: 'ps', componentId: 'buffer-tank', params: { volume: 200 } },
+        { id: 'p2', componentId: 'pump', params: { speed: 60 } },
+        { id: 'v3', componentId: 'valve-3way', params: { controlMode: 0, manualPort: 0 } },
+        { id: 'hk', componentId: 'radiator', params: { demand: 5 } },
+        { id: 'fbh', componentId: 'underfloor', params: { demand: 3 } },
+        { id: 'tr', componentId: 'tee', params: {} },
+        { id: 'sn', componentId: 'tank-sonde', params: { tankSet } },
+      ],
+      edges: [
+        { id: 'e-hp-ps', source: 'hp', target: 'ps', sourceHandle: 'supply-out', targetHandle: 'pri-in' },
+        { id: 'e-ps-hp', source: 'ps', target: 'hp', sourceHandle: 'pri-out', targetHandle: 'return-in' },
+        { id: 'e-ps-p2', source: 'ps', target: 'p2', sourceHandle: 'sec-out-1', targetHandle: 'in' },
+        { id: 'e-p2-v3', source: 'p2', target: 'v3', sourceHandle: 'out', targetHandle: 'ab' },
+        { id: 'e-v3-hk', source: 'v3', target: 'hk', sourceHandle: 'a', targetHandle: 'supply-in' },
+        { id: 'e-v3-fbh', source: 'v3', target: 'fbh', sourceHandle: 'b', targetHandle: 'supply-in' },
+        { id: 'e-hk-tr', source: 'hk', target: 'tr', sourceHandle: 'return-out', targetHandle: 'b' },
+        { id: 'e-fbh-tr', source: 'fbh', target: 'tr', sourceHandle: 'return-out', targetHandle: 'c' },
+        { id: 'e-tr-ps', source: 'tr', target: 'ps', sourceHandle: 'a', targetHandle: 'sec-in-1' },
+        { id: 'm-ps-sn', source: 'ps', target: 'sn', sourceHandle: 'sense', targetHandle: 'sense', kind: 'sense' },
+        { id: 's-sn-v3', source: 'sn', target: 'v3', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' },
+      ],
+    };
+  }
+  {
+    const circuit = sondeCircuit(45);
+    let built: GraphEdge[] = [];
+    for (const edge of circuit.edges) {
+      const verdict = validateConnection(circuit.nodes, built, edge.source, edge.sourceHandle, edge.target, edge.targetHandle);
+      assert.equal(verdict.ok, true, `sonde circuit ${edge.id} ${verdict.ok ? '' : verdict.code}`);
+      built = built.concat(edge);
+    }
+  }
+  // The default 45 C target sits above the mixed tank, so the valve holds port A;
+  // a 35 C target sits below it, so the same water diverts to port B.
+  const coolTarget = sondeCircuit(45);
+  const settledA = simulate(coolTarget.nodes, coolTarget.edges, computeOpenings({ nodes: coolTarget.nodes, edges: coolTarget.edges, held: {} }));
+  assert.equal(settledA.ok, true, settledA.issues.map((issue) => issue.code).join(','));
+  const tankAfterA = settledA.tankC ?? 0;
+  assert.ok(tankAfterA > 30 && tankAfterA < 45, `mixed tank settles below target, was ${tankAfterA}`);
+  const reopenA = computeOpenings({ nodes: coolTarget.nodes, edges: coolTarget.edges, held: {}, result: settledA });
+  assert.equal(reopenA.v3, 0, 'a cool tank holds the default port');
+  near(settledA.nodes.hk?.flowLph ?? 0, settledA.secondaryFlowLph, 8, 'port A feeds the radiator');
+  near(settledA.nodes.fbh?.flowLph ?? 0, 0, 1, 'port B is idle below target');
+  assert.ok(Number.isFinite(settledA.nodes.sn?.tIn ?? Number.NaN), 'the sonde publishes its reading');
+
+  const warmTarget = sondeCircuit(35);
+  const settledB = simulate(warmTarget.nodes, warmTarget.edges, computeOpenings({ nodes: warmTarget.nodes, edges: warmTarget.edges, held: {} }));
+  const reopenB = computeOpenings({ nodes: warmTarget.nodes, edges: warmTarget.edges, held: {}, result: settledB });
+  assert.equal(reopenB.v3, 1, 'a tank at target diverts to the alternative port');
+  const switched = simulate(warmTarget.nodes, warmTarget.edges, reopenB);
+  near(switched.nodes.fbh?.flowLph ?? 0, switched.secondaryFlowLph, 8, 'port B feeds the floor loop after the switch');
+  near(switched.nodes.hk?.flowLph ?? 0, 0, 1, 'port A is idle after the switch');
+  near(switched.nodes.sn?.tIn ?? 0, switched.tankC ?? 0, 0.6, 'the sonde reads the tank it is tied to');
+
+  // A disconnected sonde never guesses: the valve keeps its manual port.
+  const orphan = sondeCircuit(35);
+  const orphanEdges = orphan.edges.filter((edge) => edge.id !== 'm-ps-sn');
+  const orphanOpen = computeOpenings({ nodes: orphan.nodes, edges: orphanEdges, held: {} });
+  assert.equal(orphanOpen.v3, 0, 'without a measurement the toggle stays in charge');
+  const orphanSim = simulate(orphan.nodes, orphanEdges, orphanOpen);
+  assert.ok(!('sn' in orphanSim.nodes) || !Number.isFinite(orphanSim.nodes.sn?.tIn ?? Number.NaN), 'no reading without a tank link');
+
+  // ---- Return-circuit pipes stay attachable from either end.
+  // A pipe between two inlet (`in`) ports — lower two-way valve `in` and
+  // heat-pump `return-in` — must validate in both drag directions and carry
+  // simulated flow. (ReactFlow only resolves an edge's source handle against
+  // source-type handles, so every studio handle registers as `source`; see
+  // HydronicNode. Without that, this exact link validated and simulated yet
+  // never painted.)
+  const loopNodes: GraphNode[] = [
+    { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45, internalPump: 1, internalSpeed: 100 } },
+    { id: 'v1', componentId: 'valve', params: { behavior: 0, motorized: 0, opening: 100, controlMode: 1, manualOpen: 1 } },
+    { id: 'ps', componentId: 'buffer-tank-2', params: { volume: 200 } },
+    { id: 'v2', componentId: 'valve', params: { behavior: 0, motorized: 0, opening: 100, controlMode: 1, manualOpen: 1 } },
+  ];
+  const loopEdges: GraphEdge[] = [
+    { id: 'e-hp-v1', source: 'hp', target: 'v1', sourceHandle: 'supply-out', targetHandle: 'in' },
+    { id: 'e-v1-ps', source: 'v1', target: 'ps', sourceHandle: 'out', targetHandle: 'pri-in' },
+    { id: 'e-ps-v2', source: 'ps', target: 'v2', sourceHandle: 'pri-out', targetHandle: 'out' },
+    { id: 'e-v2-hp', source: 'v2', target: 'hp', sourceHandle: 'in', targetHandle: 'return-in' },
+  ];
+  {
+    let built: GraphEdge[] = [];
+    for (const edge of loopEdges) {
+      const verdict = validateConnection(loopNodes, built, edge.source, edge.sourceHandle, edge.target, edge.targetHandle);
+      assert.equal(verdict.ok, true, `return loop ${edge.id} ${verdict.ok ? '' : verdict.code}`);
+      built = built.concat(edge);
+    }
+  }
+  assert.equal(validateConnection(loopNodes, loopEdges.slice(0, 3), 'hp', 'return-in', 'v2', 'in').ok, true, 'the return link validates in the reverse drag direction');
+  // A static solve starts the tank at room temperature (supply then sits one
+  // primary ΔT above it); a charged tank is the running-state fixture.
+  const looped = simulate(loopNodes, loopEdges, computeOpenings({ nodes: loopNodes, edges: loopEdges, held: {} }), { tankC: 44 });
+  assert.equal(looped.ok, true, looped.issues.map((issue) => issue.code).join(','));
+  near(looped.supplyC ?? 0, 45, 0.8, 'supply holds across both inline valves');
+  for (const edge of loopEdges) {
+    assert.ok((looped.edges[edge.id]?.flowLph ?? 0) > 500, `${edge.id} carries the primary flow`);
+  }
+
+  // ---- Live body/zone temperatures: +3 C per simulated second of flow. ----
+  assert.equal(THERMAL_HEAT_RATE, 3, 'documented heating rate');
+  assert.ok(isThermalNode('dhw-tank') && isThermalNode('buffer-tank') && isThermalNode('radiator')
+    && isThermalNode('underfloor') && isThermalNode('fancoil'), 'tanks and consumers all tracked');
+  assert.ok(!isThermalNode('heat-pump') && !isThermalNode('valve') && !isThermalNode('thermostat'), 'only heated bodies tracked');
+  const dhwLoop: { nodes: GraphNode[]; edges: GraphEdge[] } = {
+    nodes: [
+      { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45, internalPump: 1, internalSpeed: 100 } },
+      { id: 'tws', componentId: 'dhw-tank', params: { demand: 3 } },
+    ],
+    edges: [
+      { id: 'e-hp-tws', source: 'hp', target: 'tws', sourceHandle: 'supply-out', targetHandle: 'supply-in' },
+      { id: 'e-tws-hp', source: 'tws', target: 'hp', sourceHandle: 'return-out', targetHandle: 'return-in' },
+    ],
+  };
+  const dhwSim = simulate(dhwLoop.nodes, dhwLoop.edges, computeOpenings({ nodes: dhwLoop.nodes, edges: dhwLoop.edges, held: {} }));
+  assert.ok((dhwSim.nodes.tws?.flowLph ?? 0) > FLOW_ACTIVE_LPH, 'dhw sees active circulation');
+  let heat: Record<string, number> = {};
+  heat = advanceThermal(heat, dhwLoop.nodes, dhwSim, 1);
+  near(heat.tws ?? 0, 33, 1e-9, 'one second of flow adds 3 C');
+  heat = advanceThermal(heat, dhwLoop.nodes, dhwSim, 4);
+  near(heat.tws ?? 0, 45, 1e-9, 'the documented table reaches 45 C after five seconds');
+  heat = advanceThermal(heat, dhwLoop.nodes, dhwSim, 100);
+  near(heat.tws ?? 0, 45, 1e-9, 'a tank never passes its heat source');
+  assert.equal(advanceThermal(heat, [], dhwSim, 10), heat, 'no tracked nodes keeps the record untouched');
+
+  // A disconnected tank holds still: no flow, no heating, same record back.
+  const drySim = simulate(dhwLoop.nodes, []);
+  const seeded = advanceThermal({}, dhwLoop.nodes, drySim, 1);
+  near(seeded.tws ?? 0, 30, 1e-9, 'a tank still rests at its start value');
+  assert.equal(advanceThermal(seeded, dhwLoop.nodes, drySim, 5), seeded, 'without flow the temperature freezes');
+
+  // Heating consumers warm their zones the same way, capped by the source.
+  const radLoop: { nodes: GraphNode[]; edges: GraphEdge[] } = {
+    nodes: [
+      { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45, internalPump: 1, internalSpeed: 100 } },
+      { id: 'hk', componentId: 'radiator', params: { demand: 4 } },
+    ],
+    edges: [
+      { id: 'e-hp-hk', source: 'hp', target: 'hk', sourceHandle: 'supply-out', targetHandle: 'supply-in' },
+      { id: 'e-hk-hp', source: 'hk', target: 'hp', sourceHandle: 'return-out', targetHandle: 'return-in' },
+    ],
+  };
+  const radSim = simulate(radLoop.nodes, radLoop.edges, computeOpenings({ nodes: radLoop.nodes, edges: radLoop.edges, held: {} }));
+  let zone: Record<string, number> = advanceThermal({}, radLoop.nodes, radSim, 2);
+  near(zone.hk ?? 0, 24, 1e-9, 'two seconds of flow lift a zone from 18 C to 24 C');
+  zone = advanceThermal(zone, radLoop.nodes, radSim, 1000);
+  near(zone.hk ?? 0, 45, 1e-9, 'a zone never passes its heat source');
+
+  // ---- Measurement validation: tanks pair with sondes, consumers with thermostats. ----
+  const senseNodes: GraphNode[] = [
+    { id: 'ps', componentId: 'buffer-tank', params: { volume: 200 } },
+    { id: 'tws', componentId: 'dhw-tank', params: { demand: 3 } },
+    { id: 'hk', componentId: 'radiator', params: { demand: 4 } },
+    { id: 'fc', componentId: 'fancoil', params: { demand: 2.5 } },
+    { id: 'fbh', componentId: 'underfloor', params: { demand: 3 } },
+    { id: 'rt', componentId: 'thermostat', params: { roomSet: 21, ambient: 16 } },
+    { id: 'sn', componentId: 'tank-sonde', params: { tankSet: 45 } },
+    { id: 'v', componentId: 'valve', params: { behavior: 0, motorized: 0, opening: 100, controlMode: 0, manualOpen: 1 } },
+    { id: 'p', componentId: 'pump', params: { speed: 60 } },
+    { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45, internalPump: 1, internalSpeed: 100 } },
+  ];
+  for (const consumer of ['hk', 'fc', 'fbh']) {
+    assert.equal(validateConnection(senseNodes, [], consumer, 'sense', 'rt', 'sense').ok, true, `${consumer} measurement reaches the thermostat`);
+    assert.equal(validateConnection(senseNodes, [], 'rt', 'sense', consumer, 'sense').ok, true, `${consumer} links in the reverse drag direction`);
+    assert.equal(validateConnection(senseNodes, [], consumer, 'sense', 'sn', 'sense').ok, false, 'consumers cannot sense a sonde');
+  }
+  assert.equal(validateConnection(senseNodes, [], 'ps', 'sense', 'rt', 'sense').ok, false, 'tanks cannot sense a thermostat');
+  assert.equal(validateConnection(senseNodes, [], 'tws', 'sense', 'rt', 'sense').ok, false, 'dhw pairs with a sonde, not a thermostat');
+  assert.equal(validateConnection(senseNodes, [], 'hk', 'supply-in', 'rt', 'sense').ok, false, 'pipes cannot land on a measurement port');
+  assert.equal(validateConnection(senseNodes, [], 'sn', 'sig', 'v', 'ctl').ok, true, 'a sonde drives a two-way valve');
+  assert.equal(validateConnection(senseNodes, [], 'sn', 'sig', 'p', 'ctl').ok, true, 'a sonde drives a circulation pump');
+  assert.equal(validateConnection(senseNodes, [], 'sn', 'sig', 'hp', 'ctl').ok, false, 'a sonde never drives the heat pump');
+
+  // ---- Sonde actuation from live temperatures: valves and pumps. ----
+  const tankPair: GraphNode[] = [
+    { id: 'ps', componentId: 'buffer-tank', params: { volume: 200 } },
+    { id: 'sn', componentId: 'tank-sonde', params: { tankSet: 45 } },
+    { id: 'v', componentId: 'valve', params: { behavior: 0, motorized: 0, opening: 100, controlMode: 0, manualOpen: 1 } },
+  ];
+  const halfPair = tankPair.map((node) => node.id === 'v' ? { ...node, params: { ...node.params, opening: 50 } } : node);
+  const tankSense: GraphEdge[] = [
+    { id: 'm', source: 'ps', target: 'sn', sourceHandle: 'sense', targetHandle: 'sense', kind: 'sense' },
+  ];
+  const sondeToValve: GraphEdge[] = [...tankSense, { id: 's', source: 'sn', target: 'v', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' }];
+  assert.equal(computeOpenings({ nodes: tankPair, edges: sondeToValve, held: {}, temps: { ps: 30 } }).v, 1, 'a cool tank holds the valve open');
+  assert.equal(computeOpenings({ nodes: halfPair, edges: sondeToValve, held: {}, temps: { ps: 30 } }).v, 0.5, 'the opening percentage still applies');
+  assert.equal(computeOpenings({ nodes: tankPair, edges: sondeToValve, held: {}, temps: { ps: 45 } }).v, 0, 'the valve shuts at the target');
+  assert.equal(computeOpenings({ nodes: tankPair, edges: [{ id: 's', source: 'sn', target: 'v', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' }], held: {} }).v, 1, 'without a measurement the toggle stays in charge');
+
+  const pumpPair: GraphNode[] = [...tankPair, { id: 'p', componentId: 'pump', params: { speed: 60 } }];
+  const sondeToPump: GraphEdge[] = [...tankSense, { id: 's', source: 'sn', target: 'p', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' }];
+  assert.equal(computeOpenings({ nodes: pumpPair, edges: sondeToPump, held: {}, temps: { ps: 30 } }).p, 1, 'the pump runs while heating is required');
+  assert.equal(computeOpenings({ nodes: pumpPair, edges: sondeToPump, held: {}, temps: { ps: 45 } }).p, 0, 'the pump stops at the target');
+  assert.ok(!('p' in computeOpenings({ nodes: pumpPair, edges: [{ id: 's', source: 'sn', target: 'p', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' }], held: {} })), 'without a measurement the pump follows its speed');
+
+  // ---- Thermostat actuation from a measured zone, with ambient fallback. ----
+  const zoneNodes: GraphNode[] = [
+    { id: 'rt', componentId: 'thermostat', params: { roomSet: 21, ambient: 16 } },
+    { id: 'hk', componentId: 'radiator', params: { demand: 4 } },
+    { id: 'v', componentId: 'valve', params: { behavior: 0, motorized: 0, opening: 100, controlMode: 0, manualOpen: 1 } },
+    { id: 'p', componentId: 'pump', params: { speed: 60 } },
+    { id: 'v3', componentId: 'valve-3way', params: { controlMode: 0, manualPort: 0 } },
+  ];
+  const zoneWires: GraphEdge[] = [
+    { id: 'm', source: 'hk', target: 'rt', sourceHandle: 'sense', targetHandle: 'sense', kind: 'sense' },
+    { id: 's-v', source: 'rt', target: 'v', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' },
+    { id: 's-p', source: 'rt', target: 'p', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' },
+    { id: 's-v3', source: 'rt', target: 'v3', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' },
+  ];
+  const coolZone = computeOpenings({ nodes: zoneNodes, edges: zoneWires, held: {}, temps: { hk: 18 } });
+  assert.equal(coolZone.v, 1, 'a cool zone holds the valve open');
+  assert.equal(coolZone.p, 1, 'a cool zone runs the pump');
+  assert.equal(coolZone.v3, 0, 'a cool zone keeps the default port');
+  const warmZone = computeOpenings({ nodes: zoneNodes, edges: zoneWires, held: {}, temps: { hk: 24 } });
+  assert.equal(warmZone.v, 0, 'the valve closes at the room setpoint');
+  assert.equal(warmZone.p, 0, 'the pump stops at the room setpoint');
+  assert.equal(warmZone.v3, 1, 'the valve diverts at the room setpoint');
+  const noReading = computeOpenings({ nodes: zoneNodes, edges: zoneWires, held: {}, temps: {} });
+  assert.equal(noReading.v3, 0, 'without a zone reading the ambient numbers still decide');
 
   console.log('PASS studio simulation and connection rules');
 }

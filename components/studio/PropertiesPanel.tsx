@@ -16,6 +16,8 @@ export function PropertiesPanel({
   result,
   showThermo,
   signalLinked,
+  senseLinked,
+  controlOutLinked,
   onParam,
   onRotate,
   onReversePump,
@@ -29,6 +31,10 @@ export function PropertiesPanel({
   showThermo: boolean;
   /** A thermostat signal currently lands on the selected three-way valve. */
   signalLinked: boolean;
+  /** A green measurement link touches the selected tank sonde. */
+  senseLinked: boolean;
+  /** The selected tank sonde drives a three-way valve over its purple output. */
+  controlOutLinked: boolean;
   onParam: (id: string, key: string, value: number) => void;
   onRotate: (id: string) => void;
   onReversePump: (id: string) => void;
@@ -42,7 +48,7 @@ export function PropertiesPanel({
   const live = selected ? result.nodes[selected.id] : undefined;
   const sim = selected && showThermo ? live : undefined;
   const heading = selectedEdge
-    ? (selectedEdge.type === 'signal' ? text.signal : text.pipe)
+    ? (selectedEdge.type === 'signal' ? text.signal : selectedEdge.type === 'sense' ? text.sense : text.pipe)
     : text.component;
 
   return (
@@ -64,8 +70,17 @@ export function PropertiesPanel({
                 <NodeReadouts
                   text={text}
                   sim={sim}
-                  kind={isBufferId(def.id) ? 'buffer' : def.id === 'thermostat' ? 'room' : def.id === 'valve-3way' ? 'valve3' : def.id === 'valve' ? 'valve2' : def.id === 'mixer' ? 'mixer' : def.id === 'pump' ? 'pump' : def.category === 'source' ? 'source' : def.category === 'consumer' ? 'consumer' : 'other'}
+                  kind={isBufferId(def.id) ? 'buffer' : def.id === 'thermostat' ? 'room' : def.id === 'valve-3way' ? 'valve3' : def.id === 'valve' ? 'valve2' : def.id === 'mixer' ? 'mixer' : def.id === 'tank-sonde' ? 'sonde' : def.id === 'pump' ? 'pump' : def.category === 'source' ? 'source' : def.category === 'consumer' ? 'consumer' : 'other'}
                   modeText={def.id === 'valve-3way' || def.id === 'valve' ? (signalLinked && (selected.data.params.controlMode ?? 0) < 0.5 ? text.modeAuto : text.modeManual) : undefined}
+                />
+              ) : null}
+              {def.id === 'tank-sonde' && selected ? (
+                <SondeControls
+                  text={text}
+                  measured={live?.tIn}
+                  commandB={(live?.opening ?? 0) >= 0.5}
+                  target={selected.data.params.tankSet ?? 45}
+                  ready={Boolean(senseLinked && controlOutLinked)}
                 />
               ) : null}
               {def.id === 'valve-3way' && selected ? (
@@ -197,12 +212,13 @@ function PipeInspector({
   onRemove: () => void;
 }) {
   const signal = edge.type === 'signal';
+  const sense = edge.type === 'sense';
   const sim = result.edges[edge.id];
   return (
     <div className="mt-3">
-      <p className="text-sm font-semibold text-slate-900">{signal ? text.signal : text.pipe}</p>
-      <p className="mt-1 text-xs leading-5 text-slate-500">{signal ? text.signalBody : text.pipeBody}</p>
-      {!signal && showThermo && sim ? (
+      <p className="text-sm font-semibold text-slate-900">{signal ? text.signal : sense ? text.sense : text.pipe}</p>
+      <p className="mt-1 text-xs leading-5 text-slate-500">{signal ? text.signalBody : sense ? text.senseBody : text.pipeBody}</p>
+      {!signal && !sense && showThermo && sim ? (
         <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-xs tabular-nums text-slate-700">
           <dt>{text.flow}</dt><dd>{formatNum(sim.flowLph, 0)} L/h</dd>
           <dt>{text.supply}</dt><dd>{formatNum(sim.flowFromSource ? sim.tSource : sim.tTarget, 1)} °C</dd>
@@ -332,6 +348,38 @@ function ModeButton({
   );
 }
 
+function SondeControls({
+  text,
+  measured,
+  commandB,
+  target,
+  ready,
+}: {
+  text: StudioCopy;
+  measured: number | undefined;
+  commandB: boolean;
+  target: number;
+  ready: boolean;
+}) {
+  const hasReading = ready && measured != null && Number.isFinite(measured);
+  return (
+    <div className="mt-4 space-y-3">
+      <p className="rounded-lg bg-green-50 px-3 py-2 text-xs leading-5 text-green-950">
+        {hasReading ? (
+          <>
+            <span className="font-semibold">{text.measured} {formatNum(measured, 1)} °C → {commandB ? text.portB : text.portA}</span>
+            <span className="mt-0.5 block text-green-800">
+              {text.params.tankSet}: {formatNum(target, 0)} °C
+            </span>
+          </>
+        ) : (
+          text.sondeIdle
+        )}
+      </p>
+    </div>
+  );
+}
+
 function NodeReadouts({
   text,
   sim,
@@ -340,7 +388,7 @@ function NodeReadouts({
 }: {
   text: StudioCopy;
   sim: NodeSim;
-  kind: 'buffer' | 'source' | 'consumer' | 'room' | 'valve3' | 'valve2' | 'mixer' | 'pump' | 'other';
+  kind: 'buffer' | 'source' | 'consumer' | 'room' | 'valve3' | 'valve2' | 'mixer' | 'sonde' | 'pump' | 'other';
   modeText?: string;
 }) {
   const supply = kind === 'source' ? sim.tOut : sim.tIn;
@@ -362,6 +410,11 @@ function NodeReadouts({
           <dt>{text.valveState}</dt><dd>{(sim.opening ?? 1) < 0.05 ? text.closed : text.open}</dd>
           <dt>{text.flow}</dt><dd>{formatNum(sim.flowLph, 0)} L/h</dd>
         </>
+      ) : kind === 'sonde' ? (
+        <>
+          <dt>{text.measured}</dt><dd>{formatNum(sim.tIn, 1)} °C</dd>
+          <dt>{text.valveState}</dt><dd>{(sim.opening ?? 0) >= 0.5 ? text.portB : text.portA}</dd>
+        </>
       ) : kind === 'mixer' ? (
         <>
           <dt>{text.outlet}</dt><dd>{formatNum(sim.tOut, 1)} °C</dd>
@@ -378,15 +431,20 @@ function NodeReadouts({
           <dt>{text.supply}</dt><dd>{formatNum(supply, 1)} °C</dd>
           <dt>{text.returnT}</dt><dd>{formatNum(back, 1)} °C</dd>
           <dt>{text.delta}</dt><dd>{formatNum(Math.abs(sim.dt), 1)} K</dd>
+          {kind === 'consumer' && Number.isFinite(sim.roomC) ? (
+            <>
+              <dt>{text.measured}</dt><dd>{formatNum(sim.roomC, 1)} °C</dd>
+            </>
+          ) : null}
         </>
       )}
-      {kind === 'mixer' || kind === 'valve3' || kind === 'valve2' ? null : (
+      {kind === 'mixer' || kind === 'valve3' || kind === 'valve2' || kind === 'sonde' ? null : (
         <>
           <dt>{text.flow}</dt><dd>{formatNum(sim.flowLph, 0)} L/h</dd>
           <dt>{text.power}</dt><dd>{formatNum(sim.qKw, 1)} kW</dd>
         </>
       )}
-      {sim.opening != null && kind !== 'valve3' && kind !== 'valve2' && kind !== 'mixer' ? (
+      {sim.opening != null && kind !== 'valve3' && kind !== 'valve2' && kind !== 'mixer' && kind !== 'sonde' ? (
         <>
           <dt>{text.valveState}</dt>
           <dd>{kind === 'pump' || kind === 'source' ? ((sim.opening ?? 1) >= 0.5 ? text.pumpOn : text.pumpOff) : sim.opening < 0.05 ? text.closed : sim.opening > 0.95 ? text.open : `${Math.round(sim.opening * 100)}%`}</dd>

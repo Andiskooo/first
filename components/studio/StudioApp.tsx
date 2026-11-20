@@ -21,12 +21,13 @@ import {
 import { ChevronDown, PanelLeft, Pause, Play, RotateCcw, Trash2 } from 'lucide-react';
 import '@xyflow/react/dist/style.css';
 
-import { computeOpenings } from '@/components/studio/control';
+import { computeOpenings, sondeCommand, sondeTankOf, thermostatZoneOf } from '@/components/studio/control';
 import { buildExample, type ExampleKind } from '@/components/studio/example';
-import { componentBox, getComponent, isBufferId, isHeatPumpId, resolvePorts } from '@/components/studio/registry';
+import { componentBox, getComponent, isBufferId, isHeatPumpId, isHeatingConsumerId, resolvePorts } from '@/components/studio/registry';
 import { SNAP, createPlacedPart, droppedPartId, markPartDropped } from '@/components/studio/place';
-import { T_ROOM, chargeBuffer } from '@/components/studio/simulation';
+import { T_ROOM, WATER_CP, WATER_RHO, chargeBuffer } from '@/components/studio/simulation';
 import { simulate } from '@/components/studio/simulation';
+import { advanceThermal } from '@/components/studio/thermal';
 import { validateConnection } from '@/components/studio/validation';
 import { resetDistances, setEdgeSpeeds, stopClock } from '@/components/studio/clock';
 import { messageOf, useStudioCopy } from '@/components/studio/copy';
@@ -128,7 +129,7 @@ function toGraph(nodes: Node[], edges: Edge[]): { nodes: GraphNode[]; edges: Gra
           target: edge.target,
           sourceHandle: edge.sourceHandle,
           targetHandle: edge.targetHandle,
-          kind: edge.type === 'signal' ? 'signal' as const : 'pipe' as const,
+          kind: edge.type === 'signal' ? 'signal' as const : edge.type === 'sense' ? 'sense' as const : 'pipe' as const,
         }]
         : []
     )),
@@ -152,6 +153,8 @@ function StudioShell() {
   const [armed, setArmed] = useState<string | null>(null);
   const [hint, setHint] = useState<string | null>(null);
   const [tankC, setTankC] = useState<number | null>(null);
+  /** Live body/zone temperatures (°C) by node id, advanced with simulation time while running. */
+  const [thermal, setThermal] = useState<Record<string, number>>({});
   const [present, setPresent] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(true);
   const [coarse, setCoarse] = useState(false);
@@ -166,14 +169,81 @@ function StudioShell() {
   graphRef.current = { nodes, edges };
 
   const graph = useMemo(() => toGraph(nodes, edges), [nodes, edges]);
-  const openings = useMemo(
-    () => computeOpenings({ nodes: graph.nodes, edges: graph.edges, held: heldRef.current, result: resultRef.current }),
-    [graph],
-  );
-  const result = useMemo(
-    () => simulate(graph.nodes, graph.edges, openings, tankC == null ? {} : { tankC }),
-    [graph, openings, tankC],
-  );
+  const { openings, result } = useMemo(() => {
+    const opts = tankC == null ? {} : { tankC };
+    const input = { nodes: graph.nodes, edges: graph.edges, held: heldRef.current, temps: thermal };
+    const first = computeOpenings({ ...input, result: resultRef.current });
+    const solved = simulate(graph.nodes, graph.edges, first, opts);
+    // Second pass lets tank-sonde (and relief) commands react to the fresh
+    // tank temperatures within the same render instead of lagging one edit
+    // behind. Two fixed passes cannot oscillate; a render only re-runs this
+    // when the graph, the charging tank, or a live temperature changes.
+    const second = computeOpenings({ ...input, result: solved });
+    if (Object.keys(second).some((id) => second[id] !== first[id])) {
+      return { openings: second, result: simulate(graph.nodes, graph.edges, second, opts) };
+    }
+    return { openings: first, result: solved };
+  }, [graph, tankC, thermal]);
+  // The inspector, canvas labels, and sensors all read this copy: hydraulic
+  // water temperatures stay solver-owned, while tank body, heating-zone, and
+  // measured values come from the live thermal layer.
+  const displayResult = useMemo(() => {
+    if (!Object.keys(thermal).length) return result;
+    const outNodes = { ...result.nodes };
+    for (const node of graph.nodes) {
+      const live = thermal[node.id];
+      if (live == null || !Number.isFinite(live)) continue;
+      const prior = outNodes[node.id];
+      if (isBufferId(node.componentId)) {
+        const volume = node.params.volume ?? 200;
+        outNodes[node.id] = {
+          tIn: prior?.tIn ?? live,
+          tOut: prior?.tOut ?? live,
+          flowLph: prior?.flowLph ?? 0,
+          qKw: prior?.qKw ?? 0,
+          dt: 0,
+          tankC: live,
+          storedKwh: volume * WATER_RHO * WATER_CP * Math.max(live - T_ROOM, 0) / 3600,
+        };
+      } else if (node.componentId === 'dhw-tank' || isHeatingConsumerId(node.componentId)) {
+        outNodes[node.id] = {
+          tIn: prior?.tIn ?? live,
+          tOut: prior?.tOut ?? live,
+          flowLph: prior?.flowLph ?? 0,
+          qKw: prior?.qKw ?? 0,
+          dt: prior?.dt ?? 0,
+          roomC: live,
+        };
+      } else if (node.componentId === 'thermostat') {
+        const zoneId = thermostatZoneOf(node, graph.nodes, graph.edges);
+        const zone = zoneId ? thermal[zoneId] : undefined;
+        if (zone != null && Number.isFinite(zone)) {
+          outNodes[node.id] = {
+            tIn: prior?.tIn ?? 0,
+            tOut: prior?.tOut ?? 0,
+            flowLph: 0,
+            qKw: 0,
+            dt: 0,
+            roomC: zone,
+          };
+        }
+      } else if (node.componentId === 'tank-sonde') {
+        const tankId = sondeTankOf(node, graph.edges);
+        const measured = tankId ? thermal[tankId] : undefined;
+        if (measured != null && Number.isFinite(measured)) {
+          outNodes[node.id] = {
+            tIn: measured,
+            tOut: measured,
+            flowLph: 0,
+            qKw: 0,
+            dt: 0,
+            opening: sondeCommand(node, graph.edges, (id) => thermal[id]) ?? prior?.opening ?? 0,
+          };
+        }
+      }
+    }
+    return { ...result, nodes: outNodes };
+  }, [result, thermal, graph]);
   const showThermo = phase !== 'idle';
   const running = phase === 'running';
   const toggleThreeWay = useCallback((id: string) => {
@@ -218,7 +288,7 @@ function StudioShell() {
       };
     }));
   }, [edges, setNodes]);
-  const view = useMemo(() => ({ showThermo, result, toggleThreeWay, toggleTwoWay }), [showThermo, result, toggleThreeWay, toggleTwoWay]);
+  const view = useMemo(() => ({ showThermo, result: displayResult, toggleThreeWay, toggleTwoWay }), [showThermo, displayResult, toggleThreeWay, toggleTwoWay]);
   const selectedEdge = edges.find((edge) => edge.selected) ?? null;
   const selected = selectedEdge ? null : (nodes.find((node) => node.selected) ?? null);
 
@@ -241,7 +311,34 @@ function StudioShell() {
     if (phase === 'idle') {
       heldRef.current = {};
       setTankC(null);
+      setThermal({});
     }
+  }, [phase]);
+
+  // Heating dynamics run on simulation time: each frame advances live tank
+  // and zone temperatures from the latest hydraulic flows. No flow means no
+  // heating; temperatures simply hold. Control decisions re-solve from the
+  // same render through the openings memo above.
+  useEffect(() => {
+    if (phase !== 'running') return;
+    let last = performance.now();
+    let frame = 0;
+    const tick = (now: number) => {
+      const dt = Math.min(0.5, (now - last) / 1000);
+      last = now;
+      const solved = resultRef.current;
+      if (solved) {
+        const flat = graphRef.current.nodes.map((node) => ({
+          id: node.id,
+          componentId: node.data.componentId,
+          params: node.data.params ?? {},
+        }));
+        setThermal((current) => advanceThermal(current, flat, solved, dt));
+      }
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
   }, [phase]);
 
   useEffect(() => {
@@ -351,11 +448,17 @@ function StudioShell() {
       return;
     }
     setHint(null);
-    const sourceNode = graphRef.current.nodes.find((node) => node.id === connection.source);
-    const sourceDef = sourceNode ? getComponent(sourceNode.data.componentId) : undefined;
-    const sourcePort = sourceDef ? resolvePorts(sourceDef, sourceNode?.data.params).find((port) => port.id === connection.sourceHandle) : undefined;
-    const signal = sourcePort?.terminal === 'signal';
-    setEdges((current) => addEdge({ ...connection, id: `e-${crypto.randomUUID()}`, type: signal ? 'signal' : 'hydronic' }, current));
+    const endTerminal = (id: string | null | undefined, handle: string | null | undefined) => {
+      const peer = graphRef.current.nodes.find((node) => node.id === id);
+      const def = peer ? getComponent(peer.data.componentId) : undefined;
+      return def ? resolvePorts(def, peer?.data.params).find((port) => port.id === handle)?.terminal : undefined;
+    };
+    const fromTerminal = endTerminal(connection.source, connection.sourceHandle);
+    const toTerminal = endTerminal(connection.target, connection.targetHandle);
+    const kind = (fromTerminal === 'sense' || toTerminal === 'sense')
+      ? 'sense'
+      : (fromTerminal === 'signal' || toTerminal === 'signal') ? 'signal' : 'hydronic';
+    setEdges((current) => addEdge({ ...connection, id: `e-${crypto.randomUUID()}`, type: kind }, current));
   }, [setEdges]);
 
   const onConnectEnd: OnConnectEnd = useCallback(() => {
@@ -575,7 +678,7 @@ function StudioShell() {
                 </div>
               </div>
             ) : (
-              <SimChip result={result} showThermo={showThermo} />
+              <SimChip result={displayResult} showThermo={showThermo} />
             )}
 
             {armed ? (
@@ -601,9 +704,11 @@ function StudioShell() {
             <PropertiesPanel
               selected={selected}
               selectedEdge={selectedEdge}
-              result={result}
+              result={displayResult}
               showThermo={showThermo}
               signalLinked={Boolean(selected && edges.some((edge) => edge.type === 'signal' && edge.target === selected.id))}
+              senseLinked={Boolean(selected && edges.some((edge) => edge.type === 'sense' && (edge.source === selected.id || edge.target === selected.id)))}
+              controlOutLinked={Boolean(selected && selected.data.componentId === 'tank-sonde' && edges.some((edge) => edge.type === 'signal' && edge.source === selected.id))}
               onParam={(id, key, value) => {
                 setNodes((current) => current.map((node) => {
                   if (node.id !== id) return node;

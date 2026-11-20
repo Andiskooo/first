@@ -1,4 +1,4 @@
-import { getComponent, isHeatPumpId, resolvePorts } from '@/components/studio/registry';
+import { getComponent, isHeatPumpId, isHeatingConsumerId, isTankId, resolvePorts } from '@/components/studio/registry';
 import type { GraphEdge, GraphNode, PortTerminal } from '@/components/studio/types';
 
 export interface ConnectionEnd {
@@ -39,7 +39,9 @@ function has(list: ConnectionEnd[], terminal: PortTerminal): boolean {
 function linkMap(edges: GraphEdge[]): Map<string, Endpoint & { edgeId: string }> {
   const map = new Map<string, Endpoint & { edgeId: string }>();
   for (const edge of edges) {
-    if (edge.kind === 'signal') continue;
+    // Control and measurement links carry no water, so they never join the
+    // hydraulic flood that guards against supply/return shorts.
+    if (edge.kind === 'signal' || edge.kind === 'sense') continue;
     if (!edge.sourceHandle || !edge.targetHandle) continue;
     map.set(`${edge.source}:${edge.sourceHandle}`, { nodeId: edge.target, portId: edge.targetHandle, edgeId: edge.id });
     map.set(`${edge.target}:${edge.targetHandle}`, { nodeId: edge.source, portId: edge.sourceHandle, edgeId: edge.id });
@@ -71,12 +73,17 @@ export function floodTerminals(nodes: GraphNode[], edges: GraphEdge[], origin: E
       if (link) queue.push({ nodeId: link.nodeId, portId: link.portId });
       continue;
     }
+    // Signal and measurement ports carry no water: they neither bridge a
+    // body nor leak their circuit into the hydraulic diagnosis.
+    if (port.terminal === 'signal' || port.terminal === 'sense') continue;
     if (port.terminal !== 'passive') {
       hits.push({ nodeId: current.nodeId, portId: current.portId, terminal: port.terminal });
       continue;
     }
     for (const other of resolvePorts(def, node.params)) {
-      if (other.id !== current.portId) queue.push({ nodeId: current.nodeId, portId: other.id });
+      if (other.id === current.portId) continue;
+      if (other.terminal === 'signal' || other.terminal === 'sense') continue;
+      queue.push({ nodeId: current.nodeId, portId: other.id });
     }
     const link = links.get(key);
     if (link) queue.push({ nodeId: link.nodeId, portId: link.portId });
@@ -135,13 +142,36 @@ export function validateConnection(
   const sourcePort = sourceDef ? resolvePorts(sourceDef, sourceNode.params).find((port) => port.id === sourceHandle) : undefined;
   const targetPort = targetDef ? resolvePorts(targetDef, targetNode.params).find((port) => port.id === targetHandle) : undefined;
   if (!sourcePort || !targetPort) return { ok: false, code: 'missing-port' };
+  // Green measurement links join a tank to a sonde, or a heating consumer
+  // to a room thermostat, in either drag direction. They never touch
+  // hydraulic ports.
+  if (sourcePort.terminal === 'sense' || targetPort.terminal === 'sense') {
+    const bothSense = sourcePort.terminal === 'sense' && targetPort.terminal === 'sense'
+      && sourcePort.id === 'sense' && targetPort.id === 'sense';
+    const sourceIsTank = sourceDef ? isTankId(sourceDef.id) : false;
+    const targetIsTank = targetDef ? isTankId(targetDef.id) : false;
+    const sourceIsSonde = sourceDef?.id === 'tank-sonde';
+    const targetIsSonde = targetDef?.id === 'tank-sonde';
+    if (bothSense && ((sourceIsTank && targetIsSonde) || (sourceIsSonde && targetIsTank))) return { ok: true };
+    const sourceIsConsumer = sourceDef ? isHeatingConsumerId(sourceDef.id) : false;
+    const targetIsConsumer = targetDef ? isHeatingConsumerId(targetDef.id) : false;
+    const sourceIsThermo = sourceDef?.id === 'thermostat';
+    const targetIsThermo = targetDef?.id === 'thermostat';
+    if (bothSense && ((sourceIsConsumer && targetIsThermo) || (sourceIsThermo && targetIsConsumer))) return { ok: true };
+    return { ok: false, code: 'sense-pair' };
+  }
   if (sourcePort.terminal === 'signal' || targetPort.terminal === 'signal') {
     if (sourceDef?.id === 'mixer' || targetDef?.id === 'mixer') return { ok: false, code: 'mixer-manual' };
     const fromThermo = sourceDef?.id === 'thermostat' && sourcePort.id === 'sig';
+    const fromSonde = sourceDef?.id === 'tank-sonde' && sourcePort.id === 'sig';
     const toValve = targetDef?.id === 'valve-3way' && targetPort.id === 'ctl';
     const toZone = targetDef?.id === 'valve' && targetPort.id === 'ctl';
     const toPump = targetDef?.id === 'pump' && targetPort.id === 'ctl';
     const toHeatPump = Boolean(targetDef && isHeatPumpId(targetDef.id)) && targetPort.id === 'ctl';
+    // A tank sonde commands valves and pumps from its tank reading; every
+    // other purple pairing stays a thermostat command. The heat pump itself
+    // listens to a thermostat only.
+    if (fromSonde) return (toValve || toZone || toPump) ? { ok: true } : { ok: false, code: 'signal-pair' };
     if (!fromThermo || (!toValve && !toZone && !toPump && !toHeatPump)) return { ok: false, code: 'signal-pair' };
     return { ok: true };
   }

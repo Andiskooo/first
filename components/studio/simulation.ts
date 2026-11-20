@@ -1,4 +1,5 @@
 import { getComponent, isBufferId, isHeatPumpId, resolvePorts } from '@/components/studio/registry';
+import { simTankC, sondeCommand, sondeTankOf } from '@/components/studio/control';
 import { clamp } from '@/components/studio/temperature';
 import type {
   ComponentDef,
@@ -154,7 +155,8 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
 
   const links = new Map<string, { edgeId: string; nodeId: string; portId: string }>();
   for (const edge of edges) {
-    if (edge.kind === 'signal') continue;
+    // Control and measurement links carry no water and never join the traces.
+    if (edge.kind === 'signal' || edge.kind === 'sense') continue;
     if (!edge.sourceHandle || !edge.targetHandle) continue;
     const forward = { edgeId: edge.id, nodeId: edge.target, portId: edge.targetHandle };
     const back = { edgeId: edge.id, nodeId: edge.source, portId: edge.sourceHandle };
@@ -571,6 +573,19 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
       tankC: tTank,
       storedKwh: litres * WATER_RHO * WATER_CP * Math.max(tTank - T_ROOM, 0) / 3600,
     };
+  }
+
+  // Tank sondes publish their measurement for the inspector and the canvas
+  // label. A sonde with no sense link, or whose tank has no solved state,
+  // gets no entry, which the UI reads as disconnected.
+  for (const node of nodes) {
+    if (node.componentId !== 'tank-sonde') continue;
+    const tankId = sondeTankOf(node, edges);
+    if (!tankId) continue;
+    const measured = simTankC(nodeSims, nodes, tankId);
+    if (measured == null || !Number.isFinite(measured)) continue;
+    const command = sondeCommand(node, edges, (id) => simTankC(nodeSims, nodes, id)) ?? 0;
+    nodeSims[node.id] = { tIn: measured, tOut: measured, flowLph: 0, qKw: 0, dt: 0, opening: command };
   }
 
   const edgeSims: Record<string, EdgeSim> = {};

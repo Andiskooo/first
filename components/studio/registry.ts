@@ -1,4 +1,4 @@
-import { clamp } from '@/components/studio/temperature';
+import { MAX_SUPPLY_C, MIN_SUPPLY_C, clamp } from '@/components/studio/temperature';
 import type { CategoryId, ComponentDef, Locale, ParamDef, PortDef } from '@/components/studio/types';
 
 const capacity: ParamDef = {
@@ -7,7 +7,7 @@ const capacity: ParamDef = {
 };
 
 const setpoint: ParamDef = {
-  id: 'setpoint', kind: 'number', min: 30, max: 55, step: 1, defaultValue: 45, unit: '°C',
+  id: 'setpoint', kind: 'number', min: MIN_SUPPLY_C, max: MAX_SUPPLY_C, step: 1, defaultValue: 45, unit: '°C',
 };
 
 const internalPump: ParamDef = {
@@ -58,6 +58,10 @@ const ambient: ParamDef = {
   id: 'ambient', kind: 'number', min: 5, max: 25, step: 0.5, defaultValue: 16, unit: '°C',
 };
 
+const tankSet: ParamDef = {
+  id: 'tankSet', kind: 'number', min: MIN_SUPPLY_C, max: MAX_SUPPLY_C, step: 1, defaultValue: 45, unit: '°C',
+};
+
 /** 0 = Auto (thermostat), 1 = Manual (the A/B toggle). */
 const controlMode: ParamDef = {
   id: 'controlMode', kind: 'select', min: 0, max: 1, step: 1, defaultValue: 0, unit: '', options: [0, 1],
@@ -82,6 +86,16 @@ const signalPort = (id: string, direction: 'in' | 'out'): PortDef => ({
   id, x: 0.5, y: 0, side: 'neutral', direction, terminal: 'signal', required: false,
 });
 
+/**
+ * Green temperature-measurement tap. Tanks expose it on top, clear of the
+ * hydraulic ports; a tank sonde reads it through a `sense` link that carries
+ * no water. Direction is informational only — validation accepts either drag
+ * direction between a tank and a sonde.
+ */
+const sensePort = (id: string, x: number, y: number, direction: 'in' | 'out'): PortDef => ({
+  id, x, y, side: 'neutral', direction, terminal: 'sense', required: false,
+});
+
 function text(sq: string, de: string, en: string): Record<Locale, string> {
   return { sq, de, en };
 }
@@ -97,7 +111,15 @@ function consumerPorts(): PortDef[] {
   return [
     { id: 'supply-in', x: 0, y: 0.32, side: 'supply', direction: 'in', terminal: 'consumer-supply', required: true },
     { id: 'return-out', x: 0, y: 0.72, side: 'return', direction: 'out', terminal: 'consumer-return', required: true },
+    // Green zone-temperature tap on top, clear of the hydraulic ports. A
+    // room thermostat reads it; it never carries water.
+    sensePort('sense', 0.5, 0, 'out'),
   ];
+}
+
+/** Heating consumers whose green port a room thermostat can read. DHW pairs with a tank sonde instead. */
+export function isHeatingConsumerId(id: string): boolean {
+  return id === 'radiator' || id === 'underfloor' || id === 'fancoil';
 }
 
 export const COMPONENTS: ComponentDef[] = [
@@ -169,6 +191,7 @@ export const COMPONENTS: ComponentDef[] = [
       { id: 'sec-out-4', x: 1, y: 0.56, side: 'supply', direction: 'out', terminal: 'buffer-secondary-out', required: false },
       { id: 'sec-in-1', x: 1, y: 0.74, side: 'return', direction: 'in', terminal: 'buffer-secondary-in', required: false },
       { id: 'sec-in-2', x: 1, y: 0.88, side: 'return', direction: 'in', terminal: 'buffer-secondary-in', required: false },
+      sensePort('sense', 0.5, 0, 'out'),
     ],
     params: [volume],
   },
@@ -195,6 +218,7 @@ export const COMPONENTS: ComponentDef[] = [
       { id: 'sec-out-3', x: 1, y: 0.42, side: 'supply', direction: 'out', terminal: 'buffer-secondary-out', required: false },
       { id: 'sec-in-1', x: 1, y: 0.74, side: 'return', direction: 'in', terminal: 'buffer-secondary-in', required: false },
       { id: 'sec-in-2', x: 1, y: 0.88, side: 'return', direction: 'in', terminal: 'buffer-secondary-in', required: false },
+      sensePort('sense', 0.5, 0, 'out'),
     ],
     params: [volume],
   },
@@ -220,6 +244,7 @@ export const COMPONENTS: ComponentDef[] = [
       { id: 'sec-out-2', x: 1, y: 0.28, side: 'supply', direction: 'out', terminal: 'buffer-secondary-out', required: false },
       { id: 'sec-in-1', x: 1, y: 0.74, side: 'return', direction: 'in', terminal: 'buffer-secondary-in', required: false },
       { id: 'sec-in-2', x: 1, y: 0.88, side: 'return', direction: 'in', terminal: 'buffer-secondary-in', required: false },
+      sensePort('sense', 0.5, 0, 'out'),
     ],
     params: [volume],
   },
@@ -279,6 +304,7 @@ export const COMPONENTS: ComponentDef[] = [
     ports: [
       { id: 'supply-in', x: 0, y: 0.36, side: 'supply', direction: 'in', terminal: 'consumer-supply', required: true },
       { id: 'return-out', x: 0, y: 0.70, side: 'return', direction: 'out', terminal: 'consumer-return', required: true },
+      sensePort('sense', 0.5, 0, 'out'),
     ],
     params: [demand(3)],
   },
@@ -384,8 +410,11 @@ export const COMPONENTS: ComponentDef[] = [
     rotatable: true,
     ports: [
       signalPort('ctl', 'in'),
-      { id: 'in', x: 0, y: 0.62, side: 'neutral', direction: 'in', terminal: 'passive', required: true },
-      { id: 'out', x: 1, y: 0.62, side: 'neutral', direction: 'out', terminal: 'passive', required: true },
+      // The photo's pipe mouths sit low in the frame (brass opening centres
+      // near 74% height on both ends), so both hydraulic ports ride the same
+      // 0.74 axis. Rotation re-maps them onto the flipped photo automatically.
+      { id: 'in', x: 0, y: 0.74, side: 'neutral', direction: 'in', terminal: 'passive', required: true },
+      { id: 'out', x: 1, y: 0.74, side: 'neutral', direction: 'out', terminal: 'passive', required: true },
     ],
     params: [controlMode, manualOpen, behavior, motorized, opening],
   },
@@ -498,9 +527,34 @@ export const COMPONENTS: ComponentDef[] = [
     symbol: 'thermostat',
     rotatable: false,
     ports: [
+      // Green zone input on top: the measured heating-zone temperature of a
+      // connected consumer. Without it the thermostat keeps comparing its two
+      // set numbers, exactly as before.
+      sensePort('sense', 0.5, 0, 'in'),
       { id: 'sig', x: 0.5, y: 1, side: 'neutral', direction: 'out', terminal: 'signal', required: false },
     ],
     params: [roomSet, ambient],
+  },
+  {
+    id: 'tank-sonde',
+    code: 'TS',
+    category: 'control',
+    name: text('Sondë depozite', 'Speicherfühler', 'Tank sonde'),
+    blurb: text(
+      'Mat temperaturën e bojlerit ose depozitës përmes lidhjes së gjelbër dhe e çon valvulën 3-rrugëshe te porta B kur arrihet temperatura e synuar, përmes komandës vjollcë.',
+      'Misst die Speichertemperatur über die grüne Leitung und legt das Dreiwegeventil bei Erreichen des Sollwerts über das violette Signal auf Anschluss B.',
+      'Reads a DHW or buffer tank through the green measurement link and drives the three-way valve to port B over the purple command once the target temperature is reached.',
+    ),
+    width: 120,
+    height: 84,
+    asset: '/studio/symbols/tank sonde.png',
+    symbol: 'tank-sonde',
+    rotatable: false,
+    ports: [
+      sensePort('sense', 0, 0.5, 'in'),
+      { id: 'sig', x: 1, y: 0.5, side: 'neutral', direction: 'out', terminal: 'signal', required: false },
+    ],
+    params: [tankSet],
   },
 ];
 
@@ -573,6 +627,11 @@ export function isHeatPumpId(id: string): boolean {
 /** All buffer tank variants share the two left-side heat-source ports. */
 export function isBufferId(id: string): boolean {
   return id === 'buffer-tank' || id === 'buffer-tank-3' || id === 'buffer-tank-2';
+}
+
+/** Tanks that expose a green temperature-measurement port for a tank sonde. */
+export function isTankId(id: string): boolean {
+  return isBufferId(id) || id === 'dhw-tank';
 }
 
 export function defaultParams(def: ComponentDef): Record<string, number> {
