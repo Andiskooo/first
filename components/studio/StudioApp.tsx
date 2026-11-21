@@ -18,16 +18,24 @@ import {
   type Node,
   type OnConnectEnd,
 } from '@xyflow/react';
-import { ChevronDown, PanelLeft, Pause, Play, RotateCcw, Trash2 } from 'lucide-react';
+import { ChevronDown, PanelLeft, Pause, Play, RotateCcw, Save, Trash2 } from 'lucide-react';
 import '@xyflow/react/dist/style.css';
 
-import { computeOpenings, sondeCommand, sondeTankOf, thermostatZoneOf } from '@/components/studio/control';
+import { computeOpenings, resetControlState, sondeCommand, sondeTankOf, thermostatZoneOf } from '@/components/studio/control';
 import { buildExample, type ExampleKind } from '@/components/studio/example';
+import {
+  deleteSavedSystem,
+  getSavedSystem,
+  listSavedSystems,
+  saveSystem,
+  validateSavedSystem,
+  type SavedSystem,
+} from '@/components/studio/savedSystems';
 import { componentBox, getComponent, isBufferId, isHeatPumpId, isHeatingConsumerId, resolvePorts } from '@/components/studio/registry';
 import { SNAP, createPlacedPart, droppedPartId, markPartDropped } from '@/components/studio/place';
-import { T_ROOM, WATER_CP, WATER_RHO, chargeBuffer } from '@/components/studio/simulation';
+import { HP_WARM_START_C, T_ROOM, WATER_CP, WATER_RHO, chargeBuffer } from '@/components/studio/simulation';
 import { simulate } from '@/components/studio/simulation';
-import { advanceThermal } from '@/components/studio/thermal';
+import { THERMAL_HEAT_RATE, advanceThermal } from '@/components/studio/thermal';
 import { validateConnection } from '@/components/studio/validation';
 import { resetDistances, setEdgeSpeeds, stopClock } from '@/components/studio/clock';
 import { messageOf, useStudioCopy } from '@/components/studio/copy';
@@ -46,7 +54,12 @@ const fitPadding = { top: '132px', right: 0.05, bottom: '72px', left: 0.04 } as 
 type Phase = 'idle' | 'running' | 'paused';
 type MobilePanel = 'library' | 'canvas' | 'props';
 
-function ExamplesMenu({ onPick }: { onPick: (kind: ExampleKind) => void }) {
+function ExamplesMenu({ onPick, saved, onPickSaved, onDeleteSaved }: {
+  onPick: (kind: ExampleKind) => void;
+  saved: SavedSystem[];
+  onPickSaved: (id: string) => void;
+  onDeleteSaved: (id: string) => void;
+}) {
   const text = useStudioCopy();
   const [open, setOpen] = useState(false);
   const [box, setBox] = useState<{ x: number; y: number } | null>(null);
@@ -108,6 +121,34 @@ function ExamplesMenu({ onPick }: { onPick: (kind: ExampleKind) => void }) {
               {item.label}
             </button>
           ))}
+          <div role="separator" className="mx-2 my-1 border-t border-slate-200" />
+          <p className="px-3 pb-1 pt-1 text-[10px] font-semibold uppercase tracking-wide text-slate-500">{text.savedSystems}</p>
+          {saved.length === 0 ? (
+            <p className="px-3 pb-1.5 text-xs text-slate-400">{text.noSavedSystems}</p>
+          ) : saved.map((item) => (
+            <div key={item.id} className="group flex items-center gap-1 px-1.5 py-0.5 hover:bg-slate-50">
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  setOpen(false);
+                  onPickSaved(item.id);
+                }}
+                className="min-w-0 flex-1 truncate rounded px-1.5 py-1 text-left text-xs font-medium text-slate-800"
+                title={item.name}
+              >
+                {item.name}
+              </button>
+              <button
+                type="button"
+                aria-label={`${text.deleteSaved}: ${item.name}`}
+                onClick={() => onDeleteSaved(item.id)}
+                className="shrink-0 rounded px-1.5 py-1 text-xs text-slate-400 hover:bg-red-50 hover:text-red-700"
+              >
+                ×
+              </button>
+            </div>
+          ))}
         </div>,
         document.body,
       ) : null}
@@ -153,16 +194,43 @@ function StudioShell() {
   const [armed, setArmed] = useState<string | null>(null);
   const [hint, setHint] = useState<string | null>(null);
   const [tankC, setTankC] = useState<number | null>(null);
+  /** Heat-pump warm-up state (°C deliverable supply). Null = steady-state solve at setpoint. */
+  const [hpSupplyC, setHpSupplyC] = useState<number | null>(null);
   /** Live body/zone temperatures (°C) by node id, advanced with simulation time while running. */
   const [thermal, setThermal] = useState<Record<string, number>>({});
   const [present, setPresent] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(true);
   const [coarse, setCoarse] = useState(false);
+  const [saved, setSaved] = useState<SavedSystem[]>(() => listSavedSystems());
+  const [saveOpen, setSaveOpen] = useState(false);
+  const [saveName, setSaveName] = useState('');
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const shellRef = useRef<HTMLDivElement>(null);
   const graphRef = useRef({ nodes, edges });
   const rejectRef = useRef<string | null>(null);
   const heldRef = useRef<Record<string, number>>({});
   const resultRef = useRef<ReturnType<typeof simulate> | null>(null);
+  /**
+   * Last genuinely solved heat-pump supply/return. Pump state changes leave
+   * the solver with no flow (null supply, 0° node temps); this hold keeps the
+   * displayed temperatures continuous across those transitions instead of
+   * flashing the startup values. Written only from real solves, never read
+   * back into the simulation.
+   */
+  const heldSupplyRef = useRef<{ s: number; r: number } | null>(null);
+  /**
+   * Last mixed-tank temperature from a non-idle solve. Seeds primary-idle
+   * charging when a secondary pump stops, so the hot tank (not T_ROOM) is
+   * the restart point. Null on fresh starts, preserving the mid-20s warm-up.
+   */
+  const prevTankRef = useRef<number | null>(null);
+  /**
+   * Last heat-pump gate (1 = running, 0 = thermostat-held OFF, undefined =
+   * uncontrolled). Detects a genuine thermostat OFF→ON transition so the
+   * warm-up restarts exactly once per restart, never on repeated ONs.
+   */
+  const prevHpGateRef = useRef<number | undefined>(undefined);
   const seq = useRef(1);
   const { screenToFlowPosition, fitView, deleteElements, setViewport } = useReactFlow();
   const updateInternals = useUpdateNodeInternals();
@@ -170,7 +238,12 @@ function StudioShell() {
 
   const graph = useMemo(() => toGraph(nodes, edges), [nodes, edges]);
   const { openings, result } = useMemo(() => {
-    const opts = tankC == null ? {} : { tankC };
+    const opts: { tankC?: number; hpSupplyC?: number } = {};
+    // Prefer live charging progress; otherwise reseed idle charging from the
+    // last drawn-down tank so the first idle render is already continuous.
+    if (tankC != null) opts.tankC = tankC;
+    else if (prevTankRef.current != null) opts.tankC = prevTankRef.current;
+    if (hpSupplyC != null) opts.hpSupplyC = hpSupplyC;
     const input = { nodes: graph.nodes, edges: graph.edges, held: heldRef.current, temps: thermal };
     const first = computeOpenings({ ...input, result: resultRef.current });
     const solved = simulate(graph.nodes, graph.edges, first, opts);
@@ -183,13 +256,33 @@ function StudioShell() {
       return { openings: second, result: simulate(graph.nodes, graph.edges, second, opts) };
     }
     return { openings: first, result: solved };
-  }, [graph, tankC, thermal]);
+  }, [graph, tankC, hpSupplyC, thermal]);
   // The inspector, canvas labels, and sensors all read this copy: hydraulic
   // water temperatures stay solver-owned, while tank body, heating-zone, and
   // measured values come from the live thermal layer.
   const displayResult = useMemo(() => {
-    if (!Object.keys(thermal).length) return result;
+    // Continuity hold: with no circulation the solver yields null supply and
+    // 0° heat-pump temps. Display the last solved values instead so a pump
+    // ON→OFF transition never flashes the mid-20s startup look. Real solves
+    // always take precedence when flow exists.
+    const held = heldSupplyRef.current;
+    const holdHp = held != null && (result.supplyC == null || result.returnC == null);
+    if (!Object.keys(thermal).length) {
+      if (!holdHp) return result;
+      const outNodes = { ...result.nodes };
+      const hpNode = graph.nodes.find((node) => isHeatPumpId(node.componentId));
+      if (hpNode && outNodes[hpNode.id] && !(outNodes[hpNode.id].flowLph > 1)) {
+        outNodes[hpNode.id] = { ...outNodes[hpNode.id], tIn: held.r, tOut: held.s, dt: held.s - held.r };
+      }
+      return { ...result, nodes: outNodes, supplyC: held.s, returnC: held.r, dtC: held.s - held.r };
+    }
     const outNodes = { ...result.nodes };
+    if (holdHp) {
+      const hpNode = graph.nodes.find((node) => isHeatPumpId(node.componentId));
+      if (hpNode && outNodes[hpNode.id] && !(outNodes[hpNode.id].flowLph > 1)) {
+        outNodes[hpNode.id] = { ...outNodes[hpNode.id], tIn: held.r, tOut: held.s, dt: held.s - held.r };
+      }
+    }
     for (const node of graph.nodes) {
       const live = thermal[node.id];
       if (live == null || !Number.isFinite(live)) continue;
@@ -242,6 +335,7 @@ function StudioShell() {
         }
       }
     }
+    if (holdHp) return { ...result, nodes: outNodes, supplyC: held.s, returnC: held.r, dtC: held.s - held.r };
     return { ...result, nodes: outNodes };
   }, [result, thermal, graph]);
   const showThermo = phase !== 'idle';
@@ -305,20 +399,76 @@ function StudioShell() {
   useEffect(() => {
     heldRef.current = openings;
     resultRef.current = result;
+    // Track only genuine solves; the display hold never feeds back in.
+    if (result.supplyC != null && result.returnC != null) {
+      heldSupplyRef.current = { s: result.supplyC, r: result.returnC };
+    }
+    // Last mixed-tank temperature solved while consumers were drawing (not
+    // primary-idle). A secondary-pump stop reseeds idle charging from the
+    // hot tank instead of T_ROOM, so supply stays continuous.
+    if (!result.primaryIdle && result.tankC != null) {
+      prevTankRef.current = result.tankC;
+    }
+    // A heat-pump gate entry exists only with a thermostat wire (control.ts
+    // skips sondes for heat pumps), so 0→1 here is exactly a genuine
+    // thermostat-controlled OFF→ON transition. Restart the warm-up like a
+    // fresh startup: same values, same mechanisms. Circulation-pump, valve,
+    // and sonde changes never touch this gate, and repeated ONs see a
+    // previous ON and do nothing.
+    const rfNodes = graphRef.current.nodes;
+    const hpId = rfNodes.find((node) => isHeatPumpId(node.data.componentId))?.id;
+    const hpControlled = hpId != null
+      && graphRef.current.edges.some((edge) => edge.type === 'signal' && edge.target === hpId);
+    const hpGate = hpControlled && hpId != null ? openings[hpId] : undefined;
+    const prevHpGate = prevHpGateRef.current;
+    prevHpGateRef.current = hpGate;
+    if (prevHpGate !== undefined && prevHpGate < 0.5 && hpGate !== undefined && hpGate >= 0.5) {
+      setHpSupplyC(HP_WARM_START_C);
+      setTankC(null);
+      heldSupplyRef.current = null;
+      prevTankRef.current = null;
+      // Restart the displayed buffer body like a fresh run (unseeded, so the
+      // thermal layer reseeds from zero); heat-consumer bodies are untouched.
+      const bufferIds = new Set(
+        rfNodes.filter((node) => isBufferId(node.data.componentId)).map((node) => node.id),
+      );
+      if (bufferIds.size) {
+        setThermal((current) => {
+          let next: Record<string, number> | null = null;
+          for (const id of bufferIds) {
+            if (!(id in current)) continue;
+            if (!next) next = { ...current };
+            delete next[id];
+          }
+          return next ?? current;
+        });
+      }
+    }
   }, [openings, result]);
 
   useEffect(() => {
     if (phase === 'idle') {
       heldRef.current = {};
+      heldSupplyRef.current = null;
+      prevTankRef.current = null;
+      prevHpGateRef.current = undefined;
+      resetControlState();
       setTankC(null);
+      setHpSupplyC(null);
       setThermal({});
     }
   }, [phase]);
 
   // Heating dynamics run on simulation time: each frame advances live tank
-  // and zone temperatures from the latest hydraulic flows. No flow means no
-  // heating; temperatures simply hold. Control decisions re-solve from the
-  // same render through the openings memo above.
+  // and zone temperatures from the latest hydraulic flows, and ramps the
+  // heat-pump deliverable supply from its mid-20s warm start toward the
+  // configured setpoint at the shared heating rate — but only while water
+  // actually circulates through the heat pump. A pump OFF→ON transition
+  // therefore resumes from the frozen ramp value instead of jumping to the
+  // setpoint, and the display hold above covers the ON→OFF direction. No
+  // flow means body temperatures reset; the heat-pump ramp only ever climbs
+  // while circulating. Control decisions re-solve from the same render
+  // through the openings memo above.
   useEffect(() => {
     if (phase !== 'running') return;
     let last = performance.now();
@@ -334,6 +484,12 @@ function StudioShell() {
           params: node.data.params ?? {},
         }));
         setThermal((current) => advanceThermal(current, flat, solved, dt));
+        // Frozen while the heat pump sees no flow: time alone must not warm
+        // the deliverable supply, or the next pump start would jump.
+        if (solved.supplyC == null) return;
+        const hp = graphRef.current.nodes.find((node) => isHeatPumpId(node.data.componentId));
+        const target = hp?.data.params.setpoint ?? 45;
+        setHpSupplyC((current) => Math.min(target, (current ?? HP_WARM_START_C) + THERMAL_HEAT_RATE * dt));
       }
       frame = requestAnimationFrame(tick);
     };
@@ -351,7 +507,9 @@ function StudioShell() {
       const hp = graphRef.current.nodes.find((node) => isHeatPumpId(node.data.componentId));
       const tank = graphRef.current.nodes.find((node) => isBufferId(node.data.componentId));
       setTankC((current) => chargeBuffer(
-        current ?? T_ROOM,
+        // Reseed from the last drawn-down tank when idle begins mid-run;
+        // fresh starts still begin at T_ROOM for the mid-20s warm-up.
+        current ?? prevTankRef.current ?? T_ROOM,
         hp?.data.params.setpoint ?? 45,
         resultRef.current?.primaryFlowLph ?? 0,
         hp?.data.params.capacity ?? 12,
@@ -468,6 +626,106 @@ function StudioShell() {
     }
   }, []);
 
+  const applySystem = useCallback((systemNodes: SavedSystem['nodes'], systemEdges: SavedSystem['edges']) => {
+    seq.current = 40 + systemNodes.length + systemEdges.length;
+    setNodes(systemNodes.map((node) => {
+      const def = getComponent(node.componentId);
+      const fallback = def ? componentBox(def, node.params) : { width: 120, height: 96 };
+      const box = node.size ?? fallback;
+      return {
+        id: node.id,
+        type: 'hydronic' as const,
+        position: { x: node.x, y: node.y },
+        data: {
+          componentId: node.componentId,
+          params: { ...node.params },
+          rotation: node.rotation ?? 0,
+          size: { ...box },
+        },
+        style: { width: box.width, height: box.height },
+        className: 'overflow-visible',
+      };
+    }));
+    setEdges(systemEdges.map((edge) => ({ ...edge, type: edge.kind === 'signal' ? 'signal' as const : edge.kind === 'sense' ? 'sense' as const : 'hydronic' as const })));
+    heldRef.current = {};
+    setPhase('idle');
+    setHpSupplyC(null);
+    setHint(null);
+    setArmed(null);
+    resetDistances();
+    requestAnimationFrame(() => fitView({ padding: fitPadding, duration: 280 }));
+  }, [fitView, setEdges, setNodes]);
+
+  const loadSaved = useCallback((id: string) => {
+    const system = getSavedSystem(id);
+    if (!system) {
+      setHint('corrupt-system');
+      return;
+    }
+    const verdict = validateSavedSystem(system);
+    if (!verdict.ok) {
+      setHint(verdict.code);
+      return;
+    }
+    applySystem(system.nodes, system.edges);
+  }, [applySystem]);
+
+  const deleteSaved = useCallback((id: string) => {
+    try {
+      deleteSavedSystem(id);
+    } catch {
+      setHint('storage-failed');
+      return;
+    }
+    setSaved(listSavedSystems());
+  }, []);
+
+  const confirmSave = useCallback(() => {
+    if (saving) return;
+    if (!saveName.trim()) {
+      setSaveError('name-required');
+      return;
+    }
+    if (nodes.length === 0) {
+      setSaveError('empty-canvas');
+      return;
+    }
+    setSaving(true);
+    try {
+      const payload = nodes.map((node) => ({
+        id: node.id,
+        componentId: node.data.componentId,
+        params: { ...(node.data.params ?? {}) },
+        x: node.position.x,
+        y: node.position.y,
+        rotation: node.data.rotation ?? 0,
+        size: node.data.size ? { ...node.data.size } : undefined,
+      }));
+      const payloadEdges = edges.flatMap((edge) => (
+        edge.sourceHandle && edge.targetHandle
+          ? [{
+            id: edge.id,
+            source: edge.source,
+            target: edge.target,
+            sourceHandle: edge.sourceHandle,
+            targetHandle: edge.targetHandle,
+            kind: edge.type === 'signal' ? 'signal' as const : edge.type === 'sense' ? 'sense' as const : 'pipe' as const,
+          }]
+          : []
+      ));
+      saveSystem(saveName, payload, payloadEdges);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : 'storage-failed');
+      setSaving(false);
+      return;
+    }
+    setSaving(false);
+    setSaved(listSavedSystems());
+    setSaveOpen(false);
+    setSaveName('');
+    setSaveError(null);
+  }, [edges, nodes, saveName, saving]);
+
   const loadExample = useCallback((kind: ExampleKind) => {
     const example = buildExample(kind);
     seq.current = 40;
@@ -483,9 +741,10 @@ function StudioShell() {
         className: 'overflow-visible',
       };
     }));
-    setEdges(example.edges.map((edge) => ({ ...edge, type: edge.kind === 'signal' ? 'signal' as const : 'hydronic' as const })));
+    setEdges(example.edges.map((edge) => ({ ...edge, type: edge.kind === 'signal' ? 'signal' as const : edge.kind === 'sense' ? 'sense' as const : 'hydronic' as const })));
     heldRef.current = {};
     setPhase('idle');
+    setHpSupplyC(null);
     setHint(null);
     setArmed(null);
     resetDistances();
@@ -571,7 +830,7 @@ function StudioShell() {
             <PanelLeft className="h-3.5 w-3.5" aria-hidden />
           </button>
           <p className="mr-1 hidden shrink-0 text-xs font-semibold sm:block">{text.title}</p>
-          <button type="button" onClick={() => setPhase('running')} aria-pressed={running} className={cn('inline-flex shrink-0 items-center gap-1 rounded-md font-medium text-white', running ? 'bg-blue-700' : 'bg-blue-600 hover:bg-blue-700')}>
+          <button type="button" onClick={() => { setHpSupplyC((current) => current ?? HP_WARM_START_C); setPhase('running'); }} aria-pressed={running} className={cn('inline-flex shrink-0 items-center gap-1 rounded-md font-medium text-white', running ? 'bg-blue-700' : 'bg-blue-600 hover:bg-blue-700')}>
             <Play className="h-3.5 w-3.5" aria-hidden /> {text.run}
           </button>
           <button type="button" onClick={() => setPhase((current) => (current === 'running' ? 'paused' : current))} className="inline-flex shrink-0 items-center gap-1 rounded-md border border-slate-200 bg-white font-medium hover:bg-slate-50">
@@ -580,8 +839,8 @@ function StudioShell() {
           <button type="button" onClick={() => { setPhase('idle'); resetDistances(); }} className="inline-flex shrink-0 items-center gap-1 rounded-md border border-slate-200 bg-white font-medium hover:bg-slate-50">
             <RotateCcw className="h-3.5 w-3.5" aria-hidden /> {text.reset}
           </button>
-          <ExamplesMenu onPick={loadExample} />
-          <button type="button" onClick={() => { setNodes([]); setEdges([]); setPhase('idle'); setHint(null); resetDistances(); }} className="inline-flex shrink-0 items-center gap-1 rounded-md border border-slate-200 bg-white font-medium hover:bg-slate-50">
+          <ExamplesMenu onPick={loadExample} saved={saved} onPickSaved={loadSaved} onDeleteSaved={deleteSaved} />
+          <button type="button" onClick={() => { setNodes([]); setEdges([]); setPhase('idle'); setHpSupplyC(null); setHint(null); resetDistances(); }} className="inline-flex shrink-0 items-center gap-1 rounded-md border border-slate-200 bg-white font-medium hover:bg-slate-50">
             <Trash2 className="h-3.5 w-3.5" aria-hidden /> {text.clear}
           </button>
           <button
@@ -600,6 +859,17 @@ function StudioShell() {
             }}
             className="shrink-0 rounded-md border border-slate-200 bg-white font-medium hover:bg-slate-50"
           >{text.fullscreen}</button>
+          <button
+            type="button"
+            onClick={() => {
+              setSaveError(null);
+              setSaveName('');
+              setSaveOpen(true);
+            }}
+            className="inline-flex shrink-0 items-center gap-1 rounded-md border border-slate-200 bg-white font-medium hover:bg-slate-50"
+          >
+            <Save className="h-3.5 w-3.5" aria-hidden /> {text.save}
+          </button>
           <p className="ml-auto hidden shrink-0 text-[11px] text-slate-400 xl:block">{text.disclaimer}</p>
         </div>
 
@@ -769,6 +1039,65 @@ function StudioShell() {
             </button>
           ))}
         </div>
+        {saveOpen && typeof document !== 'undefined' ? createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={text.saveTitle}
+            className="fixed inset-0 z-[90] grid place-items-center bg-slate-900/40 p-4"
+            onPointerDown={(event) => {
+              if (event.target === event.currentTarget && !saving) setSaveOpen(false);
+            }}
+          >
+            <div className="w-full max-w-sm rounded-lg border border-slate-200 bg-white p-4 shadow-lg">
+              <h2 className="text-sm font-semibold text-slate-900">{text.saveTitle}</h2>
+              <label className="mt-3 block text-xs font-medium text-slate-700">
+                {text.saveName}
+                <input
+                  value={saveName}
+                  onChange={(event) => {
+                    setSaveName(event.target.value);
+                    if (saveError) setSaveError(null);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      confirmSave();
+                    }
+                  }}
+                  placeholder={text.savePlaceholder}
+                  autoFocus
+                  className="mt-1 w-full rounded-md border border-slate-200 bg-white px-2 py-1.5 text-sm outline-none focus:border-blue-500"
+                />
+              </label>
+              {saveError ? (
+                <p className="mt-2 rounded-md border border-red-200 bg-red-50 px-2 py-1 text-xs text-red-800" aria-live="polite">
+                  {messageOf(text, saveError)}
+                </p>
+              ) : null}
+              <p className="mt-2 text-[11px] leading-4 text-slate-400">{text.saveLocalNote}</p>
+              <div className="mt-3 flex justify-end gap-2">
+                <button
+                  type="button"
+                  disabled={saving}
+                  onClick={() => setSaveOpen(false)}
+                  className="rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium hover:bg-slate-50 disabled:opacity-50"
+                >
+                  {text.cancel}
+                </button>
+                <button
+                  type="button"
+                  disabled={saving}
+                  onClick={confirmSave}
+                  className="rounded-md bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {text.save}
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        ) : null}
       </div>
     </StudioViewContext.Provider>
   );

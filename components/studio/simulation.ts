@@ -116,7 +116,21 @@ function pumpLph(node: GraphNode | undefined, gates: Record<string, number> = {}
 export interface SimOptions {
   /** Buffer temperature while a primary-only loop is charging, °C. */
   tankC?: number;
+  /**
+   * Heat-pump warm-up state: the actual supply temperature the heat pump can
+   * currently deliver (°C). The simulated supply ramps from the mid-20s warm
+   * start toward the configured setpoint instead of jumping there at startup.
+   * Omit to solve at the full setpoint (steady-state fixtures and tests).
+   */
+  hpSupplyC?: number;
 }
+
+/**
+ * Warm-start supply the heat pump can actually deliver when simulation
+ * starts, before it ramps toward its setpoint. T_ROOM + 5 lands in the
+ * mid-20s, matching the long-standing buffer-only warm-up look.
+ */
+export const HP_WARM_START_C = T_ROOM + 5;
 
 /** Classroom clock: a 200 L tank on a 12 kW heat pump approaches the setpoint in well under a minute. */
 export const TEACHING_TIME = 48;
@@ -485,7 +499,14 @@ export function simulate(nodes: GraphNode[], edges: GraphEdge[], openings: Recor
     if (leaving > 1 && leaving + 1 < secondaryFlow) secondaryFlow = leaving;
   }
   const qCap = hp.params.capacity ?? 12;
-  const tSet = hp.params.setpoint ?? 45;
+  const tSetFull = hp.params.setpoint ?? 45;
+  // Warm-up cap: while the heat pump is still heating up, the whole solve
+  // (supply target, buffer clamp, consumer extraction curve) uses the live
+  // deliverable temperature instead of the configured setpoint. The panel
+  // readings and the pipe water colors therefore share one underlying value.
+  const tSet = options.hpSupplyC == null
+    ? tSetFull
+    : Math.min(tSetFull, Math.max(options.hpSupplyC, T_ROOM));
   const mSource = lphToKgs(sourceFlow);
 
   const nodeSims: Record<string, NodeSim> = {};

@@ -879,8 +879,8 @@ function main() {
     assert.ok((looped.edges[edge.id]?.flowLph ?? 0) > 500, `${edge.id} carries the primary flow`);
   }
 
-  // ---- Live body/zone temperatures: +3 C per simulated second of flow. ----
-  assert.equal(THERMAL_HEAT_RATE, 3, 'documented heating rate');
+  // ---- Live body/zone temperatures: +2 C per simulated second of flow. ----
+  assert.equal(THERMAL_HEAT_RATE, 2, 'documented heating rate');
   assert.ok(isThermalNode('dhw-tank') && isThermalNode('buffer-tank') && isThermalNode('radiator')
     && isThermalNode('underfloor') && isThermalNode('fancoil'), 'tanks and consumers all tracked');
   assert.ok(!isThermalNode('heat-pump') && !isThermalNode('valve') && !isThermalNode('thermostat'), 'only heated bodies tracked');
@@ -898,18 +898,20 @@ function main() {
   assert.ok((dhwSim.nodes.tws?.flowLph ?? 0) > FLOW_ACTIVE_LPH, 'dhw sees active circulation');
   let heat: Record<string, number> = {};
   heat = advanceThermal(heat, dhwLoop.nodes, dhwSim, 1);
-  near(heat.tws ?? 0, 33, 1e-9, 'one second of flow adds 3 C');
+  near(heat.tws ?? 0, 2, 1e-9, 'one second of flow adds 2 C');
   heat = advanceThermal(heat, dhwLoop.nodes, dhwSim, 4);
-  near(heat.tws ?? 0, 45, 1e-9, 'the documented table reaches 45 C after five seconds');
+  near(heat.tws ?? 0, 10, 1e-9, 'five seconds of flow reach 10 C from zero');
   heat = advanceThermal(heat, dhwLoop.nodes, dhwSim, 100);
   near(heat.tws ?? 0, 45, 1e-9, 'a tank never passes its heat source');
   assert.equal(advanceThermal(heat, [], dhwSim, 10), heat, 'no tracked nodes keeps the record untouched');
 
-  // A disconnected tank holds still: no flow, no heating, same record back.
+  // A disconnected tank resets to zero: no flow, no heating.
   const drySim = simulate(dhwLoop.nodes, []);
   const seeded = advanceThermal({}, dhwLoop.nodes, drySim, 1);
-  near(seeded.tws ?? 0, 30, 1e-9, 'a tank still rests at its start value');
-  assert.equal(advanceThermal(seeded, dhwLoop.nodes, drySim, 5), seeded, 'without flow the temperature freezes');
+  near(seeded.tws ?? 0, 0, 1e-9, 'a tank rests at zero without flow');
+  assert.equal(advanceThermal(seeded, dhwLoop.nodes, drySim, 5), seeded, 'without flow the temperature stays at zero');
+  const cooling = advanceThermal({ tws: 24 }, dhwLoop.nodes, drySim, 1);
+  near(cooling.tws ?? -1, 0, 1e-9, 'losing flow resets a heated body to zero');
 
   // Heating consumers warm their zones the same way, capped by the source.
   const radLoop: { nodes: GraphNode[]; edges: GraphEdge[] } = {
@@ -924,7 +926,7 @@ function main() {
   };
   const radSim = simulate(radLoop.nodes, radLoop.edges, computeOpenings({ nodes: radLoop.nodes, edges: radLoop.edges, held: {} }));
   let zone: Record<string, number> = advanceThermal({}, radLoop.nodes, radSim, 2);
-  near(zone.hk ?? 0, 24, 1e-9, 'two seconds of flow lift a zone from 18 C to 24 C');
+  near(zone.hk ?? 0, 4, 1e-9, 'two seconds of flow lift a zone from 0 C to 4 C');
   zone = advanceThermal(zone, radLoop.nodes, radSim, 1000);
   near(zone.hk ?? 0, 45, 1e-9, 'a zone never passes its heat source');
 
@@ -944,8 +946,9 @@ function main() {
   for (const consumer of ['hk', 'fc', 'fbh']) {
     assert.equal(validateConnection(senseNodes, [], consumer, 'sense', 'rt', 'sense').ok, true, `${consumer} measurement reaches the thermostat`);
     assert.equal(validateConnection(senseNodes, [], 'rt', 'sense', consumer, 'sense').ok, true, `${consumer} links in the reverse drag direction`);
-    assert.equal(validateConnection(senseNodes, [], consumer, 'sense', 'sn', 'sense').ok, false, 'consumers cannot sense a sonde');
+    assert.equal(validateConnection(senseNodes, [], consumer, 'sense', 'sn', 'sense').ok, true, `${consumer} measurement reaches the tank sonde`);
   }
+  assert.equal(validateConnection(senseNodes, [], 'sn', 'sense', 'hk', 'sense').ok, true, 'either drag direction lands a consumer measurement');
   assert.equal(validateConnection(senseNodes, [], 'ps', 'sense', 'rt', 'sense').ok, false, 'tanks cannot sense a thermostat');
   assert.equal(validateConnection(senseNodes, [], 'tws', 'sense', 'rt', 'sense').ok, false, 'dhw pairs with a sonde, not a thermostat');
   assert.equal(validateConnection(senseNodes, [], 'hk', 'supply-in', 'rt', 'sense').ok, false, 'pipes cannot land on a measurement port');
@@ -971,8 +974,10 @@ function main() {
 
   const pumpPair: GraphNode[] = [...tankPair, { id: 'p', componentId: 'pump', params: { speed: 60 } }];
   const sondeToPump: GraphEdge[] = [...tankSense, { id: 's', source: 'sn', target: 'p', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' }];
-  assert.equal(computeOpenings({ nodes: pumpPair, edges: sondeToPump, held: {}, temps: { ps: 30 } }).p, 1, 'the pump runs while heating is required');
-  assert.equal(computeOpenings({ nodes: pumpPair, edges: sondeToPump, held: {}, temps: { ps: 45 } }).p, 0, 'the pump stops at the target');
+  assert.equal(computeOpenings({ nodes: pumpPair, edges: sondeToPump, held: {}, temps: { ps: 30 } }).p, 0, 'a buffer-fed pump stays OFF while the buffer is cold');
+  assert.equal(computeOpenings({ nodes: pumpPair, edges: sondeToPump, held: { p: 0 }, temps: { ps: 45 } }).p, 1, 'the buffer-fed pump turns ON at the target');
+  assert.equal(computeOpenings({ nodes: pumpPair, edges: sondeToPump, held: { p: 1 }, temps: { ps: 44 } }).p, 1, 'hysteresis holds the pump ON just below target');
+  assert.equal(computeOpenings({ nodes: pumpPair, edges: sondeToPump, held: { p: 1 }, temps: { ps: 40 } }).p, 0, 'the pump drops OFF below the restart threshold');
   assert.ok(!('p' in computeOpenings({ nodes: pumpPair, edges: [{ id: 's', source: 'sn', target: 'p', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' }], held: {} })), 'without a measurement the pump follows its speed');
 
   // ---- Thermostat actuation from a measured zone, with ambient fallback. ----

@@ -117,9 +117,14 @@ function consumerPorts(): PortDef[] {
   ];
 }
 
-/** Heating consumers whose green port a room thermostat can read. DHW pairs with a tank sonde instead. */
+/** Heating consumers whose green port a room thermostat can read. A tank sonde can also read them plus both tank kinds. */
 export function isHeatingConsumerId(id: string): boolean {
   return id === 'radiator' || id === 'underfloor' || id === 'fancoil';
+}
+
+/** Any heat user a tank sonde can measure: both tank kinds plus every heating consumer. */
+export function isSondeTargetId(id: string): boolean {
+  return isTankId(id) || isHeatingConsumerId(id) || id === 'dhw-tank';
 }
 
 export const COMPONENTS: ComponentDef[] = [
@@ -434,7 +439,8 @@ export const COMPONENTS: ComponentDef[] = [
     symbol: 'valve-3way',
     rotatable: true,
     ports: [
-      signalPort('ctl', 'in'),
+      { id: 'ctl', x: 0.3, y: 0, side: 'neutral', direction: 'in', terminal: 'signal', required: false },
+      { id: 'ctl2', x: 0.7, y: 0, side: 'neutral', direction: 'in', terminal: 'signal', required: false },
       { id: 'ab', x: 0, y: 0.46, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },
       { id: 'a', x: 1, y: 0.46, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },
       { id: 'b', x: 0.5, y: 1, side: 'neutral', direction: 'junction', terminal: 'passive', required: false },

@@ -1,4 +1,4 @@
-import { getComponent, isHeatPumpId, isHeatingConsumerId, isTankId, resolvePorts } from '@/components/studio/registry';
+import { getComponent, isHeatPumpId, isHeatingConsumerId, isSondeTargetId, resolvePorts } from '@/components/studio/registry';
 import type { GraphEdge, GraphNode, PortTerminal } from '@/components/studio/types';
 
 export interface ConnectionEnd {
@@ -116,6 +116,9 @@ export function portOccupied(edges: GraphEdge[], nodeId: string, portId: string,
   const node = nodes.find((item) => item.id === nodeId);
   // One thermostat can command a two-way valve, a three-way valve, a pump, and a heat pump together.
   if (node?.componentId === 'thermostat' && portId === 'sig') return false;
+  // One tank sonde output can drive several actuators (valve ports, pump);
+  // each target port still takes a single wire.
+  if (node?.componentId === 'tank-sonde' && portId === 'sig') return false;
   return edges.some((edge) =>
     (edge.source === nodeId && edge.sourceHandle === portId) ||
     (edge.target === nodeId && edge.targetHandle === portId));
@@ -142,17 +145,17 @@ export function validateConnection(
   const sourcePort = sourceDef ? resolvePorts(sourceDef, sourceNode.params).find((port) => port.id === sourceHandle) : undefined;
   const targetPort = targetDef ? resolvePorts(targetDef, targetNode.params).find((port) => port.id === targetHandle) : undefined;
   if (!sourcePort || !targetPort) return { ok: false, code: 'missing-port' };
-  // Green measurement links join a tank to a sonde, or a heating consumer
-  // to a room thermostat, in either drag direction. They never touch
-  // hydraulic ports.
+  // Green measurement links join a heat user to a sonde (buffer, DHW, or
+  // any heating consumer), or a heating consumer to a room thermostat, in
+  // either drag direction. They never touch hydraulic ports.
   if (sourcePort.terminal === 'sense' || targetPort.terminal === 'sense') {
     const bothSense = sourcePort.terminal === 'sense' && targetPort.terminal === 'sense'
       && sourcePort.id === 'sense' && targetPort.id === 'sense';
-    const sourceIsTank = sourceDef ? isTankId(sourceDef.id) : false;
-    const targetIsTank = targetDef ? isTankId(targetDef.id) : false;
+    const sourceIsTarget = sourceDef ? isSondeTargetId(sourceDef.id) : false;
+    const targetIsTarget = targetDef ? isSondeTargetId(targetDef.id) : false;
     const sourceIsSonde = sourceDef?.id === 'tank-sonde';
     const targetIsSonde = targetDef?.id === 'tank-sonde';
-    if (bothSense && ((sourceIsTank && targetIsSonde) || (sourceIsSonde && targetIsTank))) return { ok: true };
+    if (bothSense && ((sourceIsTarget && targetIsSonde) || (sourceIsSonde && targetIsTarget))) return { ok: true };
     const sourceIsConsumer = sourceDef ? isHeatingConsumerId(sourceDef.id) : false;
     const targetIsConsumer = targetDef ? isHeatingConsumerId(targetDef.id) : false;
     const sourceIsThermo = sourceDef?.id === 'thermostat';
@@ -164,7 +167,7 @@ export function validateConnection(
     if (sourceDef?.id === 'mixer' || targetDef?.id === 'mixer') return { ok: false, code: 'mixer-manual' };
     const fromThermo = sourceDef?.id === 'thermostat' && sourcePort.id === 'sig';
     const fromSonde = sourceDef?.id === 'tank-sonde' && sourcePort.id === 'sig';
-    const toValve = targetDef?.id === 'valve-3way' && targetPort.id === 'ctl';
+    const toValve = targetDef?.id === 'valve-3way' && (targetPort.id === 'ctl' || targetPort.id === 'ctl2');
     const toZone = targetDef?.id === 'valve' && targetPort.id === 'ctl';
     const toPump = targetDef?.id === 'pump' && targetPort.id === 'ctl';
     const toHeatPump = Boolean(targetDef && isHeatPumpId(targetDef.id)) && targetPort.id === 'ctl';

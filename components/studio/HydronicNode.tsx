@@ -56,7 +56,7 @@ export function HydronicNode({ id, data, selected }: NodeProps<HydronicFlowNode>
   const ports = resolvePorts(def, data.params);
   const drawn = { ...def, width: box.width, height: box.height, ports };
   const opening = sim?.opening;
-  const thermostatLinked = (def.id === 'valve-3way' || def.id === 'valve') && graphEdges.some((edge) => edge.kind === 'signal' && edge.target === id && edge.targetHandle === 'ctl');
+  const thermostatLinked = (def.id === 'valve-3way' || def.id === 'valve') && graphEdges.some((edge) => edge.kind === 'signal' && edge.target === id);
   const manualMode = (def.id === 'valve-3way' || def.id === 'valve') && (!thermostatLinked || (data.params?.controlMode ?? 0) >= 0.5);
   const zoneOpen = def.id === 'valve' && (opening != null ? opening >= 0.05 : (data.params?.manualOpen ?? 1) >= 0.5);
   const livePortB = def.id === 'valve-3way' && (opening != null ? opening >= 0.5 : (data.params?.manualPort ?? 0) >= 0.5);

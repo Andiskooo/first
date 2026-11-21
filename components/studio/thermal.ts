@@ -5,16 +5,17 @@ import type { GraphNode, SimResult } from '@/components/studio/types';
 /**
  * Simplified educational heating dynamics. While hot water actively
  * circulates through a tank or heating consumer, its body/zone temperature
- * rises at a fixed rate per simulated second. No flow means no heating, and
- * there is no cool-down in this iteration: temperatures simply hold still.
+ * rises at a fixed rate per simulated second. The moment active circulation
+ * stops, the body resets to 0 C (an intentional teaching rule, not physical
+ * cooling), so the next heating cycle always starts from zero.
  */
 
 /** Degrees gained per simulated second of active hot-water circulation. */
-export const THERMAL_HEAT_RATE = 3;
+export const THERMAL_HEAT_RATE = 2;
 /** Rest temperature a tank starts from before it first sees flow. */
-export const THERMAL_TANK_START = 30;
+export const THERMAL_TANK_START = 0;
 /** Rest temperature a heating zone starts from before it first sees flow. */
-export const THERMAL_ZONE_START = 18;
+export const THERMAL_ZONE_START = 0;
 /** Flow above this counts as active circulation. */
 export const FLOW_ACTIVE_LPH = 1;
 
@@ -29,11 +30,11 @@ function heatCap(nodes: GraphNode[]): number {
   return clamp(hp?.params.setpoint ?? MAX_SUPPLY_C, 0, MAX_SUPPLY_C);
 }
 
-function seedTemp(node: GraphNode): number {
-  // Tanks rest cold and zones rest cool until flow first reaches them, so a
-  // fresh run always climbs the documented 30 → 45 °C in five seconds.
-  if (isBufferId(node.componentId) || node.componentId === 'dhw-tank') return THERMAL_TANK_START;
-  return THERMAL_ZONE_START;
+function seedTemp(_node: GraphNode): number {
+  // Every heat user rests at 0 C until flow first reaches it. Inactive
+  // branches reset to the same value, so each heating cycle restarts at 0 C.
+  void _node;
+  return 0;
 }
 
 /**
@@ -58,7 +59,10 @@ export function advanceThermal(
     const stored = prev[id];
     const base = stored ?? Math.min(seedTemp(node), cap);
     const heated = (result.nodes[id]?.flowLph ?? 0) > FLOW_ACTIVE_LPH;
-    const value = heated ? Math.min(cap, base + step) : base;
+    // Losing active circulation resets the body to 0 C immediately. The
+    // finalized hydraulic flow state is the source of truth: callers pass the
+    // committed solve, never an intermediate valve-transition state.
+    const value = heated ? Math.min(cap, base + step) : 0;
     if (stored === undefined || Math.abs(value - stored) > 1e-9) {
       if (!next) next = { ...prev };
       next[id] = value;
