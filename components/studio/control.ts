@@ -11,15 +11,24 @@
  * A tank sonde compares its tank temperature to its own target.
  *
  * Three-way precedence (still 100% to one port, never a mix):
- * 1. Thermostat connected and controlMode is Auto: above the room setpoint
- *    every drop goes to port B, otherwise every drop goes to port A.
- * 2. One tank sonde connected and Auto: at/above its target every drop goes
- *    to port B, otherwise to port A.
- * 3. Two tank sondes (ctl = port A branch, ctl2 = port B branch) and Auto:
- *    only the sonde on the active outlet may command a switch, giving an
- *    automatic A -> B -> A cycle.
- * 4. controlMode is Manual: the A/B toggle decides, even with a signal connected.
- * 5. No signal: the toggle decides, and Auto has nothing to follow.
+ * 1. Any tank sonde connected: the valve is sensor-locked AUTO regardless of
+ *    controlMode. A stale manualPort can never override a sonde command, and
+ *    the hydraulic outlet seeds to port A (never to the stored manual port).
+ * 2. Thermostat connected (and no sonde) and controlMode is Auto: above the
+ *    room setpoint every drop goes to port B, otherwise every drop goes to
+ *    port A.
+ * 3. One tank sonde and locked AUTO: at/above its target every drop goes
+ *    to port B, otherwise to port A (identical on either purple input).
+ * 4. Two tank sondes and locked AUTO: only the sonde measuring the
+ *    currently active hydraulic branch may command a switch, giving an
+ *    automatic A -> B -> A cycle. Branch membership comes from the hydraulic
+ *    pipe graph (which consumer hangs off port `a` vs `b`), never from which
+ *    purple wire (ctl vs ctl2) delivered the signal, so swapped purple plugs
+ *    behave identically.
+ * 5. controlMode is Manual (no sonde): the A/B toggle decides, even with a
+ *    thermostat signal connected.
+ * 6. No signal: the A/B toggle decides (the app hands manual control back
+ *    from the preserved outlet when the last purple wire is removed).
  *
  * A mixer stores its hot share here (0 = all cold, 1 = all hot). It has no signal.
  *
@@ -37,7 +46,7 @@
  * then runs it; a sonde on any other heat user keeps the legacy run-while-
  * cold behavior.
  */
-import { getComponent, isBufferId, isHeatPumpId, isHeatingConsumerId } from '@/components/studio/registry';
+import { getComponent, isBufferId, isHeatPumpId, isHeatingConsumerId, isSondeTargetId } from '@/components/studio/registry';
 import { clamp } from '@/components/studio/temperature';
 import type { GraphEdge, GraphNode, NodeSim, SimResult } from '@/components/studio/types';
 
@@ -63,6 +72,34 @@ const pumpOffHold = new Map<string, number>();
 /** Clear latched control memory (pump OFF holds). Call when simulation resets. */
 export function resetControlState(): void {
   pumpOffHold.clear();
+}
+
+/**
+ * Minimum sustained heat-pump OFF time (wall ms) before an ON edge counts as
+ * a genuine thermostat restart. A target-temperature shutdown is followed by
+ * the instant 0 C reset of the just-stopped branch, so the very next
+ * evaluation already calls for heat again: that micro-OFF (about a frame)
+ * must not wipe the warm-up ramp, or rapidly auto-cycling systems reset to
+ * HP_WARM_START_C faster than the gradual increase can climb and the supply
+ * pins near 25 C forever. Genuine user-driven OFF periods (seconds or more)
+ * still reset exactly as before.
+ */
+export const HP_RESTART_DEBOUNCE_MS = 1000;
+
+/**
+ * True only for a genuine thermostat OFF→ON restart: a completed 0→1 gate
+ * edge whose OFF side lasted at least HP_RESTART_DEBOUNCE_MS. The very first
+ * ON (no previous gate), a sustained ON, and micro-OFF blips all return
+ * false so the in-progress warm-up ramp survives them.
+ */
+export function isGenuineHpRestart(
+  prevGate: number | undefined,
+  gate: number | undefined,
+  offMs: number,
+): boolean {
+  if (prevGate === undefined || gate === undefined) return false;
+  if (!(prevGate < 0.5 && gate >= 0.5)) return false;
+  return offMs >= HP_RESTART_DEBOUNCE_MS;
 }
 
 export interface ControlInput {
@@ -181,6 +218,83 @@ export function sondeCommand(
   return measured >= (sonde.params.tankSet ?? 45) ? 1 : 0;
 }
 
+/**
+ * Which hydraulic branch of a three-way valve a tank sonde guards, resolved
+ * from the water-pipe graph instead of the purple wire it arrived on. Returns
+ * 'A' when the sonde's measured tank is reachable from port `a`, 'B' when it
+ * is reachable from port `b`, 'both' when reachable from either side (shared
+ * water), and 'none' when it guards an upstream tank or nothing reachable.
+ */
+function guardBranchOf(
+  valveId: string,
+  sonde: GraphNode,
+  nodes: GraphNode[],
+  edges: GraphEdge[],
+): 'A' | 'B' | 'both' | 'none' {
+  const tankId = sondeTankOf(sonde, edges);
+  if (!tankId) return 'none';
+  const aSet = branchReach(valveId, 'a', nodes, edges);
+  const bSet = branchReach(valveId, 'b', nodes, edges);
+  const inA = aSet.has(tankId);
+  const inB = bSet.has(tankId);
+  if (inA && inB) return 'both';
+  if (inA) return 'A';
+  if (inB) return 'B';
+  return 'none';
+}
+
+/**
+ * Water-side consumers/tanks reachable from one hydraulic port of a node,
+ * following pipe edges only (signal/sense links carry no water). Traversal
+ * passes through inline connectors (pumps, tees, junctions, manifolds,
+ * two-way valves, checks, vents) and stops at heat users, tanks, sources,
+ * buffers, mixers, and other divert bodies, so the two outlet branches of a
+ * three-way valve stay separated at their shared return join.
+ */
+function branchReach(
+  nodeId: string,
+  portId: string,
+  nodes: GraphNode[],
+  edges: GraphEdge[],
+): Set<string> {
+  const found = new Set<string>();
+  const peers = new Map<string, { nodeId: string; portId: string }>();
+  for (const edge of edges) {
+    if (edge.kind === 'signal' || edge.kind === 'sense') continue;
+    if (!edge.sourceHandle || !edge.targetHandle) continue;
+    peers.set(`${edge.source}:${edge.sourceHandle}`, { nodeId: edge.target, portId: edge.targetHandle });
+    peers.set(`${edge.target}:${edge.targetHandle}`, { nodeId: edge.source, portId: edge.sourceHandle });
+  }
+  const byId = new Map(nodes.map((node) => [node.id, node]));
+  const start = peers.get(`${nodeId}:${portId}`);
+  if (!start) return found;
+  const PASS_THROUGH = new Set(['pump', 'tee', 'junction', 'manifold-supply', 'manifold-return', 'valve', 'check', 'air-vent']);
+  const seen = new Set<string>();
+  const queue: { nodeId: string; portId: string }[] = [start];
+  while (queue.length) {
+    const current = queue.pop()!;
+    const key = `${current.nodeId}:${current.portId}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const node = byId.get(current.nodeId);
+    if (!node) continue;
+    if (isSondeTargetId(node.componentId)) {
+      found.add(node.id);
+      continue;
+    }
+    const def = getComponent(node.componentId);
+    if (!def) continue;
+    if (!PASS_THROUGH.has(def.id)) continue;
+    for (const port of def.ports) {
+      if (port.terminal === 'signal' || port.terminal === 'sense') continue;
+      if (port.id === current.portId) continue;
+      const next = peers.get(`${node.id}:${port.id}`);
+      if (next) queue.push(next);
+    }
+  }
+  return found;
+}
+
 /** 0 means three-way port A (default). 1 means port B (diverted). */
 export function computeOpenings(input: ControlInput): Record<string, number> {
   const { nodes, edges, held, result, temps } = input;
@@ -223,63 +337,79 @@ export function computeOpenings(input: ControlInput): Record<string, number> {
       openings[node.id] = manualOpen ? fraction : 0;
     } else if (def.id === 'valve-3way') {
       const manual = (node.params.manualPort ?? 0) >= 0.5 ? 1 : 0;
-      const auto = (node.params.controlMode ?? 0) < 0.5;
       const wireA = wires.find((edge) => edge.target === node.id && edge.targetHandle === 'ctl');
       const wireB = wires.find((edge) => edge.target === node.id && (edge.targetHandle === 'ctl2' || edge.targetHandle === 'ctlB'));
       const srcA = wireA ? byId.get(wireA.source) : undefined;
       const srcB = wireB ? byId.get(wireB.source) : undefined;
-      if (!auto || (!srcA && !srcB)) {
+      const sondes = [srcA, srcB].filter((src): src is GraphNode => src?.componentId === 'tank-sonde');
+      // Any tank sonde on either purple input sensor-locks the valve into
+      // AUTO: controlMode/manualPort are ignored, and the outlet seeds to
+      // port A (held memory afterwards, never the stored manual port).
+      const locked = sondes.length > 0;
+      const auto = locked || (node.params.controlMode ?? 0) < 0.5;
+      if (!auto || (!locked && !srcA && !srcB)) {
         openings[node.id] = manual;
         continue;
       }
-      // A thermostat keeps the legacy divert choice: above the room setpoint
-      // every drop goes to port B, otherwise to port A.
+      // A thermostat keeps the legacy divert choice when no sonde is present.
+      // Sondes take precedence when both command the valve.
       const thermo = srcA?.componentId === 'thermostat' ? srcA : srcB?.componentId === 'thermostat' ? srcB : undefined;
-      if (thermo) {
+      if (thermo && !locked) {
         const temp = sensedTempOf(thermo) ?? thermo.params.ambient ?? 16;
         const setpoint = thermo.params.roomSet ?? 21;
         openings[node.id] = temp > setpoint ? 1 : 0;
         continue;
       }
-      const sondeA = srcA?.componentId === 'tank-sonde' ? srcA : undefined;
-      const sondeB = srcB?.componentId === 'tank-sonde' ? srcB : undefined;
-      if (!sondeA && !sondeB) {
+      if (!locked) {
         openings[node.id] = manual;
         continue;
       }
-      // Single-sonde fallback (legacy buffer sonde + any single consumer
-      // sonde): at or above target take port B, otherwise port A. A missing
-      // measurement falls back to the manual toggle.
-      if ((sondeA && !sondeB) || (sondeB && !sondeA)) {
-        const only = sondeA ?? sondeB;
-        const cmd = sondeCommand(only, edges, measuredOf);
-        openings[node.id] = cmd ?? manual;
+      // Active-port memory. Seeded to A on the first sensor-locked update and
+      // committed afterwards, so AUTO never re-forces A once B is active.
+      const active = held[node.id] !== undefined ? (held[node.id] >= 0.5 ? 1 : 0) : 0;
+      // Single-sonde fallback: at or above target take port B, otherwise
+      // port A. Identical on ctl and ctl2. A missing measurement holds the
+      // active outlet instead of jumping to a stale manual port.
+      if (sondes.length === 1) {
+        const cmd = sondeCommand(sondes[0], edges, measuredOf);
+        openings[node.id] = cmd ?? active;
         continue;
       }
-      // Dual-sonde arbitration: only the sonde on the currently active
-      // hydraulic outlet may command a switch. The inactive branch being
-      // below target is normal and never triggers a switch. Held (the
-      // previous committed opening) is the active port memory, so exactly
-      // one A->B or B->A transition can happen per simulation update and no
-      // stale command survives a port becoming inactive.
-      const active = held[node.id] !== undefined ? (held[node.id] >= 0.5 ? 1 : 0) : manual;
-      if (active < 0.5) {
-        const cmdA = sondeCommand(sondeA, edges, measuredOf);
-        if (cmdA == null) {
-          openings[node.id] = active;
+      // Dual-sonde arbitration: only the sonde(s) measuring the currently
+      // active hydraulic branch may command a switch. Branch membership is
+      // resolved from the hydraulic pipe graph (port `a` vs `b` reach), never
+      // from which purple wire delivered the signal, so swapped purple plugs
+      // behave identically. The inactive branch being below target is normal
+      // and never triggers a switch; a missing measurement holds the outlet.
+      const guards = sondes.map((sonde) => ({
+        sonde,
+        cmd: sondeCommand(sonde, edges, measuredOf),
+        branch: guardBranchOf(node.id, sonde, nodes, edges),
+      }));
+      const aGuard = guards.find((entry) => entry.branch === 'A');
+      const bGuard = guards.find((entry) => entry.branch === 'B' && entry !== aGuard);
+      if (aGuard && bGuard) {
+        if (active < 0.5) {
+          const cmd = aGuard.cmd;
+          openings[node.id] = cmd == null ? active : (cmd >= 0.5 ? TARGET_REACHED : HEATING_DEMAND);
         } else {
-          openings[node.id] = cmdA >= 0.5 ? TARGET_REACHED : HEATING_DEMAND;
+          const cmd = bGuard.cmd;
+          // On the B branch, reaching target means return to A (0); still
+          // heating holds B (1).
+          openings[node.id] = cmd == null ? active : (cmd >= 0.5 ? 0 : 1);
         }
-      } else {
-        const cmdB = sondeCommand(sondeB, edges, measuredOf);
-        if (cmdB == null) {
-          openings[node.id] = active;
-        } else {
-          // cmdB is expressed in A/B terms (1 = B). On the B branch,
-          // reaching target means return to A (0); still heating holds B (1).
-          openings[node.id] = cmdB >= 0.5 ? 0 : 1;
-        }
+        continue;
       }
+      // Ambiguous branch mapping (shared/upstream tanks): any at-target
+      // command toggles to the opposite outlet. Exactly one transition per
+      // update; a clear/missing command holds the outlet so a stale hot
+      // reading cannot bounce the valve back immediately.
+      const anyHot = guards.some((entry) => entry.cmd != null && entry.cmd >= 0.5);
+      if (!anyHot) {
+        openings[node.id] = active;
+        continue;
+      }
+      openings[node.id] = active < 0.5 ? TARGET_REACHED : HEATING_DEMAND;
     } else if (def.id === 'mixer') {
       openings[node.id] = clamp((node.params.mix ?? 50) / 100, 0, 1);
     } else if (def.id === 'pump' || isHeatPumpId(def.id)) {

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { computeOpenings } from '../components/studio/control';
+import { HP_RESTART_DEBOUNCE_MS, computeOpenings, isGenuineHpRestart } from '../components/studio/control';
 import { buildExample } from '../components/studio/example';
 import { createPlacedPart, droppedPartId, pointerGesture, pointInRect } from '../components/studio/place';
 import { COMPONENTS } from '../components/studio/registry';
@@ -1004,6 +1004,152 @@ function main() {
   assert.equal(warmZone.v3, 1, 'the valve diverts at the room setpoint');
   const noReading = computeOpenings({ nodes: zoneNodes, edges: zoneWires, held: {}, temps: {} });
   assert.equal(noReading.v3, 0, 'without a zone reading the ambient numbers still decide');
+
+  // ---- Interchangeable purple command inputs on the three-way valve. ----
+  function dualBranchCircuit(wireA: 'snA' | 'snB', wireB: 'snA' | 'snB'): { nodes: GraphNode[]; edges: GraphEdge[] } {
+    const nodes: GraphNode[] = [
+      { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45, internalPump: 1, internalSpeed: 100 } },
+      { id: 'v3', componentId: 'valve-3way', params: { controlMode: 0, manualPort: 0 } },
+      { id: 'hk', componentId: 'radiator', params: { demand: 4 } },
+      { id: 'tws', componentId: 'dhw-tank', params: { demand: 3 } },
+      { id: 'snA', componentId: 'tank-sonde', params: { tankSet: 40 } },
+      { id: 'snB', componentId: 'tank-sonde', params: { tankSet: 40 } },
+    ];
+    const edges: GraphEdge[] = [
+      { id: 'e-a', source: 'v3', target: 'hk', sourceHandle: 'a', targetHandle: 'supply-in' },
+      { id: 'e-b', source: 'v3', target: 'tws', sourceHandle: 'b', targetHandle: 'supply-in' },
+      { id: 'm-a', source: 'hk', target: 'snA', sourceHandle: 'sense', targetHandle: 'sense', kind: 'sense' },
+      { id: 'm-b', source: 'tws', target: 'snB', sourceHandle: 'sense', targetHandle: 'sense', kind: 'sense' },
+      { id: 's-a', source: wireA, target: 'v3', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' },
+      { id: 's-b', source: wireB, target: 'v3', sourceHandle: 'sig', targetHandle: 'ctl2', kind: 'signal' },
+    ];
+    return { nodes, edges };
+  }
+  // Test A/B: a single sonde behaves identically on the left vs right purple input.
+  for (const handle of ['ctl', 'ctl2'] as const) {
+    const nodes: GraphNode[] = [
+      { id: 'v3', componentId: 'valve-3way', params: { controlMode: 0, manualPort: 0 } },
+      { id: 'hk', componentId: 'radiator', params: { demand: 4 } },
+      { id: 'sn', componentId: 'tank-sonde', params: { tankSet: 40 } },
+    ];
+    const edges: GraphEdge[] = [
+      { id: 'm', source: 'hk', target: 'sn', sourceHandle: 'sense', targetHandle: 'sense', kind: 'sense' },
+      { id: 's', source: 'sn', target: 'v3', sourceHandle: 'sig', targetHandle: handle, kind: 'signal' },
+    ];
+    assert.equal(computeOpenings({ nodes, edges, held: {}, temps: { hk: 20 } }).v3, 0, `single sonde on ${handle} holds A below target`);
+    assert.equal(computeOpenings({ nodes, edges, held: {}, temps: { hk: 45 } }).v3, 1, `single sonde on ${handle} diverts to B at target`);
+    assert.equal(computeOpenings({ nodes, edges, held: { v3: 1 }, temps: { hk: 20 } }).v3, 0, `single sonde on ${handle} returns B->A when cool`);
+  }
+  // Test C: both purple ports connected; wiring order must not matter.
+  for (const [wireA, wireB] of [['snA', 'snB'], ['snB', 'snA']] as const) {
+    const { nodes, edges } = dualBranchCircuit(wireA, wireB);
+    assert.equal(
+      computeOpenings({ nodes, edges, held: {}, temps: { hk: 20, tws: 20 } }).v3, 0,
+      `dual sondes (${wireA}/ctl) seed to A when cold`,
+    );
+    assert.equal(
+      computeOpenings({ nodes, edges, held: { v3: 0 }, temps: { hk: 45, tws: 20 } }).v3, 1,
+      `dual sondes (${wireA}/ctl) switch A->B when the A branch reaches target`,
+    );
+    assert.equal(
+      computeOpenings({ nodes, edges, held: { v3: 0 }, temps: { hk: 20, tws: 45 } }).v3, 0,
+      `dual sondes (${wireA}/ctl) ignore a stale hot reading on the inactive B branch`,
+    );
+    assert.equal(
+      computeOpenings({ nodes, edges, held: { v3: 1 }, temps: { hk: 45, tws: 45 } }).v3, 0,
+      `dual sondes (${wireA}/ctl) switch B->A when the B branch reaches target`,
+    );
+    assert.equal(
+      computeOpenings({ nodes, edges, held: { v3: 1 }, temps: { hk: 20, tws: 20 } }).v3, 1,
+      `dual sondes (${wireA}/ctl) hold B while the B branch still needs heat`,
+    );
+  }
+  // Test D/E: a stale manual port never overrides sensor AUTO.
+  {
+    const { nodes, edges } = dualBranchCircuit('snA', 'snB');
+    const staleManual = nodes.map((node) => node.id === 'v3' ? { ...node, params: { controlMode: 1, manualPort: 1 } } : node);
+    assert.equal(computeOpenings({ nodes: staleManual, edges, held: {}, temps: { hk: 20, tws: 20 } }).v3, 0, 'sensor AUTO seeds A despite a stored manual B');
+    assert.equal(computeOpenings({ nodes: staleManual, edges, held: {}, temps: { hk: 45, tws: 20 } }).v3, 1, 'sensor AUTO still switches despite Manual mode stored');
+    assert.equal(computeOpenings({ nodes: staleManual, edges, held: { v3: 1 }, temps: { hk: 20, tws: 20 } }).v3, 1, 'AUTO never re-forces A once B is active');
+    assert.equal(computeOpenings({ nodes: staleManual, edges: [], held: { v3: 1 } }).v3, 1, 'with purple removed the preserved outlet is held');
+  }
+  // Full dual-temperature cycle: radiator (24 C target) on Port A, DHW tank
+  // (40 C target) on Port B, both purple inputs driven. Mirrors the live
+  // StudioApp evaluation (fresh-start body seeding to 0 C, two-pass solve,
+  // committed held memory, 1 s thermal steps at 2 C/s). Expected timeline:
+  // A first, A->B at 12 s, B->A at 32 s, A->B at 44 s, B->A at 64 s, A->B at 76 s.
+  function dualCycleCircuit(wireA: 'snA' | 'snB', wireB: 'snA' | 'snB'): { nodes: GraphNode[]; edges: GraphEdge[] } {
+    const nodes: GraphNode[] = [
+      { id: 'hp', componentId: 'heat-pump', params: { capacity: 12, setpoint: 45, internalPump: 0, internalSpeed: 0 } },
+      { id: 'p', componentId: 'pump', params: { speed: 70 } },
+      { id: 'v3', componentId: 'valve-3way', params: { controlMode: 0, manualPort: 0 } },
+      { id: 'hk', componentId: 'radiator', params: { demand: 4 } },
+      { id: 'tws', componentId: 'dhw-tank', params: { demand: 3 } },
+      { id: 'tr', componentId: 'tee', params: {} },
+      { id: 'snA', componentId: 'tank-sonde', params: { tankSet: 24 } },
+      { id: 'snB', componentId: 'tank-sonde', params: { tankSet: 40 } },
+    ];
+    const pipe = (id: string, source: string, sh: string, target: string, th: string): GraphEdge =>
+      ({ id, source, sourceHandle: sh, target, targetHandle: th, kind: 'pipe' });
+    const edges: GraphEdge[] = [
+      pipe('e-hp-p', 'hp', 'supply-out', 'p', 'in'),
+      pipe('e-p-v3', 'p', 'out', 'v3', 'ab'),
+      pipe('e-v3-hk', 'v3', 'a', 'hk', 'supply-in'),
+      pipe('e-v3-tws', 'v3', 'b', 'tws', 'supply-in'),
+      pipe('e-hk-tr', 'hk', 'return-out', 'tr', 'b'),
+      pipe('e-tws-tr', 'tws', 'return-out', 'tr', 'c'),
+      pipe('e-tr-hp', 'tr', 'a', 'hp', 'return-in'),
+      { id: 'm-a', source: 'hk', target: 'snA', sourceHandle: 'sense', targetHandle: 'sense', kind: 'sense' },
+      { id: 'm-b', source: 'tws', target: 'snB', sourceHandle: 'sense', targetHandle: 'sense', kind: 'sense' },
+      { id: 's-a', source: wireA, target: 'v3', sourceHandle: 'sig', targetHandle: 'ctl', kind: 'signal' },
+      { id: 's-b', source: wireB, target: 'v3', sourceHandle: 'sig', targetHandle: 'ctl2', kind: 'signal' },
+    ];
+    return { nodes, edges };
+  }
+  function runDualCycle(wireA: 'snA' | 'snB', wireB: 'snA' | 'snB'): { at: number; to: string }[] {
+    const { nodes, edges } = dualCycleCircuit(wireA, wireB);
+    let thermal: Record<string, number> = { hk: 0, tws: 0 };
+    let held: Record<string, number> = {};
+    let result: ReturnType<typeof simulate> | null = null;
+    const switches: { at: number; to: string }[] = [];
+    let last = -1;
+    for (let t = 0; t <= 80; t++) {
+      const input = { nodes, edges, held, temps: thermal };
+      const first = computeOpenings({ ...input, result });
+      let solved = simulate(nodes, edges, first);
+      const second = computeOpenings({ ...input, result: solved });
+      let openings = first;
+      if (Object.keys(second).some((id) => second[id] !== first[id])) {
+        solved = simulate(nodes, edges, second);
+        openings = second;
+      }
+      result = solved;
+      held = { ...openings };
+      const v3 = openings.v3 ?? -1;
+      if (last !== -1 && v3 !== last) switches.push({ at: t, to: v3 === 0 ? 'A' : 'B' });
+      last = v3;
+      thermal = advanceThermal(thermal, nodes, result, 1);
+    }
+    return switches;
+  }
+  const expectedCycle = [
+    { at: 12, to: 'B' },
+    { at: 32, to: 'A' },
+    { at: 44, to: 'B' },
+    { at: 64, to: 'A' },
+    { at: 76, to: 'B' },
+  ];
+  for (const [wireA, wireB] of [['snA', 'snB'], ['snB', 'snA']] as const) {
+    const switches = runDualCycle(wireA, wireB);
+    assert.deepEqual(switches, expectedCycle, `full dual cycle alternates A->B->A->B with identical timing on either purple wiring (${wireA}/ctl)`);
+  }
+  // Heat-pump restart debounce: only a sustained OFF arms a genuine restart.
+  assert.equal(isGenuineHpRestart(undefined, 1, 5000), false, 'first ON is not a restart');
+  assert.equal(isGenuineHpRestart(1, 1, 5000), false, 'sustained ON is not a restart');
+  assert.equal(isGenuineHpRestart(0, 0, 5000), false, 'sustained OFF is not a restart');
+  assert.equal(isGenuineHpRestart(0, 1, 50), false, 'micro-OFF blip must not wipe the warm-up ramp');
+  assert.equal(isGenuineHpRestart(0, 1, HP_RESTART_DEBOUNCE_MS), true, 'sustained OFF followed by ON restarts the ramp');
+  assert.equal(isGenuineHpRestart(0, 1, 30000), true, 'long user-driven OFF followed by ON restarts the ramp');
 
   console.log('PASS studio simulation and connection rules');
 }

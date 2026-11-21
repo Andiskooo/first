@@ -16,6 +16,7 @@ export function PropertiesPanel({
   result,
   showThermo,
   signalLinked,
+  sondeLocked,
   senseLinked,
   controlOutLinked,
   onParam,
@@ -31,6 +32,8 @@ export function PropertiesPanel({
   showThermo: boolean;
   /** A thermostat signal currently lands on the selected three-way valve. */
   signalLinked: boolean;
+  /** A tank-sonde purple command currently drives the selected three-way valve. Locks it into sensor AUTO. */
+  sondeLocked?: boolean;
   /** A green measurement link touches the selected tank sonde. */
   senseLinked: boolean;
   /** The selected tank sonde drives a three-way valve over its purple output. */
@@ -89,6 +92,7 @@ export function PropertiesPanel({
                   params={selected.data.params}
                   opening={live?.opening}
                   signalLinked={signalLinked}
+                  sondeLocked={Boolean(sondeLocked)}
                   onParam={(key, value) => onParam(selected.id, key, value)}
                 />
               ) : null}
@@ -237,16 +241,19 @@ function ThreeWayControls({
   params,
   opening,
   signalLinked,
+  sondeLocked,
   onParam,
 }: {
   text: StudioCopy;
   params: Record<string, number>;
   opening: number | undefined;
   signalLinked: boolean;
+  sondeLocked?: boolean;
   onParam: (key: string, value: number) => void;
 }) {
-  const manual = !signalLinked || (params.controlMode ?? 0) >= 0.5;
-  const portB = opening != null ? opening >= 0.5 : (params.manualPort ?? 0) >= 0.5;
+  const locked = Boolean(sondeLocked);
+  const manual = locked ? false : (!signalLinked || (params.controlMode ?? 0) >= 0.5);
+  const portB = opening != null ? opening >= 0.5 : locked ? false : (params.manualPort ?? 0) >= 0.5;
   const storedB = (params.manualPort ?? 0) >= 0.5;
   return (
     <div className="mt-4 space-y-3">
@@ -255,23 +262,25 @@ function ThreeWayControls({
         {' · '}
         {portB ? text.portB : text.portA}
         <span className="mt-0.5 block text-violet-800">
-          {signalLinked
-            ? (manual ? text.manualInCharge : text.autoInCharge)
-            : text.manualAlways}
+          {locked
+            ? text.autoInCharge
+            : signalLinked
+              ? (manual ? text.manualInCharge : text.autoInCharge)
+              : text.manualAlways}
         </span>
       </p>
       <div>
         <span className="text-sm text-slate-700">{text.params.controlMode}</span>
         <div className="mt-1 grid grid-cols-2 gap-2">
           <ModeButton label={text.modeAuto} pressed={signalLinked && !manual} disabled={!signalLinked} onClick={() => onParam('controlMode', 0)} />
-          <ModeButton label={text.modeManual} pressed={manual} onClick={() => onParam('controlMode', 1)} />
+          <ModeButton label={text.modeManual} pressed={manual} disabled={locked} onClick={() => onParam('controlMode', 1)} />
         </div>
       </div>
       <div>
         <span className="text-sm text-slate-700">{text.params.manualPort}</span>
         <div className="mt-1 grid grid-cols-2 gap-2">
-          <ModeButton label={text.portA} pressed={!storedB} onClick={() => onParam('manualPort', 0)} />
-          <ModeButton label={text.portB} pressed={storedB} onClick={() => onParam('manualPort', 1)} />
+          <ModeButton label={text.portA} pressed={!storedB} disabled={locked} onClick={() => onParam('manualPort', 0)} />
+          <ModeButton label={text.portB} pressed={storedB} disabled={locked} onClick={() => onParam('manualPort', 1)} />
         </div>
       </div>
     </div>

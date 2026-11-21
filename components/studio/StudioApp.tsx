@@ -21,7 +21,7 @@ import {
 import { ChevronDown, PanelLeft, Pause, Play, RotateCcw, Save, Trash2 } from 'lucide-react';
 import '@xyflow/react/dist/style.css';
 
-import { computeOpenings, resetControlState, sondeCommand, sondeTankOf, thermostatZoneOf } from '@/components/studio/control';
+import { computeOpenings, isGenuineHpRestart, resetControlState, sondeCommand, sondeTankOf, thermostatZoneOf } from '@/components/studio/control';
 import { buildExample, type ExampleKind } from '@/components/studio/example';
 import {
   deleteSavedSystem,
@@ -35,7 +35,7 @@ import { componentBox, getComponent, isBufferId, isHeatPumpId, isHeatingConsumer
 import { SNAP, createPlacedPart, droppedPartId, markPartDropped } from '@/components/studio/place';
 import { HP_WARM_START_C, T_ROOM, WATER_CP, WATER_RHO, chargeBuffer } from '@/components/studio/simulation';
 import { simulate } from '@/components/studio/simulation';
-import { THERMAL_HEAT_RATE, advanceThermal } from '@/components/studio/thermal';
+import { THERMAL_HEAT_RATE, advanceThermal, isThermalNode } from '@/components/studio/thermal';
 import { validateConnection } from '@/components/studio/validation';
 import { resetDistances, setEdgeSpeeds, stopClock } from '@/components/studio/clock';
 import { messageOf, useStudioCopy } from '@/components/studio/copy';
@@ -231,6 +231,15 @@ function StudioShell() {
    * warm-up restarts exactly once per restart, never on repeated ONs.
    */
   const prevHpGateRef = useRef<number | undefined>(undefined);
+  /**
+   * Wall-clock ms when the heat-pump gate last went OFF (null = currently
+   * ON or never OFF). Lets the restart detector tell genuine user-driven
+   * OFF periods apart from single-evaluation micro-OFFs, so chatter never
+   * wipes the warm-up ramp.
+   */
+  const hpOffSinceRef = useRef<number | null>(null);
+  /** Previous per-valve sonde lock, to seed manual params when a lock releases. */
+  const sondeLockRef = useRef<Record<string, boolean>>({});
   const seq = useRef(1);
   const { screenToFlowPosition, fitView, deleteElements, setViewport } = useReactFlow();
   const updateInternals = useUpdateNodeInternals();
@@ -345,6 +354,15 @@ function StudioShell() {
       const selected = node.id === id;
       if (!selected) return node.selected ? { ...node, selected: false } : node;
       if (node.data.componentId !== 'valve-3way') return { ...node, selected: true };
+      // A sensor-locked valve (any tank sonde on a purple input) cannot be
+      // manually overridden: canvas taps only select it.
+      const sondeLocked = edges.some((edge) => {
+        if (edge.type !== 'signal' || edge.target !== id) return false;
+        const peerId = edge.source === id ? edge.target : edge.source;
+        const peer = current.find((item) => item.id === peerId);
+        return peer?.data.componentId === 'tank-sonde';
+      });
+      if (sondeLocked) return { ...node, selected: true };
       const linked = edges.some((edge) => edge.type === 'signal' && edge.target === id);
       const live = (resultRef.current?.nodes[id]?.opening ?? 0) >= 0.5 ? 1 : 0;
       return {
@@ -410,11 +428,12 @@ function StudioShell() {
       prevTankRef.current = result.tankC;
     }
     // A heat-pump gate entry exists only with a thermostat wire (control.ts
-    // skips sondes for heat pumps), so 0→1 here is exactly a genuine
-    // thermostat-controlled OFF→ON transition. Restart the warm-up like a
-    // fresh startup: same values, same mechanisms. Circulation-pump, valve,
-    // and sonde changes never touch this gate, and repeated ONs see a
-    // previous ON and do nothing.
+    // skips sondes for heat pumps). A 0→1 edge after a sustained OFF is a
+    // genuine thermostat-controlled restart: restart the warm-up like a
+    // fresh startup (same values, same mechanisms). Micro-OFF blips from the
+    // instant 0 C reset are ignored so the in-progress ramp survives rapid
+    // auto-cycling. Circulation-pump, valve, and sonde changes never touch
+    // this gate, and repeated ONs see a previous ON and do nothing.
     const rfNodes = graphRef.current.nodes;
     const hpId = rfNodes.find((node) => isHeatPumpId(node.data.componentId))?.id;
     const hpControlled = hpId != null
@@ -422,7 +441,15 @@ function StudioShell() {
     const hpGate = hpControlled && hpId != null ? openings[hpId] : undefined;
     const prevHpGate = prevHpGateRef.current;
     prevHpGateRef.current = hpGate;
-    if (prevHpGate !== undefined && prevHpGate < 0.5 && hpGate !== undefined && hpGate >= 0.5) {
+    // Track how long the gate has been OFF (wall time between committed
+    // evaluations). A micro-OFF from the instant 0 C reset lasts about a
+    // frame; only a sustained OFF arms a genuine restart.
+    if (hpGate !== undefined && hpGate < 0.5) {
+      if (hpOffSinceRef.current == null) hpOffSinceRef.current = performance.now();
+    } else if (hpGate !== undefined && hpGate >= 0.5) {
+      const offMs = hpOffSinceRef.current == null ? Number.POSITIVE_INFINITY : performance.now() - hpOffSinceRef.current;
+      hpOffSinceRef.current = null;
+      if (!isGenuineHpRestart(prevHpGate, hpGate, offMs)) return;
       setHpSupplyC(HP_WARM_START_C);
       setTankC(null);
       heldSupplyRef.current = null;
@@ -452,12 +479,42 @@ function StudioShell() {
       heldSupplyRef.current = null;
       prevTankRef.current = null;
       prevHpGateRef.current = undefined;
+      hpOffSinceRef.current = null;
+      sondeLockRef.current = {};
       resetControlState();
       setTankC(null);
       setHpSupplyC(null);
       setThermal({});
     }
   }, [phase]);
+
+  // When the last purple sonde command leaves a three-way valve, hand manual
+  // control back from the preserved hydraulic outlet: the stored manual port
+  // adopts the last committed opening so the valve does not jump.
+  useEffect(() => {
+    const locks: Record<string, boolean> = {};
+    for (const node of nodes) {
+      if (node.data.componentId !== 'valve-3way') continue;
+      locks[node.id] = edges.some((edge) => {
+        if (edge.type !== 'signal' || edge.target !== node.id) return false;
+        const peerId = edge.source === node.id ? edge.target : edge.source;
+        return nodes.some((item) => item.id === peerId && item.data.componentId === 'tank-sonde');
+      });
+    }
+    const prev = sondeLockRef.current;
+    const released = Object.keys(locks).filter((id) => prev[id] && !locks[id]);
+    sondeLockRef.current = locks;
+    if (!released.length) return;
+    const heldNow = { ...heldRef.current };
+    setNodes((current) => current.map((node) => {
+      if (!released.includes(node.id)) return node;
+      const keep = heldNow[node.id] !== undefined ? (heldNow[node.id] >= 0.5 ? 1 : 0) : (node.data.params.manualPort ?? 0);
+      return {
+        ...node,
+        data: { ...node.data, params: { ...node.data.params, manualPort: keep, controlMode: 1 } },
+      };
+    }));
+  }, [nodes, edges, setNodes]);
 
   // Heating dynamics run on simulation time: each frame advances live tank
   // and zone temperatures from the latest hydraulic flows, and ramps the
@@ -606,6 +663,23 @@ function StudioShell() {
       return;
     }
     setHint(null);
+    // A tank sonde taking command of a three-way valve sensor-locks it into
+    // AUTO with Port A as the initial outlet.
+    const targetPeer = graphRef.current.nodes.find((node) => node.id === connection.target);
+    const sourcePeer = graphRef.current.nodes.find((node) => node.id === connection.source);
+    const sondeTakesValve = targetPeer?.data.componentId === 'valve-3way'
+      && sourcePeer?.data.componentId === 'tank-sonde';
+    if (sondeTakesValve && connection.target) {
+      const valveId = connection.target;
+      // Entering sensor-locked AUTO: drop any stale manual-B outlet memory so
+      // the valve seeds to Port A on the next evaluation (never forced after).
+      delete heldRef.current[valveId];
+      setNodes((current) => current.map((node) => (
+        node.id === valveId
+          ? { ...node, data: { ...node.data, params: { ...node.data.params, controlMode: 0, manualPort: 0 } } }
+          : node
+      )));
+    }
     const endTerminal = (id: string | null | undefined, handle: string | null | undefined) => {
       const peer = graphRef.current.nodes.find((node) => node.id === id);
       const def = peer ? getComponent(peer.data.componentId) : undefined;
@@ -617,7 +691,7 @@ function StudioShell() {
       ? 'sense'
       : (fromTerminal === 'signal' || toTerminal === 'signal') ? 'signal' : 'hydronic';
     setEdges((current) => addEdge({ ...connection, id: `e-${crypto.randomUUID()}`, type: kind }, current));
-  }, [setEdges]);
+  }, [setEdges, setNodes]);
 
   const onConnectEnd: OnConnectEnd = useCallback(() => {
     if (rejectRef.current) {
@@ -830,7 +904,23 @@ function StudioShell() {
             <PanelLeft className="h-3.5 w-3.5" aria-hidden />
           </button>
           <p className="mr-1 hidden shrink-0 text-xs font-semibold sm:block">{text.title}</p>
-          <button type="button" onClick={() => { setHpSupplyC((current) => current ?? HP_WARM_START_C); setPhase('running'); }} aria-pressed={running} className={cn('inline-flex shrink-0 items-center gap-1 rounded-md font-medium text-white', running ? 'bg-blue-700' : 'bg-blue-600 hover:bg-blue-700')}>
+          <button type="button" onClick={() => {
+            // Fresh-start initialization (once, never per update): seed every
+            // thermal body to 0 C so the first sensor evaluation reads cold
+            // bodies and a sensor-locked valve seeds Port A. Without this the
+            // first pass falls back to hot supply-water temperatures and
+            // latches Port B before any heating cycle exists. Resume-from-pause
+            // keeps live bodies untouched.
+            if (phase === 'idle') {
+              const seeds: Record<string, number> = {};
+              for (const node of graphRef.current.nodes) {
+                if (isThermalNode(node.data.componentId)) seeds[node.id] = 0;
+              }
+              setThermal(seeds);
+            }
+            setHpSupplyC((current) => current ?? HP_WARM_START_C);
+            setPhase('running');
+          }} aria-pressed={running} className={cn('inline-flex shrink-0 items-center gap-1 rounded-md font-medium text-white', running ? 'bg-blue-700' : 'bg-blue-600 hover:bg-blue-700')}>
             <Play className="h-3.5 w-3.5" aria-hidden /> {text.run}
           </button>
           <button type="button" onClick={() => setPhase((current) => (current === 'running' ? 'paused' : current))} className="inline-flex shrink-0 items-center gap-1 rounded-md border border-slate-200 bg-white font-medium hover:bg-slate-50">
@@ -977,11 +1067,35 @@ function StudioShell() {
               result={displayResult}
               showThermo={showThermo}
               signalLinked={Boolean(selected && edges.some((edge) => edge.type === 'signal' && edge.target === selected.id))}
+              sondeLocked={Boolean(selected && selected.data.componentId === 'valve-3way' && edges.some((edge) => {
+                if (edge.type !== 'signal' || edge.target !== selected.id) return false;
+                const peerId = edge.source === selected.id ? edge.target : edge.source;
+                return nodes.some((item) => item.id === peerId && item.data.componentId === 'tank-sonde');
+              }))}
               senseLinked={Boolean(selected && edges.some((edge) => edge.type === 'sense' && (edge.source === selected.id || edge.target === selected.id)))}
               controlOutLinked={Boolean(selected && selected.data.componentId === 'tank-sonde' && edges.some((edge) => edge.type === 'signal' && edge.source === selected.id))}
               onParam={(id, key, value) => {
                 setNodes((current) => current.map((node) => {
                   if (node.id !== id) return node;
+                  // A sensor-locked three-way valve ignores manual outlet and
+                  // manual-mode writes; AUTO stays in charge while a sonde
+                  // drives either purple input.
+                  if (node.data.componentId === 'valve-3way' && (key === 'manualPort' || (key === 'controlMode' && value !== 0))) {
+                    const locked = edges.some((edge) => {
+                      if (edge.type !== 'signal' || edge.target !== id) return false;
+                      const peerId = edge.source === id ? edge.target : edge.source;
+                      return current.some((item) => item.id === peerId && item.data.componentId === 'tank-sonde');
+                    });
+                    if (locked) return node;
+                  }
+                  // Entering Automatic mode: drop any stale manual-B outlet memory
+                  // so the valve seeds to Port A on the next evaluation. The
+                  // seed applies once (held re-commits afterwards), so later
+                  // valid signals still switch A->B->A normally.
+                  if (key === 'controlMode' && value === 0 && node.data.componentId === 'valve-3way'
+                    && (node.data.params.controlMode ?? 0) !== 0) {
+                    delete heldRef.current[id];
+                  }
                   const params = { ...node.data.params, [key]: value };
                   const linked = edges.some((edge) => edge.type === 'signal' && edge.target === id);
                   if (key === 'manualPort' && node.data.componentId === 'valve-3way' && linked) {
