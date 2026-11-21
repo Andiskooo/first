@@ -542,11 +542,15 @@ function StudioShell() {
         }));
         setThermal((current) => advanceThermal(current, flat, solved, dt));
         // Frozen while the heat pump sees no flow: time alone must not warm
-        // the deliverable supply, or the next pump start would jump.
-        if (solved.supplyC == null) return;
-        const hp = graphRef.current.nodes.find((node) => isHeatPumpId(node.data.componentId));
-        const target = hp?.data.params.setpoint ?? 45;
-        setHpSupplyC((current) => Math.min(target, (current ?? HP_WARM_START_C) + THERMAL_HEAT_RATE * dt));
+        // the deliverable supply, or the next pump start would jump. The
+        // frame is still rescheduled below so the loop survives OFF periods
+        // (e.g. a tank-sonde-held secondary pump leaves no supply) and the
+        // ramp resumes on the next ON instead of pinning at the warm start.
+        if (solved.supplyC != null) {
+          const hp = graphRef.current.nodes.find((node) => isHeatPumpId(node.data.componentId));
+          const target = hp?.data.params.setpoint ?? 45;
+          setHpSupplyC((current) => Math.min(target, (current ?? HP_WARM_START_C) + THERMAL_HEAT_RATE * dt));
+        }
       }
       frame = requestAnimationFrame(tick);
     };
